@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="102eeb5a-c42d-4ae9-8f30-4921e8a655b7" name="[Weggle] Test Server">
+        <fileTransfer rootFolder="/home/ubuntu" accessType="SFTP" host="15.165.194.188" port="22" sshConfigId="01ec6d97-8c66-4075-aaeb-05b02ea03602" sshConfig="[Weggle] Test IP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

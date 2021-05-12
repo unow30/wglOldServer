@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="15.165.194.188" id="01ec6d97-8c66-4075-aaeb-05b02ea03602" keyPath="$USER_HOME$/.ssh/key_mrur003.pem" port="22" customName="[Weggle] Test IP" nameFormat="CUSTOM" username="ubuntu">
+        <option name="customName" value="[Weggle] Test IP" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>
