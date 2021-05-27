@@ -71,7 +71,7 @@ module.exports = function (req, res) {
             req.innerBody['weggle_deal_list'] = await queryWeggleDealList(req, db_connection);
             req.innerBody['seller_list'] = await querySellerList(req, db_connection);
 
-            deleteBody(req)
+            deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -103,6 +103,7 @@ function queryADList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_ad_list'
         , [
+            req.paramBody['user_uid'],
             // req.paramBody['product_uid'],
         ]
     );
@@ -114,6 +115,7 @@ function queryPopularList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_popular_list'
         , [
+            req.paramBody['user_uid'],
             // req.paramBody['product_uid'],
             // 2,
         ]
@@ -126,6 +128,7 @@ function queryNearbyList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_nearby_list'
         , [
+            req.paramBody['user_uid'],
             req.paramBody['latitude'],
             req.paramBody['longitude'],
         ]
