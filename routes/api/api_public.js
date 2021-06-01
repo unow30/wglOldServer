@@ -4,7 +4,6 @@
 const express = require('express');
 const app = express();
 
-
 /**
  * user api
  */
@@ -20,12 +19,18 @@ app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, 
 // app.route('/public/image').post( require('../../common/utils/awsS3Util_v2').uploadImage, require('./file/uploadFile') );
 // app.route('/public/video').post( require('../../common/utils/awsS3Util_v2').uploadVideo, require('./file/uploadFile') );
 
+
+
 /**
  * dev api
  */
 app.route('/dev/test').get( require('./_dev/_dev_select') )
 
 
+/**
+ * daum api
+ */
+app.route('/postcode').get( require('./postcode/selectPostcode') );
 
 
 module.exports = app;

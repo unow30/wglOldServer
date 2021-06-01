@@ -164,12 +164,12 @@ self = module.exports = {
 }
 
 function initParameter(params){
-    let func_param = '('
+    let func_param = '(';
     params.map(
         function (param, idx) {
             func_param = func_param + (idx === 0 ? '?' : ',?')
         }
-    )
-    func_param = func_param + ')'
-    return func_param
+    );
+    func_param = func_param + ')';
+    return func_param;
 }

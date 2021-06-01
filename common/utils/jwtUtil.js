@@ -24,6 +24,9 @@ module.exports = {
 
     getPayload: function(token){
         if( token ){
+            console.log('token : ' + token);
+            console.log('process jwt secure key : ' + process.env.JWT_SECURE_KEY);
+
             return jwt.verify(token, process.env.JWT_SECURE_KEY);
         }
         return token;

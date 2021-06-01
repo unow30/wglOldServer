@@ -22,6 +22,5 @@ module.exports = {
     access_authority:                   413, // 접근권한 오류
     fail:                   420, // 실패
 
-
     server_msg:           999, // 서버 메세지
 };
