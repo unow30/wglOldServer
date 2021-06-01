@@ -16,7 +16,7 @@ app.route('/user/profile/review/list').get( require('./user/selectUserProfileRev
 /**
  * product api
  */
-app.route('/ㄷ').get( require('./product/selectProductDetail') )
+app.route('/product/detail').get( require('./product/selectProductDetail') )
 app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
 app.route('/product/review/list').get( require('./product/selectProductReviewList') )
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
