@@ -103,7 +103,7 @@ function deleteBody(req) {
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
-x``
+
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_recommend_list'
         , [
