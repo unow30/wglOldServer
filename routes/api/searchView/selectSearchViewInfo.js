@@ -115,7 +115,8 @@ function queryPopularList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_popular_list'
         , [
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
+            // req.paramBody['user_uid'],
             // req.paramBody['product_uid'],
             // 2,
         ]
