@@ -27,10 +27,4 @@ app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, 
 app.route('/dev/test').get( require('./_dev/_dev_select') )
 
 
-/**
- * daum api
- */
-app.route('/postcode').get( require('./postcode/selectPostcode') );
-
-
 module.exports = app;
