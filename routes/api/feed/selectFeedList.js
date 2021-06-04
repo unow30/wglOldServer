@@ -15,6 +15,14 @@
  *
  *     parameters:
  *       - in: query
+ *         name: user_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: 유저 uid
+ *       - in: query
  *         name: latitude
  *         default: 37.536977
  *         required: true
