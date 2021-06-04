@@ -13,14 +13,6 @@
  *
  *     parameters:
  *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid
- *       - in: query
  *         name: category
  *         required: true
  *         schema:
@@ -107,7 +99,7 @@ function querySelect(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_recommend_list'
         , [
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
             req.paramBody['category'],
         ]
     );

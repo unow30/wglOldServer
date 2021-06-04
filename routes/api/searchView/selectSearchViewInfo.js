@@ -14,14 +14,6 @@
  *
  *     parameters:
  *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid
- *       - in: query
  *         name: latitude
  *         default: 37.536977
  *         required: true
@@ -111,7 +103,7 @@ function queryADList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_ad_list'
         , [
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
             // req.paramBody['product_uid'],
         ]
     );
@@ -124,7 +116,7 @@ function queryPopularList(req, db_connection) {
         , 'call proc_select_searchview_popular_list'
         , [
             // req.headers['user_uid'],
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
             // req.paramBody['product_uid'],
             // 2,
         ]
@@ -137,7 +129,7 @@ function queryNearbyList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_nearby_list'
         , [
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
             req.paramBody['latitude'],
             req.paramBody['longitude'],
         ]
