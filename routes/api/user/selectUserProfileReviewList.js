@@ -13,6 +13,14 @@
  *
  *     parameters:
  *       - in: query
+ *         name: user_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: 유저 uid
+ *       - in: query
  *         name: type
  *         default: 0
  *         required: true
@@ -103,7 +111,7 @@ function queryList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_profile_review_list'
         , [
-            req.headers['user_uid'],
+            req.paramBody['user_uid'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
             30,
