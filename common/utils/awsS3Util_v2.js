@@ -22,7 +22,9 @@ AWS.config.update({
     region : funcUtil.getAWSRegion(),
 });
 
-const MAX_LENGTH_MB=20
+
+const MAX_LENGTH_MB=25
+// const MAX_LENGTH_MB=20
 
 const fileFilter = (req, file, next) => {
     // console.log('fileFilter file : '+JSON.stringify(file));
