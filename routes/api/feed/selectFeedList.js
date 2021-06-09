@@ -186,10 +186,10 @@ function querySelect(req, db_connection) {
             req.paramBody['longitude'],
             req.paramBody['km'],
             req.paramBody['category'],
-            req.paramBody['keyword'],
-            req.paramBody['tag'],
             req.paramBody['ad_product_uid'],
             req.paramBody['video_uid'],
+            req.paramBody['keyword'],
+            req.paramBody['tag'],
         ]
     );
 }
