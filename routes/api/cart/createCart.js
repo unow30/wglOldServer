@@ -83,11 +83,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let check = await queryCheck(req, db_connection);
-            if( check ){
-                errUtil.createCall(errCode.already, `이미 장바구니에 담겨 있습니다.`)
-                return
-            }
+            // let check = await queryCheck(req, db_connection);
+            // if( check ){
+            //     errUtil.createCall(errCode.already, `이미 장바구니에 담겨 있습니다.`)
+            //     return
+            // }
             req.innerBody['item'] = await query(req, db_connection);
 
             deleteBody(req)
