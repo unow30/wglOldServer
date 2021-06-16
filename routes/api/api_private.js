@@ -43,7 +43,7 @@ app.route('/order/status').put( require('./order/updateOrderStatus') )
 app.route('/reward').post( require('./reward/createReward') )
     .get( require('./reward/selectReward') )
 app.route('/reward/list').get( require('./reward/selectRewardList') )
-
+app.route('/reward/detail/list').get( require('./reward/selectRewardDetailList') )
 /**
  * point api
  */
