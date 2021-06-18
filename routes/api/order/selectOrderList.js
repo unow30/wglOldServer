@@ -60,6 +60,7 @@ module.exports = function (req, res) {
 
             let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
             req.innerBody['total_count'] = count_data['total_count'];
 
             deleteBody(req)
@@ -74,6 +75,16 @@ module.exports = function (req, res) {
         sendUtil.sendErrorPacket(req, res, _err);
     }
 }
+
+function createJSONArray(item){
+    if( item ){
+        for( let idx in item ){
+            item[idx]['order_product_list'] = JSON.parse(item[idx]['order_product_list'])
+        }
+    }
+    return item;
+}
+
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
