@@ -54,15 +54,14 @@
  *           ==> 65535 : 모든 상품
  *           ==> 멀티선택의 경우 코드 값을 합치면됨
  *           ==> ex) 1+8+32 = 41
- *           * 1 : 수제 먹거리
- *           * 2 : 음료
- *           * 4 : 인테리어 소품
- *           * 8 : 악세사리
- *           * 16 : 휴대폰 주변기기
- *           * 32 : 비누/캔들
- *           * 64 : 가죽 공예
- *           * 128 : 꽃
- *           * 256 : 반려견
+ *           * 1 : 식품
+ *           * 2 : 뷰티
+ *           * 4 : 홈데코
+ *           * 8 : 패션잡화
+ *           * 16 : 반려동물
+ *           * 32 : 유아
+ *           * 64 : 스포츠레저
+ *           * 128 : 식물
  *       - in: query
  *         name: ad_product_uid
  *         required: true
@@ -128,7 +127,7 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
