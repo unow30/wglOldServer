@@ -56,7 +56,13 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['order_product_list'] = await querySelectList(req, db_connection);
+            if( req.innerBody['item'] ){
+                for( let idx in req.innerBody['item'] ){
+                    req.innerBody['item'][idx]['product_item'] = JSON.parse(req.innerBody['item'][idx]['product_item'])
+                }
+            }
+
+            // req.innerBody['order_product_list'] = await querySelectList(req, db_connection);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
