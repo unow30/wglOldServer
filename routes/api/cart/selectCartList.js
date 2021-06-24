@@ -49,7 +49,7 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await querySelect(req, db_connection);
             if( req.innerBody['item'] ){
                 for( let idx in req.innerBody['item'] ){
-                    req.innerBody['item'][idx]['product_item'] = JSON.parse(req.innerBody['item'][idx]['product_item'])
+                    req.innerBody['item'][idx]['cart_product_list'] = JSON.parse(req.innerBody['item'][idx]['cart_product_list'])
                 }
             }
             // req.innerBody['total_count'] = count_data['total_count'];
