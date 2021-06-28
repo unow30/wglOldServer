@@ -14,11 +14,11 @@
  *     parameters:
  *       - in: query
  *         name: find
- *         default: 진현
+ *         default: 도두녁
  *         required: true
  *         schema:
  *           type: string
- *           example: 도진현
+ *           example: 도두녁
  *         description: 유저 이름
  *       - in: query
  *         name: type
