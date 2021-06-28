@@ -13,14 +13,6 @@
  *
  *     parameters:
  *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid
- *       - in: query
  *         name: find
  *         default: 진현
  *         required: true
@@ -116,7 +108,7 @@ function querySelect(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_follow_find_list'
         , [
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
             req.paramBody['find'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
