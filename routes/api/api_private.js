@@ -125,6 +125,7 @@ app.route('/follow')
     .delete( require('./follow/deleteFollow') )
     .post( require('./follow/createFollow') )
 app.route('/follow/list').get( require('./follow/selectFollowList') )
+app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
 
 /**
  * searchView api
