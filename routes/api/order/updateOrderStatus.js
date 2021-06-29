@@ -1,5 +1,5 @@
 /**
- * Created by hyunhunhwang on 2021. 03. 13.
+ * Created by gunucklee on 2021. 06. 28.
  *
  * @swagger
  * /api/private/order/status:
@@ -10,7 +10,7 @@
  *       path : /api/private/order/status
  *
  *       * 상품 구매 상태 수정
- *         * 구매 상태 값 {5: 구매 확정, 6: 구매 취소}
+ *         * 구매 상태 값 {5: 구매 확정, 6: 구매 취소, 10: 반품 신청, 20: 교환 신청}
  *
  *     parameters:
  *       - in: body
@@ -20,14 +20,14 @@
  *         schema:
  *           type: object
  *           required:
- *             - order_uid
+ *             - order_product_uid
  *             - status
  *           properties:
- *             order_uid:
+ *             order_product_uid:
  *               type: number
  *               example: 1
  *               description: |
- *                 구매확정할 구매 uid
+ *                 구매확정할 구매상품 uid
  *             status:
  *               type: number
  *               example: 5
@@ -35,7 +35,13 @@
  *                 구매 상태 값
  *                 * 5: 구매 확정
  *                 * 6: 구매 취소
- *               enum: [5,6]
+ *                 * 10: 반품 신청
+ *                 * 20: 교환 신청
+ *               enum: [5,6,10,20]
+ *             return_reason:
+ *               type: string
+ *               example: 반환사유
+ *               description:
  *
  *     responses:
  *       200:
@@ -56,7 +62,11 @@ const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
 
+
 const errCode = require('../../../common/define/errCode');
+
+const moment = require('moment');
+
 
 let file_name = fileUtil.name(__filename);
 
@@ -79,11 +89,32 @@ module.exports = function (req, res) {
 
             console.log(req.innerBody['item'])
 
-            if( req.paramBody['status'] === 5 && req.innerBody['item'] ){
-                req.innerBody['item'].map(async (item, idx) => {
-                    let reward = await queryUpdate(req, db_connection, item);
-                })
+            // if( req.paramBody['status'] === 5 && req.innerBody['item'] ){
+                // req.innerBody['item'].map(async (item, idx) => {
+                // let reward = await queryUpdate(req, db_connection, item);
+                // })
+
+            // }
+
+
+            if(req.innerBody['item']) {
+
+                switch (req.paramBody['status']) {
+                    case 5:
+                        let reward = await queryUpdate(req, db_connection, req.innerBody['item']);
+                        break;
+                    case 6:
+                        let isCancel = await queryCancelCheck(req, db_connection, req.innerBody['item']);
+                        if (isCancel == 0)
+                            await queryCancel(req, db_connection, req.innerBody['item']);
+                        break;
+
+                }
             }
+
+
+
+
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -99,12 +130,19 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'order_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'order_product_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'status');
 
-    if( !(req.paramBody['status'] === 5 || req.paramBody['status'] === 6) ){
+
+    if( !req.paramBody['return_reason']) {
+        req.paramBody['return_reason'] = '';
+    }
+
+    if( !(req.paramBody['status'] === 5 || req.paramBody['status'] === 6 ||
+        req.paramBody['status'] === 10 || req.paramBody['status'] === 20  ) ) {
         errUtil.createCall(errCode.param, `파라미터 오류 발생. 파라미터를 확인해 주세요.\n확인 파마리터 : status 취소/확정 만 가능`);
     }
+
 }
 
 function deleteBody(req) {
@@ -119,8 +157,9 @@ function query(req, db_connection) {
         , 'call proc_update_order_status'
         , [
             req.headers['user_uid'],
-            req.paramBody['order_uid'],
+            req.paramBody['order_product_uid'],
             req.paramBody['status'],
+            req.paramBody['return_reason'],
         ]
     );
 }
@@ -147,5 +186,44 @@ function queryUpdate(req, db_connection, item) {
             // req.paramBody['status'],
         ]
     );
+}
+
+
+function queryCancelCheck(req, db_connection, item) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_cancel_check'
+        , [
+            item['order_uid']
+        ])
+
+}
+
+// 전체 취소를 해야지만 리워드 환불이 적용됩니다.
+function queryCancel(req, db_connection, item) {
+    const _funcName = arguments.callee.name;
+
+    const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+
+    console.log("currentDate: " + currentDate)
+
+    const elapsedMin = ( currentDate - item['created_time'] ) / 1000 / 60;
+
+
+    console.log("elapsedMin: " + elapsedMin)
+
+    if(elapsedMin < 0 || elapsedMin > 30)
+        return;
+
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_cancel_reward'
+        , [
+            item['order_uid'],
+            item['order_product_uid']
+        ])
+
+
 }
 

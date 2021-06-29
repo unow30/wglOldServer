@@ -19,9 +19,9 @@
  *         schema:
  *           type: object
  *           required:
- *             - order_uid
+ *             - order_product_uid
  *           properties:
- *             order_uid:
+ *             order_product_uid:
  *               type: number
  *               example: 1
  *               description: |
@@ -78,7 +78,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'order_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'order_product_uid');
 }
 
 function deleteBody(req) {
@@ -93,7 +93,7 @@ function query(req, db_connection) {
         , 'call proc_update_order_confirm'
         , [
             req.headers['user_uid'],
-            req.paramBody['order_uid'],
+            req.paramBody['order_product_uid'],
         ]
     );
 }

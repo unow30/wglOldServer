@@ -42,30 +42,6 @@
  *         type: number
  *         example: 1613605871001
  *         description: 주문번호
- *       status:
- *         type: number
- *         example: 1
- *         description: |
- *           구매 상태
- *           * 1: 결제 완료
- *           * 2: 상품 준비중
- *           * 3: 배송중
- *           * 4: 배송완료
- *           * 5: 구매확정
- *           * 6: 구매취소
- *         enum: [1,2,3,4,5,6]
- *       delivery_number:
- *         type: string
- *         example: 1234567890
- *         description: 택배사 송장번호
- *       delivery_code:
- *         type: string
- *         example: abcdefg.jpg
- *         description: |
- *           택배사 코드번호
- *           * 스마트택배 api 코드번호 사용
- *           * => http://info.sweettracker.co.kr/apidoc/
- *         enum: [1]
  *       delivery_msg:
  *         type: string
  *         example: 집 문앞에 놔주세요.

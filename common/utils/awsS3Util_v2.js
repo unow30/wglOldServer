@@ -8,6 +8,8 @@ const crypto = require('crypto');
 const AWS = require("aws-sdk");
 // const s3Storage = require('multer-sharp-s3');
 
+// let mediaconvert = new AWS.MediaConvert({endpoint : ENV.endpoint});
+
 const s3 = new AWS.S3();
 
 const errCode = require('../define/errCode');
@@ -87,5 +89,10 @@ function uploadFile(req, res, next){
         }
     })
 }
+
+
+
+
+
 
 exports.uploadFile = uploadFile;

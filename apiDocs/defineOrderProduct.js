@@ -77,7 +77,51 @@
  *       filename:
  *         type: string
  *         example: 'abcdefgh.png'
- *         description: 상품 이미지
- *
+ *         description: 상품 이미지 *
+ *       status:
+ *         type: number
+ *         example: 1
+ *         description: |
+ *           구매 상태
+ *           * 1: 결제 완료
+ *           * 2: 상품 준비중
+ *           * 3: 배송중
+ *           * 4: 배송완료
+ *           * 5: 구매확정
+ *           * 6: 구매취소
+ *           * 10: 반품 신청
+ *           * 11: 반품 거절
+ *           * 12: 반품 완료
+ *           * 20: 교환 신청
+ *           * 21: 교환 거절
+ *           * 22: 교환 완료
+ *         enum: [1,2,3,4,5,6,10,11,12,20,21,22]
+ *       delivery_number:
+ *         type: string
+ *         example: 1234567890
+ *         description: 택배사 송장번호
+ *       delivery_code:
+ *         type: string
+ *         example: abcdefg.jpg
+ *         description: |
+ *           택배사 코드번호
+ *           * 스마트택배 api 코드번호 사용
+ *           * => http://info.sweettracker.co.kr/apidoc/
+ *         enum: [1]
+ *       return_reason:
+ *         type: string
+ *         example: '<사유> 단순 변심 / <상세내용> 디자인이 별로에요 / <수거 방법> 가져가 주세요! / <반품 비용 지불 방법> 환불금에서 차감 / <반품 택배 정보> 택배사: 한진택배, 송장번호:23023 /'
+ *         description: |
+ *           반품/교환 사유
+ *       is_negligence:
+ *         type: int
+ *         example: 0
+ *         description: |
+ *           과실여부
+ *           * 0: 고객 과실
+ *           * 1: 판매자 과실
+ *         enum: [0,1]
  */
+
+
 
