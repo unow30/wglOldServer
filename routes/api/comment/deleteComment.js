@@ -61,7 +61,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
             if (!req.innerBody['item']) {
-                errUtil.createCall(errCode.err, `댓글 삭제에 실패하였습니다.`)
+                errUtil.createCall(errCode.param, `댓글 삭제에 실패하였습니다.`)
                 return
             }
             req.innerBody['success'] = '댓글 삭제가 완료되었습니다.'
