@@ -44,6 +44,8 @@ app.route('/reward').post( require('./reward/createReward') )
     .get( require('./reward/selectReward') )
 app.route('/reward/list').get( require('./reward/selectRewardList') )
 app.route('/reward/detail/list').get( require('./reward/selectRewardDetailList') )
+
+app.route('/refund/info').get( require('./reward/selectRefundInfo') )
 /**
  * point api
  */

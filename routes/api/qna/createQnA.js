@@ -1,5 +1,5 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 16.
+ * Created by gunucklee on 2021. 07. 05.
  *
  * @swagger
  * /api/private/qna:
@@ -28,7 +28,12 @@
  *               type: number
  *               example: 1
  *               description: |
- *                 팔오잉 타겟 유저 uid
+ *                 상품 uid
+ *             order_product_uid:
+ *               type: number
+ *               example: 0
+ *               description: |
+ *                 주문 상품 uid
  *             type:
  *               type: number
  *               example: 1
@@ -120,6 +125,9 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'question');
     paramUtil.checkParam_noReturn(req.paramBody, 'is_secret');
 
+    if(!req.paramBody['order_product_uid'])
+        req.paramBody['order_product_uid'] = 0;
+
 }
 
 function deleteBody(req) {
@@ -134,6 +142,7 @@ function query(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
+            req.paramBody['order_product_uid'],
             req.paramBody['type'],
             req.paramBody['question'],
             req.paramBody['is_secret'],
@@ -149,6 +158,7 @@ function queryCheck(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
+            req.paramBody['order_product_uid'],
             req.paramBody['type'],
             req.paramBody['content'],
         ]
