@@ -79,7 +79,7 @@ module.exports = function (req, res) {
                 return
             }
             req.innerBody['image_list'] = await queryImageList(req, db_connection);
-            req.innerBody['review_list'] = await queryReviewList(req, db_connection);
+            req.innerBody['video_list'] = await queryReviewList(req, db_connection);
             req.innerBody['faq_list'] = await queryFaqList(req, db_connection);
             req.innerBody['qna_list'] = await queryQnAList(req, db_connection);
 
@@ -141,6 +141,7 @@ function queryReviewList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_review_list'
         , [
+            req.headers['user_uid'],
             req.paramBody['product_uid'],
             0,
             4,

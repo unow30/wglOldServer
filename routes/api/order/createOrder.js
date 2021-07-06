@@ -56,7 +56,7 @@
  *               example: 50000
  *               description: |
  *                 총 상품 금액
- *             price_delivery:
+ *             price_delivery:/api/private/product/feed/list
  *               type: number
  *               example: 2500
  *               description: |
