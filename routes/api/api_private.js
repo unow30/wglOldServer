@@ -9,9 +9,15 @@ const app = express();
  * user api
  */
 app.route('/user').put( require('./user/updateUser') )
+app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
+
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/other').get( require('./user/selectUserInfoOther') )
 app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
+
+
+app.route('/user/bank/info').get( require('./user/selectUserBankInfo') )
+app.route('/user/bank/info').put( require('./user/updateUserBankInfo') )
 
 /**
  * product api
