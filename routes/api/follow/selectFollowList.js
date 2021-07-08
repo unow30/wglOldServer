@@ -124,7 +124,7 @@ function querySelectTotalCount(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_follow_total_count'
         , [
-            req.paramBody['user_uid'],
+            req.paramBody['search_uid'],
             req.paramBody['type'],
         ]
     );
