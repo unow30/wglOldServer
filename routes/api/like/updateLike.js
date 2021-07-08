@@ -84,7 +84,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
 
-            if( parseInt(req.paramBody['type']) === 2 ){
+            if( parseInt(req.paramBody['type']) === 1 ){
                 await queryUpdateCount(req, db_connection)
             }
 
@@ -103,7 +103,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, '');
     paramUtil.checkParam_noReturn(req.paramBody, 'type');
     paramUtil.checkParam_noReturn(req.paramBody, 'is_like');
 }

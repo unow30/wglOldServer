@@ -156,12 +156,12 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
-    paramUtil.checkParam_noReturn(req.paramBody, 'about');
-    paramUtil.checkParam_noReturn(req.paramBody, 'interests');
-    paramUtil.checkParam_noReturn(req.paramBody, 'age');
-    paramUtil.checkParam_noReturn(req.paramBody, 'gender');
-    paramUtil.checkParam_noReturn(req.paramBody, 'email');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'about');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'interests');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'age');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'gender');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'email');
 }
 
 function deleteBody(req) {

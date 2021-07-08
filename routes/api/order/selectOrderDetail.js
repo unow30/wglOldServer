@@ -56,12 +56,14 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
-            console.log(JSON)
-            if( req.innerBody['item'] ){
-                for( let idx in req.innerBody['item'] ){
-                    req.innerBody['item'][idx]['order_seller_product_list'] = JSON.parse(req.innerBody['item'][idx]['order_seller_product_list'])
-                }
-            }
+
+            req.innerBody['seller_list'] = await querySelectList(req, db_connection);
+
+
+            console.log("@@@@"+JSON.stringify(req.innerBody['seller_list']))
+            req.innerBody['seller_list'] = createJSONArray(req.innerBody['seller_list'])
+
+
 
             // req.innerBody['order_product_list'] = await querySelectList(req, db_connection);
 
@@ -77,6 +79,18 @@ module.exports = function (req, res) {
         sendUtil.sendErrorPacket(req, res, _err);
     }
 }
+
+
+
+function createJSONArray(item){
+    if( item ) {
+        for( let idx in item ){
+            item[idx]['order_seller_product_list'] = JSON.parse(item[idx]['order_seller_product_list'])
+        }
+    }
+    return item;
+}
+
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'order_uid');
@@ -106,7 +120,7 @@ function querySelectList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_order_product_list'
+        , 'call proc_select_order_seller_list'
         , [
             req.headers['user_uid'],
             req.paramBody['order_uid'],

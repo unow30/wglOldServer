@@ -11,15 +11,11 @@
  *
  *       * 유저 환불 은행 정보
  *
- *     parameters:
- *
  *     responses:
  *       200:
  *         description: 결과 정보
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Review'
+ *           $ref: '#/definitions/User'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -38,6 +34,7 @@ let file_name = fileUtil.name(__filename);
 module.exports = function (req, res) {
     const _funcName = arguments.callee.name;
 
+
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
@@ -50,6 +47,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
 
+            console.log("@@@@@" + JSON.stringify( req.innerBody['item']))
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
