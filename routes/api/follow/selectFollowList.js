@@ -13,7 +13,7 @@
  *
  *     parameters:
  *       - in: query
- *         name: in_opponent_uid
+ *         name: search_uid
  *         default: 0
  *         required: true
  *         schema:
@@ -111,7 +111,7 @@ function querySelect(req, db_connection) {
         , 'call proc_select_follow_list'
         , [
             req.headers['user_uid'],
-            req.paramBody['in_opponent_uid'],
+            req.paramBody['search_uid'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
         ]
