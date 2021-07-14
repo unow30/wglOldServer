@@ -4,12 +4,12 @@
  * @swagger
  * /api/private/report:
  *   post:
- *     summary: 영상 신고 하기
+ *     summary: 신고 하기
  *     tags: [Report]
  *     description: |
  *       path : /api/private/report
  *
- *       * 영상 신고 하기
+ *       * 신고 하기
  *
  *     parameters:
  *       - in: body
@@ -107,7 +107,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'choice_value');
     paramUtil.checkParam_noReturn(req.paramBody, 'type');
 }
