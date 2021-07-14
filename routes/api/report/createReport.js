@@ -51,7 +51,7 @@
  *                 * 3: 댓글 신고
  *
  *           example:
- *             video_uid: 1
+ *             target_uid: 1
  *             choice_value: 2
  *             content: 테스트 이 유저는 혐오 발언을 했습니다. 신고 112
  *             type: 1
