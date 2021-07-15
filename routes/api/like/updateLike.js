@@ -103,7 +103,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, '');
+    paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'type');
     paramUtil.checkParam_noReturn(req.paramBody, 'is_like');
 }
