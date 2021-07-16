@@ -80,6 +80,9 @@ app.route('/video/count/view').put( require('./video/updateVideoCountView') )
 app.route('/video/review')
     .post( require('./video/createVideoReview') )
     .delete( require('./video/deleteVideoReview') )
+app.route('/video/content').put( require('./video/updateVideoContent') )
+
+
 
 /**
  * comment api
@@ -104,6 +107,7 @@ app.route('/addressbook')
     .delete( require('./addressBook/deleteAddressBook') )
 app.route('/addressbook/list').get( require('./addressBook/selectAddressBookList') )
 app.route('/addressbook/detail').get( require('./addressBook/selectAddressBookDetail') )
+
 
 /**
  * qna api
