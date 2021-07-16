@@ -1,5 +1,5 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 08.
+ * Created by gunucklee on 2021. 07. 16.
  *
  * @swagger
  * /api/private/like:
@@ -45,11 +45,16 @@
  *                 * 0: unlike
  *                 * 1: like
  *               enum: [0,1]
+ *             video_uid:
+ *               type: number
+ *               description: |
+ *                 상품 찜하기 시 리워드를 전달할 video uid
  *
  *           example:
  *             target_uid: 1
  *             type: 1
  *             is_like: 1
+ *             video_uid: 0
  *
  *     responses:
  *       400:
@@ -106,6 +111,9 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'type');
     paramUtil.checkParam_noReturn(req.paramBody, 'is_like');
+
+    if(!req.paramBody['video_uid'])
+        req.paramBody['video_uid'] = '';
 }
 
 function deleteBody(req) {
@@ -122,6 +130,7 @@ function query(req, db_connection) {
             req.paramBody['target_uid'],
             req.paramBody['type'],
             req.paramBody['is_like'],
+            req.paramBody['video_uid'],
         ]
     );
 }
