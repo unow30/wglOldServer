@@ -97,7 +97,7 @@ function deleteBody(req) {
 function createJSONArray(item){
     if( item ){
         for( let idx in item ){
-            item[idx]['reward_list'] = JSON.parse(item[idx]['reward_list'])
+            item[idx]['reward_history_list'] = JSON.parse(item[idx]['reward_history_list'])
         }
     }
     return item;
