@@ -60,7 +60,7 @@ module.exports = function (req, res) {
 
             let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
+            // req.innerBody['item'] = createJSONArray(req.innerBody['item'])
             req.innerBody['total_count'] = count_data['total_count'];
 
             deleteBody(req)
@@ -86,14 +86,14 @@ function deleteBody(req) {
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
 }
-function createJSONArray(item){
-    if( item ){
-        for( let idx in item ){
-            item[idx]['reward_history_list'] = JSON.parse(item[idx]['reward_history_list'])
-        }
-    }
-    return item;
-}
+// function createJSONArray(item){
+//     if( item ){
+//         for( let idx in item ){
+//             item[idx]['reward_history_list'] = JSON.parse(item[idx]['reward_history_list'])
+//         }
+//     }
+//     return item;
+// }
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
