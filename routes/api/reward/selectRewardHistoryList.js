@@ -1,26 +1,18 @@
 /**
- * Created by gunucklee on 2021. 06. 16.
+ * Created by hyunhunhwang on 2021. 02. 17.
  *
  * @swagger
- * /api/private/reward/detail/list:
+ * /api/private/reward/history/list:
  *   get:
- *     summary: 적립 리워드 디테일 히스토리 목록
+ *     summary: 리워드 히스토리 목록
  *     tags: [Reward]
  *     description: |
- *       path : /api/private/reward/detail/list
+ *       path : /api/private/reward/history/list
  *
  *       * 리워드 히스토리 목록
- *         * state: {1: 리워드 리뷰 적립}
+ *         * state: {1: 리워드 리뷰 적립, 2: 리워드 상품 구앱에 사용, 11: 리워드 환급 신청, 12: 리워드 환급 환급 완료}
  *
  *     parameters:
- *       - in: query
- *         name: video_uid
- *         default: 1
- *         required: true
- *         schema:
- *           type: number
- *           example: 1
- *         description: 적립 리워드 디테일 히스토리 목록을 볼 video uid 입력
  *       - in: query
  *         name: last_uid
  *         default: 0
@@ -107,10 +99,9 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_reward_detail_date_list'
+        , 'call proc_select_reward_history_list'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
             req.paramBody['last_uid'],
         ]
     );
@@ -120,10 +111,9 @@ function querySelectTotalCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_reward_detail_date_list_count'
+        , 'call proc_select_reward_history_list_count'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
         ]
     );
 }

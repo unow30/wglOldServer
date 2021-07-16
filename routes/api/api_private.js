@@ -48,8 +48,10 @@ app.route('/order/status').put( require('./order/updateOrderStatus') )
  */
 app.route('/reward').post( require('./reward/createReward') )
     .get( require('./reward/selectReward') )
-app.route('/reward/list').get( require('./reward/selectRewardList') )
-app.route('/reward/detail/list').get( require('./reward/selectRewardDetailList') )
+app.route('/reward/history/list').get( require('./reward/selectRewardHistoryList') )
+app.route('/reward/history/detail/list').get( require('./reward/selectRewardHistoryDetailList') )
+app.route('/reward/history/status/list').get( require('./reward/selectRewardHistoryStatusList') )
+
 
 app.route('/refund/info').get( require('./reward/selectRefundInfo') )
 /**
