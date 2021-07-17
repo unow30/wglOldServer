@@ -160,6 +160,7 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
+
             req.innerBody['order_product_list'] = []
 
             for( let idx in req.paramBody['product_list'] ){
@@ -168,6 +169,9 @@ module.exports = function (req, res) {
                 req.innerBody['order_product_list'].push( product );
             }
 
+            if(req.paramBody['use_reward'] > 0 ) {
+                req.innerBody['reward'] = await queryReward(req, db_connection);
+            }
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -222,6 +226,23 @@ function query(req, db_connection) {
     );
 }
 
+function queryReward(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_use_reward'
+        , [
+            req.headers['user_uid'],
+            req.innerBody['item']['seller_uid'],
+            req.innerBody['item']['uid'],
+            req.innerBody['item']['order_no'],
+            2,
+            req.paramBody['use_reward'],
+            '상품 구매에 리워드 사용',
+        ]
+    );
+}
+
 function queryProduct(req, db_connection) {
     const _funcName = arguments.callee.name;
 
@@ -240,4 +261,5 @@ function queryProduct(req, db_connection) {
         ]
     );
 }
+
 
