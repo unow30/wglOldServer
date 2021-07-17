@@ -14,6 +14,14 @@
  *
  *     parameters:
  *       - in: query
+ *         name: video_uid
+ *         default: 0
+ *         required: false
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: weggledeal 우선순위 video_uid
+ *       - in: query
  *         name: latitude
  *         default: 37.536977
  *         required: true
@@ -68,7 +76,17 @@ module.exports = function (req, res) {
 
             req.innerBody['popular_list'] = await queryPopularList(req, db_connection);
             req.innerBody['nearby_list'] = await queryNearbyList(req, db_connection);
+
+            req.innerBody['type'] = 0;
+            if(req.paramBody['video_uid'] > 0) {
+                req.innerBody['weggle_deal_list'] = await queryWeggleDealList(req, db_connection);
+                req.paramBody['video_uid'] = 0;
+                req.innerBody['type'] = 1;
+            }
             req.innerBody['weggle_deal_list'] = await queryWeggleDealList(req, db_connection);
+
+
+
             req.innerBody['seller_list'] = await querySellerList(req, db_connection);
 
             deleteBody(req);
@@ -142,7 +160,8 @@ function queryWeggleDealList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_weggle_deal_list'
         , [
-            // req.paramBody['product_uid'],
+            req.paramBody['video_uid'],
+            req.innerBody['type'],
             // 2,
         ]
     );
