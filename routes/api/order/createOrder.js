@@ -172,6 +172,9 @@ module.exports = function (req, res) {
             if(req.paramBody['use_reward'] > 0 ) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
             }
+            if(req.paramBody['use_point'] > 0) {
+                req.innerBody['point'] = await queryPoint(req, db_connection);
+            }
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -243,6 +246,22 @@ function queryReward(req, db_connection) {
     );
 }
 
+
+
+function queryPoint(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_use_point'
+        , [
+            req.headers['user_uid'],
+            req.innerBody['item']['order_no'],
+            2,
+            req.paramBody['use_point'],
+            '상품 구매에 포인트 사용',
+        ]
+    );
+}
 function queryProduct(req, db_connection) {
     const _funcName = arguments.callee.name;
 
