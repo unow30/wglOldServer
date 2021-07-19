@@ -79,6 +79,7 @@ module.exports = function (req, res) {
                 return
             }
             req.innerBody['image_list'] = await queryImageList(req, db_connection);
+            req.innerBody['image_detail_list'] = await queryImageDetailList(req, db_connection);
             req.innerBody['video_list'] = await queryReviewList(req, db_connection);
             req.innerBody['faq_list'] = await queryFaqList(req, db_connection);
             req.innerBody['qna_list'] = await queryQnAList(req, db_connection);
@@ -131,6 +132,18 @@ function queryImageList(req, db_connection) {
         , [
             req.paramBody['product_uid'],
             2,
+        ]
+    );
+}
+
+function queryImageDetailList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_image_detail_list'
+        , [
+            req.paramBody['product_uid'],
+            5,
         ]
     );
 }
