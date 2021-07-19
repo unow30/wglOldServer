@@ -38,9 +38,13 @@
  *                 * 10: 반품 신청
  *                 * 20: 교환 신청
  *               enum: [5,6,10,20]
- *             return_reason:
+ *             cancel_reason:
  *               type: string
- *               example: 반환사유
+ *               example: 반환 사유
+ *               description:
+ *             detail_reason:
+ *               type: string
+ *               example: 반환 상세 사유
  *               description:
  *
  *     responses:
@@ -134,8 +138,11 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'status');
 
 
-    if( !req.paramBody['return_reason']) {
-        req.paramBody['return_reason'] = '';
+    if( !req.paramBody['cancel_reason']) {
+        req.paramBody['cancel_reason'] = '';
+    }
+    if( !req.paramBody['detail_reason']) {
+        req.paramBody['detail_reason'] = '';
     }
 
     if( !(req.paramBody['status'] === 5 || req.paramBody['status'] === 6 ||
@@ -159,7 +166,8 @@ function query(req, db_connection) {
             req.headers['user_uid'],
             req.paramBody['order_product_uid'],
             req.paramBody['status'],
-            req.paramBody['return_reason'],
+            req.paramBody['cancel_reason'],
+            req.paramBody['detail_reason'],
         ]
     );
 }

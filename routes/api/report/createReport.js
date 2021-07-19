@@ -1,15 +1,15 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 10.
+ * Created by gunucklee on 2021. 07. 14.
  *
  * @swagger
  * /api/private/report:
  *   post:
- *     summary: 영상 신고 하기
+ *     summary: 신고 하기
  *     tags: [Report]
  *     description: |
  *       path : /api/private/report
  *
- *       * 영상 신고 하기
+ *       * 신고 하기
  *
  *     parameters:
  *       - in: body
@@ -19,33 +19,42 @@
  *         schema:
  *           type: object
  *           required:
- *             - video_uid
+ *             - target_uid
  *             - choice_value
+ *             - content
+ *             - type
  *           properties:
- *             video_uid:
+ *             target_uid:
  *               type: number
  *               description: |
- *                 신고할 영상 uid
+ *                 신고할 uid
  *             choice_value:
  *               type: number
  *               description: |
  *                 신고 선택지 - 비트연산
  *                 ==> ex) 1+4+16 = 21
- *                 * 1: 상품 정보 오류, 거짓 정보
- *                 * 2: 타인 사칭
- *                 * 4: 만 14세 미만 계정
- *                 * 8: 지적 재산권 침해, 규제 상품 판매
- *                 * 16: 적잘하지 않은 게시물(신체노출, 자해, 불법, 혐오, 발언, 폭력)
- *                 * 32: 기타
+ *                 * 1: 나체 이미지 또는 성적 행위
+ *                 * 2: 혐오 발언 또는 상징
+ *                 * 4: 불법 또는 규제 상품 판매
+ *                 * 8: 거짓 정보 및 지적 재산권 침해
+ *                 * 16: 기타
  *             content:
  *               type: string
  *               description: |
  *                 신고 내용
+ *             type:
+ *               type: number
+ *               description: |
+ *                 신고 타입
+ *                 * 1: 유저 신고
+ *                 * 2: 영상 신고
+ *                 * 3: 댓글 신고
  *
  *           example:
- *             video_uid: 1
- *             choice_value: 21
- *             content: 신고 내용입니다.
+ *             target_uid: 1
+ *             choice_value: 2
+ *             content: 테스트 이 유저는 혐오 발언을 했습니다. 신고 112
+ *             type: 1
  *
  *     responses:
  *       400:
@@ -98,8 +107,9 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'choice_value');
+    paramUtil.checkParam_noReturn(req.paramBody, 'type');
 }
 
 function deleteBody(req) {
@@ -113,9 +123,10 @@ function query(req, db_connection) {
         , 'call proc_create_report'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
+            req.paramBody['target_uid'],
             req.paramBody['choice_value'],
             req.paramBody['content'],
+            req.paramBody['type'],
         ]
     );
 }

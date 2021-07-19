@@ -9,9 +9,15 @@ const app = express();
  * user api
  */
 app.route('/user').put( require('./user/updateUser') )
+app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
+
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/other').get( require('./user/selectUserInfoOther') )
 app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
+
+
+app.route('/user/bank/info').get( require('./user/selectUserBankInfo') )
+app.route('/user/bank/info').put( require('./user/updateUserBankInfo') )
 
 /**
  * product api
@@ -42,8 +48,10 @@ app.route('/order/status').put( require('./order/updateOrderStatus') )
  */
 app.route('/reward').post( require('./reward/createReward') )
     .get( require('./reward/selectReward') )
-app.route('/reward/list').get( require('./reward/selectRewardList') )
-app.route('/reward/detail/list').get( require('./reward/selectRewardDetailList') )
+app.route('/reward/history/list').get( require('./reward/selectRewardHistoryList') )
+app.route('/reward/history/detail/list').get( require('./reward/selectRewardHistoryDetailList') )
+app.route('/reward/history/status/list').get( require('./reward/selectRewardHistoryStatusList') )
+
 
 app.route('/refund/info').get( require('./reward/selectRefundInfo') )
 /**
@@ -74,6 +82,9 @@ app.route('/video/count/view').put( require('./video/updateVideoCountView') )
 app.route('/video/review')
     .post( require('./video/createVideoReview') )
     .delete( require('./video/deleteVideoReview') )
+app.route('/video/content').put( require('./video/updateVideoContent') )
+
+
 
 /**
  * comment api
@@ -99,6 +110,7 @@ app.route('/addressbook')
 app.route('/addressbook/list').get( require('./addressBook/selectAddressBookList') )
 app.route('/addressbook/detail').get( require('./addressBook/selectAddressBookDetail') )
 
+
 /**
  * qna api
  */
@@ -107,6 +119,7 @@ app.route('/qna')
     .put( require('./qna/updateQnA') )
     .delete( require('./qna/deleteQnA') )
 app.route('/qna/list').get( require('./qna/selectQnAList') )
+app.route('/qna/list/me').get( require('./qna/selectQnAListMe') )
 
 /**
  * report api

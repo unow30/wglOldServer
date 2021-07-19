@@ -1,26 +1,17 @@
 /**
- * Created by gunucklee on 2021. 06. 16.
+ * Created by gunucklee on 2021. 07. 15.
  *
  * @swagger
- * /api/private/reward/detail/list:
+ * /api/private/qna/list/me:
  *   get:
- *     summary: 적립 리워드 디테일 히스토리 목록
- *     tags: [Reward]
+ *     summary: 나의 문의하기 목록
+ *     tags: [QnA]
  *     description: |
- *       path : /api/private/reward/detail/list
+ *       path : /api/private/qna/list/me
  *
- *       * 리워드 히스토리 목록
- *         * state: {1: 리워드 리뷰 적립}
+ *       * 나의 문의하기 목록
  *
  *     parameters:
- *       - in: query
- *         name: video_uid
- *         default: 1
- *         required: true
- *         schema:
- *           type: number
- *           example: 1
- *         description: 적립 리워드 디테일 히스토리 목록을 볼 video uid 입력
  *       - in: query
  *         name: last_uid
  *         default: 0
@@ -28,7 +19,7 @@
  *         schema:
  *           type: number
  *           example: 0
- *         description: date 목록 마지막 uid (처음일 경우 0)
+ *         description: 목록 마지막 uid (처음일 경우 0)
  *
  *     responses:
  *       200:
@@ -68,7 +59,6 @@ module.exports = function (req, res) {
 
             let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
             req.innerBody['total_count'] = count_data['total_count'];
 
             deleteBody(req)
@@ -94,24 +84,16 @@ function deleteBody(req) {
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
 }
-function createJSONArray(item){
-    if( item ){
-        for( let idx in item ){
-            item[idx]['reward_list'] = JSON.parse(item[idx]['reward_list'])
-        }
-    }
-    return item;
-}
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_reward_detail_date_list'
+        , 'call proc_select_qna_list_me'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
             req.paramBody['last_uid'],
+            30
         ]
     );
 }
@@ -120,12 +102,10 @@ function querySelectTotalCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_reward_detail_date_list_count'
+        , 'call proc_select_qna_list_me_count'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
         ]
     );
 }
-
 

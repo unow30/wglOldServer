@@ -68,7 +68,9 @@ module.exports = function (req, res) {
 
             req.innerBody['popular_list'] = await queryPopularList(req, db_connection);
             req.innerBody['nearby_list'] = await queryNearbyList(req, db_connection);
+
             req.innerBody['weggle_deal_list'] = await queryWeggleDealList(req, db_connection);
+
             req.innerBody['seller_list'] = await querySellerList(req, db_connection);
 
             deleteBody(req);
@@ -142,7 +144,6 @@ function queryWeggleDealList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_weggle_deal_list'
         , [
-            // req.paramBody['product_uid'],
             // 2,
         ]
     );

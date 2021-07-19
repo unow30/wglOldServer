@@ -13,6 +13,18 @@
  *
  *     parameters:
  *       - in: query
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: |
+ *           좋아요 타입
+ *           * 1: 상품 찜하기
+ *           * 2: 영상 좋아요
+ *
+ *         enum: [1,2]
+ *       - in: query
  *         name: last_uid
  *         default: 0
  *         required: true
@@ -90,6 +102,7 @@ function querySelect(req, db_connection) {
         , 'call proc_select_like_product_list'
         , [
             req.headers['user_uid'],
+            req.paramBody['type'],
             req.paramBody['last_uid'],
         ]
     );

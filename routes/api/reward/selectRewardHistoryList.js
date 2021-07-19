@@ -2,15 +2,15 @@
  * Created by hyunhunhwang on 2021. 02. 17.
  *
  * @swagger
- * /api/private/reward/list:
+ * /api/private/reward/history/list:
  *   get:
- *     summary: 리워드 히스토리 목록
+ *     summary: 리워드 적립 히스토리 목록
  *     tags: [Reward]
  *     description: |
- *       path : /api/private/reward/list
+ *       path : /api/private/reward/history/list
  *
- *       * 리워드 히스토리 목록
- *         * state: {1: 리워드 리뷰 적립, 2: 리워드 상품 구앱에 사용, 11: 리워드 환급 신청, 12: 리워드 환급 환급 완료}
+ *       * 리워드 적립 히스토리 목록
+ *         * state: {1: 리워드 리뷰 적립}
  *
  *     parameters:
  *       - in: query
@@ -60,7 +60,7 @@ module.exports = function (req, res) {
 
             let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
+            // req.innerBody['item'] = createJSONArray(req.innerBody['item'])
             req.innerBody['total_count'] = count_data['total_count'];
 
             deleteBody(req)
@@ -86,20 +86,20 @@ function deleteBody(req) {
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
 }
-function createJSONArray(item){
-    if( item ){
-        for( let idx in item ){
-            item[idx]['reward_list'] = JSON.parse(item[idx]['reward_list'])
-        }
-    }
-    return item;
-}
+// function createJSONArray(item){
+//     if( item ){
+//         for( let idx in item ){
+//             item[idx]['reward_history_list'] = JSON.parse(item[idx]['reward_history_list'])
+//         }
+//     }
+//     return item;
+// }
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_reward_date_list'
+        , 'call proc_select_reward_history_list'
         , [
             req.headers['user_uid'],
             req.paramBody['last_uid'],
@@ -111,7 +111,7 @@ function querySelectTotalCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_reward_date_list_count'
+        , 'call proc_select_reward_history_list_count'
         , [
             req.headers['user_uid'],
         ]

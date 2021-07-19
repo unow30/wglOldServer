@@ -30,6 +30,7 @@ module.exports = function (req, res, next) {
 
             req.innerBody['item'] = await querySelect(req, db_connection);
             //유저 정보를 가져와서
+            console.log(req.innerBody['item']);
             if( !req.innerBody['item'] ){
                 //유저 정보가 없으면 에러를 발생시킨다.
                 errUtil.createCall(errCode.auth, `해당 유저의 접속 토큰이 유효하지 않습니다. 다시 로그인해 주세요.`);

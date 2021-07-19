@@ -1,60 +1,36 @@
 /**
- * Created by gunucklee on 2021. 07. 16.
+ * Created by hyunhunhwang on 2021. 01. 12.
  *
  * @swagger
- * /api/private/like:
+ * /api/private/video/content:
  *   put:
- *     summary: 좋아요 or 찜하기
- *     tags: [Like]
+ *     summary: 영상 Content 업데이트
+ *     tags: [Video]
  *     description: |
- *       path : /api/private/like
+ *       path : /api/private/video/content
  *
- *       * 좋아요 or 찜하기
- *       * like or unlike
+ *       * 영상 Content 업데이트
  *
  *     parameters:
  *       - in: body
  *         name: body
  *         description: |
- *           좋아요
+ *           영상 Content 업데이트
  *         schema:
  *           type: object
  *           required:
- *             - target_uid
+ *             - video_uid
  *           properties:
- *             target_uid:
- *               type: number
- *               description: |
- *                 타겟 uid
- *                 * type에 따라 처리
- *                 * type==1: 상품 uid
- *                 * type==2: 영상 uid
- *                 * type==3: 댓글 uid
- *             type:
- *               type: number
- *               description: |
- *                 좋아요(찜하기) 타입
- *                 * 1: 상품 찜하기
- *                 * 2: 영상 좋아요
- *                 * 3: 댓글 좋아요
- *               enum: [1,2,3]
- *             is_like:
- *               type: number
- *               description: |
- *                 좋아요 여부
- *                 * 0: unlike
- *                 * 1: like
- *               enum: [0,1]
  *             video_uid:
  *               type: number
+ *               example: 1
  *               description: |
- *                 상품 찜하기 시 리워드를 전달할 video uid
- *
- *           example:
- *             target_uid: 1
- *             type: 1
- *             is_like: 1
- *             video_uid: 0
+ *                 영상 uid
+ *             content:
+ *               type: string
+ *               example: 콰삭 콰삭
+ *               description: |
+ *                 영상 글
  *
  *     responses:
  *       400:
@@ -69,6 +45,9 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+const jwtUtil = require('../../../common/utils/jwtUtil');
+
+const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -89,10 +68,6 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
 
-            if( parseInt(req.paramBody['type']) === 1 ){
-                await queryUpdateCount(req, db_connection)
-            }
-
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -108,12 +83,8 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'type');
-    paramUtil.checkParam_noReturn(req.paramBody, 'is_like');
-
-    if(!req.paramBody['video_uid'])
-        req.paramBody['video_uid'] = '';
+    paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'content');
 }
 
 function deleteBody(req) {
@@ -124,24 +95,11 @@ function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_update_like'
+        , 'call proc_update_video_content'
         , [
-            req.headers['user_uid'],
-            req.paramBody['target_uid'],
-            req.paramBody['type'],
-            req.paramBody['is_like'],
+            // req.headers['user_uid'],
             req.paramBody['video_uid'],
-        ]
-    );
-}
-
-function queryUpdateCount(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_update_product_count_like'
-        , [
-            req.paramBody['target_uid'],
+            req.paramBody['content'],
         ]
     );
 }

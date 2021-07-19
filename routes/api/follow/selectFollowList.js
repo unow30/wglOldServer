@@ -13,13 +13,13 @@
  *
  *     parameters:
  *       - in: query
- *         name: user_uid
+ *         name: search_uid
  *         default: 0
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *         description: 유저 uid
+ *         description: 검색 uid
  *       - in: query
  *         name: type
  *         default: follower
@@ -110,7 +110,8 @@ function querySelect(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_follow_list'
         , [
-            req.paramBody['user_uid'],
+            req.headers['user_uid'],
+            req.paramBody['search_uid'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
         ]
@@ -123,7 +124,7 @@ function querySelectTotalCount(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_follow_total_count'
         , [
-            req.paramBody['user_uid'],
+            req.paramBody['search_uid'],
             req.paramBody['type'],
         ]
     );
