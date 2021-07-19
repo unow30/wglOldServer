@@ -11,7 +11,15 @@
  *
  *       * 위글딜 목록
  *       * 위글딜 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.
- *
+ *     parameters:
+ *       - in: query
+ *         name: video_uid
+ *         default: 0
+ *         required: false
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: weggledeal 우선순위 video_uid
  *     responses:
  *       200:
  *         description: 결과 정보
@@ -46,7 +54,15 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
+
+            req.innerBody['type'] = 0;
+            if(req.paramBody['video_uid'] > 0) {
+                req.innerBody['item'] = await querySelect(req, db_connection);
+                req.paramBody['video_uid'] = 0;
+                req.innerBody['type'] = 1;
+            }
             req.innerBody['item'] = await querySelect(req, db_connection);
+
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -81,6 +97,8 @@ function querySelect(req, db_connection) {
         , 'call proc_select_weggledeal_list'
         , [
             req.headers['user_uid'],
+            req.paramBody['video_uid'],
+            req.innerBody['type'],
         ]
     );
 }

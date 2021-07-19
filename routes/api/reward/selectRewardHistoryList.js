@@ -4,13 +4,13 @@
  * @swagger
  * /api/private/reward/history/list:
  *   get:
- *     summary: 리워드 히스토리 목록
+ *     summary: 리워드 적립 히스토리 목록
  *     tags: [Reward]
  *     description: |
  *       path : /api/private/reward/history/list
  *
- *       * 리워드 히스토리 목록
- *         * state: {1: 리워드 리뷰 적립, 2: 리워드 상품 구앱에 사용, 11: 리워드 환급 신청, 12: 리워드 환급 환급 완료}
+ *       * 리워드 적립 히스토리 목록
+ *         * state: {1: 리워드 리뷰 적립}
  *
  *     parameters:
  *       - in: query
