@@ -33,9 +33,9 @@ let description_text = `
         * 회원가입/회원가입 여부 체크시 발급
 ## 파일(이미지, 영상) 
     * 테스트 서버 파일 경로 
-        * default url: ${process.env.DEV_FILE_PATH}
+        * default url: ${funcUtil.getFilePath()}
         * db filed: [abcd.png]
-        * 샘플) ${process.env.DEV_FILE_PATH}abcd.png
+        * 샘플) ${funcUtil.getFilePath()}abcd.png
     * 운영 서버 파일 경로 
         * default url: 미정
         * 샘플) 미정
