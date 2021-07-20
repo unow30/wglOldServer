@@ -15,7 +15,8 @@ app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck')
 /**
  * file api
  */
-app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, require('./file/uploadFile') );
+app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile,
+                                require('../middleware/mediaConvert'), require('./file/uploadFile') );
 // app.route('/public/image').post( require('../../common/utils/awsS3Util_v2').uploadImage, require('./file/uploadFile') );
 // app.route('/public/video').post( require('../../common/utils/awsS3Util_v2').uploadVideo, require('./file/uploadFile') );
 

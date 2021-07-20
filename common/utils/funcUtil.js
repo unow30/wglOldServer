@@ -31,6 +31,8 @@ module.exports = {
     },
 
 
+
+
     /**
      * AWS function
      * @returns {*}
@@ -49,6 +51,27 @@ module.exports = {
     },
     getFilePath: function(){
         return _isRealServer() ? process.env.REAL_FILE_PATH : process.env.DEV_FILE_PATH;
+    },
+
+
+    /**
+     * AWS Media Convert
+     * @returns {*}
+     */
+    getAWSMediaConvertEndPoint: function() {
+        return  _isRealServer() ? process.env.REAL_AWS_MEDIA_CONVERT_ENDPOINT : process.env.DEV_AWS_MEDIA_CONVERT_ENDPOINT;
+    },
+    getAWSMediaConvertQueue: function() {
+        return  _isRealServer() ? process.env.REAL_AWS_MEDIA_CONVERT_QUEUE : process.env.DEV_AWS_MEDIA_CONVERT_QUEUE;
+    },
+    getAWSMediaConvertRole: function() {
+        return _isRealServer() ? process.env.REAL_AWS_MEDIA_CONVERT_ROLE : process.env.DEV_AWS_MEDIA_CONVERT_ROLE;
+    },
+    getAWSMediaConvertS3StartingPoint: function() {
+        return _isRealServer() ? process.env.REAL_AWS_MEDIA_CONVERT_S3_STARTING_POINT : process.env.DEV_AWS_MEDIA_CONVERT_S3_STARTING_POINT;
+    },
+    getAWSMediaConvertS3Destination: function() {
+        return _isRealServer() ? process.env.REAL_AWS_MEDIA_CONVERT_S3_DESTINATION : process.env.DEV_AWS_MEDIA_CONVERT_S3_DESTINATION;
     },
 
 }

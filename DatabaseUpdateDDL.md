@@ -310,6 +310,28 @@ alter table tbl_order_product add column refund_reward int default 0 null commen
 
 
 
+#2021-07-20 (TUE) changed by gun uck LEE
+ALTER TABLE tbl_image MODIFY COLUMN type int default 0 comment '이미지 타입
+1: 프로필 이미지
+2: 상품 이미지
+3: 영상 샘플 이미지
+4: 광고 이미지
+5: 상품 상세 이미지
+10: 비디오 썸네일 이미지
+101: 신분증 이미지
+102:  통장 이미지';
+
+
+ALTER TABLE tbl_image MODIFY COLUMN target_uid int default 0 comment '타겟 uid
+타입에 따라 타겟 uid 변경
+1: 프로필 이미지 => 유저 uid
+2: 상품 이미지 => 상품 uid
+3: 영상 샘플 이미지 => 영상 uid
+4: 광고 이미지 => 광고 uid
+5: 광고 상세 이미지 => 상품 uid
+10: 비디오 썸네일 이미지 => 비디오 Uid
+101: 신분증 이미지 => 환급 uid
+102: 통장 이미지 => 환급 uid',
 
 
 

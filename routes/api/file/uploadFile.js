@@ -96,6 +96,13 @@ module.exports = async function (req, res) {
             req.innerBody = {};
 
             req.innerBody['filename'] = req.file.key
+
+            if(req.file.key.includes('.mp4')) {
+                req.innerBody['thumbnail'] = req.file.key.replace('ConvertSuccess.mp4', 'Thumbnail.0000000.jpg');
+            }
+
+            console.log('here filename: ' + req.innerBody['filename'])
+
             // req.innerBody['thumbnail'] = thumbnail_name
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);

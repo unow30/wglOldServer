@@ -18,11 +18,12 @@ let description_text = `
     * 테스트 서버 정보
         * url : ${process.env.DEV_PUBLIC_IP}
         * port : ${process.env.PORT}
+    * ex) http://${process.env.DEV_PUBLIC_IP}:${process.env.PORT}/api-docs/
     * 운영 서버 정보
         * dns : 미정
-        * url : 미정
+        * url : ${process.env.REAL_PUBLIC_IP}
         * port : ${process.env.PORT}
-    * ex) http://${process.env.DEV_PUBLIC_IP}:${process.env.PORT}/api-docs/
+    * ex) http://${process.env.REAL_PUBLIC_IP}:${process.env.PORT}/api-docs/
 ## path 정보
     * /api/public/* : 로그인 하지 않은 상태에서 접근 가능
     * /api/private/* : 로그인 하지 않은 상태에서 접근 불가능
