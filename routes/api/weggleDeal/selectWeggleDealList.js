@@ -61,7 +61,7 @@ module.exports = function (req, res) {
                 req.paramBody['video_uid'] = 0;
                 req.innerBody['type'] = 1;
             }
-            req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] += await querySelect(req, db_connection);
 
 
             deleteBody(req)
