@@ -63,6 +63,7 @@ module.exports = function (req, res) {
                 req.innerBody['type'] = 1;
             }
 
+            req.innerBody['item'] = await querySelect(req, db_connection);
             Object.assign(req.innerBody['item'], obj, req.innerBody['item']);
 
 
