@@ -54,14 +54,17 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
+            let obj = {};
 
             req.innerBody['type'] = 0;
             if(req.paramBody['video_uid'] > 0) {
-                req.innerBody['item'] = await querySelect(req, db_connection);
+                obj = await querySelect(req, db_connection);
                 req.paramBody['video_uid'] = 0;
                 req.innerBody['type'] = 1;
             }
-            req.innerBody['item'] += await querySelect(req, db_connection);
+
+            req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = Object.assign(obj, req.innerBody['item']);
 
 
             deleteBody(req)
