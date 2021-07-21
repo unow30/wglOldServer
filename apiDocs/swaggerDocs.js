@@ -34,10 +34,17 @@ let description_text = `
         * 회원가입/회원가입 여부 체크시 발급
 ## 파일(이미지, 영상) 
     * 테스트 서버 파일 경로 
+        * default url: ${process.env.DEV_FILE_PATH}
+        * db filed: [abcd.png]
+        * 샘플) ${process.env.DEV_FILE_PATH}abcd.png
+    * 운영 서버 파일 경로 
+        * default url: ${process.env.REAL_FILE_PATH}
+        * 샘플) ${process.env.REAL_FILE_PATH}abcd.png
+    * 테스트 서버 MEDIA CONVERT 파일 경로 (워터마크 영상, 썸네일 이미지)
         * default url: ${process.env.DEV_CONVERT_FILE_PATH}
         * db filed: [abcd.png]
         * 샘플) ${process.env.DEV_CONVERT_FILE_PATH}abcd.png
-    * 운영 서버 파일 경로 
+    * 운영 서버 MEDIA CONVERT 파일 경로 (워터마크 영상, 썸네일 이미지)
         * default url: ${process.env.REAL_CONVERT_FILE_PATH}
         * 샘플) ${process.env.REAL_CONVERT_FILE_PATH}abcd.png
 ## 이용 약관
