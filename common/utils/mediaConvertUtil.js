@@ -5,21 +5,32 @@
 const AWS = require("aws-sdk");
 
 const path = require('path');
-const paramUtil = require('../../common/utils/paramUtil');
-const funcUtil = require('../../common/utils/funcUtil');
-const sendUtil = require('../../common/utils/sendUtil');
-const errUtil = require('../../common/utils/errUtil');
-const errCode = require('../../common/define/errCode');
+const paramUtil = require('./paramUtil');
+const funcUtil = require('./funcUtil');
+const sendUtil = require('./sendUtil');
+const errUtil = require('./errUtil');
+const errCode = require('../define/errCode');
+// const getDimensions = require('get-video-dimensions');
 
-module.exports =  function (req, res, next) {
-    req.paramBody = paramUtil.parse(req);
+module.exports =  function (final_name, video_width, video_height) {
 
     const MEDIACONVERT = 'ConvertSuccess';
-    const final_name = req.file.key;
     const extname = path.extname(final_name);
 
 
+
     if(extname === '.mp4') {
+
+        console.log('실행');
+
+        // getDimensions('https://weggle-bucket-media-convert.s3.ap-northeast-2.amazonaws.com/05803a6b2fd70056b267193ac7908e62ConvertSuccess.mp4').then(function (dimensions) {
+        // // getDimensions(funcUtil.getFilePath()+final_name).then(function (dimensions) {
+        //     console.log("dimensions.width: " + dimensions.width)
+        //     console.log("dimensions.height: " + dimensions.height)
+        // }).catch((e) => sendUtil.sendErrorPacket(req, res, errUtil.initError(e.path, `동영상 변환하는 도중 오류가 발생했습니다. 다시 시도해주세요.`)));
+
+        console.log('실행끝');
+
         AWS.config.update({
             accessKeyId: funcUtil.getAWSAccessKeyID(),
             secretAccessKey: funcUtil.getAWSSecretAccessKey(),
@@ -27,6 +38,16 @@ module.exports =  function (req, res, next) {
         });
 
         AWS.config.mediaconvert = {endpoint: funcUtil.getAWSMediaConvertEndPoint()}
+
+
+        console.log("video_width " + video_width)
+        console.log("video_height " + video_height)
+
+
+
+        console.log("video_width" + video_width * 6.3)
+        console.log("video_height" + video_height * 14.8)
+
 
 
         let params = {
@@ -146,10 +167,10 @@ module.exports =  function (req, res, next) {
                         "ImageInserter": {
                             "InsertableImages": [
                                 {
-                                    "Width": 170,
-                                    "Height": 130,
-                                    "ImageX": 900,
-                                    "ImageY": 500,
+                                    "Width": video_width * 6.3,
+                                    "Height": video_height * 14.8,
+                                    "ImageX": video_width * 1.2,
+                                    "ImageY": video_height * 3.8,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50
@@ -176,16 +197,16 @@ module.exports =  function (req, res, next) {
         const data = convertFunc(final_name, params)
 
         if(data) {
-            let basename = path.basename(req.file.key, extname);
+            let basename = path.basename(final_name, extname);
             basename += MEDIACONVERT;
-            req.file.key = basename + extname;
-            next();
+            final_name = basename + extname;
+            return final_name;
         }
 
         errUtil.createCall(errCode.fail, `영상 업로드 중 오류가 발생되었습니다. 다시 시도해주세요.!`);
         return;
     }
-    next();
+    return final_name;
 }
 
 
