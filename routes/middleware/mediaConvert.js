@@ -146,10 +146,10 @@ module.exports =  function (req, res, next) {
                         "ImageInserter": {
                             "InsertableImages": [
                                 {
-                                    "Width": 200,
-                                    "Height": 200,
-                                    "ImageX": 90,
-                                    "ImageY": 90,
+                                    "Width": 170,
+                                    "Height": 130,
+                                    "ImageX": 900,
+                                    "ImageY": 500,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50

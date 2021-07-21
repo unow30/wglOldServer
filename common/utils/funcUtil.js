@@ -12,6 +12,9 @@ module.exports = {
     getFilePath: function (){
         return _isRealServer() ? process.env.REAL_FILE_PATH : process.env.DEV_FILE_PATH;
     },
+    getConvertFilePath: function (){
+        return _isRealServer() ? process.env.REAL_CONVERT_FILE_PATH : process.env.DEV_CONVERT_FILE_PATH
+    },
 
     /**
      * DB function
