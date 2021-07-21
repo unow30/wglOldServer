@@ -34,12 +34,12 @@ let description_text = `
         * 회원가입/회원가입 여부 체크시 발급
 ## 파일(이미지, 영상) 
     * 테스트 서버 파일 경로 
-        * default url: ${funcUtil.getFilePath()}
+        * default url: ${process.env.DEV_CONVERT_FILE_PATH}
         * db filed: [abcd.png]
-        * 샘플) ${funcUtil.getFilePath()}abcd.png
+        * 샘플) ${process.env.DEV_CONVERT_FILE_PATH}abcd.png
     * 운영 서버 파일 경로 
-        * default url: 미정
-        * 샘플) 미정
+        * default url: ${process.env.REAL_CONVERT_FILE_PATH}
+        * 샘플) ${process.env.REAL_CONVERT_FILE_PATH}abcd.png
 ## 이용 약관
     * 서비스 이용약관 => http://weggle.kr/terms/service.html
     * 개인정보처리방침 => http://weggle.kr/terms/privacy.html
