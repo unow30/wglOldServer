@@ -61,6 +61,8 @@ const fileOptions = {
 
 function getFilename(req, file){
     // console.log('key file : '+JSON.stringify(file));
+    console.log("test:" + file.originalname);
+
     let extension = path.extname(file.originalname);
     let basename = path.basename(file.originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
     let hash_name = crypto.createHash('md5').update(Date.now()+basename).digest("hex");
