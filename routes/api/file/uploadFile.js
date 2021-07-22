@@ -117,7 +117,10 @@ module.exports = async function (req, res) {
             const video_width = req.paramBody['video_width']
             const video_height = req.paramBody['video_height']
             let final_name = req.file.key;
+            let originalname = req.file.originalname;
 
+
+            console.log("originalname: " + originalname);
 
             console.log("video_width " + req.paramBody['video_width'])
             console.log("video_width " +  req.paramBody['video_height'])
