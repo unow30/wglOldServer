@@ -55,6 +55,9 @@ module.exports = function (req, res) {
         // req.innerBody = {'success':'true'};
         // sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
+
+
+
         checkParam(req);
         //
         mysqlUtil.connectPool( async function (db_connection) {

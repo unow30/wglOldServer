@@ -23,28 +23,6 @@
  *         type: file
  *         description: |
  *           이미지 or 영상 파일
- *       - in: body
- *         name: body
- *         description: |
- *           댓글 작성
- *         schema:
- *           type: object
- *           required:
- *             - video_width
- *             - video_height
- *           properties:
- *             video_width:
- *               type: number
- *               description: |
- *                 영상 파일 업로드 시에 영상 가로 길이
- *             video_height:
- *               type: number
- *               description: |
- *                 영상 파일 업로드 시에 영상 세로 길이
- *
- *           example:
- *             video_width: 1080
- *             video_height: 1920
  *     responses:
  *       200:
  *         description: 결과 정보
@@ -113,31 +91,34 @@ module.exports = async function (req, res) {
         console.log('upload file awsS3 function start........................');
         if( req.file ) {
 
-
-            const video_width = req.paramBody['video_width']
-            const video_height = req.paramBody['video_height']
             let final_name = req.file.key;
             let originalname = req.file.originalname;
 
-
-            console.log("originalname: " + originalname);
-
-            console.log("video_width " + req.paramBody['video_width'])
-            console.log("video_width " +  req.paramBody['video_height'])
-
-            final_name = mediaConvertUtil(final_name, video_width, video_height);
-
-
-            // console.log('function ininininininin........................');
-            // console.log(`function file key => ${req.file.key}`);
-
             req.innerBody = {};
 
-            req.innerBody['filename'] = final_name
 
-            if(req.file.key.includes('.mp4')) {
-                req.innerBody['thumbnail'] = req.file.key.replace('ConvertSuccess.mp4', 'Thumbnail.0000000.jpg');
+            if(req.file.originalname.includes('.mp4')) {
+                final_name = replaceName(req.file.key);
+
+                let originalnameArray = originalname.split("_")
+
+                console.log("uploadfile: " + originalnameArray)
+
+                let video_width = originalnameArray[originalnameArray.length -2];
+                let video_height = originalnameArray[originalnameArray.length -1];
+                video_height = video_height.replace('.mp4', '');
+
+                console.log("uploadfile: " + video_width)
+                console.log("uploadfile: " + video_height)
+
+                final_name = mediaConvertUtil(final_name, video_width, video_height);
+
+                console.log("finalname mediaconvert :" + final_name)
+
+                req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', 'Thumbnail.0000000.jpg');
             }
+
+            req.innerBody['filename'] = final_name
 
             console.log('here filename: ' + req.innerBody['filename'])
 
@@ -167,3 +148,10 @@ function checkParam(req) {
 
 
 
+function replaceName(filename) {
+
+    filename =filename.replace('_'+ filename[filename.length -2], '')
+    filename =filename.replace('_' + filename[filename.length -1], '')
+
+    return filename;
+}

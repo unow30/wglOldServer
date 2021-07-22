@@ -60,11 +60,25 @@ const fileOptions = {
 };
 
 function getFilename(req, file){
+    let originalname = file.originalname
+    if(file.originalname.includes('.mp4'))
+        originalname = replaceName(file.originalname);
+
+    console.log("s3util :" + originalname)
+
     // console.log('key file : '+JSON.stringify(file));
-    let extension = path.extname(file.originalname);
-    let basename = path.basename(file.originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
+    let extension = path.extname(originalname);
+    let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
     let hash_name = crypto.createHash('md5').update(Date.now()+basename).digest("hex");
     return `${hash_name}${extension}`;
+}
+
+function replaceName(filename) {
+
+    filename =filename.replace('_'+ filename[filename.length -2], '')
+    filename =filename.replace('_' + filename[filename.length -1], '')
+
+    return filename;
 }
 
 function uploadFile(req, res, next){
