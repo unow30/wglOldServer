@@ -14,10 +14,9 @@
  *     parameters:
  *       - in: query
  *         name: video_uid
- *         default: 0
  *         required: true
  *         schema:
- *           type: integer
+ *           type: number
  *           example: 1
  *         description: 영상 uid
  *
@@ -56,6 +55,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+            console.log("test:" + req.innerBody['item']);
+            console.log("test:" + req.headers['user_uid']);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -76,7 +77,6 @@ function checkParam(req) {
 }
 
 function deleteBody(req) {
-    delete req.innerBody['item']['filename']
     // delete req.innerBody['item']['longitude']
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
