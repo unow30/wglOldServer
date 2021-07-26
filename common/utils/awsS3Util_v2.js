@@ -25,7 +25,7 @@ AWS.config.update({
 });
 
 
-const MAX_LENGTH_MB=4000
+const MAX_LENGTH_MB=30
 // const MAX_LENGTH_MB=20
 
 const fileFilter = (req, file, next) => {
