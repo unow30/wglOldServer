@@ -20,6 +20,27 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+  // res.header("Access-Control-Allow-Credentials",true);
+  // res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
+  res.header('Access-Control-Max-Age', '3600')
+  res.header(
+      'Access-Control-Allow-Headers',
+      'Origin,  Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization'
+  )
+  // res.header('Access-Control-Allow-Headers', 'Content-Type,Accept,X-Access-Token,X-Key,Authorization,X-Requested-With,Origin,Access-Control-Allow-Origin,Access-Control-Allow-Credentials');
+  // if (req.method === 'OPTIONS') {
+  //   res.status(200).end();
+  // } else {
+  //   next();
+  // }
+
+  next()
+})
+
 app.use(logger('dev'));
 app.use(express.json({limit:'5mb'}));
 app.use(express.urlencoded({ extended: false }));
