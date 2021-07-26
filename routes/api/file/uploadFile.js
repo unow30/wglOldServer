@@ -150,8 +150,10 @@ function checkParam(req) {
 
 function replaceName(filename) {
 
-    filename =filename.replace('_'+ filename[filename.length -2], '')
-    filename =filename.replace('_' + filename[filename.length -1], '')
+    let fileArray = filename.split("_")
+    filename =filename.replace('_'+ fileArray[fileArray.length -2], '')
+
+    filename =filename.replace('_' + fileArray[fileArray.length -1], '')
 
     return filename;
 }

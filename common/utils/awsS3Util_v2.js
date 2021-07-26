@@ -25,7 +25,7 @@ AWS.config.update({
 });
 
 
-const MAX_LENGTH_MB=25
+const MAX_LENGTH_MB=4000
 // const MAX_LENGTH_MB=20
 
 const fileFilter = (req, file, next) => {
@@ -75,8 +75,11 @@ function getFilename(req, file){
 
 function replaceName(filename) {
 
-    filename =filename.replace('_'+ filename[filename.length -2], '')
-    filename =filename.replace('_' + filename[filename.length -1], '')
+
+    let fileArray = filename.split("_")
+    filename =filename.replace('_'+ fileArray[fileArray.length -2], '')
+
+    filename =filename.replace('_' + fileArray[fileArray.length -1], '')
 
     return filename;
 }
