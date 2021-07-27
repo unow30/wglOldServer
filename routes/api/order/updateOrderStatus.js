@@ -20,9 +20,15 @@
  *         schema:
  *           type: object
  *           required:
+ *             - order_uid
  *             - order_product_uid
  *             - status
  *           properties:
+ *             order_uid:
+ *               type: number
+ *               example: 0
+ *               description: |
+ *                 구매취소 시 order_uid
  *             order_product_uid:
  *               type: number
  *               example: 1
@@ -80,9 +86,9 @@ module.exports = function (req, res) {
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
-        // logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
+
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+
 
         checkParam(req);
 
@@ -91,14 +97,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
 
-            console.log(req.innerBody['item'])
 
-            // if( req.paramBody['status'] === 5 && req.innerBody['item'] ){
-                // req.innerBody['item'].map(async (item, idx) => {
-                // let reward = await queryUpdate(req, db_connection, item);
-                // })
-
-            // }
 
 
             if(req.innerBody['item']) {
@@ -109,7 +108,24 @@ module.exports = function (req, res) {
                         break;
                     case 6:
                         let isCancel = await queryCancelCheck(req, db_connection, req.innerBody['item']);
-                        if (isCancel == 0)
+                        if (isCancel == 0) {
+
+                            req.innerBody['data'] = await queryOrderReturn(req, db_connection);
+
+
+                            if(req.innerBody['data'])
+                                req.innerBody['reward'] = await queryCancelable(req, db_connection);
+
+
+
+
+
+                            if(req.innerBody['reward']['refund_reward'] > 0) {
+                                console.log('응애애애애애애');
+                                await queryRollbackReward(req, db_connection)
+                            }
+
+                        }
                             await queryCancel(req, db_connection, req.innerBody['item']);
                         break;
 
@@ -205,33 +221,86 @@ function queryCancelCheck(req, db_connection, item) {
         , [
             item['order_uid']
         ])
-
 }
 
-// 전체 취소를 해야지만 리워드 환불이 적용됩니다.
-function queryCancel(req, db_connection, item) {
+
+function queryOrderReturn(req, db_connection){
     const _funcName = arguments.callee.name;
 
-    const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
-
-    console.log("currentDate: " + currentDate)
-
-    const elapsedMin = ( currentDate - item['created_time'] ) / 1000 / 60;
-
-
-    console.log("elapsedMin: " + elapsedMin)
-
-    if(elapsedMin < 0 || elapsedMin > 30)
-        return;
-
-
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_cancel_reward'
+        , 'call w_seller_update_order_return'
         , [
-            item['order_uid'],
-            item['order_product_uid']
-        ])
+            req.paramBody['order_product_uid'],
+            req.paramBody['status'],
+            req.paramBody['is_negligence'],
+            req.paramBody['extra_price'],
+        ]
 
-
+    );
 }
 
+function queryCancelable(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call w_seller_update_cancelable'
+        , [
+            req.paramBody['order_uid'],
+            req.paramBody['payment'],
+            req.paramBody['extra_price'],
+            req.paramBody['order_product_uid'],
+        ]
+
+    );
+}
+
+
+function queryRollbackReward(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call w_seller_update_rollback_reward'
+        , [
+            req.innerBody['reward']['product_uid'],
+            req.innerBody['reward']['user_uid'],
+            req.innerBody['reward']['seller_uid'],
+            req.innerBody['reward']['video_uid'],
+            req.innerBody['reward']['order_uid'],
+            req.innerBody['reward']['order_no'],
+            1,
+            req.innerBody['reward']['refund_reward'],
+            '환불로 인한 사용 리워드 롤백',
+        ]
+
+    );
+}
+
+
+
+// // 전체 취소를 해야지만 리워드 환불이 적용됩니다.
+// function queryCancel(req, db_connection, item) {
+//     const _funcName = arguments.callee.name;
+//
+//     const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+//
+//     console.log("currentDate: " + currentDate)
+//
+//     const elapsedMin = ( currentDate - item['created_time'] ) / 1000 / 60;
+//
+//
+//     console.log("elapsedMin: " + elapsedMin)
+//
+//     if(elapsedMin < 0 || elapsedMin > 30)
+//         return;
+//
+//
+//     return mysqlUtil.querySingle(db_connection
+//         , 'call proc_cancel_reward'
+//         , [
+//             item['order_uid'],
+//             item['order_product_uid']
+//         ])
+//
+//
+// }
+//

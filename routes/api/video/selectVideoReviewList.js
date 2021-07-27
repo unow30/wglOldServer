@@ -99,6 +99,7 @@ function queryReviewList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_review_list'
         , [
+            req.headers['user_uid'],
             req.paramBody['product_uid'],
             req.paramBody['last_uid'],
             30,
