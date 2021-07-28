@@ -22,16 +22,26 @@ module.exports =  function (req, res, next) {
         if (parseInt(req.paramBody["status"]) === 6) {
 
             mysqlUtil.connectPool( async function (db_connection) {
+                req.innerBody = {};
+
+                console.log("##order_uid:" + req.paramBody['order_uid'])
 
                 req.innerBody["cancelable"] = await query(req, db_connection);
+
+                console.log("##cancelable : " + req.innerBody["cancelable"]);
+                console.log("##cancelable : " + JSON.stringify(req.innerBody));
 
                 const extra_price =  req.paramBody['is_negligence'] ?  req.paramBody['extra_price'] : 0;
 
                 if(!checkCancelable(req,extra_price) ) {
                     errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
+                    return;
                 }
 
-                let refund_price = req.paramBody['payment'] - extra_price;
+                let refund_price = req.innerBody['cancelable']['payment'] - extra_price;
+
+
+                console.log("##refund_price: " + refund_price)
 
                 req.paramBody['refund_reward'] = req.innerBody['cancelable']['use_reward'];
 
@@ -95,21 +105,13 @@ module.exports =  function (req, res, next) {
 function checkCancelable(req, extra_price) {
     const cancelable = req.innerBody['cancelable']["cancelable_price"] +  req.innerBody["cancelable"]["use_reward"];
 
+    console.log("1: " + cancelable + ">=" + req.innerBody['cancelable']['payment'] + "-" + extra_price)
+    console.log("2: " + req.innerBody['cancelable']['payment'] + ">=" + extra_price )
 
-    return ((cancelable >= req.paramBody['payment'] - extra_price ) || (req.paramBody['payment']  >= extra_price))
+    console.log("cancelable: " + cancelable)
+
+    return ((cancelable >= req.innerBody['cancelable']['payment'] - extra_price ) || (req.innerBody['cancelable']['payment']  >= extra_price))
             ? true : false;
-}
-
-function querySelect(req, db_connection){
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_cancelable_price'
-        , [
-            req.paramBody['order_uid'],
-        ]
-
-    );
 }
 
 function query(req, db_connection){
