@@ -24,24 +24,14 @@ module.exports =  function (req, res, next) {
             mysqlUtil.connectPool( async function (db_connection) {
                 req.innerBody = {};
 
-                console.log("##order_uid:" + req.paramBody['order_uid'])
-
                 req.innerBody["cancelable"] = await query(req, db_connection);
 
-                console.log("##cancelable : " + req.innerBody["cancelable"]);
-                console.log("##cancelable : " + JSON.stringify(req.innerBody));
-
-                const extra_price =  req.paramBody['is_negligence'] ?  req.paramBody['extra_price'] : 0;
-
-                if(!checkCancelable(req,extra_price) ) {
+                if(!checkCancelable(req) ) {
                     errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
                     return;
                 }
 
-                let refund_price = req.innerBody['cancelable']['payment'] - extra_price;
-
-
-                console.log("##refund_price: " + refund_price)
+                let refund_price = req.innerBody['cancelable']['payment'];
 
                 req.paramBody['refund_reward'] = req.innerBody['cancelable']['use_reward'];
 
@@ -51,9 +41,7 @@ module.exports =  function (req, res, next) {
                 }
 
 
-                await queryReward(req,db_connection)
-
-
+                req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
                 if(refund_price > 0) {
                     RestClient.setConfig(
@@ -66,9 +54,9 @@ module.exports =  function (req, res, next) {
                         try {
                             if (token.status === 200) {
                                 RestClient.cancel({
-                                    receiptId: req.paramBody['pg_receipt_id'],
+                                    receiptId: req.innerBody['bootpay_info']['pg_receipt_id'],
                                     price: refund_price,                               // "[[ 결제 취소할 금액 ]]"
-                                    name: req.paramBody['nickname'],              // "[[ 취소자명 ]]"
+                                    name: req.innerBody['bootpay_info']['nickname'],              // "[[ 취소자명 ]]"
                                     reason: req.paramBody['cancel_reason'] + req.paramBody['detail_reason'],   // "[[ 취소사유 ]]"
                                 }).then(function (response) {
                                     // 결제 취소가 완료되었다면
@@ -102,15 +90,11 @@ module.exports =  function (req, res, next) {
 
 }
 
-function checkCancelable(req, extra_price) {
+function checkCancelable(req) {
     const cancelable = req.innerBody['cancelable']["cancelable_price"] +  req.innerBody["cancelable"]["use_reward"];
 
-    console.log("1: " + cancelable + ">=" + req.innerBody['cancelable']['payment'] + "-" + extra_price)
-    console.log("2: " + req.innerBody['cancelable']['payment'] + ">=" + extra_price )
 
-    console.log("cancelable: " + cancelable)
-
-    return ((cancelable >= req.innerBody['cancelable']['payment'] - extra_price ) || (req.innerBody['cancelable']['payment']  >= extra_price))
+    return (cancelable >= req.innerBody['cancelable']['payment'])
             ? true : false;
 }
 
