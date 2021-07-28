@@ -43,6 +43,7 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
+
                 if(refund_price > 0) {
                     RestClient.setConfig(
                         process.env.BOOTPAY_APPLICATION_ID,
