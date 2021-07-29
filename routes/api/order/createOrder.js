@@ -115,6 +115,14 @@
  *                     description: |
  *                       해당 상품 구매 금액
  *                       * price_original * count
+ *                   delivery_status:
+ *                     type: number
+ *                     example: 0
+ *                     description: |
+ *                       배송비 상태 값
+ *                       * 0: 일반 배송비
+ *                       * 1: 도서 산간 배송비
+ *                       * 2: 무료 배송비
  *
  *     responses:
  *       200:
@@ -277,6 +285,7 @@ function queryProduct(req, db_connection) {
             req.innerBody['product']['count'],
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
+            req.innerBody['product']['delivery_status'],
         ]
     );
 }
