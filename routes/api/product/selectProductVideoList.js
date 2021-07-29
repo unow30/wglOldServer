@@ -2,14 +2,14 @@
  * Created by hyunhunhwang on 2021. 01. 12.
  *
  * @swagger
- * /api/private/video/review/list:
+ * /api/private/product/video/list:
  *   get:
- *     summary: 리뷰 영상 목록
- *     tags: [Video]
+ *     summary: 상품 관련 영상 목록
+ *     tags: [Product]
  *     description: |
- *       path : /api/private/video/review/list
+ *       path : /api/private/product/video/list
  *
- *       * 리뷰 영상 목록
+ *       * 상품 관련 영상 목록
  *
  *     parameters:
  *       - in: query
@@ -66,7 +66,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryReviewList(req, db_connection);
+            req.innerBody['item'] = await queryVideoList(req, db_connection);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -93,11 +93,11 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-function queryReviewList(req, db_connection) {
+function queryVideoList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_review_list'
+        , 'call proc_select_product_video_list'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],

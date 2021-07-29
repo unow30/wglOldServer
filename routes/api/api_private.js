@@ -26,6 +26,7 @@ app.route('/product/detail').get( require('./product/selectProductDetail') )
 app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
 app.route('/product/review/list').get( require('./product/selectProductReviewList') )
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
+app.route('/product/video/list').get( require('./product/selectProductVideoList') )
 
 /**
  * cart api
@@ -76,7 +77,6 @@ app.route('/weggledeal/list').get( require('./weggleDeal/selectWeggleDealList') 
  * video api
  */
 app.route('/video/info').get( require('./video/selectVideoInfo') )
-app.route('/video/review/list').get( require('./video/selectVideoReviewList') )
 app.route('/video/count/shared').put( require('./video/updateVideoCountShared') )
 app.route('/video/count/view').put( require('./video/updateVideoCountView') )
 app.route('/video/review')
