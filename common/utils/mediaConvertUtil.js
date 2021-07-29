@@ -76,9 +76,9 @@ module.exports =  function (final_name, video_width, video_height) {
                                     }
                                 },
                                 "VideoDescription": {
-                                    "Width": 1080,
+                                    "Width": 574,
                                     "ScalingBehavior": "DEFAULT",
-                                    "Height": 1920,
+                                    "Height": 1024,
                                     "VideoPreprocessors": {
                                         "Deinterlacer": {
                                             "Algorithm": "INTERPOLATE",
@@ -94,7 +94,7 @@ module.exports =  function (final_name, video_width, video_height) {
                                         "H264Settings": {
                                             "ParNumerator": 16,
                                             "ParDenominator": 9,
-                                            "Bitrate": 5000000
+                                            "Bitrate": 2000000
                                         }
                                     },
                                     "AfdSignaling": "NONE",
