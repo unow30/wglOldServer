@@ -20,27 +20,31 @@ module.exports =  function (req, res, next) {
 
     try {
         if (parseInt(req.paramBody["status"]) === 6) {
+            let refund_price = 0;
+            let refund_reward = 0;
 
             mysqlUtil.connectPool( async function (db_connection) {
                 req.innerBody = {};
 
-                req.innerBody["cancelable"] = await query(req, db_connection);
 
-                if(!checkCancelable(req) ) {
-                    errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
-                    return;
+                req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
+
+                refund_price = refund_price = req.innerBody['cancel_info']['payment'];
+
+
+
+                // 리워드 + 배달비 + 취소금액
+                if(req.innerBody['cancel_info']['seller_count'] === 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
+                    refund_price += req.innerBody['cancel_info']['delivery_price']
+                    refund_reward += req.innerBody['cancel_info']['use_reward']
+                }
+                /// 배달비 + 취소 금액
+                else if(req.innerBody['cancel_info']['seller_count'] > 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
+                    refund_price += req.innerBody['cancel_info']['delivery_price']
                 }
 
-                let refund_price = req.innerBody['cancelable']['payment'];
 
-                req.paramBody['refund_reward'] = req.innerBody['cancelable']['use_reward'];
-
-                if( refund_price > req.innerBody['cancelable']["cancelable_price"] ) {
-                    req.paramBody['refund_reward'] = refund_price - req.innerBody['cancelable']['cancelable_price'];
-                    refund_price = req.innerBody['cancelable']["cancelable_price"];
-                }
-
-
+                req.innerBody['refund_reward'] = refund_reward
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
 
@@ -51,6 +55,7 @@ module.exports =  function (req, res, next) {
                     );
 
 
+                    console.log("zz:" + JSON.stringify(req.innerBody['bootpay_info']))
                     RestClient.getAccessToken().then(function (token) {
                         try {
                             if (token.status === 200) {
@@ -123,3 +128,32 @@ function queryReward(req, db_connection){
 
     );
 }
+
+function queryReward(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call w_seller_update_refund_reward'
+        , [
+            req.paramBody['order_product_uid'],
+            req.innerBody['refund_reward'],
+        ]
+
+    );
+}
+
+function queryCancelInfo(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_cancel_info'
+        , [
+            req.paramBody['order_uid'],
+            req.paramBody['seller_uid'],
+            req.paramBody['order_product_uid'],
+        ]
+
+    );
+}
+
+
