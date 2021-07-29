@@ -94,8 +94,9 @@ function uploadFile(req, res, next){
             console.log('awsS3Util, multer err.stack : '+err.stack);
             // console.log('awsS3Util, multer err : '+err.message);
             if( err.code === 'LIMIT_FILE_SIZE' ){
-                let _er = errUtil.createCall(errCode.system, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`);
-                sendUtil.sendErrorPacket(req, res, _er);
+                // let _er = errUtil.createCall(errCode.system, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`);
+                // sendUtil.sendErrorPacket(req, res, _er);
+                sendUtil.sendErrorPacket(req, res, errUtil.initError(err.path, `결제 취소를 실패했습니다. 다시 시도해주세요.`));
             }
             else {
                 sendUtil.sendErrorPacket(req, res, err);
