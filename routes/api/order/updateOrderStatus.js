@@ -100,36 +100,46 @@ module.exports = function (req, res) {
 
 
 
+
+
+            console.log("req.headers['user_uid']:  " +  JSON.stringify(req.headers['user_uid']) );
+            console.log("req.paramBody['order_product_uid']:  " +  JSON.stringify(req.paramBody['order_product_uid']) );
+            console.log("req.paramBody['status']:  " +  JSON.stringify(req.innerBody['item']) );
+            console.log("req.paramBody['cancel_reason']:  " +  JSON.stringify(req.paramBody['cancel_reason']) );
+            console.log("req.paramBody['detail_reason']:  " +  JSON.stringify(req.paramBody['detail_reason']) );
+
+            console.log("req.innerBody['item']:  " +  JSON.stringify(req.innerBody['item']) );
+
+
+
             if(req.innerBody['item']) {
 
                 switch (req.paramBody['status']) {
+
                     case 5:
                         let reward = await queryUpdate(req, db_connection, req.innerBody['item']);
                         break;
+
                     case 6:
-                        let isCancel = await queryCancelCheck(req, db_connection, req.innerBody['item']);
-                        if (isCancel == 0) {
+                        // req.innerBody['data'] = await queryOrderReturn(req, db_connection);
+                        req.innerBody['reward'] = await queryCancelable(req, db_connection);
 
-                            req.innerBody['data'] = await queryOrderReturn(req, db_connection);
+                        console.log('data : ' + JSON.stringify(req.innerBody['reward']));
 
-
-                            if(req.innerBody['data'])
-                                req.innerBody['reward'] = await queryCancelable(req, db_connection);
+                        console.log('req.innerBody[\'reward\']  : ' + JSON.stringify(req.innerBody['reward']));
 
 
-
-
-
-                            if(req.innerBody['reward']['refund_reward'] > 0) {
-                                console.log('응애애애애애애');
-                                await queryRollbackReward(req, db_connection)
-                            }
-
+                        if(req.innerBody['reward']['refund_reward'] > 0) {
+                            await queryRollbackReward(req, db_connection)
                         }
-                            // await queryCancel(req, db_connection, req.innerBody['item']);
+
+
 
                 }
+                            // await queryCancel(req, db_connection, req.innerBody['item']);
+
             }
+
 
 
 
@@ -223,30 +233,16 @@ function queryCancelCheck(req, db_connection, item) {
 }
 
 
-function queryOrderReturn(req, db_connection){
-    const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
-        , 'call w_seller_update_order_return'
-        , [
-            req.paramBody['order_product_uid'],
-            req.paramBody['status'],
-            req.paramBody['is_negligence'],
-            req.paramBody['extra_price'],
-        ]
-
-    );
-}
 
 function queryCancelable(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call w_seller_update_cancelable'
+        , 'call proc_update_cancelable'
         , [
             req.paramBody['order_uid'],
             req.paramBody['payment'],
-            req.paramBody['extra_price'],
             req.paramBody['order_product_uid'],
         ]
 

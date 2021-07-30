@@ -29,6 +29,8 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
+
+
                 refund_price = refund_price = req.innerBody['cancel_info']['payment'];
 
 
@@ -43,10 +45,13 @@ module.exports =  function (req, res, next) {
                     refund_price += req.innerBody['cancel_info']['delivery_price']
                 }
 
+                console.log("refund_reward: " + refund_reward)
 
                 req.innerBody['refund_reward'] = refund_reward
+
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
+                console.log("ASDASDASDASD:" + JSON.stringify(req.innerBody['bootpay_info']))
 
                 if(refund_price > 0) {
                     RestClient.setConfig(
