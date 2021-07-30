@@ -46,12 +46,14 @@ module.exports =  function (req, res, next) {
                 }
 
                 console.log("refund_reward: " + refund_reward)
+                console.log("refund_price: " + refund_price)
 
                 req.innerBody['refund_reward'] = refund_reward
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
                 console.log("ASDASDASDASD:" + JSON.stringify(req.innerBody['bootpay_info']))
+
 
                 if(refund_price > 0) {
                     RestClient.setConfig(
