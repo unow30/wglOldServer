@@ -98,20 +98,6 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
 
 
-
-
-
-
-            console.log("req.headers['user_uid']:  " +  JSON.stringify(req.headers['user_uid']) );
-            console.log("req.paramBody['order_product_uid']:  " +  JSON.stringify(req.paramBody['order_product_uid']) );
-            console.log("req.paramBody['status']:  " +  JSON.stringify(req.innerBody['item']) );
-            console.log("req.paramBody['cancel_reason']:  " +  JSON.stringify(req.paramBody['cancel_reason']) );
-            console.log("req.paramBody['detail_reason']:  " +  JSON.stringify(req.paramBody['detail_reason']) );
-
-            console.log("req.innerBody['item']:  " +  JSON.stringify(req.innerBody['item']) );
-
-
-
             if(req.innerBody['item']) {
 
                 switch (req.paramBody['status']) {
@@ -122,14 +108,9 @@ module.exports = function (req, res) {
 
                     case 6:
                         // req.innerBody['data'] = await queryOrderReturn(req, db_connection);
-                        req.innerBody['reward'] = await queryCancelable(req, db_connection);
+                        // req.innerBody['reward'] = await queryCancelable(req, db_connection);
 
-                        console.log('data : ' + JSON.stringify(req.innerBody['reward']));
-
-                        console.log('req.innerBody[\'reward\']  : ' + JSON.stringify(req.innerBody['reward']));
-
-
-                        if(req.innerBody['reward']['refund_reward'] > 0) {
+                        if(req.innerBody['item']['refund_reward'] > 0) {
                             await queryRollbackReward(req, db_connection)
                         }
 
@@ -235,19 +216,19 @@ function queryCancelCheck(req, db_connection, item) {
 
 
 
-function queryCancelable(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_update_cancelable'
-        , [
-            req.paramBody['order_uid'],
-            req.innerBody['item']['payment'],
-            req.paramBody['order_product_uid'],
-        ]
-
-    );
-}
+// function queryCancelable(req, db_connection) {
+//     const _funcName = arguments.callee.name;
+//
+//     return mysqlUtil.querySingle(db_connection
+//         , 'call proc_update_cancelable'
+//         , [
+//             req.paramBody['order_uid'],
+//             req.innerBody['item']['payment'],
+//             req.paramBody['order_product_uid'],
+//         ]
+//
+//     );
+// }
 
 
 function queryRollbackReward(req, db_connection) {
@@ -256,14 +237,14 @@ function queryRollbackReward(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call w_seller_update_rollback_reward'
         , [
-            req.innerBody['reward']['product_uid'],
-            req.innerBody['reward']['user_uid'],
-            req.innerBody['reward']['seller_uid'],
-            req.innerBody['reward']['video_uid'],
-            req.innerBody['reward']['order_uid'],
-            req.innerBody['reward']['order_no'],
+            req.innerBody['item']['product_uid'],
+            req.innerBody['item']['user_uid'],
+            req.innerBody['item']['seller_uid'],
+            req.innerBody['item']['video_uid'],
+            req.innerBody['item']['order_uid'],
+            req.innerBody['item']['order_no'],
             1,
-            req.innerBody['reward']['refund_reward'],
+            req.innerBody['item']['refund_reward'],
             '환불로 인한 사용 리워드 롤백',
         ]
 

@@ -23,9 +23,9 @@ module.exports =  function (req, res, next) {
             let refund_price = 0;
             let refund_reward = 0;
 
+
             mysqlUtil.connectPool( async function (db_connection) {
                 req.innerBody = {};
-
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
@@ -33,34 +33,49 @@ module.exports =  function (req, res, next) {
                 refund_price = req.innerBody['cancel_info']['payment'];
 
 
+                console.log("asd" + JSON.stringify(req.innerBody['cancel_info']))
 
                 // 리워드 + 배달비 + 취소금액
-                if(req.innerBody['cancel_info']['seller_count'] === 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
-                    refund_price += req.innerBody['cancel_info']['delivery_price']
-                    refund_reward += req.innerBody['cancel_info']['use_reward']
-                }
-                /// 배달비 + 취소 금액
-                else if(req.innerBody['cancel_info']['seller_count'] > 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
-                    refund_price += req.innerBody['cancel_info']['delivery_price']
+                // if(req.innerBody['cancel_info']['seller_count'] === 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
+                //     refund_price += req.innerBody['cancel_info']['delivery_price']
+                //     refund_reward += req.innerBody['cancel_info']['use_reward']
+                // }
+                // 배달비 + 취소 금액
+                if(req.innerBody['cancel_info']['seller_count'] > 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
+                    req.innerBody['cancel_info']["cancelable_price"] > 0 ?
+                            refund_price += req.innerBody['cancel_info']['delivery_price'] :
+                            refund_reward += req.innerBody['cancel_info']['delivery_price']
                 }
 
                 if(!checkCancelable(req) ) {
                     errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
                 }
 
+                console.log("check 통과")
+
 
                 req.innerBody['refund_reward'] = refund_reward
+
+                console.log("req.innerBody['refund_reward']: " + req.innerBody['refund_reward'])
+
+                console.log("refund_price: " + refund_price)
+                console.log("req.innerBody['cancel_info'][\"cancelable_price\"]: " + req.innerBody['cancel_info']["cancelable_price"])
 
 
                 if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
                     req.innerBody['refund_reward'] = refund_price - req.innerBody['cancel_info']['cancelable_price'];
                     refund_price = req.innerBody['cancel_info']["cancelable_price"];
                 }
+                console.log("req.innerBody['refund_reward']: " + req.innerBody['refund_reward'])
 
+                console.log("refund_price: " + refund_price)
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
+                req.innerBody['refund_price'] = refund_price;
 
+
+                await queryCancelable(req, db_connection);
 
                 if(refund_price > 0) {
                     RestClient.setConfig(
@@ -95,6 +110,9 @@ module.exports =  function (req, res, next) {
                             sendUtil.sendErrorPacket(req, res, _err);
                         }
                     });
+                }
+                else {
+                    next();
                 }
             });
         }
@@ -147,6 +165,21 @@ function queryReward(req, db_connection){
 
     );
 }
+
+function queryCancelable(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_update_cancelable'
+        , [
+            req.paramBody['order_uid'],
+            req.innerBody['refund_price'],
+            req.paramBody['order_product_uid'],
+        ]
+
+    );
+}
+
 
 function queryReward(req, db_connection){
     const _funcName = arguments.callee.name;
