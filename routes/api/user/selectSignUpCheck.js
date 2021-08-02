@@ -110,7 +110,7 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item']['access_token'] = jwtUtil.createToken(req.innerBody['item'], '100d')
-            await queryUpdate(req, db_connection);
+            req.innerBody['item'] = await queryUpdate(req, db_connection);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -136,7 +136,7 @@ function checkParam(req) {
 function deleteBody(req) {
     // delete req.innerBody['item']['latitude']
     // delete req.innerBody['item']['longitude']
-    delete req.innerBody['item']['push_token']
+    // delete req.innerBody['item']['push_token']
 }
 
 function querySelect(req, db_connection) {
