@@ -42,9 +42,12 @@ module.exports =  function (req, res, next) {
                 // }
                 // 배달비 + 취소 금액
                 if(req.innerBody['cancel_info']['order_product_count'] === 1) {
-                    req.innerBody['cancel_info']["cancelable_price"] >= refund_price ?
+                    req.innerBody['cancel_info']["cancelable_price"] <= refund_price ?
                             refund_price += req.innerBody['cancel_info']['delivery_price'] :
                             refund_reward += req.innerBody['cancel_info']['delivery_price']
+
+                    console.log("ASDAJSODIASJ:" + refund_price)
+                    console.log("ASDAJSODIASJ:" + refund_reward);
                 }
 
                 if(!checkCancelable(req) ) {
