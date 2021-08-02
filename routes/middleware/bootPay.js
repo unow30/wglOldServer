@@ -30,8 +30,7 @@ module.exports =  function (req, res, next) {
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
 
-
-                refund_price = refund_price = req.innerBody['cancel_info']['payment'];
+                refund_price = req.innerBody['cancel_info']['payment'];
 
 
 
@@ -45,14 +44,22 @@ module.exports =  function (req, res, next) {
                     refund_price += req.innerBody['cancel_info']['delivery_price']
                 }
 
-                console.log("refund_reward: " + refund_reward)
-                console.log("refund_price: " + refund_price)
+                if(!checkCancelable(req) ) {
+                    errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
+                }
+
 
                 req.innerBody['refund_reward'] = refund_reward
 
+
+                if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
+                    req.innerBody['refund_reward'] = refund_price - req.innerBody['cancel_info']['cancelable_price'];
+                    refund_price = req.innerBody['cancel_info']["cancelable_price"];
+                }
+
+
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
-                console.log("ASDASDASDASD:" + JSON.stringify(req.innerBody['bootpay_info']))
 
 
                 if(refund_price > 0) {
@@ -104,10 +111,15 @@ module.exports =  function (req, res, next) {
 }
 
 function checkCancelable(req) {
-    const cancelable = req.innerBody['cancelable']["cancelable_price"] +  req.innerBody["cancelable"]["use_reward"];
+    const cancelable = req.innerBody['cancel_info']["cancelable_price"] +  req.innerBody["cancel_info"]["use_reward"];
 
 
-    return (cancelable >= req.innerBody['cancelable']['payment'])
+    console.log("@@@@#@#@#@#@#@")
+    console.log("cancelable :"  +  cancelable);
+
+    console.log("req.innerBody['cancel_info']['payment'] :"  +  req.innerBody['cancel_info']['payment']);
+
+    return (cancelable >= req.innerBody['cancel_info']['payment'])
             ? true : false;
 }
 

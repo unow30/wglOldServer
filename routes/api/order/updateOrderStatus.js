@@ -242,7 +242,7 @@ function queryCancelable(req, db_connection) {
         , 'call proc_update_cancelable'
         , [
             req.paramBody['order_uid'],
-            req.paramBody['payment'],
+            req.innerBody['item']['payment'],
             req.paramBody['order_product_uid'],
         ]
 
