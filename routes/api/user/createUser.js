@@ -204,7 +204,7 @@ function checkParam(req) {
 function deleteBody(req) {
     // delete req.innerBody['item']['latitude']
     // delete req.innerBody['item']['longitude']
-    delete req.innerBody['item']['push_token']
+    // delete req.innerBody['item']['push_token']
 }
 
 function query(req, db_connection) {
