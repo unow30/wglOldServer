@@ -41,7 +41,7 @@ module.exports =  function (req, res, next) {
                 //     refund_reward += req.innerBody['cancel_info']['use_reward']
                 // }
                 // 배달비 + 취소 금액
-                if(req.innerBody['cancel_info']['seller_count'] > 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
+                if(req.innerBody['cancel_info']['order_product_count'] === 1) {
                     req.innerBody['cancel_info']["cancelable_price"] > 0 ?
                             refund_price += req.innerBody['cancel_info']['delivery_price'] :
                             refund_reward += req.innerBody['cancel_info']['delivery_price']
