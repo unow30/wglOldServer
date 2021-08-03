@@ -33,46 +33,26 @@ module.exports =  function (req, res, next) {
                 refund_price = req.innerBody['cancel_info']['payment'];
 
 
-                console.log("asd" + JSON.stringify(req.innerBody['cancel_info']))
+                if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
+                    refund_reward = refund_price - req.innerBody['cancel_info']['cancelable_price'];
+                    // req.innerBody['refund_reward'] += req.innerBody['cancel_info']['delivery_price']
 
-                // 리워드 + 배달비 + 취소금액
-                // if(req.innerBody['cancel_info']['seller_count'] === 1 && req.innerBody['cancel_info']['order_product_count'] === 1) {
-                //     refund_price += req.innerBody['cancel_info']['delivery_price']
-                //     refund_reward += req.innerBody['cancel_info']['use_reward']
-                // }
+                    refund_price = req.innerBody['cancel_info']["cancelable_price"];
+                }
+
                 // 배달비 + 취소 금액
                 if(req.innerBody['cancel_info']['order_product_count'] === 1) {
                     req.innerBody['cancel_info']["cancelable_price"] >= refund_price ?
                             refund_price += req.innerBody['cancel_info']['delivery_price'] :
                             refund_reward += req.innerBody['cancel_info']['delivery_price']
-
-                    console.log("ASDAJSODIASJ:" + refund_price)
-                    console.log("ASDAJSODIASJ:" + refund_reward);
                 }
 
                 if(!checkCancelable(req) ) {
                     errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
                 }
 
-                console.log("check 통과")
-
 
                 req.innerBody['refund_reward'] = refund_reward
-
-                console.log("req.innerBody['refund_reward']: " + req.innerBody['refund_reward'])
-
-                console.log("refund_price: " + refund_price)
-                console.log("req.innerBody['cancel_info'][\"cancelable_price\"]: " + req.innerBody['cancel_info']["cancelable_price"])
-
-
-                if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
-                    req.innerBody['refund_reward'] = refund_price - req.innerBody['cancel_info']['cancelable_price'];
-                    req.innerBody['refund_reward'] += req.innerBody['cancel_info']['delivery_price']
-                    refund_price = req.innerBody['cancel_info']["cancelable_price"];
-                }
-                console.log("req.innerBody['refund_reward']: " + req.innerBody['refund_reward'])
-
-                console.log("refund_price: " + refund_price)
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
