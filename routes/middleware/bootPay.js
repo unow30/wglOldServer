@@ -185,7 +185,6 @@ function queryCancelInfo(req, db_connection){
         , 'call proc_select_cancel_info'
         , [
             req.paramBody['order_uid'],
-            req.paramBody['seller_uid'],
             req.paramBody['order_product_uid'],
         ]
 
