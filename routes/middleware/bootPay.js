@@ -111,7 +111,7 @@ module.exports =  function (req, res, next) {
 }
 
 function checkCancelable(req) {
-    const cancelable = req.innerBody['cancel_info']["cancelable_price"] +  req.innerBody["cancel_info"]["use_reward"];
+    const cancelable = req.innerBody['cancel_info']["cancelable_price"] + req.innerBody["cancel_info"]["use_reward"] + req.innerBody["cancel_info"]["use_point"];
 
 
     console.log("@@@@#@#@#@#@#@")
