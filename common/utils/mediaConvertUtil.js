@@ -94,7 +94,7 @@ module.exports =  function (final_name, video_width, video_height) {
                                         "H264Settings": {
                                             "ParNumerator": 16,
                                             "ParDenominator": 9,
-                                            "Bitrate": 2000000
+                                            "Bitrate": 1500000
                                         }
                                     },
                                     "AfdSignaling": "NONE",
