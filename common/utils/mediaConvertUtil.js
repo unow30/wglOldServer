@@ -164,9 +164,7 @@ module.exports =  function (final_name, video_width, video_height) {
                                 "DefaultSelection": "DEFAULT"
                             }
                         },
-                        "VideoSelector": {
-                            "Rotate": "DEGREES_90"
-                        },
+                        "VideoSelector": {},
                         "TimecodeSource": "ZEROBASED",
                         "ImageInserter": {
                             "InsertableImages": [
@@ -336,8 +334,6 @@ module.exports =  function (final_name, video_width, video_height) {
             "HopDestinations": []
         }
 
-        console.log("asdasdad1:" + JSON.stringify(paramsRotate))
-        console.log("asdasdad2:" + JSON.stringify(params))
 
         const data = convertFunc(final_name, (video_width > video_height) ? paramsRotate : params);
 
