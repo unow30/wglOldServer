@@ -39,7 +39,6 @@ app.use('/api/private', require('./routes/api/api_private'));
 app.use('/api/public', require('./routes/api/api_public'));
 app.use('/others', require('./routes/page/page_router'));
 
-app.use('/callback/delivery/trace', require('./routes/callback/callbackDeliveryTrace'));
 
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
