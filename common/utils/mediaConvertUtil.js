@@ -163,7 +163,9 @@ module.exports =  function (final_name, video_width, video_height) {
                                 "DefaultSelection": "DEFAULT"
                             }
                         },
-                        "VideoSelector": {},
+                        "VideoSelector": {
+                           "Rotate": (video_width > video_height) ?  "DEGREES_90" : ""
+                        },
                         "TimecodeSource": "ZEROBASED",
                         "ImageInserter": {
                             "InsertableImages": [
