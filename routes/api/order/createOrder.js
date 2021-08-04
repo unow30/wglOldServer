@@ -181,6 +181,7 @@ module.exports = function (req, res) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
             }
             if(req.paramBody['use_point'] > 0) {
+                req.paramBody['use_point']
                 req.innerBody['point'] = await queryPoint(req, db_connection);
             }
 
@@ -265,8 +266,8 @@ function queryPoint(req, db_connection) {
             req.headers['user_uid'],
             req.innerBody['item']['order_no'],
             2,
-            req.paramBody['use_point'],
-            '상품 구매에 포인트 사용',
+            req.paramBody['use_point'] * -1,
+            '상품 구매에 포인트 사용'
         ]
     );
 }
