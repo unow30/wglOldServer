@@ -341,7 +341,8 @@ module.exports =  function (final_name, video_width, video_height) {
         console.log('final_name' + final_name)
         console.log("video_width < video_height " + video_width + " <  " + video_height)
 
-        const data = convertFunc(final_name, video_width < video_height ? params : paramsRotate)
+        let convertParam =  video_width < video_height ? params : paramsRotate
+        const data = convertFunc(final_name, convertParam);
 
         if(data) {
             let basename = path.basename(final_name, extname);
