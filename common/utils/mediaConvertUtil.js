@@ -43,6 +43,7 @@ module.exports =  function (final_name, video_width, video_height) {
         console.log("video_width " + video_width)
         console.log("video_height " + video_height)
 
+        console.log("asdasdasd" + (video_width > video_height) ?  "DEGREES_90" : "")
 
 
         console.log("video_width" +parseInt( video_width / 6.3))
