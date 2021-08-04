@@ -164,9 +164,7 @@ module.exports =  function (final_name, video_width, video_height) {
                                 "DefaultSelection": "DEFAULT"
                             }
                         },
-                        "VideoSelector": {
-                            "Rotate": "DEGREES_90"
-                        },
+                        "VideoSelector": {},
                         "TimecodeSource": "ZEROBASED",
                         "ImageInserter": {
                             "InsertableImages": [
@@ -193,8 +191,6 @@ module.exports =  function (final_name, video_width, video_height) {
             "Priority": 0,
             "HopDestinations": []
         }
-
-
 
         let paramsRotate = {
             "Queue": funcUtil.getAWSMediaConvertQueue(),
@@ -309,7 +305,7 @@ module.exports =  function (final_name, video_width, video_height) {
                             }
                         },
                         "VideoSelector": {
-                           "Rotate": "DEGREES_90"
+                            "Rotate": "DEGREES_90"
                         },
                         "TimecodeSource": "ZEROBASED",
                         "ImageInserter": {
@@ -339,23 +335,7 @@ module.exports =  function (final_name, video_width, video_height) {
         }
 
 
-
-        console.log('final_name' + final_name)
-        console.log("video_width < video_height " + video_width + " <  " + video_height)
-
-
-
-        // let convertParam =  video_width > video_height ? paramsRotate : params
-
-        let convertParam = params;
-
-
-        if(video_width > video_height)
-            convertParam = paramsRotate
-
-        console.log("f20j: " + JSON.stringify(convertParam));
-
-        const data = convertFunc(final_name, convertParam);
+        const data = convertFunc(final_name, (video_width > video_height) ? paramsRotate : params);
 
         if(data) {
             let basename = path.basename(final_name, extname);
