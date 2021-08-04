@@ -354,18 +354,18 @@ module.exports =  function (final_name, video_width, video_height) {
 
 
 
-async function convertFunc(final_name,params) {
+async function convertFunc(final_name,convertParams) {
 
     // Create a promise on a MediaConvert object
-    console.log(JSON.stringify(params));
+    console.log(JSON.stringify(convertParams));
 
     // params.Settings.OutputGroups[0].Outputs[0].NameModifier = final_name;
-    params.Settings.Inputs[0].FileInput = `${funcUtil.getAWSMediaConvertS3StartingPoint()}${final_name}`;
+    convertParams.Settings.Inputs[0].FileInput = `${funcUtil.getAWSMediaConvertS3StartingPoint()}${final_name}`;
 
     // params["OutputGroups"][0]["Outputs"][0]["NameModifier"] = final_name;
 
 
-    const endpointPromise = new AWS.MediaConvert().createJob(params).promise();
+    const endpointPromise = new AWS.MediaConvert().createJob(convertParams).promise();
 
     // Handle promise's fulfilled/rejected status
     endpointPromise.then(
