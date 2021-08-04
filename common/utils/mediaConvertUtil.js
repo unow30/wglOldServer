@@ -306,7 +306,6 @@ module.exports =  function (final_name, video_width, video_height) {
                                 "DefaultSelection": "DEFAULT"
                             }
                         },
-
                         "VideoSelector": {
                            "Rotate": "DEGREES_90"
                         },
@@ -340,6 +339,7 @@ module.exports =  function (final_name, video_width, video_height) {
 
 
         console.log('final_name' + final_name)
+        console.log("video_width < video_height " + video_width + " <  " + video_height)
 
         const data = convertFunc(final_name, video_width < video_height ? params : paramsRotate)
 
