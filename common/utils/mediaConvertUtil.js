@@ -341,7 +341,15 @@ module.exports =  function (final_name, video_width, video_height) {
         console.log('final_name' + final_name)
         console.log("video_width < video_height " + video_width + " <  " + video_height)
 
-        let convertParam =  video_width > video_height ? paramsRotate : params
+
+
+        // let convertParam =  video_width > video_height ? paramsRotate : params
+
+        let convertParam = params;
+
+
+        if(video_width > video_height)
+            convertParam = paramsRotate
 
         console.log("f20j: " + JSON.stringify(convertParam));
 
