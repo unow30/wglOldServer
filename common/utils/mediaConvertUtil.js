@@ -304,10 +304,10 @@ module.exports =  function (final_name, video_width, video_height) {
                         "ImageInserter": {
                             "InsertableImages": [
                                 {
-                                    "Width": video_width / 6.3,
-                                    "Height": video_height / 14.8,
-                                    "ImageX": video_width / 1.25,
-                                    "ImageY": video_height / 2.4,
+                                    "Width": video_height / 6.3,
+                                    "Height": video_width / 14.8,
+                                    "ImageX": video_height / 1.25,
+                                    "ImageY": video_width / 2.4,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50
