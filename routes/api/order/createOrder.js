@@ -198,7 +198,7 @@ module.exports = function (req, res) {
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'addressbook_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'price_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_delivery');
+    paramUtil.checkParam_noReturn(req.paramBody, 'delivery_total');
     paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
 }
 
