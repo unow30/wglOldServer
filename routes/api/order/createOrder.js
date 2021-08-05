@@ -21,7 +21,7 @@
  *           required:
  *             - addressbook_uid
  *             - price_total
- *             - price_delivery
+ *             - delivery_total
  *             - price_payment
  *           properties:
  *             addressbook_uid:
@@ -56,11 +56,11 @@
  *               example: 50000
  *               description: |
  *                 총 상품 금액
- *             price_delivery:
+ *             delivery_total:
  *               type: number
  *               example: 2500
  *               description: |
- *                 배송비
+ *                 주문 배송비 총합
  *                 * 배송비가 없을 경우 0
  *             price_payment:
  *               type: number
@@ -115,14 +115,11 @@
  *                     description: |
  *                       해당 상품 구매 금액
  *                       * price_original * count
- *                   delivery_status:
+ *                   price_delivery:
  *                     type: number
  *                     example: 0
  *                     description: |
- *                       배송비 상태 값
- *                       * 0: 일반 배송비
- *                       * 1: 도서 산간 배송비
- *                       * 2: 무료 배송비
+ *                       판매자 배송비
  *
  *     responses:
  *       200:
@@ -230,7 +227,7 @@ function query(req, db_connection) {
             req.paramBody['use_point'],
             req.paramBody['use_reward'],
             req.paramBody['price_total'],
-            req.paramBody['price_delivery'],
+            req.paramBody['delivery_total'],
             req.paramBody['price_payment'],
             req.paramBody['pg_receipt_id'],
 
@@ -286,7 +283,7 @@ function queryProduct(req, db_connection) {
             req.innerBody['product']['count'],
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
-            req.innerBody['product']['delivery_status'],
+            req.innerBody['product']['price_delivery'],
         ]
     );
 }
