@@ -77,7 +77,10 @@ function replaceName(filename) {
 
 
     let fileArray = filename.split("_")
-    filename =filename.replace('_'+ fileArray[fileArray.length -2], '')
+
+    filename =filename.replace('_'+ fileArray[fileArray.length -3], '')
+
+    filename =filename.replace('_' + fileArray[fileArray.length -2], '')
 
     filename =filename.replace('_' + fileArray[fileArray.length -1], '')
 
