@@ -110,7 +110,7 @@ module.exports = async function (req, res) {
                 video_height = video_height.replace('.mp4', '');
 
                 console.log("uploadfile: " + video_width)
-                console.log("uploadfile: " + video_height)
+                console.log("uploadfile2: " + video_height)
 
                 final_name = mediaConvertUtil(final_name, video_width, video_height);
 
