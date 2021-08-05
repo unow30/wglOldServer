@@ -45,12 +45,6 @@ module.exports =  function (final_name, video_width, video_height) {
 
 
 
-        console.log("video_width" +parseInt( video_width / 6.3))
-        console.log("video_height" + parseInt(video_height / 14.8))
-        console.log("video_height" + parseInt(video_height / 2.13))
-        console.log("video_height" + parseInt(video_height / 3.8))
-
-
         const params = {
             "Queue": funcUtil.getAWSMediaConvertQueue(),
             "UserMetadata": {
@@ -310,10 +304,10 @@ module.exports =  function (final_name, video_width, video_height) {
                         "ImageInserter": {
                             "InsertableImages": [
                                 {
-                                    "Width": parseInt(video_width / 6.3),
-                                    "Height": parseInt(video_height / 14.8),
-                                    "ImageX": parseInt(video_width / 1.25),
-                                    "ImageY": parseInt(video_height / 2.4),
+                                    "Width": video_width / 6.3,
+                                    "Height": video_height / 14.8,
+                                    "ImageX": video_width / 1.25,
+                                    "ImageY": video_height / 2.4,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50
