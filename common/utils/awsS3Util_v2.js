@@ -84,6 +84,7 @@ function replaceName(filename) {
 
     filename =filename.replace('_' + fileArray[fileArray.length -1], '')
 
+    console.log("idjkw: " +filename)
     return filename;
 }
 

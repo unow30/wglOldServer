@@ -334,7 +334,7 @@ module.exports =  function (final_name, video_width, video_height, video_rotate)
             "HopDestinations": []
         }
 
-
+        console.log("asdiajdoqwijdqowij: " + final_name)
         // const data = convertFunc(final_name, (video_width > video_height) ? paramsRotate : params);
         const data = convertFunc(final_name, video_rotate > 0 ? paramsRotate :  params);
 
