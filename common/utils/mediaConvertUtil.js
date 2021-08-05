@@ -50,6 +50,7 @@ module.exports =  function (final_name, video_width, video_height, video_rotate)
         console.log("video_height" + parseInt(video_height / 2.13))
         console.log("video_height" + parseInt(video_height / 3.8))
 
+        console.log("@@@@#@*#@(#*" + video_rotate)
 
         const params = {
             "Queue": funcUtil.getAWSMediaConvertQueue(),

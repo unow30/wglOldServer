@@ -108,7 +108,7 @@ module.exports = async function (req, res) {
                 let video_height = originalnameArray[originalnameArray.length -2];
                 let video_rotate = originalnameArray[originalnameArray.length -1];
 
-                video_height = video_height.replace('.mp4', '');
+                video_rotate = video_rotate.replace('.mp4', '');
 
                 console.log("uploadfile: " + video_width)
                 console.log("uploadfile: " + video_height)
