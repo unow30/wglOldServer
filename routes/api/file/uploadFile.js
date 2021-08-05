@@ -104,16 +104,15 @@ module.exports = async function (req, res) {
 
                 console.log("uploadfile: " + originalnameArray)
 
-                let video_width = originalnameArray[originalnameArray.length -3];
-                let video_height = originalnameArray[originalnameArray.length -2];
-                let video_rotate = originalnameArray[originalnameArray.length -1];
+                let video_width = originalnameArray[originalnameArray.length -2];
+                let video_height = originalnameArray[originalnameArray.length -1];
 
-                video_rotate = video_rotate.replace('.mp4', '');
+                video_height = video_height.replace('.mp4', '');
 
                 console.log("uploadfile: " + video_width)
                 console.log("uploadfile: " + video_height)
 
-                final_name = mediaConvertUtil(final_name, video_width, video_height, video_rotate);
+                final_name = mediaConvertUtil(final_name, video_width, video_height);
 
                 console.log("finalname mediaconvert :" + final_name)
 

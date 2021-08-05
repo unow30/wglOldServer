@@ -12,7 +12,7 @@ const errUtil = require('./errUtil');
 const errCode = require('../define/errCode');
 // const getDimensions = require('get-video-dimensions');
 
-module.exports =  function (final_name, video_width, video_height, video_rotate) {
+module.exports =  function (final_name, video_width, video_height) {
 
     const MEDIACONVERT = 'ConvertSuccess';
     const extname = path.extname(final_name);
@@ -50,7 +50,6 @@ module.exports =  function (final_name, video_width, video_height, video_rotate)
         console.log("video_height" + parseInt(video_height / 2.13))
         console.log("video_height" + parseInt(video_height / 3.8))
 
-        console.log("@@@@#@*#@(#*" + video_rotate)
 
         const params = {
             "Queue": funcUtil.getAWSMediaConvertQueue(),
@@ -335,8 +334,8 @@ module.exports =  function (final_name, video_width, video_height, video_rotate)
         }
 
         console.log("asdiajdoqwijdqowij: " + final_name)
-        // const data = convertFunc(final_name, (video_width > video_height) ? paramsRotate : params);
-        const data = convertFunc(final_name, video_rotate > 0 ? paramsRotate :  params);
+        const data = convertFunc(final_name, (video_width > video_height) ? paramsRotate : params);
+        // const data = convertFunc(final_name, video_rotate > 0 ? paramsRotate :  params);
 
         if(data) {
             let basename = path.basename(final_name, extname);
