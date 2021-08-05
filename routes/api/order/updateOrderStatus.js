@@ -237,13 +237,11 @@ function queryRollbackReward(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call w_seller_update_rollback_reward'
         , [
-            req.innerBody['item']['product_uid'],
             req.innerBody['item']['user_uid'],
             req.innerBody['item']['seller_uid'],
-            req.innerBody['item']['video_uid'],
             req.innerBody['item']['order_uid'],
             req.innerBody['item']['order_no'],
-            1,
+            13,
             req.innerBody['item']['refund_reward'],
             '환불로 인한 사용 리워드 롤백',
         ]
