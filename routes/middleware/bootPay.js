@@ -51,7 +51,7 @@ module.exports =  function (req, res, next) {
 
 
                 req.innerBody['refund_reward'] =
-                    (req.innerBody['cancel_info']['cancelable_reward'] >=  refund_price)  ?
+                    (req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['payment'])  ?
                         refund_reward : req.innerBody['cancel_info']['cancelable_reward'];
 
 
