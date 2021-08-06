@@ -29,12 +29,14 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
+                req.innerBody['cancel_info']['cancelable_reward'] = await queryCancelableReward(req, db_connection);
 
                 refund_price = req.innerBody['cancel_info']['payment'];
 
 
+
                 if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
-                    refund_reward = refund_price - req.innerBody['cancel_info']['cancelable_price'];
+                    refund_reward = refund_price - req.innerBody['cancel_info']['cancelable_price'] - req.innerBody['cancel_info']['cancelable_reward'];
                     refund_price = req.innerBody['cancel_info']["cancelable_price"];
                 }
 
@@ -50,16 +52,17 @@ module.exports =  function (req, res, next) {
                 }
 
 
-                console.log("ASDASDSADASDASDASDAASD:" + refund_price)
+                req.innerBody['refund_reward'] =
+                    (req.innerBody['cancel_info']['cancelable_reward'] >=  refund_price)  ?
+                        refund_reward : req.innerBody['cancel_info']['cancelable_reward'];
 
-                req.innerBody['refund_reward'] = refund_reward
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
                 req.innerBody['refund_price'] = refund_price;
 
 
-                await queryCancelable(req, db_connection);
+                await queryCancelablePrice(req, db_connection);
 
                 if(refund_price > 0) {
                     RestClient.setConfig(
@@ -150,7 +153,7 @@ function queryReward(req, db_connection){
     );
 }
 
-function queryCancelable(req, db_connection) {
+function queryCancelablePrice(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
@@ -159,6 +162,20 @@ function queryCancelable(req, db_connection) {
             req.paramBody['order_uid'],
             req.innerBody['refund_price'],
             req.paramBody['order_product_uid'],
+        ]
+
+    );
+}
+
+
+function queryCancelableReward(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_cancelable_reward'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['order_uid'],
         ]
 
     );
