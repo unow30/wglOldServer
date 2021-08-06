@@ -50,6 +50,8 @@ module.exports =  function (req, res, next) {
                 }
 
 
+                console.log("ASDASDSADASDASDASDAASD:" + refund_price)
+
                 req.innerBody['refund_reward'] = refund_reward
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)

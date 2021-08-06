@@ -98,6 +98,7 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
 
 
+            console.log("어디까지오니")
             if(req.innerBody['item']) {
 
                 switch (req.paramBody['status']) {
@@ -109,10 +110,11 @@ module.exports = function (req, res) {
                     case 6:
                         // req.innerBody['data'] = await queryOrderReturn(req, db_connection);
                         // req.innerBody['reward'] = await queryCancelable(req, db_connection);
-
+                        console.log("어디까지오니2")
                         if(req.innerBody['item']['refund_reward'] > 0) {
                             await queryRollbackReward(req, db_connection)
                         }
+                        break;
 
 
 
@@ -122,7 +124,7 @@ module.exports = function (req, res) {
             }
 
 
-
+            console.log("어디까지오니3")
 
 
 
