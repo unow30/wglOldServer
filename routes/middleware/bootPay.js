@@ -29,8 +29,6 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
-                req.innerBody['cancel_info']['cancelable_reward'] = await queryCancelableReward(req, db_connection);
-
                 refund_price = req.innerBody['cancel_info']['payment'];
 
 
@@ -168,19 +166,6 @@ function queryCancelablePrice(req, db_connection) {
 }
 
 
-function queryCancelableReward(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_cancelable_reward'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['order_uid'],
-        ]
-
-    );
-}
-
 
 function queryReward(req, db_connection){
     const _funcName = arguments.callee.name;
@@ -201,6 +186,7 @@ function queryCancelInfo(req, db_connection){
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_cancel_info'
         , [
+            req.headers['user_uid'],
             req.paramBody['order_uid'],
             req.paramBody['order_product_uid'],
         ]
