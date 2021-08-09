@@ -200,7 +200,7 @@ function queryUpdate(req, db_connection, item) {
 
             item['order_uid'],
             reward_value,  // 결제 금액의 5% 지급
-            `[${req.innerBody['name']}] 리워드 적립`,
+            `[${item['name']}] 리워드 적립`,
             // req.paramBody['status'],
         ]
     );
