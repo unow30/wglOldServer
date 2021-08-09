@@ -104,7 +104,9 @@ module.exports = function (req, res) {
                 switch (req.paramBody['status']) {
 
                     case 5:
-                        let reward = await queryUpdate(req, db_connection, req.innerBody['item']);
+                        if( req.innerBody['item']['video_uid'] > 0 ) {
+                            let reward = await queryUpdate(req, db_connection, req.innerBody['item']);
+                        }
                         break;
 
                     case 6:
