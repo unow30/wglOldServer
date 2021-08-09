@@ -104,7 +104,7 @@ module.exports = function (req, res) {
                 switch (req.paramBody['status']) {
 
                     case 5:
-                        if( req.innerBody['item']['video_uid'] > 0 ) {
+                        if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
                             let reward = await queryUpdate(req, db_connection, req.innerBody['item']);
                         }
                         break;
