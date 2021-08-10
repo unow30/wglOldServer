@@ -1,33 +1,38 @@
 /**
- * Created by gunucklee on 2021. 08. 09.
+ * Created by gunucklee on 2021. 07. 07.
  *
  * @swagger
  * /api/private/reward/accountBook:
- *   post:
- *     summary: 리워드 계좌 등록
+ *   put:
+ *     summary: 리워드 계좌 수정
  *     tags: [Reward]
  *     description: |
  *       path : /api/private/reward/accountBook
  *
- *       * 리워드 계좌 등록
+ *       * 리워드 계좌 수정
  *
  *     parameters:
  *       - in: body
  *         name: body
  *         description: |
- *           리워드 계좌 등록
+ *           리워드 계좌 수정
  *         schema:
  *           type: object
  *           required:
+ *             - account_book_uid
  *             - bank_user
  *             - bank_account
  *             - bank_code
  *             - filename_idcard
  *             - filename_bankbook
  *           properties:
+ *             account_book_uid:
+ *               type: number
+ *               example: 1
+ *               description: |
  *             bank_user:
  *               type: string
- *               example: 홍길동
+ *               example: 초 갈
  *               description: 예금주
  *             bank_account:
  *               type: string
@@ -116,7 +121,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/QnA'
+ *           $ref: '#/definitions/User'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -140,15 +145,18 @@ module.exports = function (req, res) {
 
     try{
         req.file_name = file_name;
-        // logUtil.printUrlLog(req, `== function start ==================================`);
         logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
-
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
+
+            // let bank_count_data = await queryCheckBankInfo(req, db_connection);
+            // if( bank_count_data['count'] > 0 ){
+            //     errUtil.createCall(errCode.already, `중첩되는 계좌입니다. 다시 확인해주세요.`)
+            //     return
+            // }
 
             req.innerBody['item'] = await query(req, db_connection);
 
@@ -167,30 +175,52 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'bank_code');
-    paramUtil.checkParam_noReturn(req.paramBody, 'bank_user');
-    paramUtil.checkParam_noReturn(req.paramBody, 'bank_account');
-    paramUtil.checkParam_noReturn(req.paramBody, 'filename_idcard');
-    paramUtil.checkParam_noReturn(req.paramBody, 'filename_bankbook');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'about');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'interests');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'age');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'gender');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'email');
 }
 
 function deleteBody(req) {
     // delete req.innerBody['item']['latitude']
+    // delete req.innerBody['item']['longitude']
+    delete req.innerBody['item']['push_token']
 }
 
 function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_reward_account_book'
+        , 'call proc_update_reward_bank_info'
         , [
             req.headers['user_uid'],
-            req.paramBody['bank_code'],
+            req.paramBody['account_book_uid'],
             req.paramBody['bank_user'],
+            req.paramBody['bank_code'],
             req.paramBody['bank_account'],
             req.paramBody['filename_idcard'],
             req.paramBody['filename_bankbook'],
         ]
     );
 }
+
+
+
+// function queryCheckBankInfo(req, db_connection) {
+//     const _funcName = arguments.callee.name;
+//
+//     return mysqlUtil.querySingle(db_connection
+//         , 'call proc_select_user_bank_check'
+//         , [
+//             req.headers['user_uid'],
+//             req.paramBody['bank_user'],
+//             req.paramBody['bank_code'],
+//             req.paramBody['bank_account'],
+//         ]
+//     );
+// }
+
+
 

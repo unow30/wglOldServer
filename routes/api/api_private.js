@@ -18,7 +18,6 @@ app.route('/user/profile/review/list').get( require('./user/selectUserProfileRev
 
 
 app.route('/user/bank/info').get( require('./user/selectUserBankInfo') )
-app.route('/user/bank/info').put( require('./user/updateUserBankInfo') )
 
 /**
  * product api
@@ -51,10 +50,10 @@ app.route('/order/status').put(require('../middleware/bootPay'), require('./orde
 app.route('/reward').post( require('./reward/createReward') )
     .get( require('./reward/selectReward') )
 app.route('/reward/accountBook').post( require('./reward/createRewardAccountBook') )
+    .put( require('./reward/updateRewardAccountBook'))
 app.route('/reward/history/list').get( require('./reward/selectRewardHistoryList') )
 app.route('/reward/history/detail/list').get( require('./reward/selectRewardHistoryDetailList') )
 app.route('/reward/history/status/list').get( require('./reward/selectRewardHistoryStatusList') )
-
 
 app.route('/refund/info').get( require('./reward/selectRefundInfo') )
 /**
