@@ -4,7 +4,7 @@
  * @swagger
  * /api/private/refund/info:
  *   get:
- *     summary: 최근 환급 정보
+ *     summary: 최근 등록된 계좌 정보 (4개)
  *     tags: [Reward]
  *     description: |
  *       path : /api/private/refund/info
