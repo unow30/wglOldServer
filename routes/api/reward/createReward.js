@@ -4,12 +4,12 @@
  * @swagger
  * /api/private/reward:
  *   post:
- *     summary: 리워드 환불 요청
+ *     summary: 리워드 환급 요청
  *     tags: [Reward]
  *     description: |
  *       path : /api/private/reward
  *
- *       * 리워드 환불 요청
+ *       * 리워드 환급 요청
  *
  *     parameters:
  *       - in: body

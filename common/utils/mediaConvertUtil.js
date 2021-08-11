@@ -307,7 +307,7 @@ module.exports =  function (final_name, video_width, video_height) {
                                     "Width": video_height / 6.3,
                                     "Height": video_width / 14.8,
                                     "ImageX": video_height / 1.25,
-                                    "ImageY": video_width / 2.9,
+                                    "ImageY": video_width / 2.8,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50
