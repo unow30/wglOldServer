@@ -21,14 +21,25 @@
  *           example: 1
  *         description: 상품 uid
  *       - in: query
- *         name: last_uid
+ *         name: random_seed
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
+ *       - in: query
+ *         name: offset
  *         default: 0
  *         required: true
  *         schema:
  *           type: number
  *           example: 0
  *         description: |
- *           목록 마지막 uid (처음일 경우 0)
+ *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
+ *           offset 0: 0~30
+ *           offset 30: 30~60
+ *           offset 60: 60~90
  *
  *     responses:
  *       200:
@@ -83,7 +94,8 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 }
 
 function deleteBody(req) {
@@ -101,8 +113,8 @@ function queryVideoList(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
-            req.paramBody['last_uid'],
-            30,
+            req.paramBody['random_seed'],
+            req.paramBody['offset'],
         ]
     );
 }
