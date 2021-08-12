@@ -20,6 +20,26 @@
  *           type: number
  *           example: 0
  *         description: weggledeal 우선순위 video_uid
+ *       - in: query
+ *         name: random_seed
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
+ *       - in: query
+ *         name: offset
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
+ *           offset 0: 0~30
+ *           offset 30: 30~60
+ *           offset 60: 60~90
  *     responses:
  *       200:
  *         description: 결과 정보
@@ -101,7 +121,10 @@ function querySelect(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['video_uid'],
+            req.paramBody['random_seed'],
+            req.paramBody['offset'],
             req.innerBody['type'],
+
         ]
     );
 }
