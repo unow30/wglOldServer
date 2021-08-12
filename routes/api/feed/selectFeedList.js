@@ -83,6 +83,21 @@
  *           영상 uid
  *           * 영상이 없을 경우 0
  *       - in: query
+ *         name: random_seed
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
+ *       - in: query
+ *         name: last_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - in: query
  *         name: keyword
  *         required: false
  *         schema:
@@ -98,7 +113,6 @@
  *         description: |
  *           해시태그 (영상 기준)
  *           * "핸드폰" 과 같이 #이 붙은 것만 검색됨
- *
  *
  *     responses:
  *       200:
@@ -165,6 +179,10 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'km');
     paramUtil.checkParam_noReturn(req.paramBody, 'category');
     paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
+    paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+
+
 
     if(!paramUtil.checkParam_return(req.paramBody, 'keyword')){
         req.paramBody['keyword'] = null
@@ -198,6 +216,8 @@ function querySelect(req, db_connection) {
             req.paramBody['ad_product_uid'],
             req.paramBody['video_uid'],
             req.paramBody['keyword'],
+            req.paramBody['random_seed'],
+            req.paramBody['last_uid'],
             req.paramBody['tag'],
             req.innerBody['type'],
         ]
