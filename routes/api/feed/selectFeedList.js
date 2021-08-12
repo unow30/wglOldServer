@@ -91,12 +91,17 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
- *         name: last_uid
+ *         name: offset
  *         default: 0
  *         required: true
  *         schema:
  *           type: number
  *           example: 0
+ *         description: |
+ *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
+ *           offset 0: 0~30
+ *           offset 30: 30~60
+ *           offset 60: 60~90
  *       - in: query
  *         name: keyword
  *         required: false
@@ -180,7 +185,7 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'category');
     paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
-    paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 
 
 
@@ -217,7 +222,7 @@ function querySelect(req, db_connection) {
             req.paramBody['video_uid'],
             req.paramBody['keyword'],
             req.paramBody['random_seed'],
-            req.paramBody['last_uid'],
+            req.paramBody['offset'],
             req.paramBody['tag'],
             req.innerBody['type'],
         ]
