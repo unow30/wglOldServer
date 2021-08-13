@@ -165,6 +165,8 @@ function checkCancelablePayment(req) {
         return req;
     }
 
+    return req;
+
 }
 
 function checkCancelableReward(req) {
