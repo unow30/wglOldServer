@@ -152,7 +152,7 @@ function checkCancelablePayment(req) {
         } else if (req.innerBody['cancel_info']["cancelable_price"] > req.innerBody['cancel_info']['cancelable_reward'] ) {
             req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']['cancelable_price'] - req.innerBody['cancel_info']["refund_payment"];
             req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["refund_payment"];
-            req.innerBody['cancel_info']['delivery_price'] -= req.innerBody['cancel_info']["refund_reward"];
+            req.innerBody['cancel_info']['price_delivery'] -= req.innerBody['cancel_info']["refund_reward"];
             console.log("실행됐다 ㅎㅎ")
             console.log("test1: " + req.innerBody['cancel_info']["refund_reward"])
             console.log("test2: " + req.innerBody['cancel_info']["refund_payment"])
