@@ -132,6 +132,14 @@ module.exports =  function (req, res, next) {
 
 
 function checkCancelablePayment(req) {
+
+
+    console.log("1: " + req.innerBody['cancel_info']["cancelable_price"])
+    console.log("2: " + req.innerBody['cancel_info']["cancelable_reward"])
+    console.log("3: " + req.innerBody['cancel_info']["refund_reward"] )
+    console.log("4: " + req.innerBody['cancel_info']["refund_payment"])
+
+
     if( req.innerBody['cancel_info']["refund_payment"] > req.innerBody['cancel_info']["cancelable_price"]
         && req.innerBody['cancel_info']['cancelable_price'] > 0) {
         req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
