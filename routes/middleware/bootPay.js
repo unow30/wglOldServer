@@ -35,23 +35,11 @@ module.exports =  function (req, res, next) {
 
 
                 req = checkCancelablePayment(req);
-                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
-
-                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
-
 
                 req = checkCancelableReward(req);
-                console.log("test2:" + req.innerBody['cancel_info']['refund_payment'])
-
-                console.log("test2:" + req.innerBody['cancel_info']['refund_reward'])
-
-
-
 
                 req = checkCancelableDelivery(req, _payment);
-                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
 
-                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
 
 
 
