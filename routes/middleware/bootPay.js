@@ -29,15 +29,31 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
+                console.log("ㅁㄴㅇ:" + JSON.stringify(req.innerBody['cancel_info']))
                 const _payment = req.innerBody['cancel_info']['refund_payment'];
 
 
 
                 req = checkCancelablePayment(req);
+                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
+
+                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
+
 
                 req = checkCancelableReward(req);
+                console.log("test2:" + req.innerBody['cancel_info']['refund_payment'])
+
+                console.log("test2:" + req.innerBody['cancel_info']['refund_reward'])
+
+
+
 
                 req = checkCancelableDelivery(req, _payment);
+                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
+
+                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
+
+
 
 
                 if(!checkCancelable(req) ) {
@@ -66,12 +82,16 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
-                req.innerBody['refund_price'] = refund_price;
+                // req.innerBody['refund_price'] = refund_price;
 
-                if(req.innerBody['cancel_info']['refund_price'] > 0 || req.innerBody['cancel_info']['refund_reward'] > 0)
+                if(req.innerBody['cancel_info']['refund_payment'] > 0 || req.innerBody['cancel_info']['refund_reward'] > 0)
                     await queryCancelablePrice(req, db_connection);
 
-                if(refund_price > 0) {
+
+                console.log("최종 result: " + req.innerBody['cancel_info']['refund_payment'])
+                console.log("최종 result: " + req.innerBody['cancel_info']['refund_reward'])
+
+                if(req.innerBody['cancel_info']['refund_payment']  > 0) {
                     RestClient.setConfig(
                         process.env.BOOTPAY_APPLICATION_ID,
                         process.env.BOOTPAY_PRIVATE_KEY,
@@ -84,7 +104,7 @@ module.exports =  function (req, res, next) {
                             if (token.status === 200) {
                                 RestClient.cancel({
                                     receiptId: req.innerBody['bootpay_info']['pg_receipt_id'],
-                                    price: refund_price,                               // "[[ 결제 취소할 금액 ]]"
+                                    price: req.innerBody['cancel_info']['refund_payment'] ,                               // "[[ 결제 취소할 금액 ]]"
                                     name: req.innerBody['bootpay_info']['nickname'],              // "[[ 취소자명 ]]"
                                     reason: req.paramBody['cancel_reason'] + req.paramBody['detail_reason'],   // "[[ 취소사유 ]]"
                                 }).then(function (response) {
@@ -130,7 +150,8 @@ function checkCancelablePayment(req) {
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
         return req;
     } else if(req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['refund_payment']){
-        req.innerBody['refund_reward'] = req.innerBody['cancel_info']["refund_payment"]
+        req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']["refund_payment"]
+        req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
         return req;
     }
 
@@ -139,7 +160,7 @@ function checkCancelablePayment(req) {
 function checkCancelableReward(req) {
     if(req.innerBody['cancel_info']['refund_payment'] >  req.innerBody['cancel_info']['cancelable_reward']
         && req.innerBody['cancel_info']['cancelable_price'] === 0) {
-        req.innerBody['refund_reward'] = req.innerBody['cancel_info']["cancelable_reward"]
+        req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']["cancelable_reward"]
     }
 
     return req;
@@ -148,7 +169,8 @@ function checkCancelableReward(req) {
 function checkCancelableDelivery(req, _payment) {
 
     // 배달비 + 취소 금액
-    if(req.innerBody['cancel_info']['order_product_count'] === 1) {
+    if(req.innerBody['cancel_info']['order_product_count'] === 1
+       && req.innerBody['cancel_info']['use_point'] > req.innerBody['cancel_info']['price_delivery']) {
         req.innerBody['cancel_info']["cancelable_price"] >= _payment ?
             req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery'] :
             req.innerBody['cancel_info']['refund_reward'] += req.innerBody['cancel_info']['price_delivery']
@@ -213,7 +235,7 @@ function queryReward(req, db_connection){
         , 'call w_seller_update_refund_reward'
         , [
             req.paramBody['order_product_uid'],
-            req.innerBody['refund_reward'],
+            req.innerBody['cancel_info']['refund_reward'],
         ]
 
     );
