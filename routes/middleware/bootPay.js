@@ -170,7 +170,7 @@ function checkCancelableDelivery(req, _payment) {
 
     // 배달비 + 취소 금액
     if(req.innerBody['cancel_info']['order_product_count'] === 1
-       && req.innerBody['cancel_info']['use_point'] > req.innerBody['cancel_info']['price_delivery']) {
+       && req.innerBody['cancel_info']['use_point'] < req.innerBody['cancel_info']['price_delivery']) {
         req.innerBody['cancel_info']["cancelable_price"] >= _payment ?
             req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery'] :
             req.innerBody['cancel_info']['refund_reward'] += req.innerBody['cancel_info']['price_delivery']
