@@ -35,16 +35,23 @@ module.exports =  function (req, res, next) {
 
 
                 req = checkCancelablePayment(req);
+                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
 
-                console.log("tlvkf")
-                console.log("1: " + req.innerBody['cancel_info']["cancelable_price"])
-                console.log("2: " + req.innerBody['cancel_info']["cancelable_reward"])
-                console.log("3: " + req.innerBody['cancel_info']["refund_reward"] )
-                console.log("4: " + req.innerBody['cancel_info']["refund_payment"])
+                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
+
+
                 req = checkCancelableReward(req);
+                console.log("test2:" + req.innerBody['cancel_info']['refund_payment'])
+
+                console.log("test2:" + req.innerBody['cancel_info']['refund_reward'])
+
+
+
 
                 req = checkCancelableDelivery(req, _payment);
+                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
 
+                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
 
 
 
@@ -137,15 +144,7 @@ module.exports =  function (req, res, next) {
 
 
 function checkCancelablePayment(req) {
-
-
-    console.log("1: " + req.innerBody['cancel_info']["cancelable_price"])
-    console.log("2: " + req.innerBody['cancel_info']["cancelable_reward"])
-    console.log("3: " + req.innerBody['cancel_info']["refund_reward"] )
-    console.log("4: " + req.innerBody['cancel_info']["refund_payment"])
-
-
-    if( req.innerBody['cancel_info']["refund_payment"] > req.innerBody['cancel_info']["cancelable_price"]
+    if( req.innerBody['cancel_info']["refund_payment"] + req.innerBody['cancel_info']['price_delivery'] > req.innerBody['cancel_info']["cancelable_price"]
         && req.innerBody['cancel_info']['cancelable_price'] > 0) {
         req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
@@ -159,13 +158,6 @@ function checkCancelablePayment(req) {
 }
 
 function checkCancelableReward(req) {
-
-    console.log("11: " + req.innerBody['cancel_info']["cancelable_price"])
-    console.log("22: " + req.innerBody['cancel_info']["cancelable_reward"])
-    console.log("33: " + req.innerBody['cancel_info']["refund_reward"] )
-    console.log("44: " + req.innerBody['cancel_info']["refund_payment"])
-
-
     if(req.innerBody['cancel_info']['refund_payment'] >  req.innerBody['cancel_info']['cancelable_reward']
         && req.innerBody['cancel_info']['cancelable_price'] === 0) {
         req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']["cancelable_reward"]
@@ -175,12 +167,6 @@ function checkCancelableReward(req) {
 }
 
 function checkCancelableDelivery(req, _payment) {
-
-    console.log("111: " + req.innerBody['cancel_info']["cancelable_price"])
-    console.log("222: " + req.innerBody['cancel_info']["cancelable_reward"])
-    console.log("333: " + req.innerBody['cancel_info']["refund_reward"] )
-    console.log("444: " + req.innerBody['cancel_info']["refund_payment"])
-
 
     // 배달비 + 취소 금액
     if(req.innerBody['cancel_info']['order_product_count'] === 1
