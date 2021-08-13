@@ -29,38 +29,47 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
-                refund_price = req.innerBody['cancel_info']['payment'];
+                const _payment = req.innerBody['cancel_info']['refund_payment'];
 
 
 
-                if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
-                    refund_reward = refund_price - req.innerBody['cancel_info']['cancelable_price'];
-                    refund_price = req.innerBody['cancel_info']["cancelable_price"];
-                }
+                req = checkCancelablePayment(req);
 
-                // 배달비 + 취소 금액
-                if(req.innerBody['cancel_info']['order_product_count'] === 1) {
-                    req.innerBody['cancel_info']["cancelable_price"] >= req.innerBody['cancel_info']['payment'] ?
-                            refund_price += req.innerBody['cancel_info']['price_delivery'] :
-                            refund_reward += req.innerBody['cancel_info']['price_delivery']
-                }
+                req = checkCancelableReward(req);
+
+                req = checkCancelableDelivery(req, _payment);
+
 
                 if(!checkCancelable(req) ) {
                     errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
                 }
 
-
-                req.innerBody['refund_reward'] =
-                    (req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['payment'])  ?
-                        refund_reward : req.innerBody['cancel_info']['cancelable_reward'];
+                // if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
+                //     refund_reward = refund_price - req.innerBody['cancel_info']['cancelable_price'];
+                //     refund_price = req.innerBody['cancel_info']["cancelable_price"];
+                // }
+                //
+                // // 배달비 + 취소 금액
+                // if(req.innerBody['cancel_info']['order_product_count'] === 1) {
+                //     req.innerBody['cancel_info']["cancelable_price"] >= req.innerBody['cancel_info']['payment'] ?
+                //             refund_price += req.innerBody['cancel_info']['price_delivery'] :
+                //             refund_reward += req.innerBody['cancel_info']['price_delivery']
+                // }
+                //
+                //
+                //
+                //
+                // req.innerBody['refund_reward'] =
+                //     (req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['payment'])  ?
+                //         refund_reward : req.innerBody['cancel_info']['cancelable_reward'];
 
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
                 req.innerBody['refund_price'] = refund_price;
 
-
-                await queryCancelablePrice(req, db_connection);
+                if(req.innerBody['cancel_info']['refund_price'] > 0 || req.innerBody['cancel_info']['refund_reward'] > 0)
+                    await queryCancelablePrice(req, db_connection);
 
                 if(refund_price > 0) {
                     RestClient.setConfig(
@@ -113,16 +122,45 @@ module.exports =  function (req, res, next) {
 
 }
 
+
+function checkCancelablePayment(req) {
+    if( req.innerBody['cancel_info']["refund_payment"] > req.innerBody['cancel_info']["cancelable_price"]
+        && req.innerBody['cancel_info']['cancelable_price'] > 0) {
+        req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
+        req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
+        return req;
+    } else if(req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['refund_payment']){
+        req.innerBody['refund_reward'] = req.innerBody['cancel_info']["refund_payment"]
+        return req;
+    }
+
+}
+
+function checkCancelableReward(req) {
+    if(req.innerBody['cancel_info']['refund_payment'] >  req.innerBody['cancel_info']['cancelable_reward']
+        && req.innerBody['cancel_info']['cancelable_price'] === 0) {
+        req.innerBody['refund_reward'] = req.innerBody['cancel_info']["cancelable_reward"]
+    }
+
+    return req;
+}
+
+function checkCancelableDelivery(req, _payment) {
+
+    // 배달비 + 취소 금액
+    if(req.innerBody['cancel_info']['order_product_count'] === 1) {
+        req.innerBody['cancel_info']["cancelable_price"] >= _payment ?
+            req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery'] :
+            req.innerBody['cancel_info']['refund_reward'] += req.innerBody['cancel_info']['price_delivery']
+    }
+
+    return req;
+}
+
 function checkCancelable(req) {
-    const cancelable = req.innerBody['cancel_info']["cancelable_price"] + req.innerBody["cancel_info"]["use_reward"] + req.innerBody["cancel_info"]["use_point"];
+    const cancelable = req.innerBody['cancel_info']["cancelable_price"] + req.innerBody["cancel_info"]["cancelable_reward"] + req.innerBody["cancel_info"]["use_point"];
 
-
-    console.log("@@@@#@#@#@#@#@")
-    console.log("cancelable :"  +  cancelable);
-
-    console.log("req.innerBody['cancel_info']['payment'] :"  +  req.innerBody['cancel_info']['payment']);
-
-    return (cancelable >= req.innerBody['cancel_info']['payment'])
+    return (cancelable >= req.innerBody['cancel_info']['refund_payment'])
             ? true : false;
 }
 
@@ -158,7 +196,8 @@ function queryCancelablePrice(req, db_connection) {
         , 'call proc_update_cancelable'
         , [
             req.paramBody['order_uid'],
-            req.innerBody['refund_price'],
+            req.innerBody['cancel_info']['refund_payment'],
+            req.innerBody['cancel_info']['refund_reward'],
             req.paramBody['order_product_uid'],
         ]
 
