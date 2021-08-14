@@ -90,7 +90,7 @@ module.exports =  function (req, res, next) {
 
                 // req.innerBody['refund_price'] = refund_price;
 
-                if(req.innerBody['cancel_info']['refund_payment'] > 0 || req.innerBody['cancel_info']['refund_reward'] > 0)
+                if(req.innerBody['cancel_info']['refund_payment'] > 0 || req.innerBody['cancel_info']['refund_reward'] > 0 || req.innerBody['cancel_info']['cancelable_point'] > 0)
                     await queryCancelablePrice(req, db_connection);
 
 
@@ -153,8 +153,9 @@ function checkCancelablePayment(req) {
 
 
     if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["refund_payment"] ) {
-        req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
+
+        checkRefundReward(req);
     }
 
 
@@ -184,6 +185,28 @@ function checkCancelablePayment(req) {
 
     return req;
 
+}
+
+
+function checkRefundReward(req) {
+
+    const undefined_refund_price = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']["cancelable_price"]
+
+
+    if( undefined_refund_price >= req.innerBody['cancel_info']['cancelable_reward'] ) {
+        req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']['cancelable_reward'];
+
+        req.innerBody['cancel_info']['cancelable_reward'] = 0;
+        req.innerBody['cancel_info']['cancelable_point'] -= undefined_refund_price - req.innerBody['cancel_info']['cancelable_reward'];
+    }
+    else if ( undefined_refund_price < req.innerBody['cancel_info']['cancelable_reward'] ) {
+        req.innerBody['cancel_info']['refund_reward'] = undefined_refund_price;
+        req.innerBody['cancel_info']['cancelable_reward'] -= undefined_refund_price;
+    }
+
+
+
+    return req;
 }
 
 function checkCancelableReward(req) {
@@ -260,6 +283,7 @@ function queryCancelablePrice(req, db_connection) {
             req.paramBody['order_uid'],
             req.innerBody['cancel_info']['refund_payment'],
             req.innerBody['cancel_info']['refund_reward'],
+            req.innerBody['cancel_info']['cancelable_point'],
             req.paramBody['order_product_uid'],
         ]
 
