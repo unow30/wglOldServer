@@ -154,8 +154,8 @@ function checkCancelablePayment(req) {
 
     if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["result_price"] ) {
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
-
-        checkRefundReward(req);
+        console.log("checkCancelablePayment 함수 로직 ")
+        req = checkRefundReward(req);
     }
 
 
@@ -196,8 +196,11 @@ function checkRefundReward(req) {
     if( undefined_refund_price >= req.innerBody['cancel_info']['cancelable_reward'] ) {
         req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']['cancelable_reward'];
 
-        req.innerBody['cancel_info']['cancelable_reward'] = 0;
+
         req.innerBody['cancel_info']['cancelable_point'] -= undefined_refund_price - req.innerBody['cancel_info']['cancelable_reward'];
+        req.innerBody['cancel_info']['cancelable_reward'] = 0;
+
+        console.log("checkRefundReward 함수 로직 ")
     }
     else if ( undefined_refund_price < req.innerBody['cancel_info']['cancelable_reward'] ) {
         req.innerBody['cancel_info']['refund_reward'] = undefined_refund_price;
