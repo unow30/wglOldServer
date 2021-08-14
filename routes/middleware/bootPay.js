@@ -33,32 +33,38 @@ module.exports =  function (req, res, next) {
                 const _payment = req.innerBody['cancel_info']['refund_payment'];
 
 
+                req = checkCancelableDelivery(req, _payment);
+                console.log("test3:" + req.innerBody['cancel_info']['refund_payment'])
 
+                console.log("test3:" + req.innerBody['cancel_info']['refund_reward'])
+
+
+                // ex code
                 req = checkCancelablePayment(req);
                 console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
 
                 console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
 
-
-                req = checkCancelableReward(req);
-                console.log("test2:" + req.innerBody['cancel_info']['refund_payment'])
-
-                console.log("test2:" + req.innerBody['cancel_info']['refund_reward'])
-
-
-
-
-                req = checkCancelableDelivery(req, _payment);
-                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
-
-                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
+                // ex code
+                // req = checkCancelableReward(req);
+                // console.log("test2:" + req.innerBody['cancel_info']['refund_payment'])
+                //
+                // console.log("test2:" + req.innerBody['cancel_info']['refund_reward'])
 
 
 
 
-                if(!checkCancelable(req) ) {
-                    errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
-                }
+                // req = checkCancelableDelivery(req, _payment);
+                // console.log("test3:" + req.innerBody['cancel_info']['refund_payment'])
+                //
+                // console.log("test3:" + req.innerBody['cancel_info']['refund_reward'])
+
+
+
+                // ex code
+                // if(!checkCancelable(req) ) {
+                //     errUtil.createCall(errCode.fail, `반품하기 위한 취소 금액이 부족합니다.`);
+                // }
 
                 // if( refund_price > req.innerBody['cancel_info']["cancelable_price"] ) {
                 //     refund_reward = refund_price - req.innerBody['cancel_info']['cancelable_price'];
@@ -144,32 +150,45 @@ module.exports =  function (req, res, next) {
 
 
 function checkCancelablePayment(req) {
-    if( req.innerBody['cancel_info']["refund_payment"] + req.innerBody['cancel_info']['price_delivery'] > req.innerBody['cancel_info']["cancelable_price"]
-        && req.innerBody['cancel_info']['cancelable_price'] > 0) {
-        if(req.innerBody['cancel_info']["cancelable_price"] < req.innerBody['cancel_info']['cancelable_reward'] ) {
-            req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
-            req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
-        } else if (req.innerBody['cancel_info']["cancelable_price"] > req.innerBody['cancel_info']['cancelable_reward'] ) {
-            req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']['cancelable_price'] - req.innerBody['cancel_info']["refund_payment"];
-            req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["refund_payment"];
-            req.innerBody['cancel_info']['price_delivery'] -= req.innerBody['cancel_info']["refund_reward"];
-            console.log("실행됐다 ㅎㅎ")
-            console.log("test1: " + req.innerBody['cancel_info']["refund_reward"])
-            console.log("test2: " + req.innerBody['cancel_info']["refund_payment"])
-        }
 
-        return req;
-    } else if(req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['refund_payment']){
-        req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']["refund_payment"]
+
+    if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["refund_payment"] ) {
+        req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
-        return req;
     }
+
+
+
+    // // 취소금액 + 배달가격 > 취소가능 금액    && 취소가능 금액 > 0
+    // if( req.innerBody['cancel_info']["refund_payment"] + req.innerBody['cancel_info']['price_delivery'] > req.innerBody['cancel_info']["cancelable_price"]
+    //     && req.innerBody['cancel_info']['cancelable_price'] > 0) {
+    //     // 취소 가능 금액 < 취소 가능 리워드
+    //     if(req.innerBody['cancel_info']["cancelable_price"] < req.innerBody['cancel_info']['cancelable_reward'] ) {
+    //         req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']['cancelable_price'];
+    //         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
+    //     }
+    //     // 취소 가능 금액 > 취소 가능 리워드
+    //     else if (req.innerBody['cancel_info']["cancelable_price"] > req.innerBody['cancel_info']['cancelable_reward'] ) {
+    //         req.innerBody['cancel_info']["refund_reward"] = req.innerBody['cancel_info']['cancelable_price'] - req.innerBody['cancel_info']["refund_payment"];
+    //         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["refund_payment"];
+    //         req.innerBody['cancel_info']['price_delivery'] -= req.innerBody['cancel_info']["refund_reward"];
+    //     }
+    //     return req;
+    // }
+    // // 취소 가능 리워드 >= 취소 금액
+    // else if( req.innerBody['cancel_info']['cancelable_reward'] >=  req.innerBody['cancel_info']['refund_payment'] ) {
+    //     req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']["refund_payment"]
+    //     req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
+    //     return req;
+    // }
 
     return req;
 
 }
 
 function checkCancelableReward(req) {
+
+    // 취소금액 > 취소 가능 리워드   && 취소가능 금액 === 0
     if(req.innerBody['cancel_info']['refund_payment'] >  req.innerBody['cancel_info']['cancelable_reward']
         && req.innerBody['cancel_info']['cancelable_price'] === 0) {
         req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']["cancelable_reward"]
@@ -180,13 +199,22 @@ function checkCancelableReward(req) {
 
 function checkCancelableDelivery(req, _payment) {
 
+
+
     // 배달비 + 취소 금액
-    if(req.innerBody['cancel_info']['order_product_count'] === 1
-       && req.innerBody['cancel_info']['use_point'] < req.innerBody['cancel_info']['price_delivery']) {
-        req.innerBody['cancel_info']["cancelable_price"] >= _payment ?
-            req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery'] :
-            req.innerBody['cancel_info']['refund_reward'] += req.innerBody['cancel_info']['price_delivery']
+    if(req.innerBody['cancel_info']['order_product_count'] === 1) {
+        req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery']
     }
+
+
+    // ex code
+    // // 배달비 + 취소 금액
+    // if(req.innerBody['cancel_info']['order_product_count'] === 1
+    //    && req.innerBody['cancel_info']['use_point'] < req.innerBody['cancel_info']['price_delivery']) {
+    //     req.innerBody['cancel_info']["cancelable_price"] >= _payment ?
+    //         req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery'] :
+    //         req.innerBody['cancel_info']['refund_reward'] += req.innerBody['cancel_info']['price_delivery']
+    // }
 
     return req;
 }
