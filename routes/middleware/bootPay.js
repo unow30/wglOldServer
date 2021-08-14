@@ -88,6 +88,8 @@ module.exports =  function (req, res, next) {
                 //         refund_reward : req.innerBody['cancel_info']['cancelable_reward'];
 
 
+                console.log("cex:"  + req.paramBody['order_product_uid'] + req.innerBody['cancel_info']['refund_reward'])
+
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
                 // req.innerBody['refund_price'] = refund_price;
