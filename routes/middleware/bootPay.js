@@ -94,6 +94,8 @@ module.exports =  function (req, res, next) {
 
                 // req.innerBody['refund_price'] = refund_price;
 
+
+                console.log("asdasdasdasdad")
                 if(req.innerBody['cancel_info']['refund_payment'] > 0 || req.innerBody['cancel_info']['refund_reward'] > 0 || req.innerBody['cancel_info']['cancelable_point'] > 0)
                     await queryCancelablePrice(req, db_connection);
 
