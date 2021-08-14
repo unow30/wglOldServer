@@ -29,6 +29,8 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info'] = await queryCancelInfo(req, db_connection);
 
+                req.innerBody['cancel_info']['result_price'] = req.innerBody['cancel_info']['refund_payment'];
+
                 console.log("ㅁㄴㅇ:" + JSON.stringify(req.innerBody['cancel_info']))
                 const _payment = req.innerBody['cancel_info']['refund_payment'];
 
@@ -229,6 +231,7 @@ function checkCancelableDelivery(req, _payment) {
 
     // 배달비 + 취소 금액
     if(req.innerBody['cancel_info']['order_product_count'] === 1) {
+        console.log("checkCancelableDelivery 함수 로직")
         req.innerBody['cancel_info']['result_price'] += req.innerBody['cancel_info']['price_delivery']
     }
 
