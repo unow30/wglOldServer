@@ -302,6 +302,7 @@ function queryCancelablePrice(req, db_connection) {
 
 function queryReward(req, db_connection){
     const _funcName = arguments.callee.name;
+    console.log("cex2:"  + req.paramBody['order_product_uid'] + req.innerBody['cancel_info']['refund_reward'])
 
     return mysqlUtil.querySingle(db_connection
         , 'call w_seller_update_refund_reward'
