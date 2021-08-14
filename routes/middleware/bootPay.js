@@ -103,7 +103,7 @@ module.exports =  function (req, res, next) {
                 console.log("최종 result: " + req.innerBody['cancel_info']['refund_payment'])
                 console.log("최종 result: " + req.innerBody['cancel_info']['refund_reward'])
 
-                if(req.innerBody['cancel_info']['refund_payment']  > 0) {
+                if(req.innerBody['cancel_info']['refund_payment']  > 99999999999) {
                     RestClient.setConfig(
                         process.env.BOOTPAY_APPLICATION_ID,
                         process.env.BOOTPAY_PRIVATE_KEY,
