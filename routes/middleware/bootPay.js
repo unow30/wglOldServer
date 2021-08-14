@@ -152,7 +152,7 @@ module.exports =  function (req, res, next) {
 function checkCancelablePayment(req) {
 
 
-    if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["refund_payment"] ) {
+    if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["result_price"] ) {
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
 
         checkRefundReward(req);
@@ -190,7 +190,7 @@ function checkCancelablePayment(req) {
 
 function checkRefundReward(req) {
 
-    const undefined_refund_price = req.innerBody['cancel_info']["refund_payment"] - req.innerBody['cancel_info']["cancelable_price"]
+    const undefined_refund_price = req.innerBody['cancel_info']["result_price"] - req.innerBody['cancel_info']["cancelable_price"]
 
 
     if( undefined_refund_price >= req.innerBody['cancel_info']['cancelable_reward'] ) {
@@ -226,7 +226,7 @@ function checkCancelableDelivery(req, _payment) {
 
     // 배달비 + 취소 금액
     if(req.innerBody['cancel_info']['order_product_count'] === 1) {
-        req.innerBody['cancel_info']['refund_payment'] += req.innerBody['cancel_info']['price_delivery']
+        req.innerBody['cancel_info']['result_price'] += req.innerBody['cancel_info']['price_delivery']
     }
 
 
