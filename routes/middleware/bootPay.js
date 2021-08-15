@@ -36,16 +36,16 @@ module.exports =  function (req, res, next) {
 
 
                 req = checkCancelableDelivery(req, _payment);
-                console.log("test3:" + req.innerBody['cancel_info']['refund_payment'])
+                console.log("refund_payment 1 : " + req.innerBody['cancel_info']['refund_payment'])
 
-                console.log("test3:" + req.innerBody['cancel_info']['refund_reward'])
+                console.log("refund_reward 1 : " + req.innerBody['cancel_info']['refund_reward'])
 
 
                 // ex code
                 req = checkCancelablePayment(req);
-                console.log("test1:" + req.innerBody['cancel_info']['refund_payment'])
+                console.log("refund_payment 2 :" + req.innerBody['cancel_info']['refund_payment'])
 
-                console.log("test1:" + req.innerBody['cancel_info']['refund_reward'])
+                console.log("refund_reward 2 :" + req.innerBody['cancel_info']['refund_reward'])
 
                 // ex code
                 // req = checkCancelableReward(req);
@@ -88,7 +88,7 @@ module.exports =  function (req, res, next) {
                 //         refund_reward : req.innerBody['cancel_info']['cancelable_reward'];
 
 
-                console.log("cex:"  + req.paramBody['order_product_uid'] + req.innerBody['cancel_info']['refund_reward'])
+
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
@@ -100,8 +100,8 @@ module.exports =  function (req, res, next) {
                     await queryCancelablePrice(req, db_connection);
 
 
-                console.log("최종 result: " + req.innerBody['cancel_info']['refund_payment'])
-                console.log("최종 result: " + req.innerBody['cancel_info']['refund_reward'])
+                console.log("최종 result refund_payment: " + req.innerBody['cancel_info']['refund_payment'])
+                console.log("최종 result: refund_reward: " + req.innerBody['cancel_info']['refund_reward'])
 
                 if(req.innerBody['cancel_info']['refund_payment']  > 99999999999) {
                     RestClient.setConfig(
@@ -304,7 +304,7 @@ function queryCancelablePrice(req, db_connection) {
 
 function queryReward(req, db_connection){
     const _funcName = arguments.callee.name;
-    console.log("cex2:"  + req.paramBody['order_product_uid'] + req.innerBody['cancel_info']['refund_reward'])
+
 
     return mysqlUtil.querySingle(db_connection
         , 'call w_seller_update_refund_reward'
