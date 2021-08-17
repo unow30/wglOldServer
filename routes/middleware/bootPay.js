@@ -20,8 +20,6 @@ module.exports =  function (req, res, next) {
 
     try {
         if (parseInt(req.paramBody["status"]) === 6) {
-            let refund_price = 0;
-            let refund_reward = 0;
 
 
             mysqlUtil.connectPool( async function (db_connection) {
@@ -103,7 +101,7 @@ module.exports =  function (req, res, next) {
                 console.log("최종 result refund_payment: " + req.innerBody['cancel_info']['refund_payment'])
                 console.log("최종 result: refund_reward: " + req.innerBody['cancel_info']['refund_reward'])
 
-                if(req.innerBody['cancel_info']['refund_payment']  > 99999999999) {
+                if(req.innerBody['cancel_info']['refund_payment']  > 0) {
                     RestClient.setConfig(
                         process.env.BOOTPAY_APPLICATION_ID,
                         process.env.BOOTPAY_PRIVATE_KEY,
