@@ -112,6 +112,7 @@ function queryList(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_profile_review_list'
         , [
+            req.headers['user_uid'],
             req.paramBody['user_uid'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
