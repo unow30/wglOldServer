@@ -142,6 +142,13 @@ const jwtUtil = require('../../../common/utils/jwtUtil');
 
 const errCode = require('../../../common/define/errCode');
 
+const axios = require('axios');
+const {log} = require("debug");
+
+axios.defaults.headers.common['Authorization'] = 'key=AAAAH1HxpKo:APA91bEGjPgOgXK2xZ-uqZHiR_PT69tO4knZt6ZCRpAXRESsnuY23MXWFneIQ-EALixYNkcUZg0iNczMW8eXc9ZLp6_dd1Kmz0t4rw5rJwboLwG-65hS0nyNps5OchEw72zP8dzlLNIa';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+
 let file_name = fileUtil.name(__filename);
 
 module.exports = function (req, res) {
@@ -168,9 +175,15 @@ module.exports = function (req, res) {
 
             req.innerBody['order_product_list'] = []
 
+            console.log('여기니?')
             for( let idx in req.paramBody['product_list'] ){
                 req.innerBody['product'] = req.paramBody['product_list'][idx]
                 let product = await queryProduct(req, db_connection)
+                const response = pushTokenFCM(req,res, product['push_token']);
+
+                console.log('여기니?2')
+                console.log('바보니?: ' + JSON.stringify(response));
+
                 req.innerBody['order_product_list'].push( product );
             }
 
@@ -289,3 +302,24 @@ function queryProduct(req, db_connection) {
 }
 
 
+async function pushTokenFCM(req, res, push_token) {
+
+
+    // const headers = {
+    //     'Content-Type' : 'application/json',
+    //     'Authorization' : 'key=AAAAH1HxpKo:APA91bEGjPgOgXK2xZ-uqZHiR_PT69tO4knZt6ZCRpAXRESsnuY23MXWFneIQ-EALixYNkcUZg0iNczMW8eXc9ZLp6_dd1Kmz0t4rw5rJwboLwG-65hS0nyNps5OchEw72zP8dzlLNIa'
+    // }
+    return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+
+            "to": push_token,
+            "priority": "high",
+            "notification": {
+                "title": "위글 주문 알림",
+                "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
+            }
+
+    }).catch((e) => console.log(e));
+
+
+
+}
