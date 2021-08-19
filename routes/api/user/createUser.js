@@ -169,9 +169,12 @@ module.exports = function (req, res) {
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
 
-            if( req.paramBody['filename'] && req.paramBody['filename'].length >= 4 ){
-                await queryUpdateImage(req, db_connection);
-            }
+
+            req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
+                                           req.paramBody['filename'] : "profile_default_image.png"
+            await queryUpdateImage(req, db_connection);
+
+
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
