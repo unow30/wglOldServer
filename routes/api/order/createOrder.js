@@ -174,18 +174,18 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['order_product_list'] = []
+            req.innerBody['push_token_list'] = []
 
-            console.log('여기니?')
             for( let idx in req.paramBody['product_list'] ){
                 req.innerBody['product'] = req.paramBody['product_list'][idx]
                 let product = await queryProduct(req, db_connection)
-                const response = pushTokenFCM(req,res, product['push_token']);
-
-                console.log('여기니?2')
-                console.log('바보니?: ' + JSON.stringify(response));
-
+                console.log("ASDASDAISDJASI:" + product['push_token']);
+                req.innerBody['push_token_list'].push(product['push_token']);
                 req.innerBody['order_product_list'].push( product );
             }
+            const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
+            console.log("asdasdasd:" + JSON.stringify(push_token_list))
+            pushTokenFCM(push_token_list);
 
             if(req.paramBody['use_reward'] > 0 ) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
@@ -302,22 +302,16 @@ function queryProduct(req, db_connection) {
 }
 
 
-async function pushTokenFCM(req, res, push_token) {
+async function pushTokenFCM(push_token_list) {
 
 
-    // const headers = {
-    //     'Content-Type' : 'application/json',
-    //     'Authorization' : 'key=AAAAH1HxpKo:APA91bEGjPgOgXK2xZ-uqZHiR_PT69tO4knZt6ZCRpAXRESsnuY23MXWFneIQ-EALixYNkcUZg0iNczMW8eXc9ZLp6_dd1Kmz0t4rw5rJwboLwG-65hS0nyNps5OchEw72zP8dzlLNIa'
-    // }
     return  await axios.post('https://fcm.googleapis.com/fcm/send', {
-
-            "to": push_token,
+            "registration_ids": push_token_list,
             "priority": "high",
             "notification": {
                 "title": "위글 주문 알림",
                 "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
             }
-
     }).catch((e) => console.log(e));
 
 
