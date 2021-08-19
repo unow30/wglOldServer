@@ -83,6 +83,7 @@ app.route('/video/count/view').put( require('./video/updateVideoCountView') )
 app.route('/video/review')
     .post( require('./video/createVideoReview') )
     .delete( require('./video/deleteVideoReview') )
+app.route('/video/search/list').get( require('./video/selectVideoSearchList') )
 app.route('/video/content').put( require('./video/updateVideoContent') )
 
 
