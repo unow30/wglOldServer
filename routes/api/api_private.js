@@ -85,7 +85,6 @@ app.route('/video/count/view').put( require('./video/updateVideoCountView') )
 app.route('/video/review')
     .post( require('./video/createVideoReview') )
     .delete( require('./video/deleteVideoReview') )
-app.route('/video/search/list').get( require('./video/selectVideoSearchList') )
 app.route('/video/content').put( require('./video/updateVideoContent') )
 
 
@@ -151,7 +150,7 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
  */
 app.route('/searchview').get( require('./searchView/selectSearchViewInfo') )
 app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )
-
+app.route('/searchview/search/list').get( require('./video/selectSearchViewSearchList') )
 
 
 

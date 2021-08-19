@@ -2,12 +2,12 @@
  * Created by gunucklee on 2021. 08. 19.
  *
  * @swagger
- * /api/private/video/search/list:
+ * /api/private/searchview/search/list:
  *   get:
  *     summary: 영상 검색 정보
  *     tags: [Video]
  *     description: |
- *       path : /api/private/video/search/list
+ *       path : /api/private/searchview/search/list
  *
  *       * 영상 검색 정보
  *
@@ -74,8 +74,8 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await querySelect(req, db_connection);
-
+            req.innerBody['video_list'] = await querySelect(req, db_connection);
+            req.innerBody['user_list'] = await queryUser(req, db_connection)
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -104,12 +104,23 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_video_search_list'
+        , 'call proc_select_searchview_search_list'
         , [
             req.headers['user_uid'],
             req.paramBody['keyword'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
+        ]
+    );
+}
+
+function queryUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_user_search_list'
+        , [
+            req.paramBody['keyword'],
         ]
     );
 }
