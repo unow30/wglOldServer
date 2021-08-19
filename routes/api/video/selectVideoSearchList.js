@@ -13,26 +13,6 @@
  *
  *     parameters:
  *       - in: query
- *         name: category
- *         required: true
- *         default: 65535
- *         schema:
- *           type: number
- *           example: 65535
- *         description: |
- *           카테고리 (비트 연산)
- *           ==> 65535 : 모든 상품
- *           ==> 멀티선택의 경우 코드 값을 합치면됨
- *           ==> ex) 1+8+32 = 41
- *           * 1 : 식품
- *           * 2 : 뷰티
- *           * 4 : 홈데코
- *           * 8 : 패션잡화
- *           * 16 : 반려동물
- *           * 32 : 유아
- *           * 64 : 스포츠레저
- *           * 128 : 식물
- *       - in: query
  *         name: random_seed
  *         required: true
  *         schema:
