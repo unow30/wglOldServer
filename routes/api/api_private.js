@@ -22,11 +22,13 @@ app.route('/user/bank/info').get( require('./user/selectUserBankInfo') )
 /**
  * product api
  */
+app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
 app.route('/product/detail').get( require('./product/selectProductDetail') )
 app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
 app.route('/product/review/list').get( require('./product/selectProductReviewList') )
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
 app.route('/product/video/list').get( require('./product/selectProductVideoList') )
+
 
 /**
  * cart api
