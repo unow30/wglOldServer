@@ -5,7 +5,7 @@
  * /api/private/searchview/search/list:
  *   get:
  *     summary: 영상 검색 정보
- *     tags: [Video]
+ *     tags: [SearchView]
  *     description: |
  *       path : /api/private/searchview/search/list
  *
