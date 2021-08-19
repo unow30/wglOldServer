@@ -107,7 +107,6 @@ function querySelect(req, db_connection) {
         , 'call proc_select_video_search_list'
         , [
             req.headers['user_uid'],
-            req.paramBody['category'],
             req.paramBody['keyword'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
