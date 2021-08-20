@@ -71,7 +71,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
-
+const fcmUtil = require('../../../common/utils/fcmUtil');
 
 const errCode = require('../../../common/define/errCode');
 
@@ -105,7 +105,9 @@ module.exports = function (req, res) {
 
                     case 5:
                         if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
-                            let reward = await queryUpdate(req, db_connection, req.innerBody['item']);
+                            req.innerBody['reward'] = await queryUpdate(req, db_connection, req.innerBody['item']);
+                            await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward']['push_token'], req.innerBody['reward']['product_name'],
+                                                               req.innerBody['reward']['amount'] )
                         }
                         break;
 

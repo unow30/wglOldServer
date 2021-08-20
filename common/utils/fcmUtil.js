@@ -24,8 +24,18 @@ module.exports = {
             "to": push_token,
             "priority": "high",
             "notification": {
-                "title": "리뷰 영상 등록",
+                "title": "리뷰 영상 등록 알림",
                 "body": `${product_name} 상품에 대한 리뷰 영상이 등록되었습니다.  판매자페이지를 영상 리뷰 관리 메뉴에서 확인 가능합니다.`,
+            }
+        }).catch((e) => console.log(e));
+    },
+    fcmRewardVideoSingle : async function(push_token, product_name, reward_amount){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "to": push_token,
+            "priority": "high",
+            "notification": {
+                "title": "리워드 지급 알림",
+                "body": `${product_name} 상품에 대한 리뷰 리워드 ${reward_amount}원이 지급 되었습니다.`,
             }
         }).catch((e) => console.log(e));
     },
