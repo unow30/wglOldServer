@@ -73,6 +73,9 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
 
+            console.log("push_token: "  + req.innerBody['push_token'])
+            console.log("product_name: "  + req.innerBody['product_name'])
+
             await fcmUtil.fcmReviewVideoSingle(req.innerBody['push_token'], req.innerBody['product_name'])
 
             deleteBody(req)
