@@ -52,6 +52,7 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+const fcmUtil = require('../../../common/utils/fcmUtil');
 
 let file_name = fileUtil.name(__filename);
 
@@ -71,6 +72,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
+
+            await fcmUtil.fcmReviewVideoSingle(req.innerBody['item']['push_token'], req.innerBody['item']['product_name'])
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);

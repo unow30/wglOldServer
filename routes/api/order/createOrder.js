@@ -141,7 +141,7 @@ const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
 
 const errCode = require('../../../common/define/errCode');
-
+const fcmUtil = require('../../../common/utils/fcmUtil');
 const axios = require('axios');
 const {log} = require("debug");
 
@@ -185,7 +185,10 @@ module.exports = function (req, res) {
             }
             const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
             console.log("asdasdasd:" + JSON.stringify(push_token_list))
-            pushTokenFCM(push_token_list);
+
+            await fcmUtil.fcmCreateOrderList(push_token_list);
+
+            // pushTokenFCM(push_token_list);
 
             if(req.paramBody['use_reward'] > 0 ) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
@@ -302,18 +305,18 @@ function queryProduct(req, db_connection) {
 }
 
 
-async function pushTokenFCM(push_token_list) {
-
-
-    return  await axios.post('https://fcm.googleapis.com/fcm/send', {
-            "registration_ids": push_token_list,
-            "priority": "high",
-            "notification": {
-                "title": "위글 주문 알림",
-                "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
-            }
-    }).catch((e) => console.log(e));
-
-
-
-}
+// async function pushTokenFCM(push_token_list) {
+//
+//
+//     return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+//             "registration_ids": push_token_list,
+//             "priority": "high",
+//             "notification": {
+//                 "title": "위글 주문 알림",
+//                 "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
+//             }
+//     }).catch((e) => console.log(e));
+//
+//
+//
+// }
