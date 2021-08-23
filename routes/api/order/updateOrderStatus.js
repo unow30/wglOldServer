@@ -195,12 +195,12 @@ function queryUpdate(req, db_connection, item) {
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_reward'
         , [
-            req.headers['user_uid'],
+            item['reward_user_uid'],
             item['product_uid'],
             item['seller_uid'],
             item['video_uid'],
-
             item['order_uid'],
+            item['order_no'],
             reward_value,  // 결제 금액의 5% 지급
             `[${item['name']}] 리워드 적립`,
             // req.paramBody['status'],
