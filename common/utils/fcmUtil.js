@@ -13,9 +13,10 @@ module.exports = {
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "registration_ids": push_token_list,
             "priority": "high",
-            "notification": {
+            "data": {
                 "title": "위글 주문 알림",
-                "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
+                "message": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
+                "channel" : "주문 알림",
             }
         }).catch((e) => console.log(e));
     },
@@ -23,9 +24,10 @@ module.exports = {
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "to": push_token,
             "priority": "high",
-            "notification": {
+            "data": {
                 "title": "리뷰 영상 등록 알림",
-                "body": `${product_name} 상품에 대한 리뷰 영상이 등록되었습니다.  판매자페이지를 영상 리뷰 관리 메뉴에서 확인 가능합니다.`,
+                "message": `${product_name} 상품에 대한 리뷰 영상이 등록되었습니다.  판매자페이지를 영상 리뷰 관리 메뉴에서 확인 가능합니다.`,
+                "channel" : "리뷰 영상 등록 알림",
             }
         }).catch((e) => console.log(e));
     },
@@ -33,9 +35,10 @@ module.exports = {
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "to": push_token,
             "priority": "high",
-            "notification": {
+            "data": {
                 "title": "리워드 지급 알림",
-                "body": `${product_name} 상품에 대한 리뷰 리워드 ${reward_amount}원이 지급 되었습니다.`,
+                "message": `${product_name} 상품에 대한 리뷰 리워드 ${reward_amount}원이 지급 되었습니다.`,
+                "channel" : "리워드 알림",
             }
         }).catch((e) => console.log(e));
     },
