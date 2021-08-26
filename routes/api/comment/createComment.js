@@ -75,8 +75,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-
-            await fcmUtil.fcmVideoCommentSingle(req.innerBody['item']['push_token'],req.innerBody['item']['nickname'], req.innerBody['item']['content']);
+            if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid'])
+                await fcmUtil.fcmVideoCommentSingle(req.innerBody['item']['push_token'],req.innerBody['item']['nickname'], req.innerBody['item']['content']);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
