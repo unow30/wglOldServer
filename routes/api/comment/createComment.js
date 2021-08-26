@@ -53,6 +53,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
+const fcmUtil = require('../../../common/utils/fcmUtil');
 
 const errCode = require('../../../common/define/errCode');
 
@@ -74,6 +75,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
+
+            await fcmUtil.fcmVideoCommentSingle(req.innerBody['item']['push_token'],req.innerBody['item']['nickname'], req.innerBody['item']['content']);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);

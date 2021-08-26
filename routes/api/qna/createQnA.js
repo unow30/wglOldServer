@@ -78,6 +78,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
+const fcmUtil = require('../../../common/utils/fcmUtil');
 
 const errCode = require('../../../common/define/errCode');
 
@@ -104,6 +105,12 @@ module.exports = function (req, res) {
                 return
             }
             req.innerBody['item'] = await query(req, db_connection);
+
+            const question_type = convertType(req.innerBody['item']['type'])
+
+            await fcmUtil.fcmProductQnASingle(req.innerBody['item']['push_token'], req.innerBody['item']['product_name']
+                                            , question_type, req.innerBody['item']['question']);
+
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -163,6 +170,34 @@ function queryCheck(req, db_connection) {
             req.paramBody['content'],
         ]
     );
+}
+
+
+function convertType(type) {
+    let question_type = '';
+    switch (type) {
+        case 1 :
+            question_type = '상품'
+            break;
+        case 2:
+            question_type = '배송'
+            break;
+        case 3:
+            question_type = '반품'
+            break;
+        case 4:
+            question_type = '교환'
+            break;
+        case 5:
+            question_type = '환불'
+            break;
+        case 6:
+            question_type = '기타'
+            break;
+    }
+
+
+    return question_type;
 }
 
 

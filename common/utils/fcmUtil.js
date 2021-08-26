@@ -42,4 +42,27 @@ module.exports = {
             }
         }).catch((e) => console.log(e));
     },
+    fcmVideoCommentSingle : async function(push_token, user_nickname, comment_content){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "to": push_token,
+            "priority": "high",
+            "data": {
+                "title": "댓글 등록 알림",
+                "message": `${user_nickname}님이 회원님의 영상에 댓글을 달았습니다. : ${comment_content}`,
+                "channel" : "댓글 알림",
+            }
+        }).catch((e) => console.log(e));
+    },
+    fcmProductQnASingle : async function(push_token, product_name, question_type, question_content){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "to": push_token,
+            "priority": "high",
+            "data": {
+                "title": "문의 등록 알림",
+                "message": `${product_name}에 대한 ${question_type} 문의가 등록되었습니다. 판매자 페이지를 확인해주세요. : ${question_content}`,
+                "channel" : "문의 알림",
+            }
+        }).catch((e) => console.log(e));
+    },
+
 };
