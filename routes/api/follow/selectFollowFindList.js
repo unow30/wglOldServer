@@ -13,6 +13,13 @@
  *
  *     parameters:
  *       - in: query
+ *         name: search_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 검색 uid
+ *       - in: query
  *         name: find
  *         default: 도두녁
  *         required: true
@@ -108,7 +115,7 @@ function querySelect(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_follow_find_list'
         , [
-            req.headers['user_uid'],
+            req.paramBody['search_uid'],
             req.paramBody['find'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
