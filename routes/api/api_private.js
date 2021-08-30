@@ -95,6 +95,11 @@ app.route('/video/content').put( require('./video/updateVideoContent') )
 app.route('/comment')
     .post( require('./comment/createComment') )
     .delete( require('./comment/deleteComment') )
+
+app.route('/comment/nested')
+    .post( require('./comment/createNestedComment') )
+    .delete( require('./comment/deleteNestedComment') )
+
 app.route('/comment/list').get( require('./comment/selectCommentList') )
 
 /**

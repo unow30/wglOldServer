@@ -53,6 +53,17 @@ module.exports = {
             }
         }).catch((e) => console.log(e));
     },
+    fcmNestedCommentSingle : async function(push_token, user_nickname, comment_content){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "to": push_token,
+            "priority": "high",
+            "data": {
+                "title": "대댓글 등록 알림",
+                "message": `${user_nickname}님이 회원님의 댓글에 대댓글을 달았습니다. : ${comment_content}`,
+                "channel" : "대댓글 알림",
+            }
+        }).catch((e) => console.log(e));
+    },
     fcmProductQnASingle : async function(push_token, product_name, question_type, question_content){
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "to": push_token,
