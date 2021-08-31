@@ -106,8 +106,7 @@ module.exports = function (req, res) {
                     case 5:
                         if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
                             req.innerBody['reward'] = await queryUpdate(req, db_connection, req.innerBody['item']);
-                            await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward']['push_token'], req.innerBody['reward']['product_name'],
-                                                               req.innerBody['reward']['amount'] )
+                            await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward'])
                         }
                         break;
 

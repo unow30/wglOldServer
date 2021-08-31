@@ -108,8 +108,7 @@ module.exports = function (req, res) {
 
             const question_type = convertType(req.innerBody['item']['type'])
 
-            await fcmUtil.fcmProductQnASingle(req.innerBody['item']['push_token'], req.innerBody['item']['product_name']
-                                            , question_type, req.innerBody['item']['question']);
+            await fcmUtil.fcmProductQnASingle(req.innerBody['item'], question_type);
 
 
             deleteBody(req)
