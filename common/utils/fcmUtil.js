@@ -13,6 +13,9 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 // 3: 댓글 등록 알림
 // 4: 대댓글 등록 알림
 // 5: 문의 등록 알림
+// 판매자사이트
+// 6: 주문 상품 알림
+// 7: 문의사항 답변 등록 알림
 
 module.exports = {
 
