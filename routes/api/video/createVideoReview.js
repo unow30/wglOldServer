@@ -73,7 +73,8 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await query(req, db_connection);
 
-            await fcmUtil.fcmReviewVideoSingle(req.innerBody['item']['push_token'], req.innerBody['item']['product_name'])
+            await fcmUtil.fcmReviewVideoSingle(req.innerBody['item']['push_token'], req.innerBody['item']['product_name'],
+                                               req.innerBody['item']['uid'])
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
