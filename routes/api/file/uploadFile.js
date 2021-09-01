@@ -116,7 +116,7 @@ module.exports = async function (req, res) {
 
                 console.log("finalname mediaconvert :" + final_name)
 
-                req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', 'Thumbnail.0000000.jpg');
+                req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', 'Thumbnail.0000001.jpg');
             }
 
             req.innerBody['filename'] = final_name

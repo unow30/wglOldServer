@@ -124,14 +124,14 @@ module.exports =  function (final_name, video_width, video_height) {
                                     "Container": "RAW"
                                 },
                                 "VideoDescription": {
-                                    "Width": 1080,
-                                    "Height": 1920,
+                                    "Width": 574,
+                                    "Height": 1024,
                                     "CodecSettings": {
                                         "Codec": "FRAME_CAPTURE",
                                         "FrameCaptureSettings": {
                                             "FramerateNumerator": 30,
-                                            "FramerateDenominator": 88,
-                                            "MaxCaptures": 1,
+                                            "FramerateDenominator": 90,
+                                            "MaxCaptures": 2,
                                             "Quality": 80
                                         }
                                     }
@@ -264,14 +264,14 @@ module.exports =  function (final_name, video_width, video_height) {
                                     "Container": "RAW"
                                 },
                                 "VideoDescription": {
-                                    "Width": 1080,
-                                    "Height": 1920,
+                                    "Width": 574,
+                                    "Height": 1024,
                                     "CodecSettings": {
                                         "Codec": "FRAME_CAPTURE",
                                         "FrameCaptureSettings": {
                                             "FramerateNumerator": 30,
-                                            "FramerateDenominator": 88,
-                                            "MaxCaptures": 1,
+                                            "FramerateDenominator": 90,
+                                            "MaxCaptures": 2,
                                             "Quality": 80
                                         }
                                     }
