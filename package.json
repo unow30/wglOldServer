@@ -25,6 +25,7 @@
     "sharp": "^0.27.0",
     "swagger-jsdoc": "^6.0.0-rc.5",
     "swagger-ui-express": "^4.1.5",
-    "@bootpay/server-rest-client": "^1.0.7"
+    "@bootpay/server-rest-client": "^1.0.7",
+    "aligoapi": "^1.1.3"
   }
 }

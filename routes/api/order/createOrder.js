@@ -142,6 +142,8 @@ const jwtUtil = require('../../../common/utils/jwtUtil');
 
 const errCode = require('../../../common/define/errCode');
 const fcmUtil = require('../../../common/utils/fcmUtil');
+const aligoUtil = require('../../../common/utils/aligoUtil');
+
 const axios = require('axios');
 const {log} = require("debug");
 
@@ -175,18 +177,25 @@ module.exports = function (req, res) {
 
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
-
+            req.innerBody['alrim_msg_list'] = []
             for( let idx in req.paramBody['product_list'] ){
                 req.innerBody['product'] = req.paramBody['product_list'][idx]
                 let product = await queryProduct(req, db_connection)
-                console.log("ASDASDAISDJASI:" + product['push_token']);
+
                 req.innerBody['push_token_list'].push(product['push_token']);
                 req.innerBody['order_product_list'].push( product );
-            }
-            const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
-            console.log("asdasdasd:" + JSON.stringify(push_token_list))
 
-            await fcmUtil.fcmCreateOrderList(push_token_list);
+
+                req.innerBody['alrim_msg_list'][idx] = {};
+                req.innerBody['alrim_msg_list'][idx].phone = product['phone']
+                req.innerBody['alrim_msg_list'][idx].name = product['name']
+                req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
+            }
+
+            await alarm(req, res)
+
+
+
 
             // pushTokenFCM(push_token_list);
 
@@ -305,18 +314,45 @@ function queryProduct(req, db_connection) {
 }
 
 
-// async function pushTokenFCM(push_token_list) {
-//
-//
-//     return  await axios.post('https://fcm.googleapis.com/fcm/send', {
-//             "registration_ids": push_token_list,
-//             "priority": "high",
-//             "notification": {
-//                 "title": "위글 주문 알림",
-//                 "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
-//             }
-//     }).catch((e) => console.log(e));
-//
-//
-//
-// }
+async function alarm(req, res) {
+    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
+    await fcmUtil.fcmCreateOrderList(push_token_list);
+
+
+    req.body= {
+        type: 's',
+        time: '9999'
+    }
+    await aligoUtil.createToken(req, res);
+
+
+    req.body= {
+        senderkey: `${process.env.ALIGO_SENDERKEY}`,
+        tpl_code: `TF_6863`,
+        sender: `025580612`,
+        subject_1: `상품 주문 알림(판매자)`,
+    }
+
+     let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
+         if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
+         return prev;
+     }, []);
+
+
+    for (let idx in alrim_msg_distinc_list) {
+        idx = parseInt(idx);
+        req.body[`receiver_${idx+1}`] = alrim_msg_distinc_list[idx]['phone']
+        req.body[`message_${idx+1}`] = setArimMessage(alrim_msg_distinc_list, idx)
+    }
+    await aligoUtil.alimSend(req, res);
+}
+
+
+function setArimMessage(alrim_msg_distinc_list, idx) {
+    console.log("WOQIJCOEIWQJEOQWIEJO")
+    return `상품 주문 알림
+
+${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
+
+□ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
+}
