@@ -339,8 +339,9 @@ async function alarm(req, res) {
      }, []);
 
 
+    let cnt = 1;
     for (let idx in alrim_msg_distinc_list) {
-        let cnt = 1;
+
         idx = parseInt(idx);
         if(alrim_msg_distinc_list[idx]['phone'] && alrim_msg_distinc_list[idx]['phone'].length > 4) {
             req.body[`receiver_${cnt}`] = alrim_msg_distinc_list[idx]['phone']
