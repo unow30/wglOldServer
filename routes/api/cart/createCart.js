@@ -86,7 +86,7 @@ module.exports = function (req, res) {
             let check = await queryCheck(req, db_connection);
 
             if( check  && check['video_uid'] != req.paramBody['video_uid']){
-                errUtil.createCall(errCode.already, `이미 장바구니에 담겨 있습니다.`)
+                errUtil.createCall(errCode.already, `이미 해당 상품이 장바구니에 담겨 있습니다.`)
                 return
             }
             req.innerBody['item'] = await query(req, db_connection);
