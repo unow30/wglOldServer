@@ -63,7 +63,7 @@ module.exports = {
             "priority": "high",
             "data": {
                 "title": "댓글 등록 알림",
-                "message": `${item['user_nickname']}님이 회원님의 영상에 댓글을 달았습니다. : ${item['comment_content']}`,
+                "message": `${item['nickname']}님이 회원님의 영상에 댓글을 달았습니다. : ${item['content']}`,
                 "channel" : "댓글 알림",
                 "video_uid" : `${item['video_uid']}`,
                 "fcm_type" : "3",
