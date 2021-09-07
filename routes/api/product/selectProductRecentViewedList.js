@@ -11,6 +11,17 @@
  *
  *       * 최근 본 상품 목록
  *
+ *     parameters:
+ *       - in: query
+ *         name: last_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           목록 마지막 uid (처음일 경우 0)
+ *
  *     responses:
  *       200:
  *         description: 결과 정보
