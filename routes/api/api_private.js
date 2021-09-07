@@ -28,6 +28,9 @@ app.route('/product/feed/list').get( require('./product/selectProductFeedList') 
 app.route('/product/review/list').get( require('./product/selectProductReviewList') )
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
 app.route('/product/video/list').get( require('./product/selectProductVideoList') )
+app.route('/product/recent/viewed')
+    .put(require('./product/updateProductRecentViewed'))
+    .get( require('./product/selectProductRecentViewedList') )
 
 
 /**
