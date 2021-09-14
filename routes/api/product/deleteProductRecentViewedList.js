@@ -68,9 +68,25 @@ module.exports = function (req, res) {
             // console.log("@OIQCJEOI: " + JSON.stringify(recent_viewed_uid_list[0]))
 
             req.innerBody['delete_result'] = [];
-            for( let idx in req.paramBody['recent_viewed_uid_list'] ){
 
-                req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list'][idx]
+            if(req.paramBody['recent_viewed_uid_list'].length > 1) {
+                for( let idx in req.paramBody['recent_viewed_uid_list'] ){
+
+                    req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list'][idx]
+
+                    req.innerBody['item'] = await queryCheck(req, db_connection);
+
+                    if (!req.innerBody['item']) {
+                        errUtil.createCall(errCode.empty, `존재하지 않는 최근 본 상품입니다.`)
+                        return
+                    }
+
+                    await query(req, db_connection)
+
+                    req.innerBody['delete_result'].push( req.innerBody['item'] )
+                }
+            } else {
+                req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list']
 
                 req.innerBody['item'] = await queryCheck(req, db_connection);
 
@@ -83,6 +99,8 @@ module.exports = function (req, res) {
 
                 req.innerBody['delete_result'].push( req.innerBody['item'] )
             }
+
+
 
             req.innerBody['success'] = '최근 본 상품 삭제가 완료되었습니다.'
 
