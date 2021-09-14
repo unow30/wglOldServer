@@ -62,6 +62,7 @@ module.exports = function (req, res) {
 
 
             // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYzMTA5MzE4NCwiZXhwIjoxNjM5NzMzMTg0fQ.9FRmvhWidb8ou1dk5sCVFImcjUoDEd6Ln5UCypYWv1Y
+            console.log("@OIQCJEOI2: " + JSON.stringify(req.paramBody['recent_viewed_uid_list']))
             const recent_viewed_uid_list = req.paramBody['recent_viewed_uid_list'].split(",")
             console.log("@OIQCJEOI: " + JSON.stringify(recent_viewed_uid_list))
             console.log("@OIQCJEOI: " + JSON.stringify(recent_viewed_uid_list[0]))
