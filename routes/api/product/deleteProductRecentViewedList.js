@@ -71,7 +71,7 @@ module.exports = function (req, res) {
 
             console.log(Array.isArray(req.paramBody['recent_viewed_uid_list']));
 
-            if(Array.isArray(req.paramBody['recent_viewed_uid_list'].length)) {
+            if(Array.isArray(req.paramBody['recent_viewed_uid_list'])) {
                 for( let idx in req.paramBody['recent_viewed_uid_list'] ){
 
                     req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list'][idx]
