@@ -69,7 +69,9 @@ module.exports = function (req, res) {
 
             req.innerBody['delete_result'] = [];
 
-            if(req.paramBody['recent_viewed_uid_list'].length > 1) {
+            console.log(Array.isArray(req.paramBody['recent_viewed_uid_list']));
+
+            if(Array.isArray(req.paramBody['recent_viewed_uid_list'].length)) {
                 for( let idx in req.paramBody['recent_viewed_uid_list'] ){
 
                     req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list'][idx]
