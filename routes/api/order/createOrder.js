@@ -16,6 +16,13 @@
  *         name: body
  *         description: |
  *           상품 구매
+ *
+ *           payment_method
+ *           * 0: 신용카드
+ *           * 1: 카카오페이
+ *           * 2: 무통장입금
+ *           * 3: 가상계좌
+ *           * 4: 네이버페이
  *         schema:
  *           type: object
  *           required:
