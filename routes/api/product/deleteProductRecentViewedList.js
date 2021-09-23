@@ -21,6 +21,14 @@
  *           type: integer
  *           example: 1
  *         description: 최근 본 상품 uid
+ *       - in: query
+ *         name: is_select_all
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: 전체 선택 활성화 여부
  *
  *     responses:
  *       200:
@@ -61,20 +69,49 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
 
-            // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYzMTA5MzE4NCwiZXhwIjoxNjM5NzMzMTg0fQ.9FRmvhWidb8ou1dk5sCVFImcjUoDEd6Ln5UCypYWv1Y
             console.log("@OIQCJEOI2: " + JSON.stringify(req.paramBody['recent_viewed_uid_list']))
-            // const recent_viewed_uid_list = req.paramBody['recent_viewed_uid_list'].split(",")
-            // console.log("@OIQCJEOI: " + JSON.stringify(recent_viewed_uid_list))
-            // console.log("@OIQCJEOI: " + JSON.stringify(recent_viewed_uid_list[0]))
+            console.log("@OIQCJEOI1: " + req.paramBody['recent_viewed_uid_list'])
 
             req.innerBody['delete_result'] = [];
 
             console.log(Array.isArray(req.paramBody['recent_viewed_uid_list']));
 
+
+
             if(Array.isArray(req.paramBody['recent_viewed_uid_list'])) {
+
                 for( let idx in req.paramBody['recent_viewed_uid_list'] ){
 
                     req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list'][idx]
+
+                    if(req.paramBody['is_select_all'] === 0 ) {
+                        req.innerBody['item'] = await queryCheck(req, db_connection);
+
+                        if (!req.innerBody['item']) {
+                            errUtil.createCall(errCode.empty, `존재하지 않는 최근 본 상품입니다.`)
+                            return
+                        }
+
+                        await query(req, db_connection)
+                    }
+                    else if (req.paramBody['is_select_all'] === 1 ) {
+                        req.innerBody['delete_array'] += req.paramBody['recent_viewed_uid_list'][idx] + ',';
+                    }
+
+
+
+                    req.innerBody['delete_result'].push( req.innerBody['item'] )
+                }
+
+                req.innerBody['delete_array'].slice(0, -1);
+
+                req.innerBody['delete_result'] = await query2(req, db_connection)
+
+            } else {
+
+                if(req.paramBody['is_select_all'] === 0 ) {
+
+                    req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list']
 
                     req.innerBody['item'] = await queryCheck(req, db_connection);
 
@@ -87,21 +124,12 @@ module.exports = function (req, res) {
 
                     req.innerBody['delete_result'].push( req.innerBody['item'] )
                 }
-            } else {
-                req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list']
-
-                req.innerBody['item'] = await queryCheck(req, db_connection);
-
-                if (!req.innerBody['item']) {
-                    errUtil.createCall(errCode.empty, `존재하지 않는 최근 본 상품입니다.`)
-                    return
+                else if (req.paramBody['is_select_all'] === 1 ) {
+                    req.innerBody['delete_array'] = req.paramBody['recent_viewed_uid_list']
+                    req.innerBody['delete_result'] = await query2(req, db_connection)
                 }
 
-                await query(req, db_connection)
-
-                req.innerBody['delete_result'].push( req.innerBody['item'] )
             }
-
 
 
             req.innerBody['success'] = '최근 본 상품 삭제가 완료되었습니다.'
@@ -138,6 +166,18 @@ function query(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.innerBody['recent_viewed_uid'],
+        ]
+    );
+}
+
+function query2(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_delete_recent_viewed2'
+        , [
+            req.headers['user_uid'],
+            req.innerBody['delete_array'],
         ]
     );
 }
