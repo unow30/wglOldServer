@@ -108,6 +108,8 @@ module.exports = function (req, res) {
                     console.log("ASDOIASJDAOSID:" + req.innerBody['delete_array']);
                     req.innerBody['delete_array'].substr(0, req.innerBody['delete_array'].length - 1);
 
+                    console.log("ASDOIASJDAOSID1321231:" + req.innerBody['delete_array']);
+
                     req.innerBody['delete_result'] = await query2(req, db_connection)
                 }
             } else {
