@@ -103,11 +103,11 @@ module.exports = function (req, res) {
 
 
                 }
+                if (req.paramBody['is_select_all'] === 1 ) {
+                    req.innerBody['delete_array'].substr(0, req.innerBody['delete_array'].length - 1);
 
-                req.innerBody['delete_array'].slice(0, -1);
-
-                req.innerBody['delete_result'] = await query2(req, db_connection)
-
+                    req.innerBody['delete_result'] = await query2(req, db_connection)
+                }
             } else {
 
                 if(req.paramBody['is_select_all'] === 0 ) {
@@ -127,6 +127,7 @@ module.exports = function (req, res) {
                 }
                 else if (req.paramBody['is_select_all'] === 1 ) {
                     req.innerBody['delete_array'] = req.paramBody['recent_viewed_uid_list']
+                    req.innerBody['delete_array'] = req.innerBody['delete_array'] ? req.innerBody['delete_array'] : '';
                     req.innerBody['delete_result'] = await query2(req, db_connection)
                 }
 
