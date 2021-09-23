@@ -93,14 +93,15 @@ module.exports = function (req, res) {
                         }
 
                         await query(req, db_connection)
+
+                        req.innerBody['delete_result'].push( req.innerBody['item'] )
+
                     }
                     else if (req.paramBody['is_select_all'] === 1 ) {
                         req.innerBody['delete_array'] += req.paramBody['recent_viewed_uid_list'][idx] + ',';
                     }
 
 
-
-                    req.innerBody['delete_result'].push( req.innerBody['item'] )
                 }
 
                 req.innerBody['delete_array'].slice(0, -1);
