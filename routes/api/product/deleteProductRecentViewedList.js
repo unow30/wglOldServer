@@ -73,6 +73,7 @@ module.exports = function (req, res) {
             console.log("@OIQCJEOI1: " + req.paramBody['recent_viewed_uid_list'])
 
             req.innerBody['delete_result'] = [];
+            req.innerBody['delete_array'] = '';
 
             console.log(Array.isArray(req.paramBody['recent_viewed_uid_list']));
 
@@ -84,7 +85,7 @@ module.exports = function (req, res) {
 
                     req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list'][idx]
 
-                    if(req.paramBody['is_select_all'] === 0 ) {
+                    if(parseInt(req.paramBody['is_select_all']) === 0 ) {
                         req.innerBody['item'] = await queryCheck(req, db_connection);
 
                         if (!req.innerBody['item']) {
@@ -97,20 +98,21 @@ module.exports = function (req, res) {
                         req.innerBody['delete_result'].push( req.innerBody['item'] )
 
                     }
-                    else if (req.paramBody['is_select_all'] === 1 ) {
+                    else if (parseInt(req.paramBody['is_select_all']) === 1 ) {
                         req.innerBody['delete_array'] += req.paramBody['recent_viewed_uid_list'][idx] + ',';
                     }
 
 
                 }
-                if (req.paramBody['is_select_all'] === 1 ) {
+                if (parseInt(req.paramBody['is_select_all']) === 1 ) {
+                    console.log("ASDOIASJDAOSID:" + req.innerBody['delete_array']);
                     req.innerBody['delete_array'].substr(0, req.innerBody['delete_array'].length - 1);
 
                     req.innerBody['delete_result'] = await query2(req, db_connection)
                 }
             } else {
 
-                if(req.paramBody['is_select_all'] === 0 ) {
+                if(parseInt(req.paramBody['is_select_all']) === 0 ) {
 
                     req.innerBody['recent_viewed_uid'] = req.paramBody['recent_viewed_uid_list']
 
@@ -125,7 +127,7 @@ module.exports = function (req, res) {
 
                     req.innerBody['delete_result'].push( req.innerBody['item'] )
                 }
-                else if (req.paramBody['is_select_all'] === 1 ) {
+                else if (parseInt(req.paramBody['is_select_all']) === 1 ) {
                     req.innerBody['delete_array'] = req.paramBody['recent_viewed_uid_list']
                     req.innerBody['delete_array'] = req.innerBody['delete_array'] ? req.innerBody['delete_array'] : '';
                     req.innerBody['delete_result'] = await query2(req, db_connection)
