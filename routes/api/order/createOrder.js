@@ -16,6 +16,13 @@
  *         name: body
  *         description: |
  *           상품 구매
+ *
+ *           payment_method
+ *           * 0: 신용카드
+ *           * 1: 카카오페이
+ *           * 2: 무통장입금
+ *           * 3: 가상계좌
+ *           * 4: 네이버페이
  *         schema:
  *           type: object
  *           required:
@@ -23,6 +30,7 @@
  *             - price_total
  *             - delivery_total
  *             - price_payment
+ *             - payment_method
  *           properties:
  *             addressbook_uid:
  *               type: number
@@ -72,6 +80,16 @@
  *               example: 5fffad430c20b903e88a2d17
  *               description: |
  *                 PG사 결제 완료 값 id
+ *             payment_method:
+ *               type: number
+ *               example: 0
+ *               description: |
+ *                 결제 방법
+ *                 * 0: 신용카드
+ *                 * 1: 카카오페이
+ *                 * 2: 무통장입금
+ *                 * 3: 가상계좌
+ *                 * 4: 네이버페이
  *             product_list:
  *               type: array
  *               description: 구매 상품 목록
@@ -255,7 +273,7 @@ function query(req, db_connection) {
             req.paramBody['delivery_total'],
             req.paramBody['price_payment'],
             req.paramBody['pg_receipt_id'],
-
+            req.paramBody['payment_method'],
         ]
     );
 }
