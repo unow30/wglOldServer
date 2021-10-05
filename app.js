@@ -30,7 +30,7 @@ if( !funcUtil.isRealServer ){
   app.use('/api-docs', require('./apiDocs/swaggerDocs'));
 }
 
-app.all('/callback/bootpay', require('./route/callback/createBootpay'))
+app.all('/callback/bootpay', require('./routes/callback/createBootpay'))
 
 app.all('/api/public/*', require('./routes/middleware/setHeader'));
 app.all('/api/private/*', require('./routes/middleware/setHeader'));
