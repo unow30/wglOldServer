@@ -55,7 +55,7 @@ module.exports = function (req, res) {
         //
         //
         //     deleteBody(req);
-        //     sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+         res.send("OK")
         //
         // }, function (err) {
         //     sendUtil.sendErrorPacket(req, res, err);
