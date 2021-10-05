@@ -45,6 +45,7 @@ app.route('/cart/list').get( require('./cart/selectCartList') )
  */
 app.route('/order').post( require('./order/createOrder') )
 app.route('/order/list').get( require('./order/selectOrderList') )
+app.route('/order/cancel/list').get( require('./order/selectOrderCancelList') )
 app.route('/order/detail').get( require('./order/selectOrderDetail') )
 // app.route('/order/confirm').put( require('./order/updateOrderConfirm') )
 app.route('/order/status').put(require('../middleware/bootPay'), require('./order/updateOrderStatus') )
