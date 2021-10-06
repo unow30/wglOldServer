@@ -13,6 +13,15 @@
  *
  *     parameters:
  *       - in: query
+ *         name: order_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: |
+ *           주문 uid
+ *       - in: query
  *         name: last_uid
  *         default: 0
  *         required: true
@@ -77,6 +86,7 @@ module.exports = function (req, res) {
 
 
 function checkParam(req) {
+    paramUtil.checkParam_noReturn(req.paramBody, 'order_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
 }
 
@@ -93,7 +103,7 @@ function querySelect(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_order_cancel_list'
         , [
-            req.headers['user_uid'],
+            req.paramBody['order_uid'],
             req.paramBody['last_uid'],
         ]
     );
