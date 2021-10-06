@@ -1,5 +1,5 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 02.
+ * Created by hyunhunhwang on 2021. 09. 16.
  *
  * @swagger
  * /api/private/follow/list:
