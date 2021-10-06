@@ -116,7 +116,7 @@ function queryList(req, db_connection) {
             req.paramBody['user_uid'],
             req.paramBody['type'],
             req.paramBody['last_uid'],
-            30,
+            12,
         ]
     );
 }
