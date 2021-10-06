@@ -60,6 +60,7 @@ module.exports = function (req, res) {
 
             // let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
             // req.innerBody['total_count'] = count_data['total_count'];
 
             deleteBody(req)
@@ -111,3 +112,11 @@ function querySelectTotalCount(req, db_connection) {
     );
 }
 
+function createJSONArray(item){
+    if( item ) {
+        for( let idx in item ){
+            item[idx]['order_product_cancel_list'] = JSON.parse(item[idx]['order_product_cancel_list'])
+        }
+    }
+    return item;
+}
