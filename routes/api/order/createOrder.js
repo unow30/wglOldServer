@@ -211,6 +211,8 @@ module.exports = function (req, res) {
             if(req.innerBody['item']['payment_method'] === 3){
                 req.innerBody['product']['status'] = 30 //가상계좌 입금대기상태
             }
+            console.log('********status값 확인*******')
+            console.log(req.innerBody['product']['status'])
 
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
