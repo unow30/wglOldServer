@@ -207,15 +207,11 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
-            console.log(req.innerBody['item'])
-            console.log(req.innerBody['item']['payment_method'])
 
             if(req.innerBody['item']['payment_method'] === 3){
 
                 req.paramBody['status'] = 30 //가상계좌 입금대기상태
             }
-            console.log('********status값 확인*******')
-            console.log(req.paramBody['status'])
 
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
