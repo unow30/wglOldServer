@@ -208,6 +208,10 @@ module.exports = function (req, res) {
                 return
             }
 
+            if(req.innerBody['item']['payment_method'] === 3){
+                req.innerBody['product']['status'] = 30 //가상계좌 입금대기상태
+            }
+
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
             req.innerBody['alrim_msg_list'] = []
@@ -345,6 +349,7 @@ function queryProduct(req, db_connection) {
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
             req.innerBody['product']['price_delivery'],
+            req.innerBody['product']['status'],
         ]
     );
 }
