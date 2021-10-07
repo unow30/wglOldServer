@@ -30,7 +30,8 @@ module.exports = function (req, res) {
 
 
             req.innerBody['item'] = await query(req, db_connection);
-
+            console.log('ststus값은 확인')
+            console.log(req.paramBody['status'])
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
 
             deleteBody(req);
@@ -78,7 +79,7 @@ function query(req, db_connection) {
             // req.paramBody['payment_data'],
             req.paramBody['requested_at'],
             req.paramBody['purchased_at'],
-            req.paramBody['payment_data']['status'],
+            req.paramBody['status'],
         ]
     );
 }
