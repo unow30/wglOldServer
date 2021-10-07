@@ -207,9 +207,11 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
+            console.log(req.innerBody['item'])
 
             if(req.innerBody['item']['payment_method'] === 3){
-                req.innerBody['product']['status'] = 30 //가상계좌 입금대기상태
+
+                req.paramBody['status'] = 30 //가상계좌 입금대기상태
             }
             console.log('********status값 확인*******')
             console.log(req.innerBody['product']['status'])
@@ -351,7 +353,7 @@ function queryProduct(req, db_connection) {
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
             req.innerBody['product']['price_delivery'],
-            req.innerBody['product']['status'],
+            req.paramBody['status'],
         ]
     );
 }
