@@ -75,10 +75,10 @@ function query(req, db_connection) {
             req.paramBody['method'],
             req.paramBody['pg_name'],
             req.paramBody['method_name'],
-            req.paramBody['payment_data'],
+            // req.paramBody['payment_data'],
             req.paramBody['requested_at'],
             req.paramBody['purchased_at'],
-            req.paramBody['status'],
+            req.paramBody['payment_data']['status'],
         ]
     );
 }
