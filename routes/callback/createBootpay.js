@@ -28,11 +28,12 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
-
-            req.innerBody['item'] = await query(req, db_connection);
-            console.log('ststus값은 확인')
-            console.log(req.paramBody['status'])
-            // req.innerBody['item'] = await queryUpdate(req, db_connection);
+            if(req.paramBody['method'] === 'vbank'){
+                req.innerBody['item'] = await query(req, db_connection);
+                req.innerBody['order_uid'] = await queryUpdateOrder(req, db_connection);
+                console.log(`ordr_uid값: ${req.innerBody['order_uid']}`)
+                await queryUpdateOrderProduct(req, db_connection);
+            }
 
             deleteBody(req);
             res.send('OK')
@@ -84,3 +85,26 @@ function query(req, db_connection) {
     );
 }
 
+function queryUpdateOrder(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_update_order_payment_method_30'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['receipt_id'],
+        ]
+    );
+}
+
+function queryUpdateOrderProduct(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_update_order_product_status_01'
+        , [
+            req.headers['user_uid'],
+            req.innerBody['order_uid'],
+        ]
+    );
+}
