@@ -31,6 +31,7 @@ if( !funcUtil.isRealServer ){
 }
 
 // app.all('/api/callback/bootpay', require('./routes/callback/createBootpay'))
+app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay'))
 
 app.all('/api/public/*', require('./routes/middleware/setHeader'));
 app.all('/api/private/*', require('./routes/middleware/setHeader'));
