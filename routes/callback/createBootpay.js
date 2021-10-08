@@ -31,7 +31,7 @@ module.exports = function (req, res) {
             if(req.paramBody['method'] === 'vbank'){
                 req.innerBody['item'] = await query(req, db_connection);
                 req.innerBody['order_uid'] = await queryUpdateOrder(req, db_connection);
-                console.log(`ordr_uid값: ${req.innerBody['order_uid']}`)
+                console.log(`order_uid값: ${JSON.stringify(req.innerBody['order_uid'])}`)
                 await queryUpdateOrderProduct(req, db_connection);
             }
 
