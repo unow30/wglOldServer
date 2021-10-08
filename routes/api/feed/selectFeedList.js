@@ -158,7 +158,7 @@ module.exports = function (req, res) {
             req.innerBody['type'] = 0;
             if(req.paramBody['video_uid'] > 0) {
                 obj = await querySelect(req, db_connection);
-                req.paramBody['video_uid'] = 0;
+                // req.paramBody['video_uid'] = 0;
                 req.innerBody['type'] = 1;
             }
 
