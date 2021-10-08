@@ -30,9 +30,9 @@ module.exports = function (req, res) {
 
             if(req.paramBody['method'] === 'vbank'){
                 req.innerBody['item'] = await query(req, db_connection);
-                req.innerBody['order_uid'] = await queryUpdateOrder(req, db_connection);
-                console.log(`order_uid값: ${JSON.stringify(req.innerBody['order_uid'])}`)
-                await queryUpdateOrderProduct(req, db_connection);
+                let uid = await queryUpdateOrder(req, db_connection);
+                console.log(`order_uid값: ${uid}`)
+                await queryUpdateOrderProduct(req, uid, db_connection);
             }
 
             deleteBody(req);
@@ -97,14 +97,14 @@ function queryUpdateOrder(req, db_connection) {
     );
 }
 
-function queryUpdateOrderProduct(req, db_connection) {
+function queryUpdateOrderProduct(req, uid, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
         , 'call proc_update_order_product_status_01'
         , [
             req.headers['user_uid'],
-            req.innerBody['order_uid'],
+            uid,
         ]
     );
 }
