@@ -202,37 +202,57 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
+            req.innerBody['order_product_list'] = []
+            req.innerBody['push_token_list'] = []
+            req.innerBody['alrim_msg_list'] = []
 
             if (!req.innerBody['item']) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
 
-            // if(req.innerBody['item']['payment_method'] === 3){
-            //
-            //     req.paramBody['status'] = 30 //가상계좌 입금대기상태
-            // }
+            if(req.innerBody['item']['payment_method'] === 3){
+                req.paramBody['status'] = 30 //가상계좌 입금대기상태
+                for( let idx in req.paramBody['product_list'] ){
+                    req.innerBody['product'] = req.paramBody['product_list'][idx]
+                    let product = await queryProduct(req, db_connection)
 
-            req.innerBody['order_product_list'] = []
-            req.innerBody['push_token_list'] = []
-            req.innerBody['alrim_msg_list'] = []
-            for( let idx in req.paramBody['product_list'] ){
-                req.innerBody['product'] = req.paramBody['product_list'][idx]
-                let product = await queryProduct(req, db_connection)
+                    req.innerBody['order_product_list'].push( product );
+                }
+            }else{
+                for( let idx in req.paramBody['product_list'] ){
+                    req.innerBody['product'] = req.paramBody['product_list'][idx]
+                    let product = await queryProduct(req, db_connection)
 
-                req.innerBody['push_token_list'].push(product['push_token']);
-                req.innerBody['order_product_list'].push( product );
+                    req.innerBody['push_token_list'].push(product['push_token']);
+                    req.innerBody['order_product_list'].push( product );
 
-
-                req.innerBody['alrim_msg_list'][idx] = {};
-                req.innerBody['alrim_msg_list'][idx].phone = product['phone']
-                req.innerBody['alrim_msg_list'][idx].name = product['name']
-                req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
-            }
-
-            if(req.innerBody['item']['payment_method'] !== 3){
+                    req.innerBody['alrim_msg_list'][idx] = {};
+                    req.innerBody['alrim_msg_list'][idx].phone = product['phone']
+                    req.innerBody['alrim_msg_list'][idx].name = product['name']
+                    req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
+                }
                 await alarm(req, res)
             }
+
+
+            // for( let idx in req.paramBody['product_list'] ){
+            //     req.innerBody['product'] = req.paramBody['product_list'][idx]
+            //     let product = await queryProduct(req, db_connection)
+            //
+            //     req.innerBody['push_token_list'].push(product['push_token']);
+            //     req.innerBody['order_product_list'].push( product );
+            //
+            //
+            //     req.innerBody['alrim_msg_list'][idx] = {};
+            //     req.innerBody['alrim_msg_list'][idx].phone = product['phone']
+            //     req.innerBody['alrim_msg_list'][idx].name = product['name']
+            //     req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
+            // }
+
+            // if(req.innerBody['item']['payment_method'] !== 3){
+            //     await alarm(req, res)
+            // }
 
 
 
