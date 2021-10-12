@@ -98,7 +98,7 @@ function uploadFile(req, res, next){
             if( err.code === 'LIMIT_FILE_SIZE' ){
                 // let _er = errUtil.createCall(errCode.system, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`);
                 // sendUtil.sendErrorPacket(req, res, _er);
-                sendUtil.sendErrorPacket(req, res, errUtil.initError(err.path, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`));
+                sendUtil.sendErrorPacket(req, res, errUtil.initError(errCode.system, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`));
             }
             else {
                 sendUtil.sendErrorPacket(req, res, err);
