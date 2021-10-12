@@ -57,7 +57,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
+            let count_data = await querySelectCount(req, db_connection);
+
             req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['total_count'] = count_data['count'];
+
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -80,6 +84,18 @@ function deleteBody(req) {
     // delete req.innerBody['item']['longitude']
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
+}
+
+
+function querySelectCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_product_confirm_list_count'
+        , [
+            req.headers['user_uid']
+        ]
+    );
 }
 
 function querySelect(req, db_connection) {
