@@ -208,10 +208,10 @@ module.exports = function (req, res) {
                 return
             }
 
-            if(req.innerBody['item']['payment_method'] === 3){
-
-                req.paramBody['status'] = 30 //가상계좌 입금대기상태
-            }
+            // if(req.innerBody['item']['payment_method'] === 3){
+            //
+            //     req.paramBody['status'] = 30 //가상계좌 입금대기상태
+            // }
 
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
@@ -230,7 +230,9 @@ module.exports = function (req, res) {
                 req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
             }
 
-            await alarm(req, res)
+            if(req.innerBody['item']['payment_method'] !== 3){
+                await alarm(req, res)
+            }
 
 
 
