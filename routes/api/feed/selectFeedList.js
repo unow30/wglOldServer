@@ -153,7 +153,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let obj = {};
+            let obj = [];
 
             req.innerBody['type'] = 0;
             if(req.paramBody['video_uid'] > 0) {
@@ -164,7 +164,9 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await querySelect(req, db_connection);
 
-            Array.prototype.push.apply(obj, req.innerBody['item']);
+
+            req.innerBody['item'] = [...obj, ...req.innerBody['item']];
+            // Array.prototype.push.apply(obj, req.innerBody['item']);
 
             // Object.assign(req.innerBody['item'], obj, req.innerBody['item']);
 
