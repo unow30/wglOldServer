@@ -98,7 +98,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await querySelect(req, db_connection);
 
-            Array.prototype.push.apply(req.innerBody['item'], obj);
+            Array.prototype.push.apply(obj, req.innerBody['item']);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);

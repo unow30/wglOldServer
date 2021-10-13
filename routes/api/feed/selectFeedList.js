@@ -164,7 +164,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await querySelect(req, db_connection);
 
-            Array.prototype.push.apply(req.innerBody['item'], obj);
+            Array.prototype.push.apply(obj, req.innerBody['item']);
 
             // Object.assign(req.innerBody['item'], obj, req.innerBody['item']);
 
@@ -204,7 +204,8 @@ function deleteBody(req) {
     for( let idx in req.innerBody['item'] ){
         delete req.innerBody['item'][idx]['filename']
     }
-    // delete req.innerBody['item']['latitude']
+
+    delete req.innerBody['item']['latitude']
     // delete req.innerBody['item']['longitude']
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
