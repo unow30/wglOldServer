@@ -60,6 +60,7 @@ module.exports = function (req, res) {
             let count_data = await querySelectCount(req, db_connection);
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+            console.log("ASDKSMADKSMDA: " + JSON.stringify(count_data))
             req.innerBody['total_count'] = count_data['count'];
 
 
