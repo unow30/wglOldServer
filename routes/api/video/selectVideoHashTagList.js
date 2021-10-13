@@ -89,6 +89,7 @@ module.exports = function (req, res) {
             let obj = {};
 
             req.innerBody['type'] = 0;
+            console.log("SADOAMDWOQMDWOM0: " + req.paramBody['video_uid']);
             if(req.paramBody['video_uid'] > 0) {
                 obj = await querySelect(req, db_connection);
                 console.log("SADOAMDWOQMDWOM1: " + JSON.stringify(obj));
