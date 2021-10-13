@@ -202,9 +202,6 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-            req.innerBody['order_product_list'] = []
-            req.innerBody['push_token_list'] = []
-            req.innerBody['alrim_msg_list'] = []
 
             if (!req.innerBody['item']) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
@@ -212,51 +209,33 @@ module.exports = function (req, res) {
             }
 
             if(req.innerBody['item']['payment_method'] === 3){
+
                 req.paramBody['status'] = 30 //가상계좌 입금대기상태
-                for( let idx in req.paramBody['product_list'] ){
-                    req.innerBody['product'] = req.paramBody['product_list'][idx]
-                    let product = await queryProduct(req, db_connection)
-
-                    req.innerBody['order_product_list'].push( product );
-                }
-            }else{
-                for( let idx in req.paramBody['product_list'] ){
-                    req.innerBody['product'] = req.paramBody['product_list'][idx]
-                    let product = await queryProduct(req, db_connection)
-
-                    req.innerBody['push_token_list'].push(product['push_token']);
-                    req.innerBody['order_product_list'].push( product );
-
-                    req.innerBody['alrim_msg_list'][idx] = {};
-                    req.innerBody['alrim_msg_list'][idx].phone = product['phone']
-                    req.innerBody['alrim_msg_list'][idx].name = product['name']
-                    req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
-                }
-                await alarm(req, res)
             }
 
+            req.innerBody['order_product_list'] = []
+            req.innerBody['push_token_list'] = []
+            req.innerBody['alrim_msg_list'] = []
+            for( let idx in req.paramBody['product_list'] ){
+                req.innerBody['product'] = req.paramBody['product_list'][idx]
+                let product = await queryProduct(req, db_connection)
 
-            // for( let idx in req.paramBody['product_list'] ){
-            //     req.innerBody['product'] = req.paramBody['product_list'][idx]
-            //     let product = await queryProduct(req, db_connection)
-            //
-            //     req.innerBody['push_token_list'].push(product['push_token']);
-            //     req.innerBody['order_product_list'].push( product );
-            //
-            //
-            //     req.innerBody['alrim_msg_list'][idx] = {};
-            //     req.innerBody['alrim_msg_list'][idx].phone = product['phone']
-            //     req.innerBody['alrim_msg_list'][idx].name = product['name']
-            //     req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
-            // }
-
-            // if(req.innerBody['item']['payment_method'] !== 3){
-            //     await alarm(req, res)
-            // }
+                req.innerBody['push_token_list'].push(product['push_token']);
+                req.innerBody['order_product_list'].push( product );
 
 
+                req.innerBody['alrim_msg_list'][idx] = {};
+                req.innerBody['alrim_msg_list'][idx].phone = product['phone']
+                req.innerBody['alrim_msg_list'][idx].name = product['name']
+                req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
+            }
 
-
+            if(req.innerBody['item']['payment_method'] !== 3){
+                await alarm(req, res)
+            }else{
+                delete req.innerBody['push_token_list']
+                delete req.innerBody['alrim_msg_list']
+            }
             // pushTokenFCM(push_token_list);
 
             if(req.paramBody['use_reward'] > 0 ) {
@@ -397,10 +376,10 @@ async function alarm(req, res) {
         subject_1: `상품 주문 알림(판매자)`,
     }
 
-     let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
-         if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
-         return prev;
-     }, []);
+    let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
+        if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
+        return prev;
+    }, []);
 
 
     let cnt = 1;
