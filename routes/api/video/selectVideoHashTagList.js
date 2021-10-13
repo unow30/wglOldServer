@@ -90,6 +90,8 @@ module.exports = function (req, res) {
 
             req.innerBody['type'] = 0;
 
+            let count = await querySelectTotalCount(req, db_connection);
+
             if(req.paramBody['video_uid'] > 0) {
                 obj = await querySelect(req, db_connection);
                 // req.paramBody['video_uid'] = 0;
@@ -99,7 +101,7 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await querySelect(req, db_connection);
 
             req.innerBody['item'] = [...obj, ...req.innerBody['item']];
-
+            req.innerBody['total_count'] = count['total_count']
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -127,6 +129,19 @@ function deleteBody(req) {
         delete req.innerBody['item'][idx]['filename']
     }
 }
+
+function querySelectTotalCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_video_hasTag_list_count'
+        , [
+            req.paramBody['tag']
+        ]
+    );
+}
+
+
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
