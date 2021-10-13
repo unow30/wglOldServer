@@ -89,21 +89,16 @@ module.exports = function (req, res) {
             let obj = {};
 
             req.innerBody['type'] = 0;
-            console.log("SADOAMDWOQMDWOM0: " + req.paramBody['video_uid']);
+
             if(req.paramBody['video_uid'] > 0) {
                 obj = await querySelect(req, db_connection);
-                console.log("SADOAMDWOQMDWOM1: " + JSON.stringify(obj));
                 // req.paramBody['video_uid'] = 0;
                 req.innerBody['type'] = 1;
             }
 
             req.innerBody['item'] = await querySelect(req, db_connection);
-            console.log("SADOAMDWOQMDWOM2: " + JSON.stringify(req.innerBody['item']));
 
-
-            Object.assign(req.innerBody['item'], obj, req.innerBody['item']);
-
-            console.log("SADOAMDWOQMDWOM3: " + JSON.stringify(req.innerBody['item']));
+            Array.prototype.push.apply(req.innerBody['item'], obj);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
