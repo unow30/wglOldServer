@@ -92,7 +92,7 @@ module.exports = function (req, res) {
 
             let count = await querySelectTotalCount(req, db_connection);
 
-            if(req.paramBody['video_uid'] > 0 && req.paramBody['offset'] == 0) {
+            if(req.paramBody['video_uid'] > 0 && parseInt(req.paramBody['offset']) === 0) {
                 obj = await querySelect(req, db_connection);
                 // req.paramBody['video_uid'] = 0;
                 req.innerBody['type'] = 1;
