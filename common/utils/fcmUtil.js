@@ -77,7 +77,7 @@ module.exports = {
             "priority": "high",
             "data": {
                 "title": "대댓글 등록 알림",
-                "message": `${item['user_nickname']}님이 회원님의 댓글에 대댓글을 달았습니다. : ${item['comment_content']}`,
+                "message": `${item['nickname']}님이 회원님의 댓글에 대댓글을 달았습니다. : ${item['content']}`,
                 "channel" : "대댓글 알림",
                 "fcm_type" : "4",
                 "video_from" : `${item['is_deal']}`,
