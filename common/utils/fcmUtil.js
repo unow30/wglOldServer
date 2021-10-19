@@ -39,7 +39,7 @@ module.exports = {
                 "title": "리뷰 영상 등록 알림",
                 "message": `${item['product_name']} 상품에 대한 리뷰 영상이 등록되었습니다.  판매자페이지를 영상 리뷰 관리 메뉴에서 확인 가능합니다.`,
                 "channel" : "리뷰 영상 등록 알림",
-                "video_uid" : `${item['video_uid']}`,
+                "video_uid" : `${item['uid']}`,
                 "fcm_type" : "1",
                 "video_from" : `${item['is_deal']}`,
             }
@@ -79,6 +79,7 @@ module.exports = {
                 "title": "대댓글 등록 알림",
                 "message": `${item['nickname']}님이 회원님의 댓글에 대댓글을 달았습니다. : ${item['content']}`,
                 "channel" : "대댓글 알림",
+                "video_uid" : `${item['video_uid']}`,
                 "fcm_type" : "4",
                 "video_from" : `${item['is_deal']}`,
             }
