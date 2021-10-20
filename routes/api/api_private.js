@@ -162,6 +162,9 @@ app.route('/searchview').get( require('./searchView/selectSearchViewInfo') )
 app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )
 app.route('/searchview/search/list').get( require('./video/selectSearchViewSearchList') )
 
-
+/**
+ * notice api
+ */
+app.route('/notice_list').get( require('./notice/selectNoticeViewInfo') )
 
 module.exports = app;
