@@ -165,6 +165,6 @@ app.route('/searchview/search/list').get( require('./video/selectSearchViewSearc
 /**
  * notice api
  */
-app.route('/notice_list').get( require('./notice/selectNoticeViewInfo') )
+app.route('/notice_list').get( require('./notice/selectNoticeViewList') )
 
 module.exports = app;
