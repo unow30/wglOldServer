@@ -20,7 +20,7 @@
  *       400:
  *         description: 에러 코드 400
  *         schema:
- *           $ref: '#/definitions/Notice'
+ *           $ref: '#/definitions/Error'
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
