@@ -54,5 +54,9 @@
  *           * 1: 위글 앱
  *           * 2: 위글 판매자페이지
  *           * 10: 모든 위치
+ *       nickname:
+ *         type: string
+ *         example: 위글담당자
+ *         description: 관리자 닉네임
  *
  */
