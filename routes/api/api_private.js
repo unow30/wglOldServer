@@ -112,6 +112,7 @@ app.route('/comment/list').get( require('./comment/selectCommentList') )
  */
 app.route('/like').put( require('./like/updateLike') )
 app.route('/like/product/list').get( require('./like/selectLikeProductList') )
+app.route('/like/video/list').get( require('./like/selectLikeVideoList') )
 
 /**
  * addressbook api
