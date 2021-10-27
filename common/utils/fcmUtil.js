@@ -34,6 +34,7 @@ module.exports = {
                 "body": "주문이 접수되었습니다. 판매자페이지를 확인해주세요.",
                 "channel" : "주문 알림",
                 "fcm_type" : "0",
+                "sound" : "default"
             },
         }).catch((e) => console.log(e));
     },
@@ -56,6 +57,7 @@ module.exports = {
                 "video_uid" : `${item['uid']}`,
                 "fcm_type" : "1",
                 "video_from" : `${item['is_deal']}`,
+                "sound" : "default"
             },
         }).catch((e) => console.log(e));
     },
@@ -74,6 +76,7 @@ module.exports = {
                 "body": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['reward_amount']}원이 지급 되었습니다.`,
                 "channel" : "리워드 알림",
                 "fcm_type" : "2",
+                "sound" : "default"
             },
         }).catch((e) => console.log(e));
     },
@@ -96,6 +99,7 @@ module.exports = {
                 "video_uid" : `${item['video_uid']}`,
                 "fcm_type" : "3",
                 "video_from" : `${item['is_deal']}`,
+                "sound" : "default"
             },
         }).catch((e) => console.log(e));
     },
@@ -118,6 +122,7 @@ module.exports = {
                 "video_uid" : `${item['video_uid']}`,
                 "fcm_type" : "4",
                 "video_from" : `${item['is_deal']}`,
+                "sound" : "default"
             },
         }).catch((e) => console.log(e));
     },
@@ -136,6 +141,7 @@ module.exports = {
                 "body": `${item['product_name']}에 대한 ${question_type} 문의가 등록되었습니다. 판매자 페이지를 확인해주세요. : ${item['question_content']}`,
                 "channel" : "문의 알림",
                 "fcm_type" : "5",
+                "sound" : "default"
             },
         }).catch((e) => console.log(e));
     },
