@@ -36,6 +36,9 @@ module.exports = {
                 "fcm_type" : "0",
                 "sound" : "default",
                 "badge": "1",
+                "content-available" : "1",
+                "apns-priority" : "5",
+                "badge count" : "0",
             },
         }).catch((e) => console.log(e));
     },
@@ -60,6 +63,9 @@ module.exports = {
                 "video_from" : `${item['is_deal']}`,
                 "sound" : "default",
                 "badge": "1",
+                "content-available" : "1",
+                "apns-priority" : "5",
+                "badge count" : "0",
             },
         }).catch((e) => console.log(e));
     },
@@ -80,6 +86,9 @@ module.exports = {
                 "fcm_type" : "2",
                 "sound" : "default",
                 "badge": "1",
+                "content-available" : "1",
+                "apns-priority" : "5",
+                "badge count" : "0",
             },
         }).catch((e) => console.log(e));
     },
@@ -104,6 +113,9 @@ module.exports = {
                 "video_from" : `${item['is_deal']}`,
                 "sound" : "default",
                 "badge": "1",
+                "content-available" : "1",
+                "apns-priority" : "5",
+                "badge count" : "0",
             },
         }).catch((e) => console.log(e));
     },
@@ -128,6 +140,9 @@ module.exports = {
                 "video_from" : `${item['is_deal']}`,
                 "sound" : "default",
                 "badge": "1",
+                "content-available" : "1",
+                "apns-priority" : "5",
+                "badge count" : "0",
             },
         }).catch((e) => console.log(e));
     },
@@ -148,6 +163,9 @@ module.exports = {
                 "fcm_type" : "5",
                 "sound" : "default",
                 "badge": "1",
+                "content-available" : "1",
+                "apns-priority" : "5",
+                "badge count" : "0",
             },
         }).catch((e) => console.log(e));
     },
