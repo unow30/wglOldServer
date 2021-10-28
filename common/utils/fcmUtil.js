@@ -38,7 +38,7 @@ module.exports = {
                 "badge": "0",
                 "content-available" : "true",
                 "apns-priority" : "5",
-                "badge count" : "0",
+                "badge count" : "1",
             },
         }).catch((e) => console.log(e));
     },
@@ -65,7 +65,7 @@ module.exports = {
                 "badge": "0",
                 "content-available" : "true",
                 "apns-priority" : "5",
-                "badge count" : "0",
+                "badge count" : "1",
             },
         }).catch((e) => console.log(e));
     },
@@ -88,7 +88,7 @@ module.exports = {
                 "badge": "0",
                 "content-available" : "true",
                 "apns-priority" : "5",
-                "badge count" : "0",
+                "badge count" : "1",
             },
         }).catch((e) => console.log(e));
     },
@@ -115,7 +115,7 @@ module.exports = {
                 "badge": "0",
                 "content-available" : "true",
                 "apns-priority" : "5",
-                "badge count" : "0",
+                "badge count" : "1",
             },
         }).catch((e) => console.log(e));
     },
@@ -142,7 +142,7 @@ module.exports = {
                 "badge": "0",
                 "content-available" : "true",
                 "apns-priority" : "5",
-                "badge count" : "0",
+                "badge count" : "1",
             },
         }).catch((e) => console.log(e));
     },
@@ -165,7 +165,7 @@ module.exports = {
                 "badge": "0",
                 "content-available" : "true",
                 "apns-priority" : "5",
-                "badge count" : "0",
+                "badge count" : "1",
             },
         }).catch((e) => console.log(e));
     },
