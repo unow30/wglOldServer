@@ -127,6 +127,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
+const fcmUtil = require('../../../common/utils/fcmUtil')
 
 const errCode = require('../../../common/define/errCode');
 
@@ -169,7 +170,9 @@ module.exports = function (req, res) {
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
 
-            await queryPointEvent(req, db_connection)
+            await queryPointEvent(req, db_connection);
+
+            await fcmUtil.fcmEventPoint3000Single(req.innerBody['push_token'])
 
             req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
                                            req.paramBody['filename'] : "profile_default_image.png"
