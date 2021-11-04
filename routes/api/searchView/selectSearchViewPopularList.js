@@ -2,14 +2,14 @@
  * Created by gunucklee on 2021. 08. 19.
  *
  * @swagger
- * /api/private/searchview/search/list:
+ * /api/private/searchview/search/list/popular:
  *   get:
  *     summary: 인기영상 검색 정보
  *     tags: [SearchView]
  *     description: |
- *       path : /api/private/searchview/search/list
+ *       path : /api/private/searchview/search/list/popular
  *
- *       * 영상 검색 정보
+ *       * 인기영상 검색 정보
  *
  *     parameters:
  *       - in: query

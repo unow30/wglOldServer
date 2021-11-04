@@ -9,7 +9,7 @@
  *     description: |
  *       path : /api/private/searchview/search/list/hashtag
  *
- *       * 영상 검색 정보
+ *       * 해시태그 검색 정보
  *
  *     parameters:
  *       - in: query
