@@ -166,6 +166,7 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item'] = await query(req, db_connection);
+            console.log(req.innerBody['item'])
             req.innerBody['item']['access_token'] = jwtUtil.createToken(req.innerBody['item'], '100d');
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
