@@ -162,7 +162,7 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
 app.route('/searchview').get( require('./searchView/selectSearchViewInfo') )
 app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )
 app.route('/searchview/search/list').get( require('./video/selectSearchViewSearchList') )//이전 검색리스트
-app.route('/searchview/search/list/popular').get( require('./searchView/selectSearchViewPopularList') ) //인기영상
+app.route('/searchview/search/list/popular').get( require('./searchView/selectSearchViewPopularSearchList') ) //인기영상
 app.route('/searchview/search/list/product').get( require('./searchView/selectSearchViewProductSearchList') )//상품
 app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') )//태그
 app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') )//사용자

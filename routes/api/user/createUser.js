@@ -172,13 +172,11 @@ module.exports = function (req, res) {
 
             await queryPointEvent(req, db_connection);
 
-            await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token'])
-
             req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
 
-
+            await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
