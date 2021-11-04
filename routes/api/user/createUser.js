@@ -169,6 +169,7 @@ module.exports = function (req, res) {
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
 
+            await queryPointEvent(req, db_connection)
 
             req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
                                            req.paramBody['filename'] : "profile_default_image.png"
@@ -295,3 +296,15 @@ function queryUpdateImage(req, db_connection) {
     );
 }
 
+function queryPointEvent(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    //let user_uid = req.headers['user_uid'] ? req.headers['user_uid'] : 0;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call _dev_event_create_point_3000_for_signup'
+        , [
+            req.paramBody['item']['uid'],
+        ]
+    );
+}
