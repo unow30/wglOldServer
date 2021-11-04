@@ -171,7 +171,7 @@ module.exports = {
     },
     fcmEventPoint3000Single : async function(item){
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
-            "to": item['push_token'],
+            "to": item,
             "priority": "high",
             "data": {
                 "title": "위글 포인트 알림",
