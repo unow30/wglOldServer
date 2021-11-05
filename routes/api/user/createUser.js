@@ -166,18 +166,18 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item'] = await query(req, db_connection);
-            console.log('############################')
+            console.log('#####################')
             console.log(req.innerBody['item'])
-            console.log(req.innerBody['item']['uid'])
+
             req.innerBody['item']['access_token'] = jwtUtil.createToken(req.innerBody['item'], '100d');
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
 
-            await queryPointEvent(req, db_connection);
-
             req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
+
+            await queryPointEvent(req, db_connection);
 
             await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
 
@@ -308,7 +308,7 @@ function queryPointEvent(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call _dev_event_create_point_3000_for_signup'
         , [
-            req.paramBody['item']['uid'],
+            req.innerBody['item']['uid'],
         ]
     );
 }
