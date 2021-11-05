@@ -74,9 +74,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['popular_list'] = await querySelect(req, db_connection);
-            // req.innerBody['video_list'] = await querySelect(req, db_connection);
-            // req.innerBody['user_list'] = await queryUser(req, db_connection)
+            // req.innerBody['popular_list'] = await querySelect(req, db_connection);
+            req.innerBody['video_list'] = await querySelect(req, db_connection);
+            req.innerBody['user_list'] = await queryUser(req, db_connection);
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -101,26 +101,12 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-function querySelect(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call _dev_proc_select_search_list1'
-        , [
-            req.paramBody['keyword'],
-            req.paramBody['random_seed'],
-            req.paramBody['offset'],
-        ]
-    );
-}
-
 // function querySelect(req, db_connection) {
 //     const _funcName = arguments.callee.name;
 //
 //     return mysqlUtil.queryArray(db_connection
-//         , 'call proc_select_searchview_search_list'
+//         , 'call _dev_proc_select_search_list1'
 //         , [
-//             req.headers['user_uid'],
 //             req.paramBody['keyword'],
 //             req.paramBody['random_seed'],
 //             req.paramBody['offset'],
@@ -128,17 +114,30 @@ function querySelect(req, db_connection) {
 //     );
 // }
 
-function queryUser(req, db_connection) {
+function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call _dev_proc_select_search_list1'
+        , 'call proc_select_searchview_search_list'
         , [
+            req.headers['user_uid'],
             req.paramBody['keyword'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
         ]
     );
 }
+
+function queryUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_user_search_list'
+        , [
+            req.paramBody['keyword'],
+        ]
+    );
+}
+
 
 
