@@ -68,7 +68,6 @@ module.exports = function (req, res) {
 
             let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
-            console.log(req.innerBody['item'])
             req.innerBody['item'] = createJSONArray(req.innerBody['item']);
             req.innerBody['total_count'] = count_data['total_count'];
 
@@ -123,13 +122,13 @@ function querySelectTotalCount(req, db_connection) {
 }
 
 function createJSONArray(item){
-    console.log(item)
+
     if( item ) {
         for( let idx in item ){
+            item[idx]['nested_comment_list'].replace(/\n/gi, '\\n',)
             item[idx]['nested_comment_list'] = JSON.parse(item[idx]['nested_comment_list'])
         }
     }
-    console.log(item)
     return item;
 }
 
