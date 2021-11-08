@@ -125,7 +125,6 @@ function createJSONArray(item){
 
     if( item ) {
         for( let idx in item ){
-            item[idx]['nested_comment_list'] = item[idx]['nested_comment_list'].replace(/\n/gi, '\\n',)
             item[idx]['nested_comment_list'] = JSON.parse(item[idx]['nested_comment_list'])
         }
     }
