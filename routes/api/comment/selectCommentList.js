@@ -125,12 +125,13 @@ function createJSONArray(item){
 
     if( item ) {
         for( let idx in item ){
-            if( item[idx]['nested_comment_list'].indexOf('\n') > 0 || item[idx]['nested_comment_list'].indexOf('\t') > 0 ){
+            if( item[idx]['nested_comment_list'] !== null && (item[idx]['nested_comment_list'].indexOf('\n') > 0 || item[idx]['nested_comment_list'].indexOf('\t') > 0 )){
                 item[idx]['nested_comment_list'] = item[idx]['nested_comment_list'].replace(/\n/gi, '\\n').replace(/\t/gi, '\\t');
             }
 
             item[idx]['nested_comment_list'] = JSON.parse(item[idx]['nested_comment_list'])
         }
+        console.log(item)
     }
     return item;
 }
