@@ -131,7 +131,6 @@ function createJSONArray(item){
 
             item[idx]['nested_comment_list'] = JSON.parse(item[idx]['nested_comment_list'])
         }
-        console.log(item)
     }
     return item;
 }
