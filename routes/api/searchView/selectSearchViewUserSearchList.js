@@ -121,8 +121,7 @@ function queryUser(req, db_connection) {
         , 'call _dev_proc_select_search_list4'
         , [
             req.paramBody['keyword'],
-            req.paramBody['random_seed'],
-            req.paramBody['offset'],
+            req.paramBody['last_uid'],
         ]
     );
 }

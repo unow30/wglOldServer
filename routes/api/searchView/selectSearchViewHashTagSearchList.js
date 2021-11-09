@@ -102,7 +102,7 @@ function queryHashTag(req, db_connection) {
         , 'call _dev_proc_select_search_list3'
         , [
             req.paramBody['keyword'],
-            // req.paramBody['random_seed'],
+            req.paramBody['last_uid'],
             // req.paramBody['offset'],
         ]
     );

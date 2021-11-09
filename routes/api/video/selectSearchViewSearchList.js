@@ -75,7 +75,7 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['video_list'] = await querySelect(req, db_connection);
-            req.innerBody['user_list'] = await queryUser(req, db_connection)
+            // req.innerBody['user_list'] = await queryUser(req, db_connection)
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
