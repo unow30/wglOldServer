@@ -107,7 +107,7 @@ function queryHashTag(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call _dev_proc_select_search_list3'
+        , 'call proc_select_searchview_hash_tag_search_list'
         , [
             req.paramBody['keyword'],
             req.paramBody['last_uid'],

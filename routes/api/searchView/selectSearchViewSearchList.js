@@ -114,15 +114,16 @@ function querySelect(req, db_connection) {
     );
 }
 
-function queryUser(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_user_search_list'
-        , [
-            req.paramBody['keyword'],
-        ]
-    );
-}
+// function queryUser(req, db_connection) {
+//     const _funcName = arguments.callee.name;
+//
+//     return mysqlUtil.queryArray(db_connection
+//         , 'call proc_select_searchview_user_search_list'
+//         , [
+//             req.paramBody['keyword'],
+//             req.paramBody['last_uid'],
+//         ]
+//     );
+// }
 
 

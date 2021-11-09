@@ -88,25 +88,25 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-function querySelect(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_search_list'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['keyword'],
-            req.paramBody['random_seed'],
-            req.paramBody['offset'],
-        ]
-    );
-}
+// function querySelect(req, db_connection) {
+//     const _funcName = arguments.callee.name;
+//
+//     return mysqlUtil.queryArray(db_connection
+//         , 'call proc_select_searchview_search_list'
+//         , [
+//             req.headers['user_uid'],
+//             req.paramBody['keyword'],
+//             req.paramBody['random_seed'],
+//             req.paramBody['offset'],
+//         ]
+//     );
+// }
 
 function queryUser(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call _dev_proc_select_search_list4'
+        , 'call proc_select_searchview_user_search_list'
         , [
             req.paramBody['keyword'],
             req.paramBody['last_uid'],
