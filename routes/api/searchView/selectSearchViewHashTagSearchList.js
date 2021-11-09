@@ -20,6 +20,14 @@
  *           example: 테스트
  *         description: |
  *           해시태그 키워드입니다. (#는 제거하여 보냅니다)
+ *       - in: query
+ *         name: last_uid
+ *         required: true
+ *         schema:
+ *           type: int
+ *           example: 0
+ *         description: |
+ *            목록 마지막 uid (처음일 경우 0)
  *
  *     responses:
  *       200:

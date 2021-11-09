@@ -13,32 +13,20 @@
  *
  *     parameters:
  *       - in: query
- *         name: random_seed
- *         required: true
- *         schema:
- *           type: string
- *           example: 133q1234
- *         description: |
- *           검색할 때 필요한 랜덤 시드입니다.
- *       - in: query
- *         name: offset
- *         default: 0
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
- *           offset 0: 0~30
- *           offset 30: 30~60
- *           offset 60: 60~90
- *       - in: query
  *         name: keyword
  *         required: true
  *         schema:
  *           type: string
  *           example:
  *         description: 검색 키워드(사용자(닉네임) 검색)
+ *       - in: query
+ *         name: last_uid
+ *         required: true
+ *         schema:
+ *           type: int
+ *           example: 0
+ *         description: |
+ *            목록 마지막 uid (처음일 경우 0)
  *
  *     responses:
  *       200:
