@@ -90,7 +90,7 @@ app.route('/video/review')
     .post( require('./video/createVideoReview') )
     .delete( require('./video/deleteVideoReview') )
 app.route('/video/content').put( require('./video/updateVideoContent') )
-app.route('/video/hashTag/list').get( require('./video/selectVideoHashTagList') )
+app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
 
 
 
