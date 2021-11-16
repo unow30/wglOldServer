@@ -79,10 +79,14 @@ const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
 const fcmUtil = require('../../../common/utils/fcmUtil');
+const aligoUtil = require('../../../common/utils/aligoUtil');
 
 const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
+
+const axios = require('axios');
+const {log} = require("debug");
 
 module.exports = function (req, res) {
     const _funcName = arguments.callee.name;
@@ -110,8 +114,10 @@ module.exports = function (req, res) {
 
             await fcmUtil.fcmProductQnASingle(req.innerBody['item'], question_type);
 
+            await alarm(req, res);
 
-            deleteBody(req)
+            deleteBody(req);
+
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -137,7 +143,6 @@ function checkParam(req) {
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
 }
 
 function query(req, db_connection) {
@@ -200,3 +205,49 @@ function convertType(type) {
 }
 
 
+
+
+
+async function alarm(req, res) {
+
+    try {
+        axios.defaults.headers.common['Authorization'] = 'key=AAAAH1HxpKo:APA91bEGjPgOgXK2xZ-uqZHiR_PT69tO4knZt6ZCRpAXRESsnuY23MXWFneIQ-EALixYNkcUZg0iNczMW8eXc9ZLp6_dd1Kmz0t4rw5rJwboLwG-65hS0nyNps5OchEw72zP8dzlLNIa';
+        axios.defaults.headers.post['Content-Type'] = 'application/json';
+        req.body= {
+            type: 's',
+            time: '9999'
+        }
+        await aligoUtil.createToken(req, res);
+
+        req.body= {
+            senderkey: `${process.env.ALIGO_SENDERKEY}`,
+            tpl_code: `TF_6894`,
+            sender: `025580612`,
+            subject_1: `문의사항 등록 알림(판매자)`,
+        }
+
+        req.body['receiver_1'] = req.innerBody['item']['phone'];
+        req.body['message_1'] = setArimMessage(req);
+        console.log("ASDASDKAJD12qdIAA: " + JSON.stringify(req.innerBody));
+        console.log(`testettt: ${req.body['message_1']}`)
+        await aligoUtil.alimSend(req, res);
+
+
+
+
+    }
+    catch (e) {
+        let _err = errUtil.get(e);
+        sendUtil.sendErrorPacket(req, res, _err);
+    }
+
+
+}
+
+
+function setArimMessage(req) {
+    return `${req.innerBody['item']['seller_nickname']}님,
+${req.innerBody['item']['product_name']}에 대한 ${convertType(req.innerBody['item']['type'])} 문의가 등록되었습니다.
+
+판매자 페이지를 통해 확인 부탁드립니다.`
+}
