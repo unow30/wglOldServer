@@ -138,7 +138,7 @@ function querySelectTotalCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_video_hasTag_list_count'
+    , 'call proc_select_video_hash_tag_list_count'
         , [
             req.paramBody['tag']
         ]
@@ -151,7 +151,7 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_video_hasTag_list'
+        , 'call proc_select_video_hash_tag_list'
         , [
             req.headers['user_uid'],
             req.paramBody['video_uid'],

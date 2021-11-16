@@ -1,42 +1,39 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 08.
+ * Created by gunucklee on 2021. 08. 19.
  *
  * @swagger
- * /api/private/comment/list:
+ * /api/private/searchview/search/list/hashtag:
  *   get:
- *     summary: 댓글 목록
- *     tags: [Comment]
+ *     summary: 해시태그 검색 정보
+ *     tags: [SearchView]
  *     description: |
- *       path : /api/private/comment/list
+ *       path : /api/private/searchview/search/list/hashtag
  *
- *       * 댓글 목록
- *       * 영상 댓글의 경우 영상 내용 api 호출하여 영상 내용 표시
- *       * 영상 내용 정보 가져오는 api: /api/private/video/info
+ *       * 해시태그 검색 정보
  *
  *     parameters:
  *       - in: query
- *         name: video_uid
- *         default: 0
+ *         name: keyword
  *         required: true
  *         schema:
- *           type: number
- *           example: 1
- *         description: 영상 uid
+ *           type: string
+ *           example: 테스트
+ *         description: |
+ *           해시태그 키워드입니다. (#는 제거하여 보냅니다)
  *       - in: query
  *         name: last_uid
- *         default: 0
  *         required: true
  *         schema:
- *           type: number
+ *           type: int
  *           example: 0
  *         description: |
- *           목록 마지막 uid (처음일 경우 0)
+ *            목록 마지막 uid (처음일 경우 0)
  *
  *     responses:
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/Comment'
+ *           $ref: '#/definitions/SearchViewHashTag'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -59,18 +56,15 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        //  logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let count_data = await querySelectTotalCount(req, db_connection);
-            req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['item'] = createJSONArray(req.innerBody['item']);
-            req.innerBody['total_count'] = count_data['total_count'];
-
+            // req.innerBody['video_list'] = await querySelect(req, db_connection);
+            req.innerBody['hash_tag_list'] = await queryHashTag(req, db_connection)
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -85,12 +79,11 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'social_id');
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
     // delete req.innerBody['item']['longitude']
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
@@ -100,39 +93,27 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_comment_list'
+        , 'call proc_select_searchview_search_list'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
-            req.paramBody['last_uid'],
+            req.paramBody['keyword'],
+            req.paramBody['random_seed'],
+            req.paramBody['offset'],
         ]
     );
 }
 
-function querySelectTotalCount(req, db_connection) {
+function queryHashTag(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_comment_total_count'
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_hash_tag_search_list'
         , [
-            req.paramBody['video_uid'],
-            1,
+            req.paramBody['keyword'],
+            req.paramBody['last_uid'],
+            // req.paramBody['offset'],
         ]
     );
-}
-
-function createJSONArray(item){
-
-    if( item ) {
-        for( let idx in item ){
-            if( item[idx]['nested_comment_list'] !== null && (item[idx]['nested_comment_list'].indexOf('\n') > 0 || item[idx]['nested_comment_list'].indexOf('\t') > 0 )){
-                item[idx]['nested_comment_list'] = item[idx]['nested_comment_list'].replace(/\n/gi, '\\n').replace(/\t/gi, '\\t');
-            }
-
-            item[idx]['nested_comment_list'] = JSON.parse(item[idx]['nested_comment_list'])
-        }
-    }
-    return item;
 }
 
 

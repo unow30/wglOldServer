@@ -169,5 +169,26 @@ module.exports = {
             },
         }).catch((e) => console.log(e));
     },
+    fcmEventPoint3000Single : async function(item){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "to": item,
+            "priority": "high",
+            "data": {
+                "title": "위글 포인트 알림",
+                "message": `위글 가입을 환영합니다! 바로 사용 가능한 3,000 포인트를 지급하였습니다.`,
+                "channel" : "포인트 알림"
+            },
+            "notification": {
+                "title": "위글 포인트 알림",
+                "body": `위글 가입을 환영합니다! 바로 사용 가능한 3,000 포인트를 지급하였습니다.`,
+                "channel" : "포인트 알림",
+                "sound" : "default",
+                "badge": "1",
+                "content-available" : "true",
+                "apns-priority" : "5",
+                "badge count" : "0",
+            },
+        }).catch((e) => console.log(e));
+    },
 
 };

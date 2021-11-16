@@ -90,7 +90,7 @@ app.route('/video/review')
     .post( require('./video/createVideoReview') )
     .delete( require('./video/deleteVideoReview') )
 app.route('/video/content').put( require('./video/updateVideoContent') )
-app.route('/video/hashTag/list').get( require('./video/selectVideoHashTagList') )
+app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
 
 
 
@@ -161,7 +161,10 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
  */
 app.route('/searchview').get( require('./searchView/selectSearchViewInfo') )
 app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )
-app.route('/searchview/search/list').get( require('./video/selectSearchViewSearchList') )
+// app.route('/searchview/search/list').get( require('./video/selectSearchViewSearchList') )//이전 검색리스트
+app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') )
+app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') )//태그
+app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') )//사용자
 
 /**
  * notice api

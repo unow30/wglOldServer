@@ -127,6 +127,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
+const fcmUtil = require('../../../common/utils/fcmUtil')
 
 const errCode = require('../../../common/define/errCode');
 
@@ -165,16 +166,20 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item'] = await query(req, db_connection);
+            console.log('#####################')
+            console.log(req.innerBody['item'])
+
             req.innerBody['item']['access_token'] = jwtUtil.createToken(req.innerBody['item'], '100d');
             // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
-
 
             req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
 
+            await queryPointEvent(req, db_connection);
 
+            await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -295,3 +300,15 @@ function queryUpdateImage(req, db_connection) {
     );
 }
 
+function queryPointEvent(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    //let user_uid = req.headers['user_uid'] ? req.headers['user_uid'] : 0;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call _dev_event_create_point_3000_for_signup'
+        , [
+            req.innerBody['item']['uid'],
+        ]
+    );
+}
