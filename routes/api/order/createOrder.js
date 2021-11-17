@@ -247,6 +247,9 @@ module.exports = function (req, res) {
             }
 
             deleteBody(req)
+
+            logUtil.printUrlLog(req, `param: ${JSON.stringify(req.innerBody)}`);
+
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
