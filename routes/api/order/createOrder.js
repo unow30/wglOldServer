@@ -359,8 +359,7 @@ function queryProduct(req, db_connection) {
 
 
 async function alarm(req, res) {
-    try {
-        throw new Error('알람에러 생성!! 그래도 주문은 생성되겠지'); //
+
         const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
         await fcmUtil.fcmCreateOrderList(push_token_list);
 
@@ -396,10 +395,6 @@ async function alarm(req, res) {
             }
         }
         await aligoUtil.alimSend(req, res);
-    } catch (e) {
-        // errUtil.createCall(errCode.fail, `알람 보내기를 실패했습니다.`)
-        console.log(e)
-    }
 }
 
 
