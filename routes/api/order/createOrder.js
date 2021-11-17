@@ -248,8 +248,6 @@ module.exports = function (req, res) {
 
             deleteBody(req)
 
-            logUtil.printUrlLog(req, `param: ${JSON.stringify(req.innerBody)}`);
-
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -361,41 +359,46 @@ function queryProduct(req, db_connection) {
 
 
 async function alarm(req, res) {
-    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
-    await fcmUtil.fcmCreateOrderList(push_token_list);
+    try {
+        throw new Error('알람에러 생성!! 그래도 주문은 생성되겠지'); //
+        const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
+        await fcmUtil.fcmCreateOrderList(push_token_list);
 
 
-    req.body= {
-        type: 's',
-        time: '9999'
-    }
-    await aligoUtil.createToken(req, res);
-
-
-    req.body= {
-        senderkey: `${process.env.ALIGO_SENDERKEY}`,
-        tpl_code: `TF_6863`,
-        sender: `025580612`,
-        subject_1: `상품 주문 알림(판매자)`,
-    }
-
-    let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
-        if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
-        return prev;
-    }, []);
-
-
-    let cnt = 1;
-    for (let idx in alrim_msg_distinc_list) {
-
-        idx = parseInt(idx);
-        if(alrim_msg_distinc_list[idx]['phone'] && alrim_msg_distinc_list[idx]['phone'].length > 4) {
-            req.body[`receiver_${cnt}`] = alrim_msg_distinc_list[idx]['phone']
-            req.body[`message_${cnt}`] = setArimMessage(alrim_msg_distinc_list, idx)
-            cnt++;
+        req.body= {
+            type: 's',
+            time: '9999'
         }
+        await aligoUtil.createToken(req, res);
+
+
+        req.body= {
+            senderkey: `${process.env.ALIGO_SENDERKEY}`,
+            tpl_code: `TF_6863`,
+            sender: `025580612`,
+            subject_1: `상품 주문 알림(판매자)`,
+        }
+
+        let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
+            if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
+            return prev;
+        }, []);
+
+
+        let cnt = 1;
+        for (let idx in alrim_msg_distinc_list) {
+
+            idx = parseInt(idx);
+            if(alrim_msg_distinc_list[idx]['phone'] && alrim_msg_distinc_list[idx]['phone'].length > 4) {
+                req.body[`receiver_${cnt}`] = alrim_msg_distinc_list[idx]['phone']
+                req.body[`message_${cnt}`] = setArimMessage(alrim_msg_distinc_list, idx)
+                cnt++;
+            }
+        }
+        await aligoUtil.alimSend(req, res);
+    } catch (e) {
+        errUtil.createCall(errCode.fail, `알람 보내기를 실패했습니다.`)
     }
-    await aligoUtil.alimSend(req, res);
 }
 
 
