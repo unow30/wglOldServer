@@ -397,7 +397,8 @@ async function alarm(req, res) {
         }
         await aligoUtil.alimSend(req, res);
     } catch (e) {
-        errUtil.createCall(errCode.fail, `알람 보내기를 실패했습니다.`)
+        // errUtil.createCall(errCode.fail, `알람 보내기를 실패했습니다.`)
+        console.log(e)
     }
 }
 
