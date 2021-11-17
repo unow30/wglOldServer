@@ -33,7 +33,7 @@ module.exports = {
             .then((r) => {
                 console.log("scueisjecisj123102j" + JSON.stringify(AuthData));
                 console.log("scueisjecisj" + JSON.stringify(r));
-                // res.send(r)
+                res.send(r)
             })
             .catch((e) => {
                 console.log("wefweferrrororororor")
