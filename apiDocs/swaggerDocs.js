@@ -190,6 +190,10 @@ let swaggerDefinition = {
             description: '검색화면 관련 API'
         },
         {
+            name: 'Gift',
+            description: '선물 관련 API'
+        },
+        {
             name: 'File',
             description: '파일(이미지, 영상) 관련 API'
         },
