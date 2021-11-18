@@ -174,6 +174,8 @@ app.route('/notice/list').get( require('./notice/selectNoticeViewList') )
 /**
  * gift api
  */
-app.route('/gift/order').post( require('./gift/createGiftOrder') );
+app.route('/gift/order').post( require('./gift/createGiftOrder') )
+                              .get(require('./gift/selectGiftOrder'));
+
 
 module.exports = app;
