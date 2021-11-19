@@ -76,7 +76,7 @@ function deleteBody(req) {
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
+    return mysqlUtil.querySingle(db_connection
         , 'call proc_select_gift_order'
         , [
             req.headers['user_uid'],
