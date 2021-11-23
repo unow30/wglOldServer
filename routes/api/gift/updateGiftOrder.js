@@ -38,7 +38,7 @@
  *               description: |
  *                 주문 uid
  *             phone:
- *               type: number
+ *               type: string
  *               example: 01042474682
  *               description: |
  *                 선물 받는 사람의 전화번호
