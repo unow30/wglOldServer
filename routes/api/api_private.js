@@ -29,7 +29,7 @@ app.route('/product/review/list').get( require('./product/selectProductReviewLis
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
 app.route('/product/video/list').get( require('./product/selectProductVideoList') )
 app.route('/product/recent/viewed')
-    .put(require('./product/updateProductRecentViewed'))
+    .put(require('./gift/updateGiftOrder'))
     .get( require('./product/selectProductRecentViewedList') )
     .delete( require('./product/deleteProductRecentViewedList') )
 
@@ -171,5 +171,13 @@ app.route('/searchview/search/list/user').get( require('./searchView/selectSearc
  * notice api
  */
 app.route('/notice/list').get( require('./notice/selectNoticeViewList') )
+
+/**
+ * gift api
+ */
+app.route('/gift/order').post( require('./gift/createGiftOrder') )
+                              .put( require('./gift/updateGiftOrder'))
+                              .get(require('./gift/selectGiftOrder'));
+
 
 module.exports = app;
