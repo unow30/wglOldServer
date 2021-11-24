@@ -91,6 +91,7 @@ app.route('/video/review')
     .delete( require('./video/deleteVideoReview') )
 app.route('/video/content').put( require('./video/updateVideoContent') )
 app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
+app.route('/video/search/result/list').get( require('./video/selectVideoSearchResult') )
 
 
 
