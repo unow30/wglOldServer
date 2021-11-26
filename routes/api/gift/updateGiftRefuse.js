@@ -10,6 +10,7 @@
  *       path : /api/private/gift/refuse
  *
  *       * 선물 거절
+ *       status 는 order_product status 입니다.
  *
  *     parameters:
  *       - in: body
