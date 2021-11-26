@@ -22,6 +22,7 @@
  *             - order_uid
  *             - order_product_uid
  *             - gift_uid
+ *             - status
  *           properties:
  *             order_uid:
  *               type: number
@@ -38,6 +39,11 @@
  *               example: 22
  *               description: |
  *                 선물 uid
+ *             status:
+ *               type: number
+ *               example: 0
+ *               description: |
+ *                 선물 상태
  *     responses:
  *       400:
  *         description: 에러 코드 400

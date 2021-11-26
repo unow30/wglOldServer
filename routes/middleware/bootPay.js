@@ -19,7 +19,7 @@ module.exports =  function (req, res, next) {
     req.paramBody = paramUtil.parse(req);
 
     try {
-        if (parseInt(req.paramBody["status"]) === 6) {
+        if (parseInt(req.paramBody["status"]) === 6 || parseInt(req.paramBody["status"]) === 0) {
 
 
             mysqlUtil.connectPool( async function (db_connection) {
@@ -116,7 +116,9 @@ module.exports =  function (req, res, next) {
                                     receiptId: req.innerBody['bootpay_info']['pg_receipt_id'],
                                     price: req.innerBody['cancel_info']['refund_payment'] ,                               // "[[ 결제 취소할 금액 ]]"
                                     name: req.innerBody['bootpay_info']['nickname'],              // "[[ 취소자명 ]]"
-                                    reason: req.paramBody['cancel_reason'] + req.paramBody['detail_reason'],   // "[[ 취소사유 ]]"
+                                    reason: parseInt(req.paramBody["status"]) === 0 ?
+                                        '선물 거절' :
+                                        req.paramBody['cancel_reason'] + req.paramBody['detail_reason'],   // "[[ 취소사유 ]]"
                                 }).then(function (response) {
                                     // 결제 취소가 완료되었다면
                                     if (response.status === 200) {
@@ -320,7 +322,7 @@ function queryCancelInfo(req, db_connection){
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_cancel_info'
         , [
-            1,
+            parseInt(req.paramBody["status"]) === 0 ? 0 : 1,
             req.paramBody['order_uid'],
             req.paramBody['order_product_uid'],
         ]
