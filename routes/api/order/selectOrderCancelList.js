@@ -7,7 +7,7 @@
  *     summary: 상품 취소.반품.교환 목록
  *     tags: [Order]
  *     description: |
- *       path : /api/private/order/list
+ *       path : /api/private/order/cancel/list
  *
  *       * 상품 취소.반품.교환 목록
  *

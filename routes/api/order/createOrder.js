@@ -352,6 +352,8 @@ function queryProduct(req, db_connection) {
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
             req.innerBody['product']['price_delivery'],
+            req.innerBody['product']['product_name'],
+            req.innerBody['product']['product_image'],
             req.paramBody['status'],
         ]
     );
