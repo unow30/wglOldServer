@@ -179,7 +179,8 @@ app.route('/gift/order').post( require('./gift/createGiftOrder') )
                               .put( require('./gift/updateGiftOrder'))
                               .get(require('./gift/selectGiftOrder'));
 
-app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./gift/updateGiftRefuse') )
+app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./gift/updateGiftRefuse') );
+app.route('/gift/refund').put(require('../middleware/bootPay'), require('./gift/updateGiftRefund') );
 
 
 module.exports = app;
