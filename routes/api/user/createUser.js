@@ -177,7 +177,7 @@ module.exports = function (req, res) {
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
 
-            // await queryPointEvent(req, db_connection); 포인트 3000점 이벤트(~11월 30일까지)
+            await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
 
             await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
 
@@ -300,15 +300,15 @@ function queryUpdateImage(req, db_connection) {
     );
 }
 
-// function queryPointEvent(req, db_connection) {
-//     const _funcName = arguments.callee.name;
-//
-//     //let user_uid = req.headers['user_uid'] ? req.headers['user_uid'] : 0;
-//
-//     return mysqlUtil.querySingle(db_connection
-//         , 'call _dev_event_create_point_3000_for_signup'
-//         , [
-//             req.innerBody['item']['uid'],
-//         ]
-//     );
-// }
+function queryPointEvent(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    //let user_uid = req.headers['user_uid'] ? req.headers['user_uid'] : 0;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call _dev_event_create_point_3000_for_signup'
+        , [
+            req.innerBody['item']['uid'],
+        ]
+    );
+}
