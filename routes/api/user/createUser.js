@@ -177,7 +177,7 @@ module.exports = function (req, res) {
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
 
-            await queryPointEvent(req, db_connection);
+            await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
 
             await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
 
