@@ -203,7 +203,7 @@ function checkRefundReward(req) {
         req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']['cancelable_reward'];
 
 
-        req.innerBody['cancel_info']['cancelable_point'] -= undefined_refund_price - req.innerBody['cancel_info']['cancelable_reward'];
+        req.innerBody['cancel_info']['cancelable_point'] = undefined_refund_price - req.innerBody['cancel_info']['cancelable_reward'];
         req.innerBody['cancel_info']['cancelable_reward'] = 0;
 
         console.log("checkRefundReward 함수 로직 ")
