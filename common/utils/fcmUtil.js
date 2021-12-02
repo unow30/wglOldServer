@@ -70,7 +70,6 @@ module.exports = {
         }).catch((e) => console.log(e));
     },
     fcmRewardVideoSingle : async function(item){
-        console.log(`리워드fcm 값 확인 ${item['amount']}`)
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "to": item['push_token'],
             "priority": "high",
