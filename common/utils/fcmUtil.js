@@ -75,13 +75,13 @@ module.exports = {
             "priority": "high",
             "data": {
                 "title": "리워드 지급 알림",
-                "message": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['reward_amount']}원이 지급 되었습니다.`,
+                "message": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['amount']}원이 지급 되었습니다.`,
                 "channel" : "리워드 알림",
                 "fcm_type" : "2",
             },
             "notification": {
                 "title": "리워드 지급 알림",
-                "body": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['reward_amount']}원이 지급 되었습니다.`,
+                "body": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['amount']}원이 지급 되었습니다.`,
                 "channel" : "리워드 알림",
                 "fcm_type" : "2",
                 "sound" : "default",
