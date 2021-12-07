@@ -173,7 +173,7 @@ async function alarm(req, res) {
         subject_1: `상품 주문 알림(판매자)`,
     }
 
-    req.body[`receiver_1`] = req.innerBody['item']['phone']
+    req.body[`receiver_1`] = req.innerBody['item']['seller_phone']
     req.body[`message_1`] = setArimMessage(req)
     await aligoUtil.alimSend(req, res);
 }
