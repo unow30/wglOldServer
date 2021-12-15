@@ -3,7 +3,7 @@
  *
  * @swagger
  * /api/private/gift/order:
- *   put:
+ *   put:/api/private/gift/order
  *     summary: 선물 받기
  *     tags: [Gift]
  *     description: |
@@ -25,7 +25,6 @@
  *             - zipcode
  *             - address
  *             - address_detail
- *             - delivery_msg
  *           properties:
  *             gift_uid:
  *               type: number
@@ -123,7 +122,6 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'zipcode');
     paramUtil.checkParam_noReturn(req.paramBody, 'address');
     paramUtil.checkParam_noReturn(req.paramBody, 'address_detail');
-    paramUtil.checkParam_noReturn(req.paramBody, 'delivery_msg');
 }
 
 function deleteBody(req) {
@@ -173,7 +171,7 @@ async function alarm(req, res) {
         subject_1: `상품 주문 알림(판매자)`,
     }
 
-    req.body[`receiver_1`] = req.innerBody['item']['phone']
+    req.body[`receiver_1`] = req.innerBody['item']['seller_phone']
     req.body[`message_1`] = setArimMessage(req)
     await aligoUtil.alimSend(req, res);
 }
