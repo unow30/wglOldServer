@@ -29,7 +29,7 @@ app.route('/product/review/list').get( require('./product/selectProductReviewLis
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
 app.route('/product/video/list').get( require('./product/selectProductVideoList') )
 app.route('/product/recent/viewed')
-    .put(require('./gift/updateGiftOrder'))
+    .put(require('./product/updateProductRecentViewed'))
     .get( require('./product/selectProductRecentViewedList') )
     .delete( require('./product/deleteProductRecentViewedList') )
 
@@ -178,7 +178,6 @@ app.route('/notice/list').get( require('./notice/selectNoticeViewList') )
 app.route('/gift/order').post( require('./gift/createGiftOrder') )
                               .put( require('./gift/updateGiftOrder'))
                               .get(require('./gift/selectGiftOrder'));
-
 app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./gift/updateGiftRefuse') );
 app.route('/gift/refund').put(require('../middleware/bootPay'), require('./gift/updateGiftRefund') );
 
