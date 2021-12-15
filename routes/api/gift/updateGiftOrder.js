@@ -11,56 +11,7 @@
  *
  *       * 선물 받기
  *
- *     parameters:
- *       - in: body
- *         name: body
- *         description: |
- *           최근 본 상품 업데이트
- *         schema:
- *           type: object
- *           required:
- *             - gift_uid
- *             - order_uid
- *             - phone
- *             - zipcode
- *             - address
- *             - address_detail
- *           properties:
- *             gift_uid:
- *               type: number
- *               example: 1
- *               description: |
- *                 선물 uid
- *             order_uid:
- *               type: number
- *               example: 13
- *               description: |
- *                 주문 uid
- *             phone:
- *               type: string
- *               example: 01042474682
- *               description: |
- *                 선물 받는 사람의 전화번호
- *             zipcode:
- *               type: string
- *               example: 603944
- *               description: |
- *                 선물 받는 사람의 우편번호
- *             address:
- *               type: string
- *               example: 부산 수영구 망미동 23번길 7
- *               description: |
- *                 선물 받는 사람의 주소
- *             address_detail:
- *               type: string
- *               example: 422호
- *               description: |
- *                 선물 받는 사람의 상세 주소
- *             delivery_msg:
- *               type: string
- *               example: 경비실에 맡겨 주세요.
- *               description: |
- *                 선물 받는 사람의 배송 메모
+ *
  *     responses:
  *       400:
  *         description: 에러 코드 400
