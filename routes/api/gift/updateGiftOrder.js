@@ -3,7 +3,7 @@
  *
  * @swagger
  * /api/private/gift/order:
- *   put:/api/private/gift/order
+ *   put:
  *     summary: 선물 받기
  *     tags: [Gift]
  *     description: |
