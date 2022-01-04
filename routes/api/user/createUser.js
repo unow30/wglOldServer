@@ -177,9 +177,15 @@ module.exports = function (req, res) {
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
 
-            await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
+            let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
 
-            await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
+            let item = {}
+            item['push_token'] = req.paramBody['push_token']
+            item['user_uid'] = req.innerBody['item']['uid']
+            item['point_uid'] = point['point_uid']
+            // await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
+            let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
+            await queryInsertFCM(fcmPoint3000['data'], db_connection)
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -309,6 +315,21 @@ function queryPointEvent(req, db_connection) {
         , 'call _dev_event_create_point_3000_for_signup'
         , [
             req.innerBody['item']['uid'],
+        ]
+    );
+}
+
+
+function queryInsertFCM(data, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        ,'call proc_create_fcm_data'
+        , [
+            data['user_uid'],
+            data['fcm_type'],
+            data['title'],
+            data['message'],
+            data['target_uid'] == null? 0 : data['target_uid'],
         ]
     );
 }
