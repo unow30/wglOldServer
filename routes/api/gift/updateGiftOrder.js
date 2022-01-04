@@ -9,7 +9,6 @@
  *     description: |
  *       path : /api/private/gift/order
  *
- *       * 선물 받기
  *
  *     parameters:
  *       - in: body
