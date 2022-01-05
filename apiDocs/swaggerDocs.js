@@ -205,7 +205,7 @@ let options = {
     swaggerDefinition: swaggerDefinition, // swagger definition
     apis: [
         './routes/**/*.js',
-        './apiDocs/*.js',
+        './apiDocs/**/*.js',
     ], // path where API specification are written
 };
 // initialize swaggerJSDoc
