@@ -53,18 +53,20 @@ module.exports = {
             "to": item['push_token'],
             "priority": "high",
             "data": {
+                "user_uid": `${item['seller_uid']}`,
                 "title": "리뷰 영상 등록 알림",
-                "message": `${item['product_name']} 상품에 대한 리뷰 영상이 등록되었습니다.  판매자페이지를 영상 리뷰 관리 메뉴에서 확인 가능합니다.`,
+                "message": `${item['reviewer_nickname']}님이 ${item['product_name']} 상품에 대한 리뷰 영상을 등록했습니다.`,
                 "channel" : "리뷰 영상 등록 알림",
-                "video_uid" : `${item['uid']}`,
+                "target_uid" : `${item['uid']}`,
                 "fcm_type" : "1",
                 "video_from" : `${item['is_deal']}`,
             },
             "notification": {
+                "user_uid": `${item['seller_uid']}`,
                 "title": "리뷰 영상 등록 알림",
-                "body": `${item['product_name']} 상품에 대한 리뷰 영상이 등록되었습니다.  판매자페이지를 영상 리뷰 관리 메뉴에서 확인 가능합니다.`,
+                "body": `${item['reviewer_nickname']}님이 ${item['product_name']} 상품에 대한 리뷰 영상을 등록했습니다.`,
                 "channel" : "리뷰 영상 등록 알림",
-                "video_uid" : `${item['uid']}`,
+                "target_uid" : `${item['uid']}`,
                 "fcm_type" : "1",
                 "video_from" : `${item['is_deal']}`,
                 "sound" : "default",
@@ -73,6 +75,8 @@ module.exports = {
                 "apns-priority" : "5",
                 "badge count" : "0",
             },
+        }).then((res)=>{
+            return  JSON.parse(res['config']['data'])
         }).catch((e) => console.log(e));
     },
     fcmRewardVideoSingle : async function(item){
@@ -103,18 +107,20 @@ module.exports = {
             "to": item['push_token'],
             "priority": "high",
             "data": {
+                "user_uid": `${item['video_user_uid']}`,
                 "title": "댓글 등록 알림",
                 "message": `${item['nickname']}님이 회원님의 영상에 댓글을 달았습니다. : ${item['content']}`,
                 "channel" : "댓글 알림",
-                "video_uid" : `${item['video_uid']}`,
+                "target_uid" : `${item['uid']}`,
                 "fcm_type" : "3",
                 "video_from" : `${item['is_deal']}`,
             },
             "notification": {
+                "user_uid": `${item['video_user_uid']}`,
                 "title": "댓글 등록 알림",
                 "body": `${item['nickname']}님이 회원님의 영상에 댓글을 달았습니다. : ${item['content']}`,
                 "channel" : "댓글 알림",
-                "video_uid" : `${item['video_uid']}`,
+                "target_uid" : `${item['uid']}`,
                 "fcm_type" : "3",
                 "video_from" : `${item['is_deal']}`,
                 "sound" : "default",
@@ -123,6 +129,8 @@ module.exports = {
                 "apns-priority" : "5",
                 "badge count" : "0",
             },
+        }).then((res)=>{
+            return  JSON.parse(res['config']['data'])
         }).catch((e) => console.log(e));
     },
     fcmNestedCommentSingle : async function(item){
