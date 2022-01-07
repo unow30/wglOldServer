@@ -96,11 +96,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            //order_product.uid로 tbl_order_product의 status를 불러온다.
-            //status = param['status']가 5로 같다면, 업데이트를 진행하지 않는다.???
-            //그럼 req.innerBody['item']이 null이므로 업데이트가 되지 않는다.
-            let status = await queryStatus(req, db_connection);
-            if(status === 5 && status === req.paramBody['status']){
+
+            let data = await queryStatus(req, db_connection);
+            if(data['status'] === 5 && data['status'] == req.paramBody['status']){
                 errUtil.createCall(errCode.param, `구매확정된 상품입니다.`)
                 return
             }

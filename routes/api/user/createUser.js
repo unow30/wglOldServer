@@ -189,7 +189,7 @@ module.exports = function (req, res) {
                   item['point_uid'] = point['point_uid']
 
               let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
-              await queryInsertFCM(fcmPoint3000['data'], db_connection)
+              // await queryInsertFCM(fcmPoint3000['data'], db_connection)
             }
             // let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
             //
