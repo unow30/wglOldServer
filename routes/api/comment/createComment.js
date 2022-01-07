@@ -77,7 +77,7 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
             if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid']){
                 let fcmComment = await fcmUtil.fcmVideoCommentSingle(req.innerBody['item'])
-                // await queryInsertFCM(fcmComment['data'], db_connection)
+                await queryInsertFCM(fcmComment['data'], db_connection)
             }
 
             deleteBody(req)
