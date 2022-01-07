@@ -75,8 +75,10 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-            if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid'])
-                await fcmUtil.fcmVideoCommentSingle(req.innerBody['item'])
+            if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid']){
+                let fcmComment = await fcmUtil.fcmVideoCommentSingle(req.innerBody['item'])
+                await queryInsertFCM(fcmComment['data'], db_connection)
+            }
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -114,5 +116,17 @@ function query(req, db_connection) {
     );
 }
 
+function queryInsertFCM(data, db_connection){
 
-
+    return mysqlUtil.querySingle(db_connection
+        ,'call proc_create_fcm_data'
+        , [
+            data['user_uid'],
+            data['fcm_type'],
+            data['title'],
+            data['message'],
+            data['video_uid'],
+            data['target_uid'] == null? 0 : data['target_uid'],
+        ]
+    );
+}

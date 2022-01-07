@@ -177,9 +177,29 @@ module.exports = function (req, res) {
                                            req.paramBody['filename'] : "profile_default_image.png"
             await queryUpdateImage(req, db_connection);
 
-            await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
+            // 회원가입한 이메일과 동일한 이메일을 가진 탈퇴유저가 있다면 포인트 3000을 줘선 안된다.
+            // 포인트를 쓴 계정을 회원탈퇴하고 재가입하면 포인트 3000을 줘선 안된다. 포인트를 안쓰고 탈회한 유저도 재가입하면 포인트를 줘선 안된다.
+            let deleted_user_email = await queryCheckDeletedEmail(req, db_connection);
+            if(!deleted_user_email){
+              let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
 
-            await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
+              let item = {}
+                  item['push_token'] = req.paramBody['push_token']
+                  item['user_uid'] = req.innerBody['item']['uid']
+                  item['point_uid'] = point['point_uid']
+
+              let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
+              await queryInsertFCM(fcmPoint3000['data'], db_connection)
+            }
+            // let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
+            //
+            // let item = {}
+            // item['push_token'] = req.paramBody['push_token']
+            // item['user_uid'] = req.innerBody['item']['uid']
+            // item['point_uid'] = point['point_uid']
+            // // await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
+            // let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
+            // await queryInsertFCM(fcmPoint3000['data'], db_connection)
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -312,3 +332,31 @@ function queryPointEvent(req, db_connection) {
         ]
     );
 }
+
+
+function queryInsertFCM(data, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        ,'call proc_create_fcm_data'
+        , [
+            data['user_uid'],
+            data['fcm_type'],
+            data['title'],
+            data['message'],
+            data['target_uid'] == null? 0 : data['target_uid'],
+        ]
+    );
+}
+
+function queryCheckDeletedEmail(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_user_deleted_email_check'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['email'],
+        ]
+    );
+}
+
