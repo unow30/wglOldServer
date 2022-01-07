@@ -44,13 +44,13 @@ module.exports =  function (req, res, next) {
 
 
                 if(req.innerBody['cancel_info']['refund_payment']  > 0) {
-                    RestClient.setConfig(
-                        process.env.BOOTPAY_APPLICATION_ID,
-                        process.env.BOOTPAY_PRIVATE_KEY,
-                    );
-
-
-                    console.log("zz:" + JSON.stringify(req.innerBody['bootpay_info']))
+                    // RestClient.setConfig(
+                    //     process.env.BOOTPAY_APPLICATION_ID,
+                    //     process.env.BOOTPAY_PRIVATE_KEY,
+                    // );
+                    //
+                    //
+                    // console.log("zz:" + JSON.stringify(req.innerBody['bootpay_info']))
                     // RestClient.getAccessToken().then(function (token) {
                     //     try {
                     //         if (token.status === 200) {
