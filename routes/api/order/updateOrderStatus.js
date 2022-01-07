@@ -96,6 +96,15 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
+            //order_product.uid로 tbl_order_product의 status를 불러온다.
+            //status = param['status']가 5로 같다면, 업데이트를 진행하지 않는다.???
+            //그럼 req.innerBody['item']이 null이므로 업데이트가 되지 않는다.
+            let status = await queryStatus(req, db_connection);
+            if(status === 5 && status === req.paramBody['status']){
+                errUtil.createCall(errCode.param, `구매확정된 상품입니다.`)
+                return
+            }
+
             req.innerBody['item'] = await query(req, db_connection);
 
 
@@ -284,3 +293,14 @@ function queryRollbackReward(req, db_connection) {
 //
 // }
 //
+
+
+function queryStatus(req, db_connection, item) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_order_product_status'
+        , [
+            req.paramBody['order_product_uid']
+        ])
+}
