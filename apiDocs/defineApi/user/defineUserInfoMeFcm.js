@@ -7,7 +7,12 @@
  *   Proc_Array_UserInfoMeFCM:
  *     allOf:
  *       - $ref: '#/definitions/FcmAlertTable'
- *
+ *       - type: object
+ *         properties:
+ *           profile_image:
+ *             type: string
+ *             example: "abcdefg.jpg"
+ *             description: 프로필 파일 명
  *
  *   UserInfoMeFCMApi:
  *     type: object
