@@ -114,6 +114,7 @@ function checkCancelablePayment(req) {
         req = checkRefundReward(req);
     }else{
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["result_price"];
+        req.innerBody['cancel_info']["cancelable_point"] = 0;
     }
 
 
