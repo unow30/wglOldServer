@@ -14,12 +14,13 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 // 3: 댓글 등록 알림
 // 4: 대댓글 등록 알림
 // 5: 문의 등록 알림
-// 6: 위글가입 포인트 알림
+// 6: 배송상태 알림
+// 8: 위글가입 포인트 알림
 // 판매자사이트
 // 0: 주문 상품 상태 알림 -> 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
 // 7: 문의사항 답변 등록 알림
 // 관리자사이트
-// 8: 위글 리뷰영상 이벤트 심사 알림
+// 9: 위글 리뷰영상 이벤트 알림
 // 0: 위글 리뷰영상 이벤트 심사 거절 -> 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
 
 
@@ -45,6 +46,7 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
         }).catch((e) => console.log(e));
     },
@@ -74,6 +76,7 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
         }).then((res)=>{
             return  JSON.parse(res['config']['data'])
@@ -84,6 +87,7 @@ module.exports = {
             "to": item['push_token'],
             "priority": "high",
             "data": {
+                "user_uid": item['user_uid'],
                 "title": "리워드 지급 알림",
                 "message": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['amount']}원이 지급 되었습니다.`,
                 "channel" : "리워드 알림",
@@ -91,6 +95,7 @@ module.exports = {
                 "fcm_type" : "2",
             },
             "notification": {
+                "user_uid": item['user_uid'],
                 "title": "리워드 지급 알림",
                 "body": `${item['product_name']} 상품에 대한 리뷰 리워드 ${item['amount']}원이 지급 되었습니다.`,
                 "channel" : "리워드 알림",
@@ -101,7 +106,10 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
+        }).then((res)=>{
+            return JSON.parse(res['config']['data'])
         }).catch((e) => console.log(e));
     },
     fcmVideoCommentSingle : async function(item){
@@ -132,6 +140,7 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
         }).then((res)=>{
             return  JSON.parse(res['config']['data'])
@@ -161,7 +170,10 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
+        }).then((res)=>{
+            return  JSON.parse(res['config']['data'])
         }).catch((e) => console.log(e));
     },
     fcmProductQnASingle : async function(item, question_type){
@@ -186,6 +198,7 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
         }).catch((e) => console.log(e));
     },
@@ -214,6 +227,7 @@ module.exports = {
                 "content-available" : "true",
                 "apns-priority" : "5",
                 "badge count" : "0",
+                "mutable-content": "1"
             },
         }).then((res)=>{
             return  JSON.parse(res['config']['data'])
