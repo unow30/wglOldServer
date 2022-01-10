@@ -99,6 +99,10 @@ module.exports =  function (req, res, next) {
 
 function checkCancelablePayment(req) {
 
+    console.log("doasidjkaspiodaks");
+    console.log("doasidjkaspiodaks1: " + req.innerBody['cancel_info']["cancelable_price"]);
+    console.log("doasidjkaspiodaks2: " + req.innerBody['cancel_info']["result_price"]);
+
     if( req.innerBody['cancel_info']["cancelable_price"]  <= req.innerBody['cancel_info']["result_price"] ) {
     // if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["result_price"] ) { 문제 : order_uid : 59,60
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
@@ -146,6 +150,10 @@ function checkCancelableDelivery(req, _payment) {
         console.log("checkCancelableDelivery 함수 로직")
         req.innerBody['cancel_info']['result_price'] += req.innerBody['cancel_info']['price_delivery']
     }
+
+    console.log("rgerer");
+    console.log("rgerer1: " + req.innerBody['cancel_info']['order_product_count']);
+    console.log("rgerer2: " + req.innerBody['cancel_info']["result_price"]);
 
 
     // ex code
