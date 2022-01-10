@@ -29,9 +29,9 @@ module.exports =  function (req, res, next) {
 
                 req.innerBody['cancel_info']['result_price'] = req.innerBody['cancel_info']['refund_payment'];
 
-                const _payment = req.innerBody['cancel_info']['refund_payment'];
+                // const _payment = req.innerBody['cancel_info']['refund_payment'];
 
-                req = checkCancelableDelivery(req, _payment);
+                req = checkCancelableDelivery(req, req.innerBody['cancel_info']['refund_payment']);
 
                 // ex code
                 req = checkCancelablePayment(req);
@@ -109,13 +109,12 @@ function checkCancelablePayment(req) {
     if( req.innerBody['cancel_info']["cancelable_price"]  <= req.innerBody['cancel_info']["result_price"] ) {
     // if( req.innerBody['cancel_info']["cancelable_price"]  < req.innerBody['cancel_info']["result_price"] ) { 문제 : order_uid : 59,60
         req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["cancelable_price"];
+    //     req.innerBody['cancel_info']["result_price"] = req.innerBody['cancel_info']["cancelable_price"];
         console.log("checkCancelablePayment 함수 로직 ")
         req = checkRefundReward(req);
+    }else{
+        req.innerBody['cancel_info']["refund_payment"] = req.innerBody['cancel_info']["result_price"];
     }
-    else {
-        req.innerBody['cancel_info']["cancelable_point"] = 0;
-    }
-
 
 
 
@@ -133,7 +132,7 @@ function checkRefundReward(req) {
         req.innerBody['cancel_info']['refund_reward'] = req.innerBody['cancel_info']['cancelable_reward'];
 
 
-        req.innerBody['cancel_info']['cancelable_point'] -= undefined_refund_price - req.innerBody['cancel_info']['cancelable_reward'];
+        req.innerBody['cancel_info']['cancelable_point'] = undefined_refund_price - req.innerBody['cancel_info']['cancelable_reward'];
         req.innerBody['cancel_info']['cancelable_reward'] = 0;
 
         console.log("checkRefundReward 함수 로직 ")
