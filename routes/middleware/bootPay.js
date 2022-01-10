@@ -47,40 +47,40 @@ module.exports =  function (req, res, next) {
 
 
                 if(req.innerBody['cancel_info']['refund_payment']  > 0) {
-                    // RestClient.setConfig(
-                    //     process.env.BOOTPAY_APPLICATION_ID,
-                    //     process.env.BOOTPAY_PRIVATE_KEY,
-                    // );
-                    //
-                    //
-                    // console.log("zz:" + JSON.stringify(req.innerBody['bootpay_info']))
-                    // RestClient.getAccessToken().then(function (token) {
-                    //     try {
-                    //         if (token.status === 200) {
-                    //             RestClient.cancel({
-                    //                 receiptId: req.innerBody['bootpay_info']['pg_receipt_id'],
-                    //                 price: req.innerBody['cancel_info']['refund_payment'] ,                               // "[[ 결제 취소할 금액 ]]"
-                    //                 name: req.innerBody['bootpay_info']['nickname'],              // "[[ 취소자명 ]]"
-                    //                 reason: parseInt(req.paramBody["status"]) === 0 ?
-                    //                     '선물 거절' :
-                    //                     req.paramBody['cancel_reason'] + req.paramBody['detail_reason'],   // "[[ 취소사유 ]]"
-                    //             }).then(function (response) {
-                    //                 // 결제 취소가 완료되었다면
-                    //                 if (response.status === 200) {
-                    //                     console.log(JSON.stringify(response));
-                    //                     console.log("부트페이 성공..!!!");
-                    //                     next();
-                    //                 }
-                    //             }).catch((e) => {
-                    //                 sendUtil.sendErrorPacket(req, res, errUtil.initError(e.path, `결제 취소를 실패했습니다. 다시 시도해주세요.`));
-                    //                 return;
-                    //             });
-                    //         }
-                    //     } catch (e) {
-                    //         let _err = errUtil.get(e);
-                    //         sendUtil.sendErrorPacket(req, res, _err);
-                    //     }
-                    // });
+                    RestClient.setConfig(
+                        process.env.BOOTPAY_APPLICATION_ID,
+                        process.env.BOOTPAY_PRIVATE_KEY,
+                    );
+
+
+                    console.log("zz:" + JSON.stringify(req.innerBody['bootpay_info']))
+                    RestClient.getAccessToken().then(function (token) {
+                        try {
+                            if (token.status === 200) {
+                                RestClient.cancel({
+                                    receiptId: req.innerBody['bootpay_info']['pg_receipt_id'],
+                                    price: req.innerBody['cancel_info']['refund_payment'] ,                               // "[[ 결제 취소할 금액 ]]"
+                                    name: req.innerBody['bootpay_info']['nickname'],              // "[[ 취소자명 ]]"
+                                    reason: parseInt(req.paramBody["status"]) === 0 ?
+                                        '선물 거절' :
+                                        req.paramBody['cancel_reason'] + req.paramBody['detail_reason'],   // "[[ 취소사유 ]]"
+                                }).then(function (response) {
+                                    // 결제 취소가 완료되었다면
+                                    if (response.status === 200) {
+                                        console.log(JSON.stringify(response));
+                                        console.log("부트페이 성공..!!!");
+                                        next();
+                                    }
+                                }).catch((e) => {
+                                    sendUtil.sendErrorPacket(req, res, errUtil.initError(e.path, `결제 취소를 실패했습니다. 다시 시도해주세요.`));
+                                    return;
+                                });
+                            }
+                        } catch (e) {
+                            let _err = errUtil.get(e);
+                            sendUtil.sendErrorPacket(req, res, _err);
+                        }
+                    });
                 }
                 else {
                     next();
