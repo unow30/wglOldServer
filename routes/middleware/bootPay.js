@@ -36,6 +36,9 @@ module.exports =  function (req, res, next) {
                 // ex code
                 req = checkCancelablePayment(req);
 
+                console.log("gwegaewhgwo");
+                console.log("gwegaewhgwo1: " + req.innerBody['cancel_info']["cancelable_point"]);
+                console.log("gwegaewhgwo2: " + req.innerBody['cancel_info']["result_price"]);
 
                 req.innerBody['bootpay_info'] = await queryReward(req,db_connection)
 
