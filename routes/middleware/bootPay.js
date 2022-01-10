@@ -112,6 +112,9 @@ function checkCancelablePayment(req) {
         console.log("checkCancelablePayment 함수 로직 ")
         req = checkRefundReward(req);
     }
+    else {
+        req.innerBody['cancel_info']["cancelable_point"] = 0;
+    }
 
 
 
