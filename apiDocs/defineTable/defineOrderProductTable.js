@@ -3,7 +3,7 @@
  *
  * @swagger
  * definitions:
- *   OrderTable:
+ *   OrderProductTable:
  *     type: object
  *     properties:
  *       uid:

@@ -21,12 +21,15 @@
  *         description: 가입할 이메일
  *
  *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/UserCheckApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');

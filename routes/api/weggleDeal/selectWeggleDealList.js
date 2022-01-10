@@ -44,7 +44,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/Feed'
+ *           $ref: '#/definitions/WeggleDealListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -124,7 +124,6 @@ function querySelect(req, db_connection) {
             req.paramBody['random_seed'],
             req.paramBody['offset'],
             req.innerBody['type'],
-
         ]
     );
 }

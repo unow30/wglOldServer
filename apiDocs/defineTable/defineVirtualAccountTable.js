@@ -37,7 +37,7 @@
  *       name:
  *         type: string
  *         example: "배부른 떡볶이"
- *         description: 판매된 대표 상품명
+ *         description: 판매된 대표 상품명명
  *       price:
  *         type: number
  *         example: 31300

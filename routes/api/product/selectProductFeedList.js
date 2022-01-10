@@ -43,7 +43,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/ProductFeed'
+ *           $ref: '#/definitions/ProductFeedListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

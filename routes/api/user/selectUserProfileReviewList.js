@@ -47,9 +47,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Review'
+ *             $ref: '#/definitions/UserProfileReviewListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -100,10 +98,6 @@ function checkParam(req) {
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-    // delete req.innerBody['item']['longitude']
-    // delete req.innerBody['item']['push_token']
-    // delete req.innerBody['item']['access_token']
 }
 
 function queryList(req, db_connection) {

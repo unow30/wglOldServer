@@ -1,5 +1,5 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 12.
+ * Created by gunucklee on 2022. 01. 03.
  *
  * @swagger
  * definitions:
@@ -160,6 +160,4 @@
  *         type: number
  *         example: 0
  *         description: 리뷰 갯수
- *
  */
-

@@ -47,7 +47,7 @@
  *         schema:
  *           type: array
  *           items:
- *             $ref: '#/definitions/Review'
+ *             $ref: '#/definitions/ProductVideoListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

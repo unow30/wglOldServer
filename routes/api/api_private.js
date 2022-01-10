@@ -17,9 +17,6 @@ app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
 app.route('/user/info/other').get( require('./user/selectUserInfoOther') )
 app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
 
-
-app.route('/user/bank/info').get( require('./user/selectUserBankInfo') )
-
 /**
  * product api
  */

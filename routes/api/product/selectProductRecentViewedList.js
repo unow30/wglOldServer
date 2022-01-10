@@ -26,11 +26,12 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/ProductFeed'
+ *           $ref: '#/definitions/ProductRecentViewedApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
+ *
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
