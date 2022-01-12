@@ -125,8 +125,9 @@ function queryInsertFCM(data, db_connection){
             data['fcm_type'],
             data['title'],
             data['message'],
-            data['video_uid'],
+            data['video_uid'] == null? 0 : data['video_uid'],
             data['target_uid'] == null? 0 : data['target_uid'],
+            data['icon_filename']
         ]
     );
 }
