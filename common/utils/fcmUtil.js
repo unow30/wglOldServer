@@ -260,7 +260,6 @@ module.exports = {
                 "title": "위글가입 포인트 알림",
                 "message": `위글 가입을 환영합니다! 바로 사용 가능한 3,000 포인트를 지급하였습니다.`,
                 "channel" : "포인트 알림",
-                "target_uid": `${item['point_uid']}`,
                 "fcm_type" : "8",
                 "icon_filename": "point.png"
             },
@@ -269,7 +268,6 @@ module.exports = {
                 "title": "위글가입 포인트 알림",
                 "body": `위글 가입을 환영합니다! 바로 사용 가능한 3,000 포인트를 지급하였습니다.`,
                 "channel" : "포인트 알림",
-                "target_uid": `${item['point_uid']}`,
                 "fcm_type" : "8",
                 "icon_filename": "point.png",
                 "sound" : "default",
