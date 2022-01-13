@@ -112,9 +112,12 @@ module.exports = function (req, res) {
                 switch (req.paramBody['status']) {
 
                     case 5:
+                        //구매확정알림을 판매자에게 보내야 한다. 내용을 저장하지는 않는다.
+                        await fcmUtil.fcmOrderProductConfirm(req.innerBody['item'])
                         if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
                             req.innerBody['reward'] = await queryUpdate(req, db_connection, req.innerBody['item']);
-                            await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward'])
+                            let fcmReward = await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward'])
+                            await queryInsertFCM(fcmReward['data'], db_connection)
                         }
                         break;
 
@@ -262,6 +265,22 @@ function queryRollbackReward(req, db_connection) {
     );
 }
 
+
+function queryInsertFCM(data, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        ,'call proc_create_fcm_data'
+        , [
+            data['user_uid'],
+            data['fcm_type'],
+            data['title'],
+            data['message'],
+            data['video_uid'] == null? 0 : data['video_uid'],
+            data['target_uid'] == null? 0 : data['target_uid'],
+            data['icon_filename']
+        ]
+    );
+}
 
 
 // // 전체 취소를 해야지만 리워드 환불이 적용됩니다.
