@@ -128,14 +128,14 @@ module.exports = {
             "priority": "high",
             "data": {
                 "title": "상품 구매 확정 알림",
-                "message": `${moment.utc(item['created_time']).format('YYYY-MM-DD HH:mm')}날 구매된${item['product_name']}의 구매확정건이 있습니다. 판매자페이지를 확인해주세요.`,
+                "message": `${item['product_name']}의 구매확정건이 있습니다. 판매자페이지를 확인해주세요.`,
                 "channel" : "상품 구매 확정 알림",
                 "fcm_type" : "0",
                 "icon_filename": 'order.png',
             },
             "notification": {
                 "title": "상품 구매 확정 알림",
-                "body": `${item['created_time']}날 구매된${item['product_name']}의 구매확정건이 있습니다. 판매자페이지를 확인해주세요.`,
+                "body": `${item['product_name']}의 구매확정건이 있습니다. 판매자페이지를 확인해주세요.`,
                 "channel" : "상품 구매 확정 알림",
                 "fcm_type" : "0",
                 "icon_filename": 'order.png',
@@ -147,7 +147,7 @@ module.exports = {
                 "mutable-content": "1"
             },
         }).then((res)=>{;
-            console.log(JSON.parse(res['config']['data']))
+            return JSON.parse(res['config']['data'])
         }).catch((e) => console.log(e));
     },
     fcmVideoCommentSingle : async function(item){
