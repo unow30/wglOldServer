@@ -33,7 +33,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/Follow'
+ *           $ref: '#/definitions/FollowApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

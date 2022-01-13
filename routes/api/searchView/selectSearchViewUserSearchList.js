@@ -32,7 +32,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/SearchViewUser'
+ *           $ref: '#/definitions/SearchViewUserSearchListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

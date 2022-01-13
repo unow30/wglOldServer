@@ -17,7 +17,7 @@
  *         schema:
  *           type: array
  *           items:
- *             $ref: '#/definitions/AddressBook'
+ *             $ref: '#/definitions/AddressBookListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

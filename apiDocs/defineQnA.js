@@ -58,8 +58,19 @@
  *         type: string
  *         example: "답변 내용입니다."
  *         description: 답변 내용
- *       nickname:
- *         type: string
- *         example: "nick"
- *         description: 작성자 닉네임
+ *       type:
+ *         type: number
+ *         example: 1
+ *         description: |
+ *           질문 유형
+ *           * 1: 상품
+ *           * 2: 배송
+ *           * 3: 반품
+ *           * 4: 교환
+ *           * 5: 환불
+ *           * 6: 기타
+ *       order_product_uid:
+ *         type: number
+ *         example: 98
+ *         description: 문의한 상품 주문 uid
  */

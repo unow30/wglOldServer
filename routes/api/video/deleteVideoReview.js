@@ -22,6 +22,10 @@
  *         description: 삭제할 영상 uid
  *
  *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/UserCheckApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

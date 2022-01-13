@@ -34,9 +34,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/QnA'
+ *           $ref: '#/definitions/QnA'
  *       400:
  *         description: 에러 코드 400
  *         schema:

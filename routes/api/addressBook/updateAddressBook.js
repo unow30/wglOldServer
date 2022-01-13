@@ -49,7 +49,7 @@
  *               description: 주소
  *             address_detail:
  *               type: string
- *               example: a아파트 00동 00호
+ *               example: a 아파트 00동 00호
  *               description: 상세 주소
  *             is_default:
  *               type: number
@@ -65,7 +65,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/AddressBook'
+ *           $ref: '#/definitions/AddressBookApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

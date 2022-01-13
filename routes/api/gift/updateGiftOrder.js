@@ -61,6 +61,10 @@
  *               description: |
  *                 선물 받는 사람의 배송 메모
  *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/GiftOrderApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
