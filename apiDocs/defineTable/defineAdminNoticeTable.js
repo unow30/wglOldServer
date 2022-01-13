@@ -36,7 +36,7 @@
  *         description: 공지 내용
  *       category:
  *         type: string
- *         example: "공지 종류입니다.
+ *         example: "공지 종류입니다."
  *         description: 공지 종류
  *       admin_user_uid:
  *         type: number
