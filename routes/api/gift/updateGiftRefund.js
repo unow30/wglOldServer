@@ -46,6 +46,10 @@
  *               description: |
  *                 선물 상태
  *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/GiftRefundApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

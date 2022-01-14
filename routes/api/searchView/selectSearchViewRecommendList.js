@@ -38,7 +38,7 @@
  *         schema:
  *           type: array
  *           items:
- *             $ref: '#/definitions/Product'
+ *             $ref: '#/definitions/SearchViewRecommendListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

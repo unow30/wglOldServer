@@ -58,7 +58,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/VideoResult'
+ *           $ref: '#/definitions/VideoSearchResultListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -107,7 +107,6 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'category');
     paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
     paramUtil.checkParam_noReturn(req.paramBody, 'offset');
-
 }
 
 function deleteBody(req) {

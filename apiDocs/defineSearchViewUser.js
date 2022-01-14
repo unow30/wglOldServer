@@ -18,10 +18,6 @@
  *         type: string
  *         example: ca7d123e9b01b6a90ff77f9b11b8df96.jpg
  *         description: 검색한 사용자 profile
- *       follow_count:
- *         type: number
- *         example: 6
- *         description: 검색한 사용자 follow_count
  *       video_count:
  *         type: number
  *         example: 71

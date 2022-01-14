@@ -40,6 +40,10 @@
  *                 * /api/public/file api 호출뒤 응답값인 filename 를 사용
  *
  *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/VideoReviewApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:

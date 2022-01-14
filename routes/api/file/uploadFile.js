@@ -27,17 +27,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           type: object
- *           properties:
- *             method:
- *               type: string
- *               description: api 요청 method
- *             url:
- *               type: string
- *               description: api 요청 url 경로
- *           example:
- *              method: POST
- *              url: /api/example
+ *           $ref: '#/definitions/FileApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -106,13 +96,14 @@ module.exports = async function (req, res) {
 
                 let video_width = originalnameArray[originalnameArray.length -2];
                 let video_height = originalnameArray[originalnameArray.length -1];
+                let file_size = req.file.size / (1024 * 1024);
 
                 video_height = video_height.replace('.mp4', '');
 
                 console.log("uploadfile: " + video_width)
                 console.log("uploadfile2: " + video_height)
 
-                final_name = mediaConvertUtil(final_name, parseInt(video_width), parseInt(video_height));
+                final_name = mediaConvertUtil(file_size, final_name, parseInt(video_width), parseInt(video_height));
 
                 console.log("finalname mediaconvert :" + final_name)
 
