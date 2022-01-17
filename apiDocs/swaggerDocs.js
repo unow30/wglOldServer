@@ -159,7 +159,7 @@ let swaggerDefinition = {
         },
         {
             name: 'Follow',
-            description: '팔오우 관련 API'
+            description: '팔로우 관련 API'
         },
         {
             name: 'AddressBook',

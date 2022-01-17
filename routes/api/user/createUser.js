@@ -165,6 +165,15 @@ module.exports = function (req, res) {
                 return
             }
 
+            // 추천인 코드 생성기
+            req.paramBody['recommender_code'] = recommenderCode();
+            let recommender_code_data = await queryCheckRecommenderCode(req, db_connection);
+
+            while(recommender_code_data) {
+                req.paramBody['recommender_code'] = recommenderCode();
+                recommender_code_data = await queryCheckRecommenderCode(req, db_connection);
+            }
+
             req.innerBody['item'] = await query(req, db_connection);
             console.log('#####################')
             console.log(req.innerBody['item'])
@@ -200,6 +209,7 @@ module.exports = function (req, res) {
             // // await fcmUtil.fcmEventPoint3000Single(req.paramBody['push_token']);
             // let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
             // await queryInsertFCM(fcmPoint3000['data'], db_connection)
+
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -254,6 +264,8 @@ function query(req, db_connection) {
             req.paramBody['push_token'],
             req.paramBody['os'],
             req.paramBody['version_app'],
+            req.paramBody['recommender_code'],
+            req.paramBody['recommendee_code'],
         ]
     );
 }
@@ -362,3 +374,24 @@ function queryCheckDeletedEmail(req, db_connection) {
     );
 }
 
+
+
+function queryCheckRecommenderCode(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_recommender_code_check'
+        , [
+            req.paramBody['recommender_code']
+        ]
+    );
+}
+
+
+function recommenderCode(){
+    let code = "";
+    let cases = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for( let i=0; i < 6; i++ )
+        code += cases.charAt(Math.floor(Math.random() * cases.length));
+    return code;
+}

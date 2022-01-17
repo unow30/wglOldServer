@@ -216,4 +216,12 @@
  *         type: string
  *         example: "김혜용(칼플로티나)"
  *         description: 예금주명
+ *       recommender_code:
+ *         type: string
+ *         example: "RDCNJK"
+ *         description: 추천인 코드
+ *       recommendee_code:
+ *         type: string
+ *         example: "VQMIL4"
+ *         description: 피추천인 코드
  */
