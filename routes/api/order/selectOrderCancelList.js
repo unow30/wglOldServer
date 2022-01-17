@@ -26,9 +26,7 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Order'
+ *           $ref: '#/definitions/ProductOrderCancelListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
