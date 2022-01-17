@@ -1,25 +1,6 @@
 /**
  * Created by yunhokim on 2022. 01. 04.
  *
- * @swagger
-     * /api/public/user/auto/recommend:
- *   get:
- *     summary: asfakfjdo
- *     tags: [User]
- *     description: |
- *       path : adfaoijf
- *
- *       * adlfkndfopia
- *
- *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/UserInfoMeFCMApi'
- *       400:
- *         description: 에러 코드 400
- *         schema:
- *           $ref: '#/definitions/Error'
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
