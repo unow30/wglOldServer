@@ -20,7 +20,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 //
 // 판매자사이트 서버 실행
 // 6: 배송 시작 알림 => 구매자에게 전달. 주문 uid
-// 0: 구매 확정 요청 알림 => 구매자에게 전달. 상품 구매 목록 실행(/api/private/order/list)
+// 6: 구매 확정 요청 알림 => 구매자에게 전달. 상품 구매 목록 실행(/api/private/order/list)
 // 9: 문의사항 답변 등록 알림 => 구매자에게 전달. 나의 문의하기 목록 실행(/api/private/qna/list/me)
 // 0: 선물 기한 알림 => 주문 uid(보낸사람이 취소)
 //
