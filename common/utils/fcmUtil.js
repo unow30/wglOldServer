@@ -14,19 +14,19 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 // 2: 리워드 지급 알림 => 리뷰어에게 전달. 받는 uid 없음. 리워드 상세 페이지 실행
 // 3: 댓글 등록 알림 => 비디오 업로더에게 전달. 댓글 uid
 // 4: 대댓글 등록 알림 => 댓글 작성자에게 전달. 대댓글 uid
-// 0: 문의 등록 알림 => 판매자에게 전달. 받는 uid 없음. 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
-// 8: 위글가입 포인트 알림 => 회원가입자에게 전달. 받는 uid 없음
-// 0: 구매 확정 알림 => 판매자에게 전달. 받는 uid 없음. 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
+// 5: 문의 등록 알림 => 판매자에게 전달. 받는 uid 없음. 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
+// 6: 위글가입 포인트 알림 => 회원가입자에게 전달. 받는 uid 없음
+// 7: 상품 구매 확정 알림 => 판매자에게 전달. 받는 uid 없음. 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
 //
 // 판매자사이트 서버 실행
-// 6: 배송 시작 알림 => 구매자에게 전달. 주문 uid
-// 6: 구매 확정 요청 알림 => 구매자에게 전달. 상품 구매 목록 실행(/api/private/order/list)
-// 9: 문의사항 답변 등록 알림 => 구매자에게 전달. 나의 문의하기 목록 실행(/api/private/qna/list/me)
-// 0: 선물 기한 알림 => 주문 uid(보낸사람이 취소)
+// 8: 배송 시작 알림 => 구매자에게 전달. 주문 uid
+// 9: 구매 확정 요청 알림 => 구매자에게 전달. 상품 구매 목록 실행(/api/private/order/list)
+// 10: 문의사항 답변 등록 알림 => 구매자에게 전달. 나의 문의하기 목록 실행(/api/private/qna/list/me)
+// 11: 선물 기한 알림 => 주문 uid(보낸사람이 취소)
 //
 // 관리자사이트 서버 실행
-// 8: 위글 리뷰영상 이벤트 심사 승인 => 리뷰어에게 전달. 받는 uid 없음
-// 0: 위글 리뷰영상 이벤트 심사 거절 => 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
+// 12: 위글 리뷰영상 이벤트 심사 승인 => 리뷰어에게 전달. 받는 uid 없음
+// 13: 위글 리뷰영상 이벤트 심사 거절 => 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
 
 
 
@@ -130,14 +130,14 @@ module.exports = {
                 "title": "상품 구매 확정 알림",
                 "message": `${item['product_name']}의 구매확정건이 있습니다. 판매자페이지를 확인해주세요.`,
                 "channel" : "상품 구매 확정 알림",
-                "fcm_type" : "0",
+                "fcm_type" : "7",
                 "icon_filename": 'order.png',
             },
             "notification": {
                 "title": "상품 구매 확정 알림",
                 "body": `${item['product_name']}의 구매확정건이 있습니다. 판매자페이지를 확인해주세요.`,
                 "channel" : "상품 구매 확정 알림",
-                "fcm_type" : "0",
+                "fcm_type" : "7",
                 "icon_filename": 'order.png',
                 "sound" : "default",
                 "badge": "1",
@@ -231,7 +231,7 @@ module.exports = {
                 "title": "문의 등록 알림",
                 "message": `${item['product_name']}에 대한 ${question_type} 문의가 등록되었습니다. : ${item['question']}`,
                 "channel" : "문의 등록 알림",
-                "fcm_type" : "0",
+                "fcm_type" : "5",
                 "icon_filename": "qna.png"
             },
             "notification": {
@@ -239,7 +239,7 @@ module.exports = {
                 "title": "문의 등록 알림",
                 "body": `${item['product_name']}에 대한 ${question_type} 문의가 등록되었습니다. 판매자 페이지를 확인해주세요. : ${item['question']}`,
                 "channel" : "문의 등록 알림",
-                "fcm_type" : "0",
+                "fcm_type" : "5",
                 "icon_filename": "qna.png",
                 "sound" : "default",
                 "badge": "1",
@@ -262,7 +262,7 @@ module.exports = {
                 "title": "위글가입 포인트 알림",
                 "message": `위글 가입을 환영합니다! 바로 사용 가능한 3,000 포인트를 지급하였습니다.`,
                 "channel" : "위글가입 포인트 알림",
-                "fcm_type" : "8",
+                "fcm_type" : "6",
                 "icon_filename": "point.png"
             },
             "notification": {
@@ -270,7 +270,7 @@ module.exports = {
                 "title": "위글가입 포인트 알림",
                 "body": `위글 가입을 환영합니다! 바로 사용 가능한 3,000 포인트를 지급하였습니다.`,
                 "channel" : "위글가입 포인트 알림",
-                "fcm_type" : "8",
+                "fcm_type" : "6",
                 "icon_filename": "point.png",
                 "sound" : "default",
                 "badge": "1",
