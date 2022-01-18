@@ -12,15 +12,26 @@ const errUtil = require('./errUtil');
 const errCode = require('../define/errCode');
 // const getDimensions = require('get-video-dimensions');
 
-module.exports =  function (final_name, video_width, video_height) {
+module.exports =  function (file_size, final_name, video_width, video_height) {
 
     const MEDIACONVERT = 'ConvertSuccess';
+    const BITRATE = 1500000;
+    const BITRATE_UNIT = 16219;
     const extname = path.extname(final_name);
 
 
 
-    if(extname === '.mp4') {
 
+    if(extname === '.mp4') {
+        let bitrate_value = BITRATE;
+        if(file_size > 30)
+            bitrate_value = BITRATE * ( 30 / file_size );
+
+        if(bitrate_value < 500000) {
+            bitrate_value = 500000;
+        }
+
+        console.log("testalekofkwoekl: " + bitrate_value);
         console.log('실행');
 
         // getDimensions('https://weggle-bucket-media-convert.s3.ap-northeast-2.amazonaws.com/05803a6b2fd70056b267193ac7908e62ConvertSuccess.mp4').then(function (dimensions) {
@@ -38,6 +49,7 @@ module.exports =  function (final_name, video_width, video_height) {
         });
 
         AWS.config.mediaconvert = {endpoint: funcUtil.getAWSMediaConvertEndPoint()}
+
 
 
         console.log("video_width " + video_width)
@@ -88,7 +100,7 @@ module.exports =  function (final_name, video_width, video_height) {
                                         "H264Settings": {
                                             "ParNumerator": 16,
                                             "ParDenominator": 9,
-                                            "Bitrate": 1500000
+                                            "Bitrate": bitrate_value
                                         }
                                     },
                                     "AfdSignaling": "NONE",

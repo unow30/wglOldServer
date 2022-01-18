@@ -25,7 +25,7 @@ AWS.config.update({
 });
 
 
-const MAX_LENGTH_MB=30
+const MAX_LENGTH_MB=2000
 // const MAX_LENGTH_MB=20
 
 const fileFilter = (req, file, next) => {
@@ -60,17 +60,24 @@ const fileOptions = {
 };
 
 function getFilename(req, file){
-    let originalname = file.originalname
-    if(file.originalname.includes('.mp4'))
-        originalname = replaceName(file.originalname);
+    try {
+        let originalname = file.originalname
+        if(file.originalname.includes('.mp4'))
+            originalname = replaceName(file.originalname);
 
-    console.log("s3util :" + originalname)
+        console.log("s3util :" + originalname)
 
-    // console.log('key file : '+JSON.stringify(file));
-    let extension = path.extname(originalname);
-    let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
-    let hash_name = crypto.createHash('md5').update(Date.now()+basename).digest("hex");
-    return `${hash_name}${extension}`;
+        // console.log('key file : '+JSON.stringify(file));
+        let extension = path.extname(originalname);
+        let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
+        let hash_name = crypto.createHash('md5').update(Date.now()+basename).digest("hex");
+        return `${hash_name}${extension}`;
+    }
+    catch (e) {
+        let _err = errUtil.initError(errCode.fail, '동영상 변환에 실패했습니다. 다시 시도해주세요.');
+        sendUtil.sendErrorPacket(req, res, _err);
+    }
+
 }
 
 function replaceName(filename) {
