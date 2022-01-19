@@ -11,6 +11,7 @@ app.route('/user/signup').post( require('./user/createUser') )
 app.route('/user/signup/check').get( require('./user/selectSignUpCheck') )
 app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
 app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck') )
+app.route('/user/recommendee/code/check').get( require('./user/selectUserRecommendeeCodeCheck') )
 
 /**
  * file api
