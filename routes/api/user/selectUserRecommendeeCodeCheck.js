@@ -56,11 +56,12 @@ module.exports = function (req, res) {
 
             let recommendee_data = await querySelect(req, db_connection);
             if( recommendee_data['count'] === 0 ){
+                req.innerBody['is_success'] = 0;
                 errUtil.createCall(errCode.already, `유효하지 않은 추천인 코드입니다. 다시 확인해주세요.`)
                 return
             }
 
-            // req.innerBody['is_already'] = 0
+            req.innerBody['is_success'] = 1;
             req.innerBody['success'] = '사용가능한 추천인 코드입니다.'
 
             deleteBody(req)
