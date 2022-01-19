@@ -60,7 +60,7 @@ module.exports = function (req, res) {
                 return
             }
 
-            // req.innerBody['is_already'] = 0
+            req.innerBody['is_success'] = 1;
             req.innerBody['success'] = '사용가능한 추천인 코드입니다.'
 
             deleteBody(req)

@@ -76,7 +76,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-
+            console.log("ofjwepfiowjefpweofjwepowjfwedqfqfq2e2e2e2e2e");
+            console.log("ofjwepfiowjefpweofjwepowjf: " + JSON.stringify(req.innerBody['item']['push_token']));
             let fcmReviewVideo = await fcmUtil.fcmReviewVideoSingle(req.innerBody['item'])
             await queryInsertFCM(fcmReviewVideo['data'], db_connection)
 
