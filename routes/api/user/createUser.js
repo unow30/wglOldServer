@@ -175,11 +175,8 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item'] = await query(req, db_connection);
-            console.log('#####################')
-            console.log(req.innerBody['item'])
 
             req.innerBody['item']['access_token'] = jwtUtil.createToken(req.innerBody['item'], '100d');
-            // req.innerBody['item'] = await queryUpdate(req, db_connection);
             await queryUpdate(req, db_connection);
 
             req.paramBody['filename']  =  (req.paramBody['filename'] && req.paramBody['filename'].length >= 4) ?
@@ -193,16 +190,25 @@ module.exports = function (req, res) {
             // 이미 앱단에서 추천인 코드 유효성을 검사해주기 때문에 바로 포인트 지급을 해준다.
             if(req.paramBody['recommendee_code']) {
                 let deleted_user_email = await queryCheckDeletedEmail(req, db_connection);
-                if(!deleted_user_email){
-                    let point = await queryRecommendeePointEvent(req, db_connection);
-                    // let item = {}
-                    // item['push_token'] = req.paramBody['push_token'];
-                    // item['user_uid'] = req.innerBody['item']['uid'];
-                    // item['point_uid'] = point['point_uid'];
-                    // let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
-                    // await queryInsertFCM(fcmPoint3000['data'], db_connection)
+                if(!deleted_user_email) {
+                    let point = await queryRecommendPointEvent(req, db_connection);
+                    console.log("recommendPointEven2t: " + JSON.stringify(point));
+                    let item = {};
+                    item['user_uid'] = req.innerBody['item']['uid'];
+                    item['push_token_list'] = [];
+                    item['push_token_list'].push(point['fcm_push_token_me']);
+                    item['push_token_list'].push(point['fcm_push_token_other']);
+
+                    let recommendPointEvent = await fcmUtil.fcmPointRecommendCodeList(item);
+                    recommendPointEvent['user_uid'] = item['user_uid'];
+                    console.log("recommendPointEvent131: " + JSON.stringify(recommendPointEvent['data']));
+
+                    await queryInsertFCM(recommendPointEvent['data'], db_connection);
+                    recommendPointEvent['user_uid'] = item['fcm_user_uid_other'];
+                    await queryInsertFCM(recommendPointEvent['data'], db_connection);
                 }
             }
+
             // 회원가입한 이메일과 동일한 이메일을 가진 탈퇴유저가 있다면 포인트 3000을 줘선 안된다.
             // 포인트를 쓴 계정을 회원탈퇴하고 재가입하면 포인트 3000을 줘선 안된다. 포인트를 안쓰고 탈회한 유저도 재가입하면 포인트를 줘선 안된다.
             // let deleted_user_email = await queryCheckDeletedEmail(req, db_connection);
@@ -212,7 +218,7 @@ module.exports = function (req, res) {
             //
             //   let item = {}
             //       item['push_token'] = req.paramBody['push_token']
-            //       item['user_uid'] = req.innerBody['item']['uid']
+            //       item['user_uid'] = req.innerBody['item']['uid']-
             //       item['point_uid'] = point['point_uid']
             //
 
@@ -257,9 +263,6 @@ function checkParam(req) {
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-    // delete req.innerBody['item']['longitude']
-    // delete req.innerBody['item']['push_token']
 }
 
 function query(req, db_connection) {
@@ -349,7 +352,7 @@ function queryUpdateImage(req, db_connection) {
     );
 }
 
-function queryRecommendeePointEvent(req, db_connection) {
+function queryRecommendPointEvent(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection

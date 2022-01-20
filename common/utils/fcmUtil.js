@@ -284,4 +284,31 @@ module.exports = {
         }).catch((e) => console.log(e));
     },
 
+    fcmPointRecommendCodeList : async function(item){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "registration_ids": item['push_token_list'],
+            "priority": "high",
+            "data": {
+                "title": "위글 추천인 포인트 알림",
+                "message": "위글 추천인 이벤트! 바로 사용 가능한 포인트를 지급하였습니다.",
+                "channel" : "위글 추천인 포인트 알림",
+                "fcm_type" : "6",
+            },
+            "notification": {
+                "title": "위글 추천인 포인트 알림",
+                "body": "위글 추천인 이벤트! 바로 사용 가능한 포인트를 지급하였습니다.",
+                "channel" : "위글 추천인 포인트 알림",
+                "fcm_type" : "6",
+                "sound" : "default",
+                "badge": "1",
+                "content-available" : "true",
+                "apns-priority" : "5",
+                "badge count" : "0",
+                "mutable-content": "1",
+            },
+        }).then((res)=>{
+            return JSON.parse(res['config']['data']);
+        }).catch((e) => console.log(e));
+    },
+
 };
