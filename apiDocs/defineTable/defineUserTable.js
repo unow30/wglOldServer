@@ -224,4 +224,52 @@
  *         type: string
  *         example: "VQMIL4"
  *         description: 피추천인 코드
+ *       is_alert_review_video:
+ *         type: number
+ *         example: 0
+ *         description: |
+ *           리뷰 영상 등록 알림
+ *           * 0: false
+ *           * 1: true (판매자)
+ *         enum: [0,1]
+ *       is_alert_order_confirm:
+ *         type: number
+ *         example: 0
+ *         description: |
+ *           상품 구매 확정 알림
+ *           * 0: false
+ *           * 1: true (판매자)
+ *         enum: [0,1]
+ *       is_alert_comment:
+ *         type: number
+ *         example: 0
+ *         description: |
+ *           댓글 등록 알림
+ *           * 0: false
+ *           * 1: true (판매자)
+ *         enum: [0,1]
+ *       is_alert_nested_comment:
+ *         type: number
+ *         example: 0
+ *         description: |
+ *           대댓글 등록 알림
+ *           * 0: false
+ *           * 1: true (판매자)
+ *         enum: [0,1]
+ *       is_alert_order_confirm_request:
+ *         type: number
+ *         example: 0
+ *         description: |
+ *           구매 확정 요청 알림
+ *           * 0: false
+ *           * 1: true (판매자)
+ *         enum: [0,1]
+ *       is_alert_product_qna:
+ *         type: number
+ *         example: 0
+ *         description: |
+ *           문의 등록 알림
+ *           * 0: false
+ *           * 1: true (판매자)
+ *         enum: [0,1]
  */
