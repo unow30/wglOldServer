@@ -15,12 +15,9 @@ const errCode = require('../define/errCode');
 module.exports =  function (file_size, final_name, video_width, video_height) {
 
     const MEDIACONVERT = 'ConvertSuccess';
-    const BITRATE = 1500000;
+    const BITRATE = 1600000;
     const BITRATE_UNIT = 16219;
     const extname = path.extname(final_name);
-
-
-
 
     if(extname === '.mp4') {
         let bitrate_value = BITRATE;
