@@ -1,7 +1,6 @@
 /**
  * Created by gunucklee on 2021. 07. 20.
  */
-
 const AWS = require("aws-sdk");
 
 const path = require('path');
@@ -10,7 +9,6 @@ const funcUtil = require('./funcUtil');
 const sendUtil = require('./sendUtil');
 const errUtil = require('./errUtil');
 const errCode = require('../define/errCode');
-// const getDimensions = require('get-video-dimensions');
 
 module.exports =  function (file_size, final_name, video_width, video_height) {
 
@@ -28,16 +26,7 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
             bitrate_value = 500000;
         }
 
-        console.log("testalekofkwoekl: " + bitrate_value);
-        console.log('실행');
-
-        // getDimensions('https://weggle-bucket-media-convert.s3.ap-northeast-2.amazonaws.com/05803a6b2fd70056b267193ac7908e62ConvertSuccess.mp4').then(function (dimensions) {
-        // // getDimensions(funcUtil.getFilePath()+final_name).then(function (dimensions) {
-        //     console.log("dimensions.width: " + dimensions.width)
-        //     console.log("dimensions.height: " + dimensions.height)
-        // }).catch((e) => sendUtil.sendErrorPacket(req, res, errUtil.initError(e.path, `동영상 변환하는 도중 오류가 발생했습니다. 다시 시도해주세요.`)));
-
-        console.log('실행끝');
+        console.log("bitrate_value: " + bitrate_value);
 
         AWS.config.update({
             accessKeyId: funcUtil.getAWSAccessKeyID(),
@@ -47,12 +36,8 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
 
         AWS.config.mediaconvert = {endpoint: funcUtil.getAWSMediaConvertEndPoint()}
 
-
-
         console.log("video_width " + video_width)
         console.log("video_height " + video_height)
-
-
 
         const params = {
             "Queue": funcUtil.getAWSMediaConvertQueue(),
@@ -152,8 +137,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                         "OutputGroupSettings": {
                             "Type": "FILE_GROUP_SETTINGS",
                             "FileGroupSettings": {
-                                // "Destination": "s3://test341/"
-                                // "Destination": "s3://weggle-bucket/"
                                 "Destination": funcUtil.getAWSMediaConvertS3Destination()
                             }
                         }
@@ -265,7 +248,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                                         "AudioType": 0
                                     }
                                 ],
-                                // "NameModifier": "test1111"
                                 "NameModifier": "ConvertSuccess"
                             },
                             {
@@ -292,8 +274,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                         "OutputGroupSettings": {
                             "Type": "FILE_GROUP_SETTINGS",
                             "FileGroupSettings": {
-                                // "Destination": "s3://test341/"
-                                // "Destination": "s3://weggle-bucket/"
                                 "Destination": funcUtil.getAWSMediaConvertS3Destination()
                             }
                         }
@@ -324,7 +304,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                             ]
                         },
                         "FileInput": "null"
-                        // "FileInput": "s3://test341/04ef74af4025fdfe30ff93beda25ee65.mp4"
                     }
                 ]
             },
@@ -338,7 +317,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
 
         console.log("asdiajdoqwijdqowij: " + final_name)
         const data = convertFunc(final_name, (video_width > video_height) ? paramsRotate : params);
-        // const data = convertFunc(final_name, video_rotate > 0 ? paramsRotate :  params);
 
         if(data) {
             let basename = path.basename(final_name, extname);
@@ -346,7 +324,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
             final_name = basename + extname;
             return final_name;
         }
-
         errUtil.createCall(errCode.fail, `영상 업로드 중 오류가 발생되었습니다. 다시 시도해주세요.!`);
         return;
     }
@@ -359,18 +336,10 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
 
 async function convertFunc(final_name,convertParams) {
 
-    // Create a promise on a MediaConvert object
-    console.log(JSON.stringify(convertParams));
-
-    // params.Settings.OutputGroups[0].Outputs[0].NameModifier = final_name;
     convertParams.Settings.Inputs[0].FileInput = `${funcUtil.getAWSMediaConvertS3StartingPoint()}${final_name}`;
-
-    // params["OutputGroups"][0]["Outputs"][0]["NameModifier"] = final_name;
-
 
     const endpointPromise = new AWS.MediaConvert().createJob(convertParams).promise();
 
-    // Handle promise's fulfilled/rejected status
     endpointPromise.then(
         function(data) {
             console.log("Job created! ", data);

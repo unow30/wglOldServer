@@ -6,9 +6,6 @@ const multer  = require('multer');
 const multerS3 = require('multer-s3');
 const crypto = require('crypto');
 const AWS = require("aws-sdk");
-// const s3Storage = require('multer-sharp-s3');
-
-// let mediaconvert = new AWS.MediaConvert({endpoint : ENV.endpoint});
 
 const s3 = new AWS.S3();
 
@@ -26,27 +23,14 @@ AWS.config.update({
 
 
 const MAX_LENGTH_MB=2000
-// const MAX_LENGTH_MB=20
-
-const fileFilter = (req, file, next) => {
-    // console.log('fileFilter file : '+JSON.stringify(file));
-    // const isPhoto = file.mimetype.startsWith('file/');
-    // if (isPhoto) {
-        next(null, true); // null for error means it worked and it is fine to continue to next()
-    // } else {
-    //     next({ message: '이미지만 업로드 가능합니다.' }, false); // with error
-    // }
-};
 
 const fileOptions = {
-    // fileFilter: fileFilter,
     storage: multerS3({
         s3: s3,
         bucket: `${funcUtil.getAWSBucket()}`,
         contentType: multerS3.AUTO_CONTENT_TYPE, // 자동을 콘텐츠 타입 세팅
         acl: 'public-read', // 클라이언트에서 자유롭게 가용하기 위함
         metadata: function (req, file, cb) {
-            // console.log('metadata file : '+JSON.stringify(file));
             cb(null, {fieldName: file.fieldname});
         },
         key: function (req, file, cb) {
@@ -65,9 +49,6 @@ function getFilename(req, file){
         if(file.originalname.includes('.mp4'))
             originalname = replaceName(file.originalname);
 
-        console.log("s3util :" + originalname)
-
-        // console.log('key file : '+JSON.stringify(file));
         let extension = path.extname(originalname);
         let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
         let hash_name = crypto.createHash('md5').update(Date.now()+basename).digest("hex");
@@ -81,15 +62,12 @@ function getFilename(req, file){
 }
 
 function replaceName(filename) {
-
-
     let fileArray = filename.split("_")
 
     filename =filename.replace('_' + fileArray[fileArray.length -2], '')
 
     filename =filename.replace('_' + fileArray[fileArray.length -1], '')
 
-    console.log("idjkw: " +filename)
     return filename;
 }
 
@@ -98,13 +76,9 @@ function uploadFile(req, res, next){
     let single = multer(fileOptions).single('file');
     single(req, res, function (err) {
         if(err){
-            // console.log('multer err : '+JSON.stringify(err));
             console.log('awsS3Util, multer err.code : '+err.code);
             console.log('awsS3Util, multer err.stack : '+err.stack);
-            // console.log('awsS3Util, multer err : '+err.message);
             if( err.code === 'LIMIT_FILE_SIZE' ){
-                // let _er = errUtil.createCall(errCode.system, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`);
-                // sendUtil.sendErrorPacket(req, res, _er);
                 sendUtil.sendErrorPacket(req, res, errUtil.initError(errCode.system, `최대 업로드 가능한 파일 사이즈는 ${MAX_LENGTH_MB}mb 입니다.`));
             }
             else {
@@ -116,10 +90,5 @@ function uploadFile(req, res, next){
         }
     })
 }
-
-
-
-
-
 
 exports.uploadFile = uploadFile;

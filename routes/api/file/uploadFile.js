@@ -90,9 +90,7 @@ module.exports = async function (req, res) {
             if(req.file.originalname.includes('.mp4')) {
                 final_name = replaceName(req.file.key);
 
-                let originalnameArray = originalname.split("_")
-
-                console.log("uploadfile: " + originalnameArray)
+                let originalnameArray = originalname.split("_");
 
                 let video_width = originalnameArray[originalnameArray.length -2];
                 let video_height = originalnameArray[originalnameArray.length -1];
@@ -100,26 +98,16 @@ module.exports = async function (req, res) {
 
                 video_height = video_height.replace('.mp4', '');
 
-                console.log("uploadfile: " + video_width)
-                console.log("uploadfile2: " + video_height)
-
                 final_name = mediaConvertUtil(file_size, final_name, parseInt(video_width), parseInt(video_height));
-
-                console.log("finalname mediaconvert :" + final_name)
 
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', 'Thumbnail.0000001.jpg');
             }
 
             req.innerBody['filename'] = final_name
 
-            console.log('here filename: ' + req.innerBody['filename'])
-
-            // req.innerBody['thumbnail'] = thumbnail_name
-
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }
         else {
-            // sendUtil.sendErrorMsg( errCode.empty, '이미지 파일이 존재하지 않습니다.');
             let _err = errUtil.initError(errCode.empty, '이미지 파일이 존재하지 않습니다.');
             sendUtil.sendErrorPacket(req, res, _err);
         }
@@ -134,18 +122,13 @@ module.exports = async function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'code');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
 }
 
 
 
 function replaceName(filename) {
-
-    let fileArray = filename.split("_")
-    filename =filename.replace('_'+ fileArray[fileArray.length -2], '')
-
-    filename =filename.replace('_' + fileArray[fileArray.length -1], '')
-
+    let fileArray = filename.split("_");
+    filename =filename.replace('_'+ fileArray[fileArray.length -2], '');
+    filename =filename.replace('_' + fileArray[fileArray.length -1], '');
     return filename;
 }
