@@ -13,7 +13,7 @@ app.route('/user').put( require('./user/updateUser') )
 app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
-// app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
+app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
 app.route('/user/info/other').get( require('./user/selectUserInfoOther') )
 app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
 
