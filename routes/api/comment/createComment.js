@@ -77,7 +77,7 @@ module.exports = function (req, res) {
             let alertList = await queryAlertComment(req, db_connection)
 
             req.innerBody['item'] = await query(req, db_connection);
-            if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid'] || alertList['is_alert_comment'] == 0){
+            if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid'] && alertList['is_alert_comment'] == 0){
                 let fcmComment = await fcmUtil.fcmVideoCommentSingle(req.innerBody['item'])
                 await queryInsertFCM(fcmComment['data'], db_connection)
             }
