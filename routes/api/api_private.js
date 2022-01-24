@@ -179,5 +179,16 @@ app.route('/gift/order').post( require('./gift/createGiftOrder') )
 app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./gift/updateGiftRefuse') );
 app.route('/gift/refund').put(require('../middleware/bootPay'), require('./gift/updateGiftRefund') );
 
+/**
+ * Alert
+ */
+app.route('/alert/history/list').get( require('./alert/selectAlertHistoryList')) //알람 히스토리 리스트 불러오기
+app.route('/alert/list').get( require('./alert/selectAlertList'))//알림차단 리스트 불러오기
+app.route('/alert/review/video').put( require('./alert/updateAlertReviewVideo'))//리뷰비디오알림 수정
+app.route('/alert/order/confirm').put( require('./alert/updateAlertOrderConfirm'))//주문확정알림 수정
+app.route('/alert/order/confirm/request').put( require('./alert/updateAlertOrderConfirmRequest'))//주문확정요청알림 수정=>
+app.route('/alert/comment').put( require('./alert/updateAlertComment'))//댓글알림
+app.route('/alert/nested/comment').put( require('./alert/updateNestedComment'))//대댓글알림
+app.route('/alert/product/qna').put( require('./alert/updateProductQna'))//문의알림
 
 module.exports = app;

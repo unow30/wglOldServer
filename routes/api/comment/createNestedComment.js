@@ -75,7 +75,10 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-            if(req.headers['user_uid'] !== req.innerBody['item']['comment_user_uid']){
+            let alertList = await queryAlertComment(req, db_connection);
+            console.log('뭐가문제')
+            console.log(alertList);
+            if(req.headers['user_uid'] !== req.innerBody['item']['comment_user_uid'] &&  alertList['is_alert_nested_comment'] == 0){
                 let fcmNestedComment = await fcmUtil.fcmNestedCommentSingle(req.innerBody['item']);
                 await queryInsertFCM(fcmNestedComment['data'], db_connection)
             }
@@ -130,4 +133,14 @@ function queryInsertFCM(data, db_connection){
             data['icon_filename']
         ]
     );
+}
+
+function queryAlertComment(req, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_alert_list'
+        , [
+            req.innerBody['item']['comment_user_uid']
+        ]
+    )
 }

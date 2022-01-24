@@ -1,45 +1,36 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 08.
+ * Created by yunhokim on 2022. 01. 21.
  *
  * @swagger
- * /api/private/comment:
- *   post:
- *     summary: 댓글 작성
- *     tags: [Comment]
+ * /api/private/alert/nested/comment:
+ *   put:
+ *     summary: 대댓글 등록 알림 on/off
+ *     tags: [Alert]
  *     description: |
- *       path : /api/private/comment
+ *       path : /api/private/alert/nested/comment
  *
- *       * 댓글 작성
+ *       * 대댓글 등록 알림 on/off
  *
  *     parameters:
  *       - in: body
  *         name: body
  *         description: |
- *           댓글 작성
+ *           리뷰 영상 등록 알림 on/off
  *         schema:
  *           type: object
  *           required:
- *             - video_uid
- *             - content
+ *             - is_alert_nested_comment
  *           properties:
- *             video_uid:
+ *             is_alert_nested_comment:
  *               type: number
+ *               example: 0
  *               description: |
- *                 영상 uid
- *             content:
- *               type: string
- *               description: |
- *                 내용
- *
- *           example:
- *             video_uid: 1
- *             content: 댓글 입니다.
+ *                 대댓글 등록 알림 on/off
+ *                 * 0: on
+ *                 * 1: off
+ *               enum: [0,1]
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/CommentApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -53,7 +44,6 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
-const fcmUtil = require('../../../common/utils/fcmUtil');
 
 const errCode = require('../../../common/define/errCode');
 
@@ -75,12 +65,6 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-            let alertList = await queryAlertComment(req, db_connection);
-            console.log(alertList);
-            if(req.headers['user_uid'] !== req.innerBody['item']['video_user_uid'] && alertList['is_alert_comment'] == 0){
-                let fcmComment = await fcmUtil.fcmVideoCommentSingle(req.innerBody['item'])
-                await queryInsertFCM(fcmComment['data'], db_connection)
-            }
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -97,8 +81,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'content');
+    paramUtil.checkParam_noReturn(req.paramBody, 'is_alert_nested_comment');
 }
 
 function deleteBody(req) {
@@ -109,37 +92,11 @@ function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_comment'
+        , 'call proc_update_alert_nested_comment'
         , [
             req.headers['user_uid'],
-            req.paramBody['video_uid'],
-            req.paramBody['content'],
+            req.paramBody['is_alert_nested_comment'],
         ]
     );
 }
 
-function queryInsertFCM(data, db_connection){
-
-    return mysqlUtil.querySingle(db_connection
-        ,'call proc_create_fcm_data'
-        , [
-            data['user_uid'],
-            data['fcm_type'],
-            data['title'],
-            data['message'],
-            data['video_uid'] == null? 0 : data['video_uid'],
-            data['target_uid'] == null? 0 : data['target_uid'],
-            data['icon_filename']
-        ]
-    );
-}
-
-function queryAlertComment(req, db_connection){
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_alert_list'
-        , [
-            req.innerBody['item']['video_user_uid']
-        ]
-    )
-}
