@@ -220,7 +220,7 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                                         "H264Settings": {
                                             "ParNumerator": 16,
                                             "ParDenominator": 9,
-                                            "Bitrate": 1500000
+                                            "Bitrate": bitrate_value
                                         }
                                     },
                                     "AfdSignaling": "NONE",
