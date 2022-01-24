@@ -64,7 +64,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await query(req, db_connection);
+            let data = await query(req, db_connection);
+
+            req.innerBody['result'] = data['alert_message'];
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
