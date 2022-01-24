@@ -104,16 +104,18 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item'] = await query(req, db_connection);
+            let alertList = await queryAlertComment(req, db_connection);
 
 
-            console.log("어디까지오니")
             if(req.innerBody['item']) {
 
                 switch (req.paramBody['status']) {
 
                     case 5:
                         //구매확정알림을 판매자에게 보내야 한다. 내용을 저장하지는 않는다.
-                        await fcmUtil.fcmOrderProductConfirm(req.innerBody['item'])
+                        if(alertList['is_alert_order_confirm'] == 0){
+                            await fcmUtil.fcmOrderProductConfirm(req.innerBody['item'])
+                        }
                         if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
                             req.innerBody['reward'] = await queryUpdate(req, db_connection, req.innerBody['item']);
                             let fcmReward = await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward'])
@@ -320,4 +322,14 @@ function queryStatus(req, db_connection, item) {
         , [
             req.paramBody['order_product_uid']
         ])
+}
+
+function queryAlertComment(req, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_alert_list'
+        , [
+            req.innerBody['item']['seller_uid']
+        ]
+    )
 }

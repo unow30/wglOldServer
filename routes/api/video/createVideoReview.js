@@ -78,8 +78,12 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
             console.log("ofjwepfiowjefpweofjwepowjfwedqfqfq2e2e2e2e2e");
             console.log("ofjwepfiowjefpweofjwepowjf: " + JSON.stringify(req.innerBody['item']['push_token']));
-            let fcmReviewVideo = await fcmUtil.fcmReviewVideoSingle(req.innerBody['item'])
-            await queryInsertFCM(fcmReviewVideo['data'], db_connection)
+            let alertList = await queryAlertComment(req, db_connection);
+
+            if(alertList['is_alert_review_video'] == 0){
+                let fcmReviewVideo = await fcmUtil.fcmReviewVideoSingle(req.innerBody['item'])
+                await queryInsertFCM(fcmReviewVideo['data'], db_connection)
+            }
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -133,4 +137,14 @@ function queryInsertFCM(data, db_connection){
             data['icon_filename']
         ]
     );
+}
+
+function queryAlertComment(req, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_alert_list'
+        , [
+            req.innerBody['item']['seller_uid']
+        ]
+    )
 }

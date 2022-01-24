@@ -109,10 +109,14 @@ module.exports = function (req, res) {
                 return
             }
             req.innerBody['item'] = await query(req, db_connection);
+            let alertList = await queryAlertComment(req, db_connection);
 
             const question_type = convertType(req.innerBody['item']['type'])
 
-            await fcmUtil.fcmProductQnASingle(req.innerBody['item'], question_type);
+            if(alertList['is_alert_product_qna'] == 0){
+                await fcmUtil.fcmProductQnASingle(req.innerBody['item'], question_type);
+            }
+
 
             await alarm(req, res);
 
@@ -176,6 +180,15 @@ function queryCheck(req, db_connection) {
     );
 }
 
+function queryAlertComment(req, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_alert_list'
+        , [
+            req.innerBody['item']['seller_uid']
+        ]
+    )
+}
 
 function convertType(type) {
     let question_type = '';
