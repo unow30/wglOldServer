@@ -198,14 +198,13 @@ module.exports = function (req, res) {
                     item['push_token_list'] = [];
                     item['push_token_list'].push(point['fcm_push_token_me']);
                     item['push_token_list'].push(point['fcm_push_token_other']);
-                    item['fcm_user_uid_other'] = point['fcm_user_uid_other'];
 
                     let recommendPointEvent = await fcmUtil.fcmPointRecommendCodeList(item);
-                    recommendPointEvent['user_uid'] = item['user_uid'];
+                    recommendPointEvent['data']['user_uid'] = item['user_uid'];
                     console.log("recommendPointEvent131: " + JSON.stringify(recommendPointEvent['data']));
 
                     await queryInsertFCM(recommendPointEvent['data'], db_connection);
-                    recommendPointEvent['user_uid'] = item['fcm_user_uid_other'];
+                    recommendPointEvent['data']['user_uid'] = point['fcm_user_uid_other'];
                     await queryInsertFCM(recommendPointEvent['data'], db_connection);
                 }
             }
