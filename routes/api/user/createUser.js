@@ -198,6 +198,7 @@ module.exports = function (req, res) {
                     item['push_token_list'] = [];
                     item['push_token_list'].push(point['fcm_push_token_me']);
                     item['push_token_list'].push(point['fcm_push_token_other']);
+                    item['fcm_user_uid_other'] = point['fcm_user_uid_other'];
 
                     let recommendPointEvent = await fcmUtil.fcmPointRecommendCodeList(item);
                     recommendPointEvent['user_uid'] = item['user_uid'];
@@ -389,7 +390,7 @@ function queryInsertFCM(data, db_connection){
             data['message'],
             data['video_uid'] == null? 0 : data['video_uid'],
             data['target_uid'] == null? 0 : data['target_uid'],
-            data['icon_filename']
+            'point.png'
         ]
     );
 }
