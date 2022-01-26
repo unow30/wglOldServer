@@ -45,7 +45,10 @@ const fileOptions = {
 
 function getFilename(req, file){
     try {
-        let originalname = file.originalname
+        let originalname = file.originalname;
+        if(file.originalname.includes('.mp4'))
+            originalname = replaceName(file.originalname);
+
         let extension = path.extname(originalname);
         let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
         let hash_name = crypto.createHash('md5').update(Date.now()+basename).digest("hex");
@@ -76,6 +79,16 @@ function uploadFile(req, res, next){
             next();
         }
     })
+}
+
+function replaceName(filename) {
+    let fileArray = filename.split("_")
+
+    filename =filename.replace('_' + fileArray[fileArray.length -2], '')
+
+    filename =filename.replace('_' + fileArray[fileArray.length -1], '')
+
+    return filename;
 }
 
 exports.uploadFile = uploadFile;
