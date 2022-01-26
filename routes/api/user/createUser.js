@@ -200,11 +200,11 @@ module.exports = function (req, res) {
                     item['push_token_list'].push(point['fcm_push_token_other']);
 
                     let recommendPointEvent = await fcmUtil.fcmPointRecommendCodeList(item);
-                    recommendPointEvent['user_uid'] = item['user_uid'];
+                    recommendPointEvent['data']['user_uid'] = item['user_uid'];
                     console.log("recommendPointEvent131: " + JSON.stringify(recommendPointEvent['data']));
 
                     await queryInsertFCM(recommendPointEvent['data'], db_connection);
-                    recommendPointEvent['user_uid'] = item['fcm_user_uid_other'];
+                    recommendPointEvent['data']['user_uid'] = point['fcm_user_uid_other'];
                     await queryInsertFCM(recommendPointEvent['data'], db_connection);
                 }
             }
@@ -389,7 +389,7 @@ function queryInsertFCM(data, db_connection){
             data['message'],
             data['video_uid'] == null? 0 : data['video_uid'],
             data['target_uid'] == null? 0 : data['target_uid'],
-            data['icon_filename']
+            'point.png'
         ]
     );
 }
