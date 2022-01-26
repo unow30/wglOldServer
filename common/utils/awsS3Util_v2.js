@@ -50,7 +50,7 @@ function getFilename(req, file){
         if(file.originalname.includes('.mp4'))
             originalname = replaceName(file.originalname);
 
-        console.log("ASIJAFIAJ1231312F: "  + file.originalname);
+        console.log("ASIJAFIAJ1231312F: "  + originalname);
 
         let extension = path.extname(originalname);
         let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
@@ -85,11 +85,9 @@ function uploadFile(req, res, next){
 }
 
 function replaceName(filename) {
-    let fileArray = filename.split("_")
+    let fileArray = filename.split(".mp4");
 
-    filename =filename.replace('_' + fileArray[fileArray.length -2], '')
-
-    filename =filename.replace('_' + fileArray[fileArray.length -1], '')
+    filename = filename.replace(fileArray[1], '');
 
     return filename;
 }
