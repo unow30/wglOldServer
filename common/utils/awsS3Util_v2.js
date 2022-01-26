@@ -46,8 +46,11 @@ const fileOptions = {
 function getFilename(req, file){
     try {
         let originalname = file.originalname;
+        console.log("ASIJAFIAJF: "  + file.originalname);
         if(file.originalname.includes('.mp4'))
             originalname = replaceName(file.originalname);
+
+        console.log("ASIJAFIAJ1231312F: "  + file.originalname);
 
         let extension = path.extname(originalname);
         let basename = path.basename(originalname, extension);        //확장자 .jpg 만 빠진 파일명을 얻어온다
