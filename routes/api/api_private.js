@@ -105,6 +105,7 @@ app.route('/comment/nested')
     .delete( require('./comment/deleteNestedComment') )
 
 app.route('/comment/list').get( require('./comment/selectCommentList') )
+app.route('/comment/nested/list').get( require('./comment/selectNestedCommentList') )
 
 /**
  * like api
