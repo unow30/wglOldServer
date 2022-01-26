@@ -14,7 +14,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
 
     const MEDIACONVERT = 'ConvertSuccess';
     const BITRATE = 1600000;
-    const BITRATE_UNIT = 16219;
     const extname = path.extname(final_name);
 
     if(extname === '.mp4') {
@@ -25,8 +24,6 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
         if(bitrate_value < 500000) {
             bitrate_value = 500000;
         }
-
-        console.log("bitrate_value: " + bitrate_value);
 
         AWS.config.update({
             accessKeyId: funcUtil.getAWSAccessKeyID(),
