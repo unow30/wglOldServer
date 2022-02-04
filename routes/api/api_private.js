@@ -192,4 +192,9 @@ app.route('/alert/comment').put( require('./alert/updateAlertComment'))//댓글�
 app.route('/alert/nested/comment').put( require('./alert/updateNestedComment'))//대댓글알림
 app.route('/alert/product/qna').put( require('./alert/updateProductQna'))//문의알림
 
+/**
+ * Block
+ */
+app.route('/block').post( require('./block/createBlock')) //차단하기(영상, 댓글, 대댓글)
+
 module.exports = app;
