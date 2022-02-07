@@ -108,6 +108,7 @@ function queryUser(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_user_search_list'
         , [
+            req.headers['user_uid'],
             req.paramBody['keyword'],
             req.paramBody['last_uid'],
         ]
