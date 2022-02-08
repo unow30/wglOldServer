@@ -10,7 +10,7 @@ const app = express();
  */
 app.route('/user').put( require('./user/updateUser') )
                   .delete( require('./user/deleteUser') )
-app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
+// app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
@@ -196,5 +196,7 @@ app.route('/alert/product/qna').put( require('./alert/updateProductQna'))//문�
  * Block
  */
 app.route('/block').post( require('./block/createBlock')) //차단하기(영상, 댓글, 대댓글)
+app.route('/block/user/list').get( require('./block/selectBlockUserList')) //차단 유저 목록 리스트
+app.route('/block/user').put( require('./block/updateBlockUser')) //유저 차단 해제
 
 module.exports = app;
