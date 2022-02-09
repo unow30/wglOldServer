@@ -43,7 +43,9 @@
  *     type: object
  *     properties:
  *       item:
- *           $ref: '#/definitions/Proc_Array_BlockUserList'
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Proc_Array_BlockUserList'
  *       method:
  *         type: string
  *         example: "${method}"
