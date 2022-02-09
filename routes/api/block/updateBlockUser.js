@@ -58,13 +58,18 @@ module.exports = function (req, res) {
         // logUtil.printUrlLog(req, `== function start ==================================`);
         logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         // checkParam(req);
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
+
+            if( !req.innerBody['item'] ){
+                errUtil.createCall(errCode.already, `이미 회원가입한 유저입니다.`)
+                return
+            }
 
             // deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
