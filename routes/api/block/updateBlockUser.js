@@ -67,7 +67,7 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
 
             if( !req.innerBody['item'] ){
-                errUtil.createCall(errCode.already, `이미 회원가입한 유저입니다.`)
+                errUtil.createCall(errCode.err, `존재하지 않는 차단 uid입니다.`)
                 return
             }
 
