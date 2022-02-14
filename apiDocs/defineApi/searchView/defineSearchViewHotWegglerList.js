@@ -38,6 +38,10 @@
  *               type: string
  *               example: "ca590826fbcd192fd987a9b446b98abb.mp4"
  *               description: 영상 파일명
+ *             video_thumbnail:
+ *               type: string
+ *               example: "video_thumbnail.png"
+ *               description: 영상 썸네일 명
  *
  *   SearchViewHotWegglerListApi:
  *     type: object
