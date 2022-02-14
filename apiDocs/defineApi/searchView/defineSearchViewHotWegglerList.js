@@ -42,6 +42,10 @@
  *               type: string
  *               example: "video_thumbnail.png"
  *               description: 영상 썸네일 명
+ *             nickname:
+ *               type: string
+ *               example: '깜돈집사'
+ *               description: 유저 닉네가
  *
  *   SearchViewHotWegglerListApi:
  *     type: object
