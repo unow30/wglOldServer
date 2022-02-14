@@ -166,6 +166,12 @@ app.route('/searchview/search/list').get( require('./searchView/selectSearchView
 app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') )//태그
 app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') )//사용자
 
+app.route('/searchview/new/product/preview/list').get( require('./searchView/selectSearchViewNewProductPreviewList') );
+app.route('/searchview/new/review/preview/list').get( require('./searchView/selectSearchViewNewReviewPreviewList') );
+
+app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') );
+app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
+
 /**
  * notice api
  */
