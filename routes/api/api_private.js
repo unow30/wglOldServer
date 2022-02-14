@@ -172,6 +172,7 @@ app.route('/searchview/new/review/preview/list').get( require('./searchView/sele
 
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') );
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
+app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') );
 
 /**
  * notice api
