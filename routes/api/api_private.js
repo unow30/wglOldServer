@@ -160,7 +160,7 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
  * searchView api
  */
 app.route('/searchview').get( require('./searchView/selectSearchViewInfo') )
-app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') )
+
 app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )
 // app.route('/searchview/search/list').get( require('./video/selectSearchViewSearchList') )//이전 검색리스트
 app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') )
@@ -172,6 +172,10 @@ app.route('/searchview/new/review/preview/list').get( require('./searchView/sele
 
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') );
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
+
+app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') )
+app.route('/searchview/popular/category/product/preview/list').get( require('./searchView/selectSearchViewPopularCategoryProductList'))
+
 app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') );
 
 /**
