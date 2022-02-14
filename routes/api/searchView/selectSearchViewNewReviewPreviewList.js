@@ -56,7 +56,7 @@ module.exports = function (req, res) {
     }
 }
 
-function checkParam(req) {ㅌ
+function checkParam(req) {
 }
 
 function deleteBody(req) {
