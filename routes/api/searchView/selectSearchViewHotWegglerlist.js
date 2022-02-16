@@ -61,7 +61,7 @@ module.exports = function (req, res) {
 
             if( req.innerBody['item'] ){
                 for( let idx in req.innerBody['item'] ){
-                    req.innerBody['item'][idx]['list'] = await queryVideo(req.innerBody['item'][idx]['user_uid'], db_connection)
+                    req.innerBody['item'][idx]['list'] = await queryVideo(req, req.innerBody['item'][idx]['user_uid'], db_connection)
                 }
             }
 
@@ -103,13 +103,14 @@ function queryUser(req, db_connection) {
     );
 }
 
-function queryVideo(user_uid, db_connection) {
+function queryVideo(req, hot_weggler_uid, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_hot_weggler_video_thumbnail_list'
         , [
-           user_uid
+            req.headers['user_uid'],
+            hot_weggler_uid
         ]
     );
 }
