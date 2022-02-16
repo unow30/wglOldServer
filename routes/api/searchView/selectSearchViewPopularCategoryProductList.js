@@ -2,16 +2,34 @@
  * Created by yunhokim on 2022. 02. 14.
  *
  * @swagger
- * /api/private/searchview/hot/weggler/list:
+ * /api/private/searchview/popular/category/product/preview/list:
  *   get:
- *     summary: 검색 화면 - hot weggler 목록
+ *     summary: 검색 화면 - popular category products 목록
  *     tags: [SearchView]
  *     description: |
- *       path : /api/private/searchview/hot/weggler/list
+ *       path : /api/private/searchview/popular/category/product/preview/list
  *
- *       * 검색 화면 - hot weggler 목록
+ *       * 검색 화면 - popular category products 목록
  *
  *     parameters:
+ *       - in: query
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: |
+ *           상품 카테고리
+ *           * 1: 식품
+ *           * 2: 뷰티
+ *           * 4: 홈데코
+ *           * 8: 패션잡화
+ *           * 16: 반려동물
+ *           * 32: 유아
+ *           * 64: 스포츠레저
+ *           * 128: 식물
+ *           * 65535: 전체
+ *         enum: [1,2,4,8,16,32,64,128,65535]
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -22,12 +40,6 @@
  *           검색할 때 필요한 랜덤 시드입니다.
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/SearchViewHotWegglerListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -59,12 +71,6 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await queryUser(req, db_connection);
 
-            if( req.innerBody['item'] ){
-                for( let idx in req.innerBody['item'] ){
-                    req.innerBody['item'][idx]['list'] = await queryVideo(req, req.innerBody['item'][idx]['user_uid'], db_connection)
-                }
-            }
-
             // req.innerBody['item'] = await queryVideo(req, db_connection);
 
             deleteBody(req)
@@ -95,22 +101,11 @@ function queryUser(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_hot_weggler_user_thumbnail_list'
+        , 'call proc_select_popular_category_product_preview_list'
         , [
             req.headers['user_uid'],
+            req.paramBody['category'],
             req.paramBody['random_seed'],
-        ]
-    );
-}
-
-function queryVideo(req, hot_weggler_uid, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_hot_weggler_video_thumbnail_list'
-        , [
-            req.headers['user_uid'],
-            hot_weggler_uid
         ]
     );
 }

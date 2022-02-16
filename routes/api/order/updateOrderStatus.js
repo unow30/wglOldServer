@@ -7,7 +7,7 @@
  *     summary: 상품 구매 상태 수정
  *     tags: [Order]
  *     description: |
- *       path : /api/private/order/status
+ *       path : /정
  *
  *       * 상품 구매 상태 수정
  *         * 구매 상태 값 {5: 구매 확정, 6: 구매 취소, 10: 반품 신청, 20: 교환 신청}
@@ -89,7 +89,8 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `== function start ==================================`);
 
         req.paramBody = paramUtil.parse(req);
-
+        req.paramBody['detail_reason'] = req.paramBody['detail_reason'].replace(/\n/g, '\\n')
+        req.paramBody['detail_reason'] = req.paramBody['detail_reason'].replace(/\t/g, '\\t')
 
         checkParam(req);
 
