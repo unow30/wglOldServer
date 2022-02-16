@@ -52,9 +52,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
+            let count_data = await querySelectCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['total_count'] = count_data['total_count'];
 
-            deleteBody(req)
+            deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -71,6 +73,17 @@ function checkParam(req) {
 }
 
 function deleteBody(req) {
+}
+
+function querySelectCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_searchview_new_review_list_count'
+        , [
+            req.headers['user_uid']
+        ]
+    );
 }
 
 function querySelect(req, db_connection) {
