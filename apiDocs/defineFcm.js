@@ -26,7 +26,7 @@
  *         type: string
  *         example: 2021-01-01 00:00:00
  *         description: 마지막 수정한 날짜
- *       fcm_type:
+ *       alarm_type:
  *         type: number
  *         example: 1
  *         description: |
@@ -63,7 +63,7 @@
  *         example: 1
  *         description: |
  *           타겟 uid, fcm 알림 타입에 따라 타겟 uid 변경
- *           fcm_type: 0일 경우에는 target_uid: 0, 위글 앱 실행
+ *           alarm_type: 0일 경우에는 target_uid: 0, 위글 앱 실행
  *           * 위글 앱 서버 실행
  *               * 0: 위글 주문 알림 => 판매자에게 전달. 받는 uid 없음. 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
  *               * 1: 리뷰 영상 등록 알림 => 판매자에게 전달. 받는 uid 없음

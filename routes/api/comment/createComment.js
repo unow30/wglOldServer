@@ -124,7 +124,7 @@ function queryInsertFCM(data, db_connection){
         ,'call proc_create_fcm_data'
         , [
             data['user_uid'],
-            data['fcm_type'],
+            data['alarm_type'],
             data['title'],
             data['message'],
             data['video_uid'] == null? 0 : data['video_uid'],
