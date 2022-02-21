@@ -121,6 +121,7 @@ function querySelect(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['video_uid'],
+            req.paramBody['category'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
             req.innerBody['type'],
