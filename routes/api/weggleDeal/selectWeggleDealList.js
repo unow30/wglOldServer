@@ -29,6 +29,26 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: |
+ *           상품 카테고리
+ *           * 1: 식품
+ *           * 2: 뷰티
+ *           * 4: 홈데코
+ *           * 8: 패션잡화
+ *           * 16: 반려동물
+ *           * 32: 유아
+ *           * 64: 스포츠레저
+ *           * 128: 식물
+ *           * 65535 : 전체
+ *
+ *         enum: [1,2,4,8,16,32,64,128,65535]
+ *
+ *       - in: query
  *         name: offset
  *         default: 0
  *         required: true
