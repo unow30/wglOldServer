@@ -178,6 +178,9 @@ app.route('/searchview/new/review/preview/list').get( require('./searchView/sele
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') );
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
 
+app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') );
+// app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
+
 app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') )
 app.route('/searchview/popular/category/product/preview/list').get( require('./searchView/selectSearchViewPopularCategoryProductList'))
 
