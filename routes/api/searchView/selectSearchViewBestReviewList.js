@@ -11,6 +11,16 @@
  *
  *       * 검색 화면 - Best Review(베스트 상품 리뷰) 목록
  *
+ *     parameters:
+ *       - in: query
+ *         name: random_seed
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
+ *
  *     responses:
  *       400:
  *         description: 에러 코드 400
@@ -70,6 +80,7 @@ function querySelect(req, db_connection) {
         , 'call proc_select_searchview_best_review_list'
         , [
             req.headers['user_uid']
+           ,req.paramBody['random_seed']
         ]
     );
 }
@@ -78,6 +89,8 @@ function querySelect(req, db_connection) {
 function createJSONArray(item){
     if( item ){
         for( let idx in item ){
+            item[idx]['review_object'] = item[idx]['review_object'].replace(/\n/g, '\\n')
+            item[idx]['review_object'] = item[idx]['review_object'].replace(/\t/g, '\\t')
             item[idx]['review_object'] = JSON.parse(item[idx]['review_object'])
         }
     }
