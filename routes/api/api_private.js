@@ -31,6 +31,9 @@ app.route('/product/recent/viewed')
     .get( require('./product/selectProductRecentViewedList') )
     .delete( require('./product/deleteProductRecentViewedList') )
 
+app.route('/product/name/list').get( require('./product/selectProductNameList'))
+
+
 /**
  * cart api
  */
