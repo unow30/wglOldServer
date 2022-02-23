@@ -52,7 +52,6 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
