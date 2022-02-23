@@ -42,6 +42,7 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = createJSONArray(req.innerBody['item'])
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -73,4 +74,13 @@ function querySelect(req, db_connection) {
     );
 }
 
+
+function createJSONArray(item){
+    if( item ){
+        for( let idx in item ){
+            item[idx]['review_object'] = JSON.parse(item[idx]['review_object'])
+        }
+    }
+    return item;
+}
 
