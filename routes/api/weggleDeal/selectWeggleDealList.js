@@ -107,7 +107,7 @@ module.exports = function (req, res) {
             // Object.assign(req.innerBody['item'], obj, req.innerBody['item']);
             req.innerBody['item'] = [...obj, ...req.innerBody['item']];
             console.log(req.innerBody['item'])
-            deleteBody(req)
+            // deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {

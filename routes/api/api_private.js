@@ -182,6 +182,7 @@ app.route('/searchview/new/product/list').get( require('./searchView/selectSearc
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
 
 app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') );
+app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') );
 // app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
 
 app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') )
