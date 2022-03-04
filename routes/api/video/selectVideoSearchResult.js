@@ -89,7 +89,10 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+            let count = await queryCount(req, db_connection);
+            req.innerBody['count'] = count['count']
 
+            console.log(req.innerBody['count'])
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -125,6 +128,18 @@ function querySelect(req, db_connection) {
             req.paramBody['category'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
+        ]
+    );
+}
+
+function queryCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_video_search_result_count'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['category'],
         ]
     );
 }
