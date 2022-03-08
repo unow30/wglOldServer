@@ -34,7 +34,6 @@
  *                 * 8: 대댓글등록알림 on/off
  *                 * 16: 문의등록알림 on/off
  *               enum: [0,1,2,4,8,16]
- *           properties:
  *             is_alert_value:
  *               type: number
  *               example: 0
