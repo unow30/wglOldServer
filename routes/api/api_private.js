@@ -216,7 +216,7 @@ app.route('/alert/comment').put( require('./alert/updateAlertComment'))//댓글�
 app.route('/alert/nested/comment').put( require('./alert/updateNestedComment'))//대댓글알림
 app.route('/alert/product/qna').put( require('./alert/updateProductQna'))//문의알림
 
-app.route('/alert').put(require('./alert/updateAlertState'))//알림 차단 api
+app.route('/alert').put(require('./alert/updateAlertState'))//알림 차단 api2
 
 /**
  * Block
