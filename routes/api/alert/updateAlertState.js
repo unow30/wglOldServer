@@ -86,25 +86,31 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
-            
+            let data = ''
             switch(req.paramBody['status']){
                 case 0: {
-                    req.innerBody['result'] = await query_order_confirm(req, db_connection);
+                    data = await query_order_confirm(req, db_connection);
+                    req.innerBody['result'] = data['alert_message']
                 } break;
                 case 1: {
-                    req.innerBody['result'] = await query_order_confirm_request(req, db_connection);
+                    data = await query_order_confirm_request(req, db_connection);
+                    req.innerBody['result'] = data['alert_message']
                 } break;
                 case 2: {
-                    req.innerBody['result'] = await query_comment(req, db_connection);
+                    data = await query_comment(req, db_connection);
+                    req.innerBody['result'] = data['alert_message']
                 } break;
                 case 3: {
-                    req.innerBody['result'] = await query_nested_comment(req, db_connection);
+                    data = await query_nested_comment(req, db_connection);
+                    req.innerBody['result'] = data['alert_message']
                 } break;
                 case 4: {
-                    req.innerBody['result'] = await query_review_video(req, db_connection);
+                    data = await query_review_video(req, db_connection);
+                    req.innerBody['result'] = data['alert_message']
                 } break;
                 case 5: {
-                    req.innerBody['result'] = await query_product_qna(req, db_connection);
+                    data = await query_product_qna(req, db_connection);
+                    req.innerBody['result'] = data['alert_message']
                 } break;
 
             }
