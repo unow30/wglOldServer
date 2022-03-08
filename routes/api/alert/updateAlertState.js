@@ -7,9 +7,19 @@
  *     summary: 알림 on/off
  *     tags: [Alert]
  *     description: |
- *       path : /api/private/alert
+ *      * ## path : /api/private/alert
  *
- *       * 알림 on/off
+ *      * ## 알림 on/off
+ *      * ## 알림상태 (is_alert_status)
+ *        * ### 0: 리뷰영상등록알림 on/off
+ *        * ### 1: 상품구매확정알림 on/off
+ *        * ### 2: 구매확정요청알림 on/off
+ *        * ### 4: 댓글등록알림 on/off
+ *        * ### 8: 대댓글등록알림 on/off
+ *        * ### 16: 문의등록알림 on/off
+ *      * ## 알림 on/off (is_alert_value)
+ *        * ### 0: on
+ *        * ### 1: off
  *
  *     parameters:
  *       - in: body
