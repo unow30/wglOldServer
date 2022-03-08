@@ -40,10 +40,10 @@
  *                 * 0: 리뷰영상등록알림 on/off
  *                 * 1: 상품구매확정알림 on/off
  *                 * 2: 구매확정요청알림 on/off
- *                 * 4: 댓글등록알림 on/off
- *                 * 8: 대댓글등록알림 on/off
- *                 * 16: 문의등록알림 on/off
- *               enum: [0,1,2,4,8,16]
+ *                 * 3: 댓글등록알림 on/off
+ *                 * 4: 대댓글등록알림 on/off
+ *                 * 5: 문의등록알림 on/off
+ *               enum: [0,1,2,3,4,5]
  *             is_alert_value:
  *               type: number
  *               example: 0
@@ -97,13 +97,13 @@ module.exports = function (req, res) {
                 case 2: {
                     req.innerBody['result'] = await query_comment(req, db_connection);
                 } break;
-                case 4: {
+                case 3: {
                     req.innerBody['result'] = await query_nested_comment(req, db_connection);
                 } break;
-                case 8: {
+                case 4: {
                     req.innerBody['result'] = await query_review_video(req, db_connection);
                 } break;
-                case 16: {
+                case 5: {
                     req.innerBody['result'] = await query_product_qna(req, db_connection);
                 } break;
 
