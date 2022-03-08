@@ -87,7 +87,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
             let data = ''
-            switch(req.paramBody['status']){
+            switch(req.paramBody['is_alert_status']){
                 case 0: {
                     data = await query_order_confirm(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
