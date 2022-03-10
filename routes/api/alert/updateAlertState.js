@@ -91,31 +91,35 @@ module.exports = function (req, res) {
                 case 0: {
                     data = await query_order_confirm(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
+                    req.innerBody['state'] = data['is_alert_order_confirm'];
                 } break;
                 case 1: {
                     data = await query_order_confirm_request(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
+                    req.innerBody['state'] = data['is_alert_order_confirm_request'];
                 } break;
                 case 2: {
                     data = await query_comment(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
+                    req.innerBody['state'] = data['is_alert_comment'];
                 } break;
                 case 3: {
                     data = await query_nested_comment(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
+                    req.innerBody['state'] = data['is_alert_nested_comment'];
                 } break;
                 case 4: {
                     data = await query_review_video(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
+                    req.innerBody['state'] = data['is_alert_review_video'];
                 } break;
                 case 5: {
                     data = await query_product_qna(req, db_connection);
                     req.innerBody['result'] = data['alert_message']
+                    req.innerBody['state'] = data['is_alert_product_qna'];
                 } break;
 
             }
-
-            // req.innerBody['result'] = data['alert_message'];
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
