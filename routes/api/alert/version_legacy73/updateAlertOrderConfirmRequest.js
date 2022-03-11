@@ -2,30 +2,30 @@
  * Created by yunhokim on 2022. 01. 21.
  *
  * @swagger
- * /api/private/alert/comment:
+ * /api/private/alert/order/confirm/request:
  *   put:
- *     summary: 댓글 등록 알림 on/off
+ *     summary: 구매 확정 요청 알림 on/off
  *     tags: [Alert]
  *     description: |
- *       path : /api/private/alert/comment
+ *       path : /api/private/alert/order/confirm/request
  *
- *       * 댓글 등록 알림 on/off
+ *       * 구매 확정 요청 알림 on/off
  *
  *     parameters:
  *       - in: body
  *         name: body
  *         description: |
- *           댓글 등록 알림 on/off
+ *           구매 확정 요청 알림 on/off
  *         schema:
  *           type: object
  *           required:
- *             - is_alert_comment
+ *             - is_alert_order_confirm_request
  *           properties:
- *             is_alert_comment:
+ *             is_alert_order_confirm_request:
  *               type: number
  *               example: 0
  *               description: |
- *                 댓글 등록 알림 on/off
+ *                 구매 확정 요청 알림 on/off
  *                 * 0: on
  *                 * 1: off
  *               enum: [0,1]
@@ -37,15 +37,15 @@
  *           $ref: '#/definitions/Error'
  */
 
-const paramUtil = require('../../../common/utils/paramUtil');
-const fileUtil = require('../../../common/utils/fileUtil');
-const mysqlUtil = require('../../../common/utils/mysqlUtil');
-const sendUtil = require('../../../common/utils/sendUtil');
-const errUtil = require('../../../common/utils/errUtil');
-const logUtil = require('../../../common/utils/logUtil');
-const jwtUtil = require('../../../common/utils/jwtUtil');
+const paramUtil = require('../../../../common/utils/paramUtil');
+const fileUtil = require('../../../../common/utils/fileUtil');
+const mysqlUtil = require('../../../../common/utils/mysqlUtil');
+const sendUtil = require('../../../../common/utils/sendUtil');
+const errUtil = require('../../../../common/utils/errUtil');
+const logUtil = require('../../../../common/utils/logUtil');
+const jwtUtil = require('../../../../common/utils/jwtUtil');
 
-const errCode = require('../../../common/define/errCode');
+const errCode = require('../../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -65,8 +65,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             let data = await query(req, db_connection);
-            console.log(data)
-            req.innerBody['result'] = data['alert_message']
+
+            req.innerBody['result'] = data['alert_message'];
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -82,7 +82,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'is_alert_comment');
+    paramUtil.checkParam_noReturn(req.paramBody, 'is_alert_order_confirm_request');
 }
 
 function deleteBody(req) {
@@ -93,10 +93,10 @@ function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_update_alert_comment'
+        , 'call proc_update_alert_order_confirm_request'
         , [
             req.headers['user_uid'],
-            req.paramBody['is_alert_comment'],
+            req.paramBody['is_alert_order_confirm_request'],
         ]
     );
 }

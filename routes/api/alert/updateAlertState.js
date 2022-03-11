@@ -7,7 +7,7 @@
  *     summary: 알림 on/off
  *     tags: [Alert]
  *     description: |
- *      * ## path : /api/private/alert
+ *      ## path : /api/private/alert
  *
  *      * ## 알림 on/off
  *      * ## 알림상태 (is_alert_status)

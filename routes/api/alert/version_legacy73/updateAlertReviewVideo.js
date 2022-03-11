@@ -2,30 +2,30 @@
  * Created by yunhokim on 2022. 01. 21.
  *
  * @swagger
- * /api/private/alert/product/qna:
+ * /api/private/alert/review/video:
  *   put:
- *     summary: 문의 등록 알림 on/off
+ *     summary: 리뷰 영상 등록 알림 on/off
  *     tags: [Alert]
  *     description: |
- *       path : /api/private/alert/product/qna
+ *       path : /api/private/alert/review/video
  *
- *       * 문의 등록 알림 on/off
+ *       * 리뷰 영상 등록 알림 on/off
  *
  *     parameters:
  *       - in: body
  *         name: body
  *         description: |
- *           문의 등록 알림 on/off
+ *           리뷰 영상 등록 알림 on/off
  *         schema:
  *           type: object
  *           required:
- *             - is_alert_product_qna
+ *             - is_alert_review_video
  *           properties:
- *             is_alert_product_qna:
+ *             is_alert_review_video:
  *               type: number
  *               example: 0
  *               description: |
- *                 문의 등록 알림 on/off
+ *                 리뷰 영상 등록 알림 on/off
  *                 * 0: on
  *                 * 1: off
  *               enum: [0,1]
@@ -37,15 +37,15 @@
  *           $ref: '#/definitions/Error'
  */
 
-const paramUtil = require('../../../common/utils/paramUtil');
-const fileUtil = require('../../../common/utils/fileUtil');
-const mysqlUtil = require('../../../common/utils/mysqlUtil');
-const sendUtil = require('../../../common/utils/sendUtil');
-const errUtil = require('../../../common/utils/errUtil');
-const logUtil = require('../../../common/utils/logUtil');
-const jwtUtil = require('../../../common/utils/jwtUtil');
+const paramUtil = require('../../../../common/utils/paramUtil');
+const fileUtil = require('../../../../common/utils/fileUtil');
+const mysqlUtil = require('../../../../common/utils/mysqlUtil');
+const sendUtil = require('../../../../common/utils/sendUtil');
+const errUtil = require('../../../../common/utils/errUtil');
+const logUtil = require('../../../../common/utils/logUtil');
+const jwtUtil = require('../../../../common/utils/jwtUtil');
 
-const errCode = require('../../../common/define/errCode');
+const errCode = require('../../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -66,7 +66,8 @@ module.exports = function (req, res) {
 
             let data = await query(req, db_connection);
 
-            req.innerBody['result'] = data['alert_message']
+            req.innerBody['result'] = data['alert_message'];
+
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -82,7 +83,7 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'is_alert_product_qna');
+    paramUtil.checkParam_noReturn(req.paramBody, 'is_alert_review_video');
 }
 
 function deleteBody(req) {
@@ -93,10 +94,10 @@ function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_update_alert_product_qna'
+        , 'call proc_update_alert_review_video'
         , [
             req.headers['user_uid'],
-            req.paramBody['is_alert_product_qna'],
+            req.paramBody['is_alert_review_video'],
         ]
     );
 }
