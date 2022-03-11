@@ -71,7 +71,7 @@ module.exports = function (req, res) {
             }
 
             //핫위글러 한 프로시저로 도전
-            req.innerBody['hot_weggler_'] = await queryHotWegglerUser(req, db_connection);
+            req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
             if( req.innerBody['hot_weggler'] ){
                 for( let idx in req.innerBody['hot_weggler'] ){
                     req.innerBody['hot_weggler'][idx]['list'] = await queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
