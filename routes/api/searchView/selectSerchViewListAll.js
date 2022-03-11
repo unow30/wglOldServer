@@ -7,16 +7,16 @@
  *     summary: 모아보기 모든 화면 불러오기
  *     tags: [SearchView]
  *     description: |
- *      ## path : /api/private/searchview/list/all:
+ *      ## path : /api/private/searchview/list/all
  *
- *       * ## 모아보기 모든 화면 불러오기
+ *       * ## 모아보기 모든 화면 불러오기 (인기 카테고리 목록 제외)
  *         * ### 광고이미지 목록
  *         * ### 신규상품 미리보기
  *         * ### 신규리뷰 미리보기
  *         * ### 위글딜 미리보기
  *         * ### 핫위글러 목록
- *         * ### 인기 카테고리 목록(카테고리별 클릭시 이 api만 실행해야 한다.)
  *         * ### 베스트 리뷰 목록
+ *         * ### ~~인기 카테고리 목록~~ (기존 api를 실행해야 한다. searchview/popular/category/product/preview/list)
  *
  *     parameters:
  *       - in: query
