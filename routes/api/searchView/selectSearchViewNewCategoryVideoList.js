@@ -1,15 +1,15 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 21.
+ * Created by yunhokim on 2022. 03. 15.
  *
  * @swagger
- * /api/private/searchview/recommend/list:
+ * /api/private/searchview/new/category/video/list:
  *   get:
- *     summary: 검색 화면 - Best(추천 상품) 목록
+ *     summary: 검색 화면 - 신규 카테고리 영상 목록
  *     tags: [SearchView]
  *     description: |
- *       path : /api/private/searchview/recommend/list
+ *       path : /api/private/searchview/new/category/video/list
  *
- *       * 검색 화면 - Best(추천 상품) 목록
+ *       * 검색 화면 - 신규 카테고리 영상 목록
  *
  *     parameters:
  *       - in: query
@@ -32,13 +32,16 @@
  *
  *         enum: [1,2,4,8,16,32,64,128,65535]
  *
- *     responses:
- *       200:
- *         description: 결과 정보
+ *       - in: query
+ *         name: random_seed
+ *         required: true
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/SearchViewRecommendListApi'
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
+ *
+ *     responses:
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -102,8 +105,7 @@ function querySelect(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['category'],
+            req.paramBody['random_seed'],
         ]
     );
 }
-
-

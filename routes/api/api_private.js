@@ -164,10 +164,17 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
  */
 app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기
 app.route('/searchview/popular/category/product/preview/list').get( require('./searchView/selectSearchViewPopularCategoryProductList')) // 인기 카테고리 목록
-app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )// 추천영상검색정보
+app.route('/searchview/new/category/video/list').get( require('./searchView/selectSearchViewNewCategoryVideoList') )// 신규 카테고리 영상 목록
+
 app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') ) // 영상검색정보
 app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') ) // 태그검색정보
 app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') ) // 사용자검색정보
+app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )// 추천상품검색정보
+
+app.route('/searchview/ad/list').get( require('./searchView/selectSearchViewAdList') ) // 광고이미지 목록
+app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') ); // 위글딜영상 목록
+app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') ); // 신규상품 목록
+app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') ); // 신규리뷰 목록
 
 
 // 모아보기 api legacy
@@ -177,16 +184,13 @@ app.route('/searchview').get( require('./searchView/selectSearchViewInfo') ) // 
 
 // 모아보기 api legacy
 // app_version1.5.4, app_code73
-app.route('/searchview/ad/list').get( require('./searchView/selectSearchViewAdList') ) // 광고이미지 목록
 app.route('/searchview/new/product/preview/list').get( require('./searchView/selectSearchViewNewProductPreviewList') ); // 신규상품 미리보기
 app.route('/searchview/new/review/preview/list').get( require('./searchView/selectSearchViewNewReviewPreviewList') ); // 신규리뷰 미리보기
-app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') ); // 신규상품 목록
-app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') ); // 신규리뷰 목록
 app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') ); // 위글딜 미리보기
-app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') ); // 위글딜영상 목록
-// app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
 app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') ) // 핫위글러 목록
 app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') ); // 베스트 리뷰 목록
+// app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
+
 
 /**
  * notice api
