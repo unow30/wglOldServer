@@ -31,7 +31,14 @@
  *           * 65535 : 전체
  *
  *         enum: [1,2,4,8,16,32,64,128,65535]
- *
+ *       - in: query
+ *         name: random_seed
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다
  *     responses:
  *       200:
  *         description: 결과 정보
