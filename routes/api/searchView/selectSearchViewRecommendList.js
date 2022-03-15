@@ -102,6 +102,7 @@ function querySelect(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['category'],
+            req.paramBody['random_seed'],
         ]
     );
 }
