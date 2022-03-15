@@ -101,7 +101,7 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_recommend_list'
+        , 'call proc_select_searchview_new_category_video_list'
         , [
             req.headers['user_uid'],
             req.paramBody['category'],
