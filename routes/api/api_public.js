@@ -26,6 +26,8 @@ app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, 
  * dev api
  */
 app.route('/dev/test').get( require('./_dev/_dev_select') )
+app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_to_HLS') )
+app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
 
 
 
