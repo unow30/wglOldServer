@@ -37,15 +37,15 @@
  *           $ref: '#/definitions/Error'
  */
 
-const paramUtil = require('../../../common/utils/paramUtil');
-const fileUtil = require('../../../common/utils/fileUtil');
-const mysqlUtil = require('../../../common/utils/mysqlUtil');
-const sendUtil = require('../../../common/utils/sendUtil');
-const errUtil = require('../../../common/utils/errUtil');
-const logUtil = require('../../../common/utils/logUtil');
-const jwtUtil = require('../../../common/utils/jwtUtil');
+const paramUtil = require('../../../../common/utils/paramUtil');
+const fileUtil = require('../../../../common/utils/fileUtil');
+const mysqlUtil = require('../../../../common/utils/mysqlUtil');
+const sendUtil = require('../../../../common/utils/sendUtil');
+const errUtil = require('../../../../common/utils/errUtil');
+const logUtil = require('../../../../common/utils/logUtil');
+const jwtUtil = require('../../../../common/utils/jwtUtil');
 
-const errCode = require('../../../common/define/errCode');
+const errCode = require('../../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 

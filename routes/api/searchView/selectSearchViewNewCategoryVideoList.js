@@ -1,38 +1,37 @@
 /**
- * Created by kimyunho on 2021. 11. 24.
+ * Created by yunhokim on 2022. 03. 15.
  *
  * @swagger
- * /api/private/video/search/result/list:
+ * /api/private/searchview/new/category/video/list:
  *   get:
- *     summary: 비디오 카테고리 검색 목록
- *     tags: [Video]
+ *     summary: 검색 화면 - 신규 카테고리 영상 목록
+ *     tags: [SearchView]
  *     description: |
- *       path : /api/private/video/search/result/list
+ *       path : /api/private/searchview/new/category/video/list
  *
- *       * 비디오 카테고리 검색 목록
- *       * 검색 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.
+ *       * 검색 화면 - 신규 카테고리 영상 목록
  *
  *     parameters:
  *       - in: query
  *         name: category
  *         required: true
- *         default: 65535
  *         schema:
  *           type: number
- *           example: 65535
+ *           example: 1
  *         description: |
- *           카테고리 (비트 연산)
- *           ==> 65535 : 모든 상품
- *           ==> 멀티선택의 경우 코드 값을 합치면됨
- *           ==> ex) 1+8+32 = 41
- *           * 1 : 식품
- *           * 2 : 뷰티
- *           * 4 : 홈데코
- *           * 8 : 패션잡화
- *           * 16 : 반려동물
- *           * 32 : 유아
- *           * 64 : 스포츠레저
- *           * 128 : 식물
+ *           상품 카테고리
+ *           * 1: 식품
+ *           * 2: 뷰티
+ *           * 4: 홈데코
+ *           * 8: 패션잡화
+ *           * 16: 반려동물
+ *           * 32: 유아
+ *           * 64: 스포츠레저
+ *           * 128: 식물
+ *           * 65535 : 전체
+ *
+ *         enum: [1,2,4,8,16,32,64,128,65535]
+ *
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -41,24 +40,8 @@
  *           example: 133q1234
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
- *       - in: query
- *         name: offset
- *         default: 0
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
- *           offset 0: 0~30
- *           offset 30: 30~60
- *           offset 60: 60~90
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/VideoSearchResultListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -81,7 +64,7 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
@@ -89,10 +72,7 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
-            let count = await queryCount(req, db_connection);
-            req.innerBody['count'] = count['count']
 
-            console.log(req.innerBody['count'])
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -108,38 +88,24 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'category');
-    paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
-    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 }
 
 function deleteBody(req) {
-    for( let idx in req.innerBody['item'] ){
-        delete req.innerBody['item'][idx]['filename']
-    }
+    // delete req.innerBody['item']['latitude']
+    // delete req.innerBody['item']['longitude']
+    // delete req.innerBody['item']['push_token']
+    // delete req.innerBody['item']['access_token']
 }
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_video_search_result'
+        , 'call proc_select_searchview_new_category_video_list'
         , [
             req.headers['user_uid'],
             req.paramBody['category'],
             req.paramBody['random_seed'],
-            req.paramBody['offset'],
-        ]
-    );
-}
-
-function queryCount(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_video_search_result_count'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['category'],
         ]
     );
 }
