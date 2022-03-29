@@ -34,8 +34,8 @@ const fileOptions = {
             cb(null, {fieldName: file.fieldname});
         },
         key: function (req, file, cb) {
-            // cb(null, getFilename(req, file));  초반에 하고 주석풀어야함
-            cb(null, file.originalname);
+            cb(null, getFilename(req, file));  // 초반에 하고 주석풀어야함
+            // cb(null, file.originalname);
         },
     }),
     limits: {

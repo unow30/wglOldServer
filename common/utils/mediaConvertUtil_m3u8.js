@@ -15,6 +15,7 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
     const MEDIACONVERT = 'ConvertSuccess';
     const BITRATE = 1600000;
     const extname = path.extname(final_name);
+    console.log('extname: ' + extname);
 
     if(extname === '.mp4') {
         let bitrate_value = BITRATE;
@@ -272,10 +273,10 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                         "ImageInserter": {
                             "InsertableImages": [
                                 {
-                                    "Width": video_width / 6.3,
-                                    "Height": video_height / 14.8,
-                                    "ImageX": video_width / 1.25,
-                                    "ImageY": video_height / 2.8,
+                                    "Width": video_height / 6.3,
+                                    "Height": video_width / 14.8,
+                                    "ImageX": video_height / 1.25,
+                                    "ImageY": video_width / 2.8,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50
