@@ -20,7 +20,10 @@ app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, 
 // app.route('/public/image').post( require('../../common/utils/awsS3Util_v2').uploadImage, require('./file/uploadFile') );
 // app.route('/public/video').post( require('../../common/utils/awsS3Util_v2').uploadVideo, require('./file/uploadFile') );
 
-
+/**
+ * cron order_cancel_gift
+ */
+app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('../api/gift/updateGiftRefund') );
 
 /**
  * dev api

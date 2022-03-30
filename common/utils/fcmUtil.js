@@ -310,5 +310,33 @@ module.exports = {
             return JSON.parse(res['config']['data']);
         }).catch((e) => console.log(e));
     },
+    fcmGiftOvertimeSingle : async function(item){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "to" : item['push_token'],
+            "priority": "high",
+            "data": {
+                "title": "선물 기한 알림",
+                "message": `${item['recipient_name']} 님에게 선물해준 ${item['product_name']} 상품의 수락 기한이 지나 구매가 취소되었습니다.`,
+                "channel" : "선물 기한 알림",
+                "target_uid" : `${item['order_uid']}`,
+                "alarm_type" : "11",
+                "icon_filename": 'order.png',
+            },
+            "notification": {
+                "title": "선물 기한 알림",
+                "body": `${item['recipient_name']} 님에게 선물해준 ${item['product_name']} 상품의 수락 기한이 지났습니다. 선물을 취소해주세요.`,
+                "channel" : "선물 기한 알림",
+                "target_uid" : `${item['order_uid']}`,
+                "alarm_type" : "11",
+                "icon_filename": 'order.png',
+                "sound" : "default",
+                "badge": "1",
+                "content-available" : "true",
+                "apns-priority" : "5",
+                "badge count" : "0",
+                "mutable-content": "1"
+            },
+        }).catch((e) => console.log(e));
+    },
 
 };
