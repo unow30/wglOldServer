@@ -25,7 +25,7 @@ module.exports ={
     start: function(){
         //매일 새벽 00:00 에 진행
         try{
-            const job = schedule.scheduleJob('0 0 13 * * *', function (){
+            const job = schedule.scheduleJob('0 30 13 * * *', function (){
                 mysqlUtil.connectPool(async function (db_connection) {
                     let item ={};
                     console.log("ㅁㅇㄴ");
@@ -35,6 +35,7 @@ module.exports ={
                         console.log('선물하기 취소 데이터 '+idx + ': ' + JSON.stringify(item[idx]));
                         await fcmUtil.fcmGiftOvertimeSingle(item[idx]); //선물유효기간 1주일 지남. 구매자에게 취소부탁
                         // let bootpay_response = await axios.put('http://localhost:3456/api/public/order/cancel/gift', {
+                        // let bootpay_response = await axios.put('3.34.65.237/api/public/order/cancel/gift', {
                         let bootpay_response = await axios.put('52.78.124.248/api/public/order/cancel/gift', {
                                 "order_uid": item[idx]['order_uid'],
                                 "order_product_uid": item[idx]['order_product_uid'],
