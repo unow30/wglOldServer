@@ -48,6 +48,7 @@ app.use('/', indexRouter);
 
 require('./routes/cron/cronUpdateOrderStatus').start();
 require('./routes/cron/cronUpdateExpirationGift').start();
+require('./routes/cron/cronSendFcmExpirationGift').start();
 
 app.use(function(req, res, next){
   // console.log('====== path error req.originalUrl : '+req.originalUrl);
