@@ -109,7 +109,7 @@ function query(req, db_connection){
     return mysqlUtil.querySingle(db_connection
         , 'call proc_update_gift_reg_refund'
         , [
-            req.headers['user_uid'],
+            req.headers['user_uid']? req.headers['user_uid'] : req.paramBody['user_uid'],
             req.paramBody['order_uid'],
             req.paramBody['gift_uid'],
         ]

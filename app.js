@@ -46,8 +46,8 @@ app.use('/others', require('./routes/page/page_router'));
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 
-const cron = require('./routes/cron/cronUpdateOrderStatus');
-cron.start()
+require('./routes/cron/cronUpdateOrderStatus').start();
+require('./routes/cron/cronUpdateExpirationGift').start();
 
 app.use(function(req, res, next){
   // console.log('====== path error req.originalUrl : '+req.originalUrl);
