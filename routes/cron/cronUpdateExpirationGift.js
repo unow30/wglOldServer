@@ -25,7 +25,7 @@ module.exports ={
     start: function(){
         //매일 새벽 00:00 에 진행
         try{
-            const job = schedule.scheduleJob('0 30 13 * * *', function (){
+            const job = schedule.scheduleJob('0 50 13 * * *', function (){
                 mysqlUtil.connectPool(async function (db_connection) {
                     let item ={};
                     console.log("ㅁㅇㄴ");
