@@ -22,8 +22,8 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
         if(file_size > 30)
             bitrate_value = BITRATE * ( 30 / file_size );
 
-        if(bitrate_value < 500000) {
-            bitrate_value = 500000;
+        if(bitrate_value < 1000000) {
+            bitrate_value = 1000000;
         }
 
         AWS.config.update({
@@ -138,7 +138,9 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                                 "DefaultSelection": "DEFAULT"
                             }
                         },
-                        "VideoSelector": {},
+                        "VideoSelector": {
+                            "Rotate": "AUTO"
+                        },
                         "TimecodeSource": "ZEROBASED",
                         "ImageInserter": {
                             "InsertableImages": [
@@ -217,6 +219,8 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                                     "M3u8Settings": {}
                                 },
                                 "VideoDescription": {
+                                    "Width": 574,
+                                    "Height": 1024,
                                     "CodecSettings": {
                                         "Codec": "H_264",
                                         "H264Settings": {
@@ -267,16 +271,16 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                             }
                         },
                         "VideoSelector": {
-                            "Rotate": "DEGREES_90"
+                            "Rotate": "AUTO"
                         },
                         "TimecodeSource": "ZEROBASED",
                         "ImageInserter": {
                             "InsertableImages": [
                                 {
-                                    "Width": video_height / 6.3,
-                                    "Height": video_width / 14.8,
-                                    "ImageX": video_height / 1.25,
-                                    "ImageY": video_width / 2.8,
+                                    "Width": video_width / 6.3,
+                                    "Height": video_height / 14.8,
+                                    "ImageX": video_width / 1.25,
+                                    "ImageY": video_height / 2.8,
                                     "Layer": 1,
                                     "ImageInserterInput": `${funcUtil.getAWSMediaConvertS3StartingPoint()}wegglelogo.png`,
                                     "Opacity": 50
