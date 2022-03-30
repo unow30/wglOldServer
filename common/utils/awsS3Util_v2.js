@@ -34,8 +34,8 @@ const fileOptions = {
             cb(null, {fieldName: file.fieldname});
         },
         key: function (req, file, cb) {
-            cb(null, getFilename(req, file));  // 초반에 하고 주석풀어야함
-            // cb(null, file.originalname);
+            // cb(null, getFilename(req, file));  // 초반에 하고 주석풀어야함
+            cb(null, file.originalname); // << 용도 1회성 가존 mp4 -> m3u8 변경용
         },
     }),
     limits: {
