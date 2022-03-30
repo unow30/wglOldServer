@@ -1,4 +1,3 @@
-
 /**
  * Created by hyunhunhwang on 2020. 12. 29.
  *
@@ -62,7 +61,9 @@ const logUtil = require('../../../common/utils/logUtil');
 const errCode = require('../../../common/define/errCode');
 const funcUtil = require('../../../common/utils/funcUtil');
 
-const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil');
+// const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil');
+
+const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil_m3u8');
 
 const getMediaDimensions = require('get-media-dimensions');
 
@@ -73,7 +74,7 @@ let file_name = fileUtil.name(__filename);
  */
 module.exports = async function (req, res) {
     const _funcName = arguments.callee.name;
-
+    console.log('afiowekfoik: ' + req.file_name);
     logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
     try {
         req.file_name = file_name;
@@ -84,6 +85,7 @@ module.exports = async function (req, res) {
 
             let final_name = req.file.key;
 
+            console.log('finalname: ' + final_name);
             req.innerBody = {};
 
             if(req.file.originalname.includes('.mp4')) {
@@ -93,7 +95,7 @@ module.exports = async function (req, res) {
 
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
 
-                req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
+                req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.m3u8', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
             }
 
             req.innerBody['filename'] = final_name

@@ -29,6 +29,8 @@ app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('.
  * dev api
  */
 app.route('/dev/test').get( require('./_dev/_dev_select') )
+app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_to_HLS') )
+app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
 
 
 
