@@ -1,5 +1,5 @@
 /**
- * Created by gunucklee on 2021. 11. 25.
+ * Created by yunhokim on 2022. 03. 30.
  */
 const paramUtil = require('../../common/utils/paramUtil');
 const fileUtil = require('../../common/utils/fileUtil');
@@ -25,24 +25,14 @@ module.exports ={
     start: function(){
         //매일 새벽 00:00 에 진행
         try{
-            const job = schedule.scheduleJob('0 0 0 * * *', function (){
+            const job = schedule.scheduleJob('0 0 16 * * *', function (){
                 mysqlUtil.connectPool(async function (db_connection) {
                     let item ={};
-                    console.log("ㅁㅇㄴ");
                     item = await query(db_connection);
-                    console.log('선물하기 자동취소 진행')
+                    console.log('선물하기 만료 알림 전달')
                     for( let idx in item ){
                         console.log('선물하기 취소 데이터 '+idx + ': ' + JSON.stringify(item[idx]));
-                        // await fcmUtil.fcmGiftOvertimeSingle(item[idx]); //선물유효기간 1주일 지남. 구매자에게 취소부탁
-                        // let bootpay_response = await axios.put('http://localhost:3456/api/public/order/cancel/gift', {
-                        // let bootpay_response = await axios.put('http://52.78.124.248:3456/api/public/order/cancel/gift', {
-                        let bootpay_response = await axios.put('http://3.34.65.237:3456/api/public/order/cancel/gift', {
-                                "order_uid": item[idx]['order_uid'],
-                                "order_product_uid": item[idx]['order_product_uid'],
-                                "gift_uid": item[idx]['uid'], //gift_uid
-                                "status": item[idx]['order_product_status'],
-                                "user_uid": item[idx]['source_uid'] //선물환불시 구매한 유저uid 필요
-                        })
+                        await fcmUtil.fcmGiftOvertimeSingle(item[idx]); //선물유효기간 1주일 지남. 구매자에게 취소안내
 
                     }
 

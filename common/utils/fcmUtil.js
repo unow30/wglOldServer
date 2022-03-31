@@ -316,7 +316,7 @@ module.exports = {
             "priority": "high",
             "data": {
                 "title": "선물 기한 알림",
-                "message": `${item['recipient_name']} 님에게 선물해준 ${item['product_name']} 상품의 수락 기한이 지나 구매가 취소되었습니다.`,
+                "message": `${item['recipient_name']} 님에게 선물해준 ${item['product_name']} 선물의 수락 기한이 지나 1~2일내로 구매가 자동 취소됩니다.`,
                 "channel" : "선물 기한 알림",
                 "target_uid" : `${item['order_uid']}`,
                 "alarm_type" : "11",
@@ -324,7 +324,7 @@ module.exports = {
             },
             "notification": {
                 "title": "선물 기한 알림",
-                "body": `${item['recipient_name']} 님에게 선물해준 ${item['product_name']} 상품의 수락 기한이 지났습니다. 선물을 취소해주세요.`,
+                "body": `${item['recipient_name']} 님에게 선물해준 ${item['product_name']} 선물의 수락 기한이 지나 1~2일내로 구매가 자동 취소됩니다.`,
                 "channel" : "선물 기한 알림",
                 "target_uid" : `${item['order_uid']}`,
                 "alarm_type" : "11",
