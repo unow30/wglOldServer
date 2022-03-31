@@ -61,9 +61,9 @@ const logUtil = require('../../../common/utils/logUtil');
 const errCode = require('../../../common/define/errCode');
 const funcUtil = require('../../../common/utils/funcUtil');
 
-// const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil');
+const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil');
 
-const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil_m3u8');
+// const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil_m3u8');
 
 const getMediaDimensions = require('get-media-dimensions');
 
