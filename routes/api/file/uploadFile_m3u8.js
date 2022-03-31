@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2020. 12. 29.
  *
  * @swagger
- * /api/public/file:
+ * /api/public/file/m3u8:
  *   post:
  *     summary: 파일 업로드 (1개씩만 업로드 가능)
  *     tags: [File]
  *     description: |
- *       path : /api/public/file
+ *       path : /api/public/file/m3u8
  *
  *       * 파일 (이미지,영상) 업로드 (1개씩만 업로드 가능)
  *       * 서버에 오직 파일만 올리뒤 파일명을 받는 api
