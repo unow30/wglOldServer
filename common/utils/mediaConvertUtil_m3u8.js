@@ -89,6 +89,8 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
                                     "M3u8Settings": {}
                                 },
                                 "VideoDescription": {
+                                    "Width": 574,
+                                    "Height": 1024,
                                     "CodecSettings": {
                                         "Codec": "H_264",
                                         "H264Settings": {
