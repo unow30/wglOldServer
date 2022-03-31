@@ -305,7 +305,7 @@ module.exports =  function (file_size, final_name, video_width, video_height) {
         if(data) {
             let basename = path.basename(final_name, extname);
             basename += MEDIACONVERT;
-            final_name = basename + extname;
+            final_name = basename + '.m3u8';
             return final_name;
         }
         errUtil.createCall(errCode.fail, `영상 업로드 중 오류가 발생되었습니다. 다시 시도해주세요.!`);

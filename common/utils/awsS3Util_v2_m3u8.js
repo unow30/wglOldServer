@@ -34,7 +34,8 @@ const fileOptions = {
             cb(null, {fieldName: file.fieldname});
         },
         key: function (req, file, cb) {
-            cb(null, getFilename(req, file));
+            // cb(null, getFilename(req, file));
+            cb(null, file.originalname);
         },
     }),
     limits: {
