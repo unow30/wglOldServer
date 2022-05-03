@@ -51,6 +51,15 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.empty, `회원가입하지 않은 유저입니다.`)
                 return
             }
+
+            //기존 쿼리가 길어서 func으로 만들기 불편하기 때문에 프로시저 호출
+            let unreview_count = await querySelectProductConfirmCount(req, db_connection)
+            let like_product_count = await querySelectLikeProductCount(req, db_connection)
+
+            req.innerBody['item']['unreview_count'] = unreview_count['count'];
+            req.innerBody['item']['like_product_count'] = like_product_count['total_count'];
+
+
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -88,5 +97,25 @@ function querySelect(req, db_connection) {
     );
 }
 
+function querySelectProductConfirmCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    //리뷰 미작성 상품 개수
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_product_confirm_list_count'
+        , [
+            req.headers['user_uid']
+        ]
+    );
+}
 
+function querySelectLikeProductCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    //좋아요 상품 개수 표시
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_like_product_list_count'
+        , [
+            req.headers['user_uid']
+        ]
+    );
+}
 
