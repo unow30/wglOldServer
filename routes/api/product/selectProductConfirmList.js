@@ -10,6 +10,7 @@
  *       path : /api/private/product/confirm/list
  *
  *       * 나의 구매확정 리스트
+ *       * 구매화정 상품 중 리뷰 미작성 상품 표시
  *
  *     parameters:
  *       - in: query
