@@ -231,4 +231,10 @@ app.route('/block').post( require('./block/createBlock')) //차단하기(영상,
 app.route('/block/user/list').get( require('./block/selectBlockUserList')) //차단 유저 목록 리스트
 app.route('/block/user').put( require('./block/updateBlockUser')) //유저 차단 해제
 
+/**
+ * promotion
+ */
+app.route('/promotion/list/all').get( require('./promotion/selectPromotionPreview')) //모든 프로모션 화면 미리보기
+// app.route('/promotion/list/:promotionName?').get( require('./')) //프로모션 더보기
+
 module.exports = app;
