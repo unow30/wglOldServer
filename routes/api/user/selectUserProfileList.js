@@ -28,10 +28,10 @@
  *           type: number
  *           example: 0
  *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
- *           offset 0: 0~30
- *           offset 30: 30~60
- *           offset 60: 60~90
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *
  *     responses:
  *       400:
