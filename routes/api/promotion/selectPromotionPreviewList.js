@@ -44,20 +44,20 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
             /*큰 배너 이미지 가져오기*/
-            req.innerBody['item']['bigBanner'] = await queryBigBannerList(req, db_connection);
+            req.innerBody['bigBanner'] = await queryBigBannerList(req, db_connection);
+
             /*프로모션 판매자 uid와 작은배너 uid 가져오기*/
-            req.innerBody['item']['brandList'] = await queryUserSmallBannerList(req, db_connection);
+            req.innerBody['brandList'] = await queryUserSmallBannerList(req, db_connection);
             // [{userUid: 1, smallBanner:abc.png },{userUid: 2, smallBanner: def.png}]
 
             let idx = 0
-            for(let ele of req.innerBody['item']){
+            for(let ele of req.innerBody['brandList']){
                 let list = await queryPromotionPreviewList(req, ele['userUid'] ,db_connection)
-                req.innerBody['item'][idx]['list'] = list
+                req.innerBody['brandList'][idx]['list'] = list
                 idx++
             }
             //item: [{userUid: 1, smallBanner: abc.png, list:[{},{}] },
             //       {userUid: 2, smallBanner: def.png, list:[{},{}] }]
-
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
