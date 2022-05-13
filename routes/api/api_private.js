@@ -235,8 +235,7 @@ app.route('/block/user').put( require('./block/updateBlockUser')) //유저 차�
  * promotion
  */
 app.route('/promotion/list/all').get( require('./promotion/selectPromotionPreviewList')) //모든 프로모션 화면 미리보기
-// app.route('/promotion/list/:promotionName?').get( require('./promotion/selectPromotionList')) //프로모션 더보기
-// app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
+app.route('/promotion/list').get( require('./promotion/selectPromotionList')) //프로모션 더보기
 
 
 module.exports = app;
