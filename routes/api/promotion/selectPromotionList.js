@@ -19,7 +19,7 @@
  *         schema:
  *           type: integer
  *           example: 1
- *         description: 유저 uid
+ *         description: 유저 uid(브랜드 판매자 uid)
  *       - in: query
  *         name: random_seed
  *         required: true
