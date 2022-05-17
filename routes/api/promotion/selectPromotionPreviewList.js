@@ -44,16 +44,16 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
             /*큰 배너 이미지 가져오기*/
-            req.innerBody['bigBanner'] = await queryBigBannerList(req, db_connection);
+            req.innerBody['big_banner'] = await queryBigBannerList(req, db_connection);
 
             /*프로모션 판매자 uid와 작은배너 uid 가져오기*/
-            req.innerBody['brandList'] = await queryUserSmallBannerList(req, db_connection);
+            req.innerBody['brand_list'] = await queryUserSmallBannerList(req, db_connection);
             // [{userUid: 1, smallBanner:abc.png },{userUid: 2, smallBanner: def.png}]
 
             let idx = 0
-            for(let ele of req.innerBody['brandList']){
-                let list = await queryPromotionPreviewList(req, ele['userUid'] ,db_connection)
-                req.innerBody['brandList'][idx]['list'] = list
+            for(let ele of req.innerBody['brand_list']){
+                let list = await queryPromotionPreviewList(req, ele['user_uid'] ,db_connection)
+                req.innerBody['brand_list'][idx]['list'] = list
                 idx++
             }
             //item: [{userUid: 1, smallBanner: abc.png, list:[{},{}] },
@@ -108,14 +108,14 @@ function queryUserSmallBannerList(req, db_connection) {
 }
 
 
-function queryPromotionPreviewList(req, userUid, db_connection) {
+function queryPromotionPreviewList(req, brand_uid, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_promotion_preview_list'
         , [
             req.headers['user_uid']
-            ,userUid
+            ,brand_uid
         ]
     );
 }
