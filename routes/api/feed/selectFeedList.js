@@ -11,9 +11,21 @@
  *
  *       * 피드 목록
  *       * 피드 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.
+ *       * 피드 목록(전체), 최근 등록영상 목록, 위글딜 목록이 있습니다.
  *       * 만약 위글 광고 클릭후 처음 목록 다음에 피드 목록을 새로 요청할때는 ad_product_uid 는 0으로 보내주세요
  *
  *     parameters:
+ *       - in: query
+ *         name: select_type
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: all
+ *         description: |
+ *           all or null: 피드리스트 실행
+ *           recent: 최근 2개월 내 등록한 영상 실행
+ *           weggledeal: 위글딜 영상 실행
+ *         enum: ['', all, recent, weggledeal]
  *       - in: query
  *         name: latitude
  *         default: 37.536977
@@ -114,7 +126,7 @@
  *         required: false
  *         schema:
  *           type: string
- *           example: 핸드폰
+ *           example:
  *         description: |
  *           해시태그 (영상 기준)
  *           * "핸드폰" 과 같이 #이 붙은 것만 검색됨
@@ -200,6 +212,12 @@ function checkParam(req) {
     if(!paramUtil.checkParam_return(req.paramBody, 'tag')){
         req.paramBody['tag'] = null
     }
+    if(!paramUtil.checkParam_return(req.paramBody, 'select_type')){
+        //select_type을 전달 안한다면 all을 기본값으로 한다.
+        req.paramBody['select_type'] = 'all'
+        // req.paramBody['select_type'] = req.paramBody['select_type'] ?? 'all'랑 같다.
+    }
+
 }
 
 function deleteBody(req) {
@@ -216,21 +234,53 @@ function deleteBody(req) {
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_feed_list'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['latitude'],
-            req.paramBody['longitude'],
-            req.paramBody['km'],
-            req.paramBody['category'],
-            req.paramBody['ad_product_uid'],
-            req.paramBody['video_uid'],
-            req.paramBody['keyword'],
-            req.paramBody['random_seed'],
-            req.paramBody['offset'],
-            req.paramBody['tag'],
-            req.innerBody['type'],
-        ]
-    );
+    switch(req.paramBody['select_type']){
+        case 'all':{
+            return mysqlUtil.queryArray(db_connection
+                , 'call proc_select_feed_list'
+                , [
+                    req.headers['user_uid'],
+                    req.paramBody['latitude'],
+                    req.paramBody['longitude'],
+                    req.paramBody['km'],
+                    req.paramBody['category'],
+                    req.paramBody['ad_product_uid'],
+                    req.paramBody['video_uid'],
+                    req.paramBody['keyword'],
+                    req.paramBody['random_seed'],
+                    req.paramBody['offset'],
+                    req.paramBody['tag'],
+                    req.innerBody['type'],
+                ]
+            );
+        }break;
+        case 'recent':{
+            return mysqlUtil.queryArray(db_connection
+                , 'call proc_select_feed_recent_video_list'
+                , [
+                    req.headers['user_uid'],
+                    req.paramBody['video_uid'],
+                    req.paramBody['category'],
+                    req.paramBody['random_seed'],
+                    req.paramBody['offset'],
+                    req.innerBody['type'],
+                ]
+            );
+        }break;
+        case 'weggledeal':{
+            return mysqlUtil.queryArray(db_connection
+                , 'call proc_select_feed_weggledeal_list'
+                , [
+                    req.headers['user_uid'],
+                    req.paramBody['video_uid'],
+                    req.paramBody['category'],
+                    req.paramBody['random_seed'],
+                    req.paramBody['offset'],
+                    req.innerBody['type'],
+                ]
+            );
+        }break;
+    }
+
+
 }
