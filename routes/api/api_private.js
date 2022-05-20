@@ -21,6 +21,8 @@ app.route('/user/profile/list').get( require('./user/selectUserProfileList') )//
 /**
  * product api
  */
+app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
+
 app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
 app.route('/product/detail').get( require('./product/selectProductDetail') )
 app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
