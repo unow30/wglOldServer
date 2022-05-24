@@ -75,6 +75,18 @@
  *           * 4: 고가순
  *           * 5: 할인율순
  *         enum: [0,1,2,3,4,5]
+ *       - in: query
+ *         name: offset
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           페이지 시작 값을 넣어주시면 됩니다. Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *     responses:
  *       400:
  *         description: 에러 코드 400
@@ -145,6 +157,7 @@ function queryUser(req, db_connection) {
             req.paramBody['is_deal'],
             req.paramBody['delivery_free'],
             req.paramBody['filter_type'],
+            req.paramBody['offset'],
         ]
     );
 }
