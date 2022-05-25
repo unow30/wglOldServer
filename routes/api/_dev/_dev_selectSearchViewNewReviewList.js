@@ -53,9 +53,13 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let count_data = await querySelectCount(req, db_connection);
+            if(req.paramBody['offset']==0){
+                let count_data = await querySelectCount(req, db_connection);
+                req.innerBody['total_count'] = count_data['total_count'];
+            }
+
             req.innerBody['item'] = await querySelect(req, db_connection);
-            req.innerBody['total_count'] = count_data['total_count'];
+
 
             let date = new Date()
             date = date.setMonth(date.getMonth()-6)
