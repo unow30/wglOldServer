@@ -53,16 +53,12 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let date = new Date()
-            date = new Date(date.setMonth(date.getMonth()-6))
-            req.headers.date = date
-            
             let count_data = await querySelectCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
             req.innerBody['total_count'] = count_data['total_count'];
 
-
-
+            let date = new Date()
+            date = date.setMonth(date.getMonth()-6)
             if(date > req.innerBody.item[0].created_time || !req.innerBody.item[0].created_time){
 
                 const err = new Error('더이상 최신 데이터가 없습니다.')
@@ -95,8 +91,7 @@ function querySelectCount(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_searchview_new_review_list_count'
         , [
-            req.headers['user_uid'],
-            req.headers['date']
+            req.headers['user_uid']
         ]
     );
 }
