@@ -2,25 +2,25 @@
  * Created by gunucklee on 2022. 02. 14.
  *
  * @swagger
- * /api/public/dev/searchview/new/review/list:
+ * /api/private/dev/searchview/new/product/list:
  *   get:
- *     summary: 검색 화면 - New Review(신규 리뷰영상) 목록
+ *     summary: 검색 화면 - New Product(신규 상품) 목록
  *     tags: [Dev]
  *     description: |
- *       path : /dev/searchview/new/review/list
+ *       path : /dev/searchview/new/product/list
  *
- *       * 검색 화면 - New Review(신규 리뷰영상) 목록
+ *       * 검색 화면 - New Product(신규 상품) 목록
  *
  *     parameters:
  *        - in: query
  *          name: offset
  *          default: 0
- *          required: true
+ *          required: false
  *          schema:
  *            type: number
  *            example: 0
  *          description: |
- *            목록 오프셋
+ *            목록 마지막 페이지 (처음일 경우 0)
  *
  *     responses:
  *       400:
@@ -42,7 +42,6 @@ module.exports = function (req, res) {
     const _funcName = arguments.callee.name;
 
     try {
-        console.log(12312312312344444)
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
@@ -53,23 +52,13 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            if(req.paramBody['offset']==0){
+            req.innerBody['item'] = await querySelect(req, db_connection);
+
+            if(req.paramBody['offset'] == 0){
                 let count_data = await querySelectCount(req, db_connection);
                 req.innerBody['total_count'] = count_data['total_count'];
             }
 
-            req.innerBody['item'] = await querySelect(req, db_connection);
-
-
-            let date = new Date()
-            date = date.setMonth(date.getMonth()-6)
-            if(date > req.innerBody.item[0].created_time || !req.innerBody.item[0].created_time){
-
-                const err = new Error('더이상 최신 데이터가 없습니다.')
-                err.code = 400
-
-                return sendUtil.sendErrorPacket(req, res, err);
-            }
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -93,7 +82,7 @@ function querySelectCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_searchview_new_review_list_count'
+        , 'call proc_select_searchview_new_product_list_count'
         , [
             req.headers['user_uid']
         ]
@@ -104,10 +93,10 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_new_review_list2'
+        , 'call proc_select_searchview_new_product_list2'
         , [
             req.headers['user_uid']
-            , req.paramBody['offset']??0
+            , req.paramBody['offset']
         ]
     );
 }
