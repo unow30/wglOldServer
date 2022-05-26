@@ -57,19 +57,8 @@ module.exports = function (req, res) {
                 let count_data = await querySelectCount(req, db_connection);
                 req.innerBody['total_count'] = count_data['total_count'];
             }
-
             req.innerBody['item'] = await querySelect(req, db_connection);
 
-
-            let date = new Date()
-            date = date.setMonth(date.getMonth()-6)
-            if(date > req.innerBody.item[0].created_time || !req.innerBody.item[0].created_time){
-
-                const err = new Error('더이상 최신 데이터가 없습니다.')
-                err.code = 400
-
-                return sendUtil.sendErrorPacket(req, res, err);
-            }
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
