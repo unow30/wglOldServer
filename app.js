@@ -21,8 +21,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(express.json({limit:'50mb'}));
-app.use(express.urlencoded({ limit:'50mb',extended: false }));
+app.use(express.json({limit:'100mb'}));
+app.use(express.urlencoded({ limit:'100mb',extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECURE_KEY));
 app.use(express.static(path.join(__dirname, 'public')));
 
