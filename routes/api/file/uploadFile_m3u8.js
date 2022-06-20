@@ -92,6 +92,7 @@ module.exports = async function (req, res) {
                 console.log('===========>>조건 처음'+1111111111111111111)
                 let file_size = req.file.size / (1024 * 1024);
                 console.log('===========>>사이즈 아래'+2222222222222222222)
+                console.log('===========>>파일 키'+req.file.key)
                 const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
                 console.log('===========>>미디어 디멘션'+3333333333333333333)
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
