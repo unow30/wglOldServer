@@ -116,6 +116,7 @@ module.exports = async function (req, res) {
     catch (e) {
         console.log(`===>>> catch e: ${e}`);
         console.log(`===>>> catch e.stack: ${e.stack}`);
+        console.log(`===>>> catch e.message: ${e.message}`);
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
     }
