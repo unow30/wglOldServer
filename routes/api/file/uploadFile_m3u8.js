@@ -89,17 +89,12 @@ module.exports = async function (req, res) {
             req.innerBody = {};
 
             if(req.file.originalname.includes('.mp4')) {
-                console.log('===========>>조건 처음'+1111111111111111111)
                 let file_size = req.file.size / (1024 * 1024);
-                console.log('===========>>사이즈 아래'+2222222222222222222)
-                console.log('===========>>파일 키'+req.file.key)
+       
                 const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
-                console.log('===========>>미디어 디멘션'+3333333333333333333)
-                console.log('===========>>미디어 디멘션치수===>'+file_dimensions['duration'])
-                console.log('===========>>미디어 디멘션가로===>'+file_dimensions['width'])
-                console.log('===========>>미디어 디멘션세로===>'+file_dimensions['height'])
+               
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
-                console.log('===========>>미디어 컨버터 안됨'+4444444444444444444)
+                
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.m3u8', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
             }
 
