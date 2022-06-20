@@ -95,7 +95,7 @@ module.exports = async function (req, res) {
                 console.log('===========>>파일 키'+req.file.key)
                 const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
                 console.log('===========>>미디어 디멘션'+3333333333333333333)
-                console.log('===========>>미디어 디멘션내용===>'+file_dimensions)
+                console.log('===========>>미디어 디멘션내용===>'+file_dimensions['duration'])
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
                 console.log('===========>>미디어 컨버터 안됨'+4444444444444444444)
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.m3u8', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
