@@ -35,7 +35,9 @@ const fileOptions = {
         },
         key: function (req, file, cb) {
             // cb(null, getFilename(req, file));
-            cb(null, file.originalname);
+            cb(null, getFilename(req, file)); 
+            //////여기 부분 ********* 로컬에서 m3u8파일로 변환시file.originalname 으로 변경 
+            //////기존에는 getFilename(req, file) 으로 되어있어야함
         },
     }),
     limits: {

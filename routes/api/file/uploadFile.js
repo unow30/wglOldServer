@@ -92,9 +92,9 @@ module.exports = async function (req, res) {
                 let file_size = req.file.size / (1024 * 1024);
 
                 const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
-
+                
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
-
+                
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
             }
 

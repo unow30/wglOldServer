@@ -90,11 +90,11 @@ module.exports = async function (req, res) {
 
             if(req.file.originalname.includes('.mp4')) {
                 let file_size = req.file.size / (1024 * 1024);
-
+       
                 const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
-
+               
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
-
+                
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.m3u8', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
             }
 
@@ -111,6 +111,7 @@ module.exports = async function (req, res) {
     catch (e) {
         console.log(`===>>> catch e: ${e}`);
         console.log(`===>>> catch e.stack: ${e.stack}`);
+        console.log(`===>>> catch e.message: ${e.message}`);
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
     }
