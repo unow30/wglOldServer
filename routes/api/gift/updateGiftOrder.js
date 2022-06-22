@@ -94,15 +94,16 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
         console.log("sdasadada difjsdifosjdio")
-        console.log(`${req.paramBody}`)
+        console.log(JSON.stringify(req.paramBody))
 
         checkParam(req);
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
-
+            console.log("업데이트 쿼리 작동하기 전")
             req.innerBody['item'] = await query(req, db_connection);
             // 카카오 보내고 fcm 보내고
+            console.log("fcm함수 실행 전")
             await alarm(req, res);
 
             deleteBody(req)
