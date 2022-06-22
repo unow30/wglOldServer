@@ -94,18 +94,20 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
         console.log("sdasadada difjsdifosjdio")
-        console.log(`${req.paramBody}`)
+        console.log(JSON.stringify(req.paramBody))
 
         checkParam(req);
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
-
+            console.log("1")
             req.innerBody['item'] = await query(req, db_connection);
             // 카카오 보내고 fcm 보내고
+            console.log("2")
             await alarm(req, res);
-
+            console.log("2")
             deleteBody(req)
+            console.log("4")
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
