@@ -94,6 +94,7 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
         console.log("sdasadada difjsdifosjdio")
+        console.log(`${req.paramBody}`)
 
         checkParam(req);
 
@@ -155,6 +156,7 @@ function query(req, db_connection){
 async function alarm(req, res) {
 
     const push_token_list = [];
+    console.log('푸시토큰 push하기 전: ' + req.innerBody['item']['push_token']);
     push_token_list.push(req.innerBody['item']['push_token']);
     console.log('dssdokowkqdqo: ' + JSON.stringify(push_token_list));
     await fcmUtil.fcmCreateOrderList(push_token_list);
