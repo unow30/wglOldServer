@@ -178,17 +178,18 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-
+        console.log(JSON.stringify(req.paramBody))
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-
+            console.log(1)
             req.innerBody['item'] = await query(req, db_connection);
-
+            console.log(2)
             if (!req.innerBody['item']) {
+                console.log(3)
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
-
+            console.log(4)
             if(req.innerBody['item']['payment_method'] === 3){
 
                 req.paramBody['status'] = 30 // 30: 가상계좌 입금대기상태
