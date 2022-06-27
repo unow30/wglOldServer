@@ -75,6 +75,7 @@
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
             req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
             deleteBody(req);
+
             const [
                 new_product_preview_list,
                 ad_list,
@@ -84,9 +85,16 @@
                 req.innerBody['ad_list'],
                 req.innerBody['new_review_preview_list'],
             ]);
+
             req.innerBody['ad_list'] = ad_list
             req.innerBody['new_product_preview_list'] = new_product_preview_list
             req.innerBody['new_review_preview_list'] = new_review_preview_list
+            console.log('=========================>1')
+            console.log(req.innerBody['weggle_deal_preview_list'])
+            console.log('=========================>1')
+            console.log('=========================>2')
+            console.log(req.innerBody['hot_weggler'])
+            console.log('=========================>2')
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
