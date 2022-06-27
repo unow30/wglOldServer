@@ -60,7 +60,7 @@ module.exports = function (req, res) {
 
             const ad_list = queryADList(req, db_connection);
             const new_product_preview_list = queryNewProductPreviewList(req, db_connection);
-            const new_review_preview_list =queryNewReviewPreviewList(req, db_connection);
+            const new_review_preview_list = queryNewReviewPreviewList(req, db_connection);
 
 
             //위글딜 프리뷰 한 프로시저로 도전
@@ -82,12 +82,12 @@ module.exports = function (req, res) {
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
             const best_review_list = queryBestReviewList(req, db_connection);
 
-            await Promise.all(
+            await Promise.all([
                 ad_list,
                 new_product_preview_list,
                 new_review_preview_list,
                 best_review_list
-                );
+            ]);
             req.innerBody['ad_list'] = ad_list
             req.innerBody['new_product_preview_list'] = new_product_preview_list
             req.innerBody['new_review_preview_list'] = new_review_preview_lis
