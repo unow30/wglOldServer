@@ -85,12 +85,12 @@
                 }
             }
             console.log('==================>>>>>>>>>>>>>>>5')
-            console.log(req.innerBody['hot_weggler'])
+            // console.log(req.innerBody['hot_weggler'])
             console.log('==================>>>>>>>>>>>>>>>5')
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
             req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
             console.log('==================>>>>>>>>>>>>>>>6')
-            console.log(req.innerBody['best_review_list'])
+            // console.log(req.innerBody['best_review_list'])
             console.log('==================>>>>>>>>>>>>>>>6')
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
