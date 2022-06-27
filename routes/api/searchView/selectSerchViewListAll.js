@@ -107,7 +107,9 @@
             
             console.log(req.innerBody['new_product_preview_list'])
             console.log('=============================>>>>>>>>>>>2')
-            console.log(req.innerBody['hot_weggler'][0])
+            console.log(req.innerBody['hot_weggler'][0].Promise)
+            console.log(req.innerBody['hot_weggler'][0][0].user_uid)
+            console.log(req.innerBody['hot_weggler'][0][0].Promise.user_uid)
             console.log('=============================>>>>>>>>>>>3')
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
