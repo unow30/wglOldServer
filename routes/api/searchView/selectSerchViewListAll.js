@@ -90,7 +90,7 @@ module.exports = function (req, res) {
             ]);
             req.innerBody['ad_list'] = ad_list
             req.innerBody['new_product_preview_list'] = new_product_preview_list
-            req.innerBody['new_review_preview_list'] = new_review_preview_lis
+            req.innerBody['new_review_preview_list'] = new_review_preview_list
             req.innerBody['best_review_list'] = best_review_list
             console.log('=====================================>>>>>>>>>1')
             console.log(req.innerBody['ad_list'])
