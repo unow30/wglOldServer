@@ -165,7 +165,7 @@ function queryWeggledealProduct(req, seller_uid, db_connection) {
         , 'call proc_select_searchview_weggledeal_product_list'
         , [
             req.headers['user_uid']
-            , seller_uid
+            , seller_uid.join(',')
             , req.paramBody['random_seed']
         ]
     );
@@ -186,7 +186,7 @@ function queryHotWegglerVideo(req, hot_weggler_uid, db_connection) {
         , 'call proc_select_hot_weggler_video_thumbnail_list'
         , [
             req.headers['user_uid'],
-            hot_weggler_uid
+            hot_weggler_uid.join(',')
         ]
     );
 }
