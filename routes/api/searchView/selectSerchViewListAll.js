@@ -59,6 +59,9 @@
             req.innerBody['new_review_preview_list'] = queryNewReviewPreviewList(req, db_connection);
             //위글딜 프리뷰 한 프로시저로 도전
             req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
+            console.log('=========================>1')
+            console.log(req.innerBody['weggle_deal_preview_list'])
+            console.log('=========================>1')
             if( req.innerBody['weggle_deal_preview_list'] ){
                 for( let idx in req.innerBody['weggle_deal_preview_list'] ){
                     req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
@@ -67,6 +70,9 @@
 
             //핫위글러 한 프로시저로 도전
             req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
+            console.log('=========================>2')
+            console.log(req.innerBody['hot_weggler'])
+            console.log('=========================>2')
             if( req.innerBody['hot_weggler'] ){
                 for( let idx in req.innerBody['hot_weggler'] ){
                     req.innerBody['hot_weggler'][idx]['list'] = await queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
@@ -89,12 +95,8 @@
             req.innerBody['ad_list'] = ad_list
             req.innerBody['new_product_preview_list'] = new_product_preview_list
             req.innerBody['new_review_preview_list'] = new_review_preview_list
-            console.log('=========================>1')
-            console.log(req.innerBody['weggle_deal_preview_list'])
-            console.log('=========================>1')
-            console.log('=========================>2')
-            console.log(req.innerBody['hot_weggler'])
-            console.log('=========================>2')
+            
+            
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
