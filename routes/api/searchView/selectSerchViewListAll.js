@@ -107,11 +107,11 @@
             
             console.log(hot_weggler[0])
             console.log('=============================>>>>>>>>>>>2')
-            console.log(weggle_deal_preview_list[0])
-            console.log(weggle_deal_preview_list[0].length)
-            console.log(weggle_deal_preview_list.length)
-            console.log(Object.keys(weggle_deal_preview_list[0]))
-            console.log(Object.keys(weggle_deal_preview_list))
+            console.log(req.innerBody['hot_weggler'])
+            console.log(req.innerBody['hot_weggler'][0].length)
+            console.log(req.innerBody['hot_weggler'].length)
+            console.log(Object.keys(req.innerBody['hot_weggler'][0]))
+            console.log(Object.keys(req.innerBody['hot_weggler']))
             console.log('=============================>>>>>>>>>>>3')
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
