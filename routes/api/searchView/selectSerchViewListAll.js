@@ -94,8 +94,8 @@
                 req.innerBody['ad_list'],
                 req.innerBody['new_review_preview_list'],
                 req.innerBody['best_review_list'],
-                weggle_deal_preview_list[0],
-                hot_weggler[0]
+                weggle_deal_preview_list,
+                hot_weggler
             ]);
 
             req.innerBody['ad_list'] = ad_list
@@ -105,9 +105,9 @@
             req.innerBody['hot_weggler'] = hot_weggler[0]
             req.innerBody['weggle_deal_preview_list'] = weggle_deal_preview_list[0]
             console.log('=============================>>>>>>>>>>>2')
-            console.log(req.innerBody['weggle_deal_preview_list'][0])
+            console.log(hot_weggler[0])
             console.log('=============================>>>>>>>>>>>3')
-            console.log(req.innerBody['hot_weggler'][0])
+            console.log(weggle_deal_preview_list[0])
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
