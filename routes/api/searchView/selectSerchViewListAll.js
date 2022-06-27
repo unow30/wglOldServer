@@ -60,7 +60,8 @@
             //위글딜 프리뷰 한 프로시저로 도전
             req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
             const seller_uid = req.innerBody['weggle_deal_preview_list'].map(item => item.seller_uid);
-
+            console.log('=========>>>>>>>>>>!')
+            console.log(seller_uid)
             if( req.innerBody['weggle_deal_preview_list'] ){
                 req.innerBody['weggle_deal_preview_list'] = queryWeggledealProduct(req, seller_uid, db_connection)
             }
@@ -68,7 +69,8 @@
             //핫위글러 한 프로시저로 도전
             req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
             const user_uid = req.innerBody['hot_weggler'].map(item => item.user_uid);
-
+            console.log('=========>>>>>>>>>>2')
+            console.log(user_uid)
             if( req.innerBody['hot_weggler'] ){
                 req.innerBody['hot_weggler']= queryHotWegglerVideo(req, user_uid, db_connection)
             }
