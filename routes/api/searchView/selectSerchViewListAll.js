@@ -61,6 +61,8 @@
             req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
             if( req.innerBody['weggle_deal_preview_list'] ){
                 for( let idx in req.innerBody['weggle_deal_preview_list'] ){
+                    console.log('=====================>>>')
+                    console.log(idx)
                     req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
                 }
             }
