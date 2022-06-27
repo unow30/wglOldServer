@@ -54,13 +54,11 @@
         checkParam(req);
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-
-            const ad_list = queryADList(req, db_connection);
-            const new_product_preview_list = queryNewProductPreviewList(req, db_connection);
-            const new_review_preview_list = queryNewReviewPreviewList(req, db_connection);
-            
+            req.innerBody['ad_list'] = await queryADList(req, db_connection);
+            req.innerBody['new_product_preview_list'] = await queryNewProductPreviewList(req, db_connection);
+            req.innerBody['new_review_preview_list'] = await queryNewReviewPreviewList(req, db_connection);
             //위글딜 프리뷰 한 프로시저로 도전
-            req.innerBody['weggle_deal_preview_list'] = queryWeggledealSeller(req, db_connection);
+            req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
             if( req.innerBody['weggle_deal_preview_list'] ){
                 for( let idx in req.innerBody['weggle_deal_preview_list'] ){
                     req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
@@ -77,20 +75,9 @@
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
             req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
             deleteBody(req);
-
-            const [ad_list_p, new_product_preview_list_p, new_review_preview_list_p] = await Promise.all([
-                ad_list,
-                new_product_preview_list,
-                new_review_preview_list,
-            ])
-
-            req.innerBody['ad_list'] = ad_list_p
-            req.innerBody['new_product_preview_list'] = new_product_preview_list_p
-            console.log('=================================>>1')
+            console.log('===================>>>>>>>>>>>>>>>>>>1')
             console.log(req.innerBody['new_product_preview_list'])
-            console.log('=================================>>1')
-            req.innerBody['new_review_preview_list'] = new_review_preview_list_p
-
+            console.log('===================>>>>>>>>>>>>>>>>>>1')
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
