@@ -79,7 +79,7 @@
             req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
             deleteBody(req);
             const aa = await Promise.all([req.innerBody['new_product_preview_list']]);
-            req.innerBody['new_product_preview_list'] = aa
+            req.innerBody['new_product_preview_list'] = [...aa]
             console.log('===================>>>>>>>>>>>>>>>>>>1')
             console.log(req.innerBody['new_product_preview_list'])
             console.log('===================>>>>>>>>>>>>>>>>>>1')
