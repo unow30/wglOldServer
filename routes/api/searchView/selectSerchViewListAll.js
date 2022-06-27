@@ -45,174 +45,143 @@
  let file_name = fileUtil.name(__filename);
  
  module.exports = function (req, res) {
-     const _funcName = arguments.callee.name;
- 
-     try {
-         req.file_name = file_name;
-         logUtil.printUrlLog(req, `== function start ==================================`);
-         req.paramBody = paramUtil.parse(req);
-         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
- 
-         checkParam(req);
- 
-         mysqlUtil.connectPool(async function (db_connection) {
-             req.innerBody = {};
- 
-             req.innerBody['ad_list'] = await queryADList(req, db_connection);
-             console/log(req.innerBody['ad_list'])
-             req.innerBody['new_product_preview_list'] = await queryNewProductPreviewList(req, db_connection);
-             req.innerBody['new_review_preview_list'] = await queryNewReviewPreviewList(req, db_connection);
- 
-             //위글딜 프리뷰 한 프로시저로 도전
-             req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
-             if( req.innerBody['weggle_deal_preview_list'] ){
-                 for( let idx in req.innerBody['weggle_deal_preview_list'] ){
-                     req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
-                 }
-             }
- 
-             //핫위글러 한 프로시저로 도전
-             req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
-             if( req.innerBody['hot_weggler'] ){
-                 for( let idx in req.innerBody['hot_weggler'] ){
-                     req.innerBody['hot_weggler'][idx]['list'] = await queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
-                 }
-             }
- 
-             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
-             req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
- 
-             deleteBody(req);
-             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
- 
-         }, function (err) {
-             sendUtil.sendErrorPacket(req, res, err);
-         });
- 
-     } catch (e) {
-         let _err = errUtil.get(e);
-         sendUtil.sendErrorPacket(req, res, _err);
-     }
- }
- 
- function checkParam(req) {
-     // paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
-     // paramUtil.checkParam_noReturn(req.paramBody, 'latitude');
-     // paramUtil.checkParam_noReturn(req.paramBody, 'longitude');
- }
- 
- function deleteBody(req) {
-     // delete req.innerBody['item']['latitude']
-     // delete req.innerBody['item']['longitude']
-     // delete req.innerBody['item']['push_token']
-     // delete req.innerBody['item']['access_token']
- }
- 
- function queryADList(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_ad_list'
-         , [
-             req.headers['user_uid'],
-             // req.paramBody['product_uid'],
-         ]
-     );
- }
- 
- function queryNewProductPreviewList(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_new_product_preview_list'
-         , [
-             req.headers['user_uid']
-         ]
-     );
- }
- 
- function queryNewReviewPreviewList(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_new_review_preview_list'
-         , [
-             req.headers['user_uid']
-         ]
-     );
- }
- 
- 
- function queryWeggledealSeller(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_weggledeal_seller_list'
-         , [
-             req.headers['user_uid']
-             ,req.paramBody['random_seed']
-         ]
-     );
- }
- 
- function queryWeggledealProduct(req, seller_uid, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_weggledeal_product_list'
-         , [
-             req.headers['user_uid']
-             , seller_uid
-             , req.paramBody['random_seed']
-         ]
-     );
- }
- 
- function queryHotWegglerUser(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_hot_weggler_user_thumbnail_list'
-         , [
-             req.headers['user_uid'],
-             req.paramBody['random_seed'],
-         ]
-     );
- }
- 
- function queryHotWegglerVideo(req, hot_weggler_uid, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_hot_weggler_video_thumbnail_list'
-         , [
-             req.headers['user_uid'],
-             hot_weggler_uid
-         ]
-     );
- }
- 
- function queryCategoryProductPreviewList(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_popular_category_product_preview_list'
-         , [
-             req.headers['user_uid'],
-             req.paramBody['category'],
-             req.paramBody['random_seed'],
-         ]
-     );
- }
- 
- function queryBestReviewList(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_best_review_list'
-         , [
-             req.headers['user_uid']
-             ,req.paramBody['random_seed']
-         ]
-     );
- }
+    const _funcName = arguments.callee.name;
+    try {
+        req.file_name = file_name;
+        logUtil.printUrlLog(req, `== function start ==================================`);
+        req.paramBody = paramUtil.parse(req);
+        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        checkParam(req);
+        mysqlUtil.connectPool(async function (db_connection) {
+            req.innerBody = {};
+            req.innerBody['ad_list'] = await queryADList(req, db_connection);
+            req.innerBody['new_product_preview_list'] = await queryNewProductPreviewList(req, db_connection);
+            req.innerBody['new_review_preview_list'] = await queryNewReviewPreviewList(req, db_connection);
+            //위글딜 프리뷰 한 프로시저로 도전
+            req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
+            if( req.innerBody['weggle_deal_preview_list'] ){
+                for( let idx in req.innerBody['weggle_deal_preview_list'] ){
+                    req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
+                }
+            }
+
+            //핫위글러 한 프로시저로 도전
+            req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
+            if( req.innerBody['hot_weggler'] ){
+                for( let idx in req.innerBody['hot_weggler'] ){
+                    req.innerBody['hot_weggler'][idx]['list'] = await queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
+                }
+            }
+            // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
+            req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
+            deleteBody(req);
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+        }, function (err) {
+            sendUtil.sendErrorPacket(req, res, err);
+        });
+    } catch (e) {
+        let _err = errUtil.get(e);
+        sendUtil.sendErrorPacket(req, res, _err);
+    }
+}
+function checkParam(req) {
+    // paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'latitude');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'longitude');
+}
+function deleteBody(req) {
+    // delete req.innerBody['item']['latitude']
+    // delete req.innerBody['item']['longitude']
+    // delete req.innerBody['item']['push_token']
+    // delete req.innerBody['item']['access_token']
+}
+function queryADList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_ad_list'
+        , [
+            req.headers['user_uid'],
+            // req.paramBody['product_uid'],
+        ]
+    );
+}
+function queryNewProductPreviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_new_product_preview_list'
+        , [
+            req.headers['user_uid']
+        ]
+    );
+}
+function queryNewReviewPreviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_new_review_preview_list'
+        , [
+            req.headers['user_uid']
+        ]
+    );
+}
+function queryWeggledealSeller(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_weggledeal_seller_list'
+        , [
+            req.headers['user_uid']
+            ,req.paramBody['random_seed']
+        ]
+    );
+}
+function queryWeggledealProduct(req, seller_uid, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_weggledeal_product_list'
+        , [
+            req.headers['user_uid']
+            , seller_uid
+            , req.paramBody['random_seed']
+        ]
+    );
+}
+function queryHotWegglerUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_hot_weggler_user_thumbnail_list'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['random_seed'],
+        ]
+    );
+}
+function queryHotWegglerVideo(req, hot_weggler_uid, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_hot_weggler_video_thumbnail_list'
+        , [
+            req.headers['user_uid'],
+            hot_weggler_uid
+        ]
+    );
+}
+function queryCategoryProductPreviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_popular_category_product_preview_list'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['category'],
+            req.paramBody['random_seed'],
+        ]
+    );
+}
+function queryBestReviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_best_review_list'
+        , [
+            req.headers['user_uid']
+            ,req.paramBody['random_seed']
+        ]
+    );
+}
