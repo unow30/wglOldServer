@@ -84,10 +84,10 @@
                 new_review_preview_list,
             ])
 
-            req.innerBody['ad_list'] = ad_list_p
-            req.innerBody['new_product_preview_list'] = new_product_preview_list_p
-            req.innerBody['new_review_preview_list'] = new_review_preview_list_p
-            
+            req.innerBody['ad_list'] = ad_list_p.Promise
+            req.innerBody['new_product_preview_list'] = new_product_preview_list_p.Promise
+            req.innerBody['new_review_preview_list'] = new_review_preview_list_p.Promise
+
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
