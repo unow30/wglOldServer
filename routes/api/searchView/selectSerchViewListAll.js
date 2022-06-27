@@ -85,14 +85,11 @@
             ])
 
             req.innerBody['ad_list'] = ad_list_p
-            req.innerBody['new_product_preview_list'] = new_product_preview_list_p.Promise
+            req.innerBody['new_product_preview_list'] = new_product_preview_list_p
             console.log('=================================>>1')
-            console.log(new_product_preview_list_p)
+            console.log(req.innerBody['new_product_preview_list'])
             console.log('=================================>>1')
-            console.log('=================================>>2')
-            console.log(new_product_preview_list_p.Promise)
-            console.log('=================================>>2')
-            req.innerBody['new_review_preview_list'] = new_review_preview_list_p.Promise
+            req.innerBody['new_review_preview_list'] = new_review_preview_list_p
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
