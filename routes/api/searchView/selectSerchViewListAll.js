@@ -102,8 +102,8 @@
             req.innerBody['new_product_preview_list'] = new_product_preview_list
             req.innerBody['new_review_preview_list'] = new_review_preview_list
             req.innerBody['best_review_list'] = best_review_list
-            req.innerBody['hot_weggler'] = [...hot_weggler[0]]
-            req.innerBody['weggle_deal_preview_list'] = [...weggle_deal_preview_list[0]]
+            req.innerBody['hot_weggler'] = hot_weggler[0]
+            req.innerBody['weggle_deal_preview_list'] = weggle_deal_preview_list[0]
             console.log('=============================>>>>>>>>>>>2')
             console.log(req.innerBody['weggle_deal_preview_list'][0])
             console.log('=============================>>>>>>>>>>>3')
