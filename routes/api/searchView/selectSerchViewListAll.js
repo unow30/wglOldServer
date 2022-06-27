@@ -66,7 +66,7 @@ module.exports = function (req, res) {
             req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
             if( req.innerBody['weggle_deal_preview_list'] ){
                 for( let idx in req.innerBody['weggle_deal_preview_list'] ){
-                    req.innerBody['weggle_deal_preview_list'][idx]['list'] = queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
+                    req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
                 }
             }
 
@@ -74,14 +74,19 @@ module.exports = function (req, res) {
             req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
             if( req.innerBody['hot_weggler'] ){
                 for( let idx in req.innerBody['hot_weggler'] ){
-                    req.innerBody['hot_weggler'][idx]['list'] = queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
+                    req.innerBody['hot_weggler'][idx]['list'] = await queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
                 }
             }
 
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
             req.innerBody['best_review_list'] = queryBestReviewList(req, db_connection);
 
-            await Promise.all(req.innerBody);
+            await Promise.all(
+                req.innerBody['ad_list'],
+                req.innerBody['new_product_preview_list'],
+                req.innerBody['new_review_preview_list'],
+                req.innerBody['best_review_list']
+                );
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
