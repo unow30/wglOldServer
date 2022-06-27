@@ -85,6 +85,12 @@
             ])
 
             req.innerBody['ad_list'] = ad_list_p.Promise
+            console.log('=================================>>1')
+            console.log(ad_list_p)
+            console.log('=================================>>1')
+            console.log('=================================>>2')
+            console.log(ad_list_p.Promise)
+            console.log('=================================>>2')
             req.innerBody['new_product_preview_list'] = new_product_preview_list_p.Promise
             req.innerBody['new_review_preview_list'] = new_review_preview_list_p.Promise
 
