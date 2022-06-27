@@ -99,6 +99,18 @@ module.exports = function (req, res) {
                 req.innerBody['new_review_preview_list'],
                 req.innerBody['best_review_list']
                 );
+            console.log('=====================================>>>>>>>>>1')
+            console.log(req.innerBody['ad_list'])
+            console.log('=====================================>>>>>>>>>1')
+            console.log('=====================================>>>>>>>>>2')
+            console.log(req.innerBody['new_product_preview_list'])
+            console.log('=====================================>>>>>>>>>2')
+            console.log('=====================================>>>>>>>>>3')
+            console.log(req.innerBody['new_review_preview_list'])
+            console.log('=====================================>>>>>>>>>3')
+            console.log('=====================================>>>>>>>>>4')
+            console.log(req.innerBody['best_review_list'])
+            console.log('=====================================>>>>>>>>>4')
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
