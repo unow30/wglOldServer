@@ -104,11 +104,13 @@
             req.innerBody['best_review_list'] = best_review_list
             req.innerBody['hot_weggler'] = hot_weggler[0]
             req.innerBody['weggle_deal_preview_list'] = weggle_deal_preview_list[0]
-            console.log('=============================>>>>>>>>>>>2')
+            
             console.log(hot_weggler[0])
-            console.log('=============================>>>>>>>>>>>3')
+            console.log('=============================>>>>>>>>>>>2')
             console.log(weggle_deal_preview_list[0])
-
+            console.log(weggle_deal_preview_list[0].length)
+            console.log(weggle_deal_preview_list.length)
+            console.log('=============================>>>>>>>>>>>3')
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
