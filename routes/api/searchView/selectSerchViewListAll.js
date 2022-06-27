@@ -105,9 +105,9 @@
             req.innerBody['hot_weggler'] = [...hot_weggler]
             req.innerBody['weggle_deal_preview_list'] = [...weggle_deal_preview_list]
             console.log('=============================>>>>>>>>>>>2')
-            console.log(req.innerBody['weggle_deal_preview_list'])
+            console.log(req.innerBody['weggle_deal_preview_list'][0])
             console.log('=============================>>>>>>>>>>>3')
-            console.log(req.innerBody['hot_weggler'])
+            console.log(req.innerBody['hot_weggler'][0])
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
