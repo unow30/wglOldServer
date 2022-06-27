@@ -79,8 +79,11 @@
                 ad_list,
                 new_product_preview_list,
                 new_review_preview_list,
-            ] = await Promise.all([req.innerBody['new_product_preview_list']]);
-            
+            ] = await Promise.all([
+                req.innerBody['new_product_preview_list'],
+                req.innerBody['ad_list'],
+                req.innerBody['new_review_preview_list'],
+            ]);
             req.innerBody['ad_list'] = ad_list
             req.innerBody['new_product_preview_list'] = new_product_preview_list
             req.innerBody['new_review_preview_list'] = new_review_preview_list
