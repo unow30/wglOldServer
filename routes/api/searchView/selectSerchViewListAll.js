@@ -59,6 +59,7 @@
              req.innerBody = {};
  
              req.innerBody['ad_list'] = await queryADList(req, db_connection);
+             console/log(req.innerBody['ad_list'])
              req.innerBody['new_product_preview_list'] = await queryNewProductPreviewList(req, db_connection);
              req.innerBody['new_review_preview_list'] = await queryNewReviewPreviewList(req, db_connection);
  
