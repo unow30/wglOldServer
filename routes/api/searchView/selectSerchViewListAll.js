@@ -81,6 +81,7 @@
                 req.innerBody['new_product_preview_list'],
                 req.innerBody['new_review_preview_list'],
                 req.innerBody['weggle_deal_preview_list'],
+                req.innerBody['best_review_list']
             ])
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
