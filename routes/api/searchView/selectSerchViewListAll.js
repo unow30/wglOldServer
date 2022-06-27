@@ -108,7 +108,6 @@
             console.log(hot_weggler[0])
             console.log('=============================>>>>>>>>>>>2')
             console.log(req.innerBody['hot_weggler'])
-            console.log(req.innerBody['hot_weggler'][0].length)
             console.log(req.innerBody['hot_weggler'].length)
             console.log(Object.keys(req.innerBody['hot_weggler'][0]))
             console.log(Object.keys(req.innerBody['hot_weggler']))
