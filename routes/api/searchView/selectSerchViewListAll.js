@@ -55,7 +55,10 @@
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
             req.innerBody['ad_list'] = await queryADList(req, db_connection);
-            req.innerBody['new_product_preview_list'] = await queryNewProductPreviewList(req, db_connection);
+            req.innerBody['new_product_preview_list'] = queryNewProductPreviewList(req, db_connection);
+            console.log('===================>>>>>>>>>>>>>>>>>>1')
+            console.log(req.innerBody['new_product_preview_list'])
+            console.log('===================>>>>>>>>>>>>>>>>>>1')
             req.innerBody['new_review_preview_list'] = await queryNewReviewPreviewList(req, db_connection);
             //위글딜 프리뷰 한 프로시저로 도전
             req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
@@ -75,9 +78,11 @@
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
             req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
             deleteBody(req);
+            await Promise.all([req.innerBody['new_product_preview_list']]);
             console.log('===================>>>>>>>>>>>>>>>>>>1')
             console.log(req.innerBody['new_product_preview_list'])
             console.log('===================>>>>>>>>>>>>>>>>>>1')
+
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
