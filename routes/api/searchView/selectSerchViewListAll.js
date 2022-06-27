@@ -41,6 +41,7 @@
  const sendUtil = require('../../../common/utils/sendUtil');
  const errUtil = require('../../../common/utils/errUtil');
  const logUtil = require('../../../common/utils/logUtil');
+const { map } = require('../api_private');
  
  let file_name = fileUtil.name(__filename);
  
@@ -55,28 +56,42 @@
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
             req.innerBody['ad_list'] = await queryADList(req, db_connection);
-            req.innerBody['new_product_preview_list'] = await queryNewProductPreviewList(req, db_connection);
-            req.innerBody['new_review_preview_list'] = await queryNewReviewPreviewList(req, db_connection);
+            req.innerBody['new_product_preview_list'] = queryNewProductPreviewList(req, db_connection);
+            req.innerBody['new_review_preview_list'] = queryNewReviewPreviewList(req, db_connection);
+
             //위글딜 프리뷰 한 프로시저로 도전
-            req.innerBody['weggle_deal_preview_list'] = await queryWeggledealSeller(req, db_connection);
+            req.innerBody['weggle_deal_preview_list'] = queryWeggledealSeller(req, db_connection);
+            
+            let weggle_deal_preview_list = [];
             if( req.innerBody['weggle_deal_preview_list'] ){
-                for( let idx in req.innerBody['weggle_deal_preview_list'] ){
-                    console.log('=====================>>>')
-                    console.log(idx)
-                    req.innerBody['weggle_deal_preview_list'][idx]['list'] = await queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
-                }
+                weggle_deal_preview_list = req.innerBody['weggle_deal_preview_list'].map((item, idx)=>{
+                    req.innerBody['weggle_deal_preview_list'][idx]['list'] = queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
+                })
             }
 
             //핫위글러 한 프로시저로 도전
             req.innerBody['hot_weggler'] = await queryHotWegglerUser(req, db_connection);
+
+            let hot_weggler = []
             if( req.innerBody['hot_weggler'] ){
-                for( let idx in req.innerBody['hot_weggler'] ){
-                    req.innerBody['hot_weggler'][idx]['list'] = await queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
-                }
+
+                hot_weggler = req.innerBody['hot_weggler'].map((item, idx)=>{
+                    req.innerBody['hot_weggler'][idx]['list'] = queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
+                });
             }
+
             // req.innerBody['category_product_preview_list'] = await queryCategoryProductPreviewList(req, db_connection);
-            req.innerBody['best_review_list'] = await queryBestReviewList(req, db_connection);
+            req.innerBody['best_review_list'] = queryBestReviewList(req, db_connection);
             deleteBody(req);
+
+            await Promise.all([
+                req.innerBody['new_product_preview_list'],
+                req.innerBody['new_review_preview_list'],
+                weggle_deal_preview_list,
+                hot_weggler,
+                req.innerBody['best_review_list'],
+            ])
+            
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
