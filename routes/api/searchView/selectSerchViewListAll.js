@@ -64,7 +64,7 @@ const { map } = require('../api_private');
             
             let weggle_deal_preview_list = [];
             if( req.innerBody['weggle_deal_preview_list'] ){
-                weggle_deal_preview_list = req.innerBody['weggle_deal_preview_list'].map((item, idx)=>{
+                weggle_deal_preview_list = req.innerBody['weggle_deal_preview_list'].forEach((item, idx)=>{
                     req.innerBody['weggle_deal_preview_list'][idx]['list'] = queryWeggledealProduct(req, req.innerBody['weggle_deal_preview_list'][idx]['seller_uid'], db_connection)
                 })
             }
@@ -75,7 +75,7 @@ const { map } = require('../api_private');
             let hot_weggler = []
             if( req.innerBody['hot_weggler'] ){
 
-                hot_weggler = req.innerBody['hot_weggler'].map((item, idx)=>{
+                hot_weggler = req.innerBody['hot_weggler'].forEach((item, idx)=>{
                     req.innerBody['hot_weggler'][idx]['list'] = queryHotWegglerVideo(req, req.innerBody['hot_weggler'][idx]['user_uid'], db_connection)
                 });
             }
