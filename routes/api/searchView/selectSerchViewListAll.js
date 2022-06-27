@@ -94,8 +94,8 @@
                 req.innerBody['ad_list'],
                 req.innerBody['new_review_preview_list'],
                 req.innerBody['best_review_list'],
-                weggle_deal_preview_list,
-                hot_weggler
+                [...weggle_deal_preview_list],
+                [...hot_weggler]
             ]);
 
             req.innerBody['ad_list'] = ad_list
