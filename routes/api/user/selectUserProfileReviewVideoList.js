@@ -4,12 +4,12 @@
  * @swagger
  * /api/private/user/profile/video/list:
  *   get:
- *     summary: 프로필 리뷰영상/상품영상/상품페이지 목록
+ *     summary: 프로필 리뷰영상/상품영상 목록
  *     tags: [User]
  *     description: |
  *       path : /api/private/user/profile/video/list
  *
- *       * 프로필 리뷰영상/상품영상/상품페이지 목록
+ *       * 프로필 리뷰영상/상품영상 목록
  *
  *     parameters:
  *       - in: query
