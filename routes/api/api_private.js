@@ -17,6 +17,8 @@ app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
 app.route('/user/info/other').get( require('./user/selectUserInfoOther') )
 app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
 app.route('/user/profile/list').get( require('./user/selectUserProfileList') )// 새 리뷰 리스트. 상품,영상,리뷰가 전부 나온다.
+app.route('/user/profile/photo/list').get( require('./user/selectUserProfileReviewPhotoList') )// 새 리뷰 리스트. 상품, 리뷰만 나온다.
+app.route('/user/profile/video/list').get( require('./user/selectUserProfileReviewVideoList') )// 새 리뷰 리스트. 영상, 리뷰만 나온다.
 
 /**
  * product api
