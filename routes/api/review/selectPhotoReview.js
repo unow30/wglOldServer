@@ -1,46 +1,4 @@
-/**
- * Created by jongho on 2022. 06. 30.
- *
- * @swagger
- * /api/private/review/photo/list:
- *   get:
- *     summary: 상품 취소.반품.교환 목록
- *     tags: [Review]
- *     description: |
- *       path : /api/private/review/photo/list
- *
- *       * 상품 취소.반품.교환 목
- *
- *     parameters:
- *       - in: query
- *         name: product_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           상품 uid
- *      - in: query
- *         name: offset
- *         default: 0
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           offset (처음일 경우 0)
- *
- *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductOrderCancelListApi'
- *       400:
- *         description: 에러 코드 400
- *         schema:
- *           $ref: '#/definitions/Error'
- */
+
 
  const paramUtil = require('../../../common/utils/paramUtil');
  const fileUtil = require('../../../common/utils/fileUtil');
@@ -54,7 +12,7 @@
  
  module.exports = function (req, res) {
      const _funcName = arguments.callee.name;
- 
+     console.log(1234)
      try{
          req.file_name = file_name;
         //  logUtil.printUrlLog(req, `== function start ==================================`);
@@ -68,7 +26,8 @@
             req.innerBody['item'] = await query(req, db_connection);
             
             if(req.paramBody['offset']==0){
-                req.innerBody['count'] = await countQuery(req, db_connection)
+                const data = await countQuery(req, db_connection);
+                req.innerBody['count'] = data.count;
             }
  
              deleteBody(req)
@@ -97,7 +56,7 @@
  function query(req, db_connection) {
      const _funcName = arguments.callee.name;
  
-     return mysqlUtil.querySingle(db_connection
+     return mysqlUtil.queryArray(db_connection
          , 'call proc_select_photo_review'
          , [
              req.headers['user_uid'],
@@ -111,8 +70,10 @@
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , `select COUNT(uid) from tbl_photo_review where product_uid = ${req.paramBody['product_uid']}`
-        , []
+        , 'call proc_select_photo_review_count'
+        , [
+            req.paramBody['product_uid'],
+        ]
     );
 }
 

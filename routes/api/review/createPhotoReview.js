@@ -1,54 +1,4 @@
-/**
- * Created by hyunhunhwang on 2021. 01. 18.
- *
- * @swagger
- * /api/private/video/review:
- *   post:
- *     summary: 리뷰영상 작성
- *     tags: [Video]
- *     description: |
- *       path : /api/private/video/review
- *
- *       * 리뷰영상 작성
- *
- *     parameters:
- *       - in: body
- *         name: body
- *         description: |
- *           리뷰영상 작성
- *         schema:
- *           type: object
- *           required:
- *             - product_uid
- *             - content
- *             - filename
- *           properties:
- *             product_uid:
- *               type: number
- *               example: 1
- *               description: |
- *                 상품 uid
- *             content:
- *               type: string
- *               example: 리뷰 내용입니다.
- *               description: 리뷰 내용
- *             filename:
- *               type: string
- *               example: abcde.mp4
- *               description: |
- *                 영상 파일명
- *                 * /api/public/file api 호출뒤 응답값인 filename 를 사용
- *
- *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/VideoReviewApi'
- *       400:
- *         description: 에러 코드 400
- *         schema:
- *           $ref: '#/definitions/Error'
- */
+
 
  const paramUtil = require('../../../common/utils/paramUtil');
  const fileUtil = require('../../../common/utils/fileUtil');
@@ -71,13 +21,15 @@
          checkParam(req);
  
          mysqlUtil.connectPool( async function (db_connection) {
+            req.paramBody.pointContent = '포토리뷰 작성 100포인트 지급';
+            req.paramBody.pointAmount = 100;
+            req.paramBody.pointType = 1;
+
             req.innerBody = {};
             req.innerBody['item'] = await query(req, db_connection);
             
-               
- 
-             deleteBody(req)
-             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            deleteBody(req)
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
  
          }, function (err) {
              sendUtil.sendErrorPacket(req, res, err);
@@ -110,6 +62,9 @@
              req.paramBody['product_uid'],
              req.paramBody['content'],
              req.paramBody['filename'],
+             req.paramBody['pointContent'],
+             req.paramBody['pointAmount'],
+             req.paramBody['pointType'],
          ]
      );
  }

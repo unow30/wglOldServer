@@ -200,7 +200,7 @@ let swaggerDefinition = {
         {
             name: 'Review',
             description: '파일(이미지, 영상) 관련 API'
-        },
+        }
 
     ],
 };
