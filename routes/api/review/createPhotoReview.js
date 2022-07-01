@@ -46,6 +46,7 @@
      paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
      paramUtil.checkParam_noReturn(req.paramBody, 'content');
      paramUtil.checkParam_noReturn(req.paramBody, 'filename');
+     paramUtil.checkParam_noReturn(req.paramBody, 'order_product_uid');
  }
  
  function deleteBody(req) {
@@ -62,6 +63,7 @@
              req.paramBody['product_uid'],
              req.paramBody['content'],
              req.paramBody['filename'],
+             req.paramBody['order_product_uid'],
              req.paramBody['pointContent'],
              req.paramBody['pointAmount'],
              req.paramBody['pointType'],
