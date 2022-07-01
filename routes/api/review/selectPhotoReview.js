@@ -62,7 +62,6 @@
          , [
              req.headers['user_uid'],
              req.paramBody['product_uid'],
-             req.paramBody['order_uid'],
              req.paramBody['offset']
          ]
      );
