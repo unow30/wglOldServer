@@ -47,7 +47,6 @@
  function checkParam(req) {
      paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
      paramUtil.checkParam_noReturn(req.paramBody, 'offset');
-     paramUtil.checkParam_noReturn(req.paramBody, 'order_uid');
  }
  
  function deleteBody(req) {
