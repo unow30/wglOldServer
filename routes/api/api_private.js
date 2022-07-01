@@ -100,7 +100,11 @@ app.route('/video/content').put( require('./video/updateVideoContent') )
 app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
 app.route('/video/search/result/list').get( require('./video/selectVideoSearchResult') )
 
-
+/**
+ * review api
+ */
+ app.route('/review/photo').get( require('./review/selectPhotoReview'))
+ app.route('/review/photo').post( require('./review/createPhotoReview'))
 
 /**
  * comment api
