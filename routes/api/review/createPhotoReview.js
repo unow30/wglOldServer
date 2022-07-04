@@ -1,4 +1,56 @@
-
+/**
+ *
+ * @swagger
+ * /api/private/review/photo:
+ *   post:
+ *     summary: 상품의 포토리뷰 작성
+ *     tags: [Review]
+ *     description: |
+ *       path : /api/private/review/photo
+ *
+ *       * 포토리뷰 작성
+ *
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: |
+ *           포토리뷰 작성
+ *
+ *         schema:
+ *           type: object
+ *           required:
+ *             - content
+ *             - product_uid
+ *             - filename
+ *             - order_product_uid
+ *           properties:
+ *             order_product_uid:
+ *               type: number
+ *               example: 1
+ *               description: |
+ *                 주문상품 uid
+ *             filename:
+ *               type: string
+ *               example: asjdklwqnkmlasd.jpg
+ *               description: |
+ *                 리뷰 이미지
+ *             content:
+ *               type: string
+ *               example: 이거 너무 맛있어요~~
+ *               description: |
+ *                 리뷰 내용
+ *             product_uid:
+ *               type: number
+ *               example: 1
+ *               description: |
+ *                 상품 uid
+ *
+ *     responses:
+ *       400:
+ *         description: 에러 코드 400
+ *         schema:
+ *           $ref: '#/definitions/Error'
+ */
 
  const paramUtil = require('../../../common/utils/paramUtil');
  const fileUtil = require('../../../common/utils/fileUtil');
@@ -46,6 +98,7 @@
      paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
      paramUtil.checkParam_noReturn(req.paramBody, 'content');
      paramUtil.checkParam_noReturn(req.paramBody, 'filename');
+     paramUtil.checkParam_noReturn(req.paramBody, 'order_product_uid');
  }
  
  function deleteBody(req) {
@@ -62,6 +115,7 @@
              req.paramBody['product_uid'],
              req.paramBody['content'],
              req.paramBody['filename'],
+             req.paramBody['order_product_uid'],
              req.paramBody['pointContent'],
              req.paramBody['pointAmount'],
              req.paramBody['pointType'],
