@@ -32,4 +32,27 @@ module.exports = {
         return token;
 
     },
+
+    createAppleClientSecret: function(lat, exp, secretToken){
+        // jwt 토큰 생성(es256, apple private key 필요)
+        const header = {
+            "algorithm": "ES256",
+            "keyid": process.env.KEY_ID
+        }
+        const payload = {
+            "iss": process.env.ISS,
+            "lat": lat,
+            "exp": exp,
+            "sub": process.env.SUB,
+            "aud": process.env.AUD
+        }
+        // console.log(header)
+        // console.log(payload)
+        // console.log(secretToken)
+        let token = jwt.sign(payload, secretToken, header)
+        console.log(secretToken)
+        console.log(token)
+        return token
+
+    },
 };
