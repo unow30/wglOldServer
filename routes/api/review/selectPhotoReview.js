@@ -1,4 +1,42 @@
-
+/**
+ *
+ * @swagger
+ * /api/private/review/photo:
+ *   get:
+ *     summary: 상품의 포토리뷰 가져오기
+ *     tags: [Review]
+ *     description: |
+ *       path : /api/private/review/photo
+ *
+ *       * 상품 포토리뷰 가져오기
+ *
+ *     parameters:
+ *       - in: query
+ *         name: product_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: |
+ *           상품 고유번호
+ *       - in: query
+ *         name: offset
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           페이지 시작 값을 넣어주시면 됩니다. Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
+ *     responses:
+ *       400:
+ *         description: 에러 코드 400
+ *         schema:
+ *           $ref: '#/definitions/Error'
+ */
 
  const paramUtil = require('../../../common/utils/paramUtil');
  const fileUtil = require('../../../common/utils/fileUtil');
