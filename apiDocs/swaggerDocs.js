@@ -199,8 +199,12 @@ let swaggerDefinition = {
         },
         {
             name: 'Review',
-            description: '파일(이미지, 영상) 관련 API'
-        }
+            description: '포토 리뷰 관련 API'
+        },
+        {
+            name: 'GroupBuying',
+            description: '공동구매 관련 API'
+        },
 
     ],
 };

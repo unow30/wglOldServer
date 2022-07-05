@@ -250,5 +250,13 @@ app.route('/promotion/list').get( require('./promotion/selectPromotionList')) //
  */
 app.route('/dev/searchview/new/product/list').get( require('./_dev/_dev_selectSearchViewNewProductList'))
 
+/**
+ * dev groupbuying api
+ */
+app.route('/groupbuying').post( require('./groupBuying/createGroupBuying') )
+app.route('/groupbuying/room').post( require('./groupBuying/createGroupBuyingRoom') )
+app.route('/groupbuying/room/user').post( require('./groupBuying/createGroupBuyingRoomUser') )
+
+app.route('/groupbuying/room').get( require('./groupBuying/selectGroupBuyingRoom') )
 
 module.exports = app;
