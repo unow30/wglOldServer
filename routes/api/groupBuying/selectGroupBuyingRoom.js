@@ -51,6 +51,8 @@ module.exports = async function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await queryCreate(req, db_connection);
+            console.log('======================================>>>>>>>>>>>>>>>>>')
+            console.log(req.innerBody['item'])
             req.innerBody['item'] = mapfunc(req.innerBody['item']);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -92,7 +94,7 @@ function queryCreate(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_groupbuying_test'
-        , req.paramBody['groupbuying_uid']
+        , 'call proc_select_groupbuying_room_user'
+        ,[ req.paramBody['groupbuying_uid']]
     );
 }
