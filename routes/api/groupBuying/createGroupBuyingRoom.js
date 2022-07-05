@@ -1,3 +1,52 @@
+/**
+ *
+ * @swagger
+ * /api/private/groupbuying/room:
+ *   post:
+ *     summary: 공구 방 생성
+ *     tags: [GroupBuying]
+ *     description: |
+ *       path : /api/private/groupbuying/room
+ *
+ *       * 공구 방 생성
+ *
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: |
+ *           공구 방 생성
+ *
+ *         schema:
+ *           type: object
+ *
+ *           required:
+ *             - group_buying_uid
+ *             - recruitment
+ *             - quantity
+ *           properties:
+ *             group_buying_uid:
+ *               type: number
+ *               example: 1
+ *               description: |
+ *                 공구상품 uid
+ *             recruitment:
+ *               type: number
+ *               example: 2
+ *               description: |
+ *                 방 최대 정원 (모집인원) (group_buying의 room_type에 있는 조건 예)2,5,10 으로만 보내게 해야함)
+ *             quantity:
+ *               type: number
+ *               example: 10
+ *               description: |
+ *                 물건 구매 개수
+ *
+ *     responses:
+ *       200:
+ *         description: 성공 코드 200
+ *       400:
+ *         description: 에러 코드 400
+ */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');

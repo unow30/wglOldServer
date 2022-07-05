@@ -1,32 +1,98 @@
 /**
- * Created by gunucklee on 2022. 02. 14.
  *
  * @swagger
- * /api/private/dev/searchview/new/product/list:
- *   get:
- *     summary: 검색 화면 - New Product(신규 상품) 목록
- *     tags: [Dev]
+ * /api/private/groupbuying:
+ *   post:
+ *     summary: 공구 생성
+ *     tags: [GroupBuying]
  *     description: |
- *       path : /dev/searchview/new/product/list
+ *       path : /api/private/groupbuying
  *
- *       * 검색 화면 - New Product(신규 상품) 목록
+ *       * 공구 생성
  *
  *     parameters:
- *        - in: query
- *          name: offset
- *          default: 0
- *          required: false
- *          schema:
- *            type: number
- *            example: 0
- *          description: |
- *            목록 마지막 페이지 (처음일 경우 0)
+ *       - in: body
+ *         name: body
+ *         description: |
+ *           공구 생성
+ *
+ *         schema:
+ *           type: object
+ *           required:
+ *             - product_uid
+ *             - gongu_price
+ *             - gongu_rate
+ *             - end_time
+ *             - start_time
+ *             - options
+ *             - room_type
+ *           properties:
+ *             product_uid:
+ *               type: number
+ *               example: 1
+ *               description: |
+ *                 상품 uid
+ *             gongu_price:
+ *               type: number
+ *               example: 15000 (공구 썸네일에 표시될 최저가)
+ *               description: |
+ *                 공구 썸네일에 표시될 최저가
+ *             gongu_rate:
+ *               type: number
+ *               example: 30
+ *               description: |
+ *                 기존 상품가의 할인율
+ *             end_time:
+ *               type: string
+ *               example: 7
+ *               description: |
+ *                 공동구매 몇일간 진행할지에 대한 일수 예) 7일간 진행시 숫자 7
+ *             start_time:
+ *               type: string
+ *               example: 2022-07-01 15:18:51
+ *               description: |
+ *                 공동구매 시작 날짜
+ *             options:
+ *               type: array
+ *               description: 상품에 대한 옵션 (상품옵션, 가격, 재고 등)
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     example: 빨간색 라운드 티 M 
+ *                     description: 상품 옵션
+ *                   stock:
+ *                     type: number
+ *                     example: 100
+ *                     description: |
+ *                       상품 재고 수
+ *                   sales_quantity:
+ *                     type: number
+ *                     example: 0
+ *                     description: |
+ *                       판매량 (처음 등록시 무조건 0 이여야 함)
+ *             room_type:
+ *               type: array
+ *               description: 공구 방생성
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   type:
+ *                     type: number
+ *                     example: 2 
+ *                     description: 공동구매에서 방 생성시 생성할수 있는 인원수 (2, 5, 10)만 가능
+ *                   price:
+ *                     type: number
+ *                     example: 15000
+ *                     description: |
+ *                       방 생성 인원에 따른 할인가
  *
  *     responses:
+ *       200:
+ *         description: 성공 코드 200
  *       400:
  *         description: 에러 코드 400
- *         schema:
- *           $ref: '#/definitions/Error'
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
@@ -79,54 +145,21 @@ function queryCreate(req, db_connection) {
             req.paramBody['product_uid'],
             req.paramBody['gongu_price'],
             req.paramBody['gongu_rate'],
-            req.paramBody['room_type'],
             req.paramBody.naver_product['link'],
             req.paramBody.naver_product['lprice'],
             req.paramBody['end_time'],
             req.paramBody['start_time'],
             req.paramBody['options'],
+            req.paramBody['room_type']
         ]
     );
 }
 
-async function optionJson (req) {
-    return  JSON.stringify([
-            { sales_quantity: 0,
-                stock: 30,
-                name: '빨간색 티',
-            },
-            { sales_quantity: 0,
-                stock: 50,
-                name: '검정색 티',
-            },
-            { sales_quantity: 0,
-                stock: 100,
-                name: '하얀색 티',
-            },
-            { sales_quantity: 0,
-                stock: 150,
-                name: '청록색 티',
-            }
-        ]
-    )
+function optionJson (req) {
+    return  JSON.stringify( req.paramBody['options'] );
 
 }
 
 function typeJson(req, db_connection) {
-    return  JSON.stringify([
-        {   type: 2,
-            price: 300,
-            required: true,
-        },
-        {   type: 5,
-            price: 500,
-            required: false,
-        },
-        {   type: 10,
-            price: 700,
-            required: true,
-        },
-
-        ]
-    )
+    return  JSON.stringify( req.paramBody['room_type'] )
 }

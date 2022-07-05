@@ -1,3 +1,46 @@
+/**
+ *
+ * @swagger
+ * /api/private/groupbuying/room/user:
+ *   post:
+ *     summary: 공구 방 유저 참여
+ *     tags: [GroupBuying]
+ *     description: |
+ *       path : /api/private/groupbuying/room/user
+ *
+ *       * 공구 방 유저 참여
+ *
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: |
+ *           공구 방 유저 참여
+ *
+ *         schema:
+ *           type: object
+ *
+ *           required:
+ *             - group_buying_room_uid
+ *             - quantity
+ *           properties:
+ *             group_buying_room_uid:
+ *               type: number
+ *               example: 1
+ *               description: |
+ *                 공구상품의 방 uid
+ *             quantity:
+ *               type: number
+ *               example: 10
+ *               description: |
+ *                 물건 구매 개수
+ *
+ *     responses:
+ *       200:
+ *         description: 성공 코드 200
+ *       400:
+ *         description: 에러 코드 400
+ */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');

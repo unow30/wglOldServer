@@ -1,3 +1,35 @@
+/**
+ *
+ * @swagger
+ * /api/private/groupbuying/room:
+ *   get:
+ *     summary: 공동구매에 참여한 방,유저 불러오기
+ *     tags: [GroupBuying]
+ *     description: |
+ *       path : /api/private/groupbuying/room
+ *
+ *       * 공동구매에 참여한 방,유저 불러오기
+ *
+ *     parameters:
+ *       - in: query
+ *         name: groupbuying_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           해당 공동구매 uid
+ *
+ *     responses:
+ *       200:
+ *         description: 성공 코드 200
+
+ *       400:
+ *         description: 에러 코드 400
+
+ */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
@@ -48,7 +80,8 @@ function mapfunc(item){
                 return {
                     uid: item.uid,
                     is_head: item.is_head,
-                    profile_image: item.profile_image
+                    profile_image: item.profile_image,
+                    user_uid: item.user_uid
                 }
             })
         }
@@ -60,6 +93,6 @@ function queryCreate(req, db_connection) {
 
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_groupbuying_test'
-        , [5]
+        , req.paramBody['groupbuying_uid']
     );
 }
