@@ -27,6 +27,7 @@ app.route('/product/category/list').get(require('./product/selectProductCategory
 
 app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
 app.route('/product/detail').get( require('./product/selectProductDetail') )
+app.route('/product/detail/review/list').get( require('./product/selectProductDetailReviewList') )//2022/07/06 리뷰 영상, 사진, 카운트 같이 불러오기
 app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
 app.route('/product/review/list').get( require('./product/selectProductReviewList') )
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
