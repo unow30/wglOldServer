@@ -20,6 +20,7 @@
  *           type: object
  *           required:
  *             - product_uid
+ *             - product_name
  *             - gongu_price
  *             - gongu_rate
  *             - end_time
@@ -32,6 +33,11 @@
  *               example: 1
  *               description: |
  *                 상품 uid
+ *           product_name:
+ *               type: string
+ *               example: 맥북
+ *               description: |
+ *                 상품 이름
  *             gongu_price:
  *               type: number
  *               example: 15000 (공구 썸네일에 표시될 최저가)
@@ -116,8 +122,11 @@ module.exports = async function (req, res) {
         const naverAPI = new naverUtil(req.paramBody.product_name);
         const naverProduct = await naverAPI.result();
         req.paramBody['naver_product'] = naverProduct.items[0];
-        req.paramBody['options'] = optionJson();
-        req.paramBody['room_type'] = typeJson();
+        req.paramBody['options'] = optionJson(req);
+        req.paramBody['room_type'] = typeJson(req);
+
+        console.log(req.paramBody)
+        console.log('==========================================')
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
@@ -160,6 +169,6 @@ function optionJson (req) {
 
 }
 
-function typeJson(req, db_connection) {
+function typeJson(req) {
     return  JSON.stringify( req.paramBody['room_type'] )
 }
