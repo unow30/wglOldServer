@@ -75,7 +75,7 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.already, `소셜 로그인별로 하나의 연락처만 가입할 수 있습니다.`)
                 return
             }
-            req.innerBody['success'] = '사용가능한 연락처입니다.'
+            req.innerBody['success'] = 1
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
