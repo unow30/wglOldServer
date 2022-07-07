@@ -169,14 +169,6 @@ module.exports = function (req, res) {
                 return
             }
 
-            //하나의 소셜계정에 하나의 번호 저장 가능
-            //해당 전화번호를 가지고있는 미탈퇴 유저정보 중에서 signup_type과 phone이 일치하면 회원가입 불가
-            let phone = await queryCheckPhone(req, db_connection);
-            console.log(phone)
-            if( phone ){
-                errUtil.createCall(errCode.already, `소셜 타입별 하나의 연락처로 가입할 수 있습니다.`)
-                return
-            }
 
             // 추천인 코드 생성기
             req.paramBody['recommender_code'] = recommenderCode();
@@ -340,18 +332,6 @@ function queryCheckEmail(req, db_connection) {
     );
 }
 
-function queryCheckPhone(req, db_connection){
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_user_phone_check'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['phone'],
-            req.paramBody['signup_type'],
-        ]
-    );
-}
 
 function queryUpdate(req, db_connection) {
     const _funcName = arguments.callee.name;
