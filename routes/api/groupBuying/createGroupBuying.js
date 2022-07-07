@@ -33,7 +33,7 @@
  *               example: 1
  *               description: |
  *                 상품 uid
- *           product_name:
+ *             product_name:
  *               type: string
  *               example: 맥북
  *               description: |
