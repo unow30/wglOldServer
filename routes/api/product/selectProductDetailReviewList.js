@@ -1,3 +1,34 @@
+/**
+ * Created by hyunhunhwang on 2021. 01. 12.
+ *
+ * @swagger
+ * /api/private/product/detail/review/list:
+ *   get:
+ *     summary: 상품 상세 영상, 사진리뷰 및 카운트
+ *     tags: [Product]
+ *     description: |
+ *       path : /api/private/product/detail/review/list
+ *
+ *       * 상품 상세
+ *
+ *     parameters:
+ *       - in: query
+ *         name: product_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: 상품 uid
+ *
+ *     responses:
+ *       200:
+ *         description: 성공 코드 200
+ *       400:
+ *         description: 에러 코드 400
+
+ */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
