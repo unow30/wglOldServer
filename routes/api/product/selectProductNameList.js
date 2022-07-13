@@ -33,7 +33,6 @@ module.exports = function (req, res) {
 
     try {
         req.file_name = file_name;
-        logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
@@ -42,12 +41,14 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = []
-            let item = await query(req, db_connection);
-            item.forEach(ele =>{
-                // console.log(ele['name'])
-                req.innerBody['item'].push(ele['name'])
-            })
+            // req.innerBody['item'] = []
+            req.innerBody['item'] = await query(req, db_connection);
+            // let item = await query(req, db_connection);
+            // console.log(item)
+            // item.forEach(ele =>{
+            //     // console.log(ele['name'])
+            //     req.innerBody['item'].push(ele['name'])
+            // })
 
 
             deleteBody(req)
