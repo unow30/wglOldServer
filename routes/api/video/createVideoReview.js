@@ -50,6 +50,7 @@
  *           $ref: '#/definitions/Error'
  */
 
+const path = require('path');
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
@@ -57,6 +58,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const fcmUtil = require('../../../common/utils/fcmUtil');
+
 
 let file_name = fileUtil.name(__filename);
 
@@ -75,7 +77,15 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await query(req, db_connection);
+            const filenameExt = path.extname(req.paramBody['filename']).replace('.','')
+
+            if(filenameExt === 'm3u8'){
+                req.innerBody['item'] = await query_m3u8(req, db_connection);
+            }
+            else {
+                req.innerBody['item'] = await query(req, db_connection);
+            }
+            
             console.log("ofjwepfiowjefpweofjwepowjfwedqfqfq2e2e2e2e2e");
             console.log("ofjwepfiowjefpweofjwepowjf: " + JSON.stringify(req.innerBody['item']['push_token']));
             let alertList = await queryAlertComment(req, db_connection);
@@ -110,6 +120,20 @@ function deleteBody(req) {
 }
 
 function query(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_video_review'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['product_uid'],
+            req.paramBody['content'],
+            req.paramBody['filename'],
+        ]
+    );
+}
+
+function query_m3u8(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
