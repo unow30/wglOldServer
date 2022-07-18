@@ -50,6 +50,10 @@
  *               type: string
  *               example: 'nickna12'
  *               description: 닉네임
+ *             phone:
+ *               type: integer
+ *               example: 01012341234
+ *               description: 연락처
  *             about:
  *               type: string
  *               example: '한줄소개입니다.'
@@ -165,6 +169,7 @@ module.exports = function (req, res) {
                 return
             }
 
+
             // 추천인 코드 생성기
             req.paramBody['recommender_code'] = recommenderCode();
             let recommender_code_data = await queryCheckRecommenderCode(req, db_connection);
@@ -277,6 +282,7 @@ function query(req, db_connection) {
             req.paramBody['social_id'],
             req.paramBody['email'],
             req.paramBody['nickname'],
+            req.paramBody['phone'],
             req.paramBody['about'],
             req.paramBody['interests'],
             req.paramBody['gender'],
@@ -325,6 +331,7 @@ function queryCheckEmail(req, db_connection) {
         ]
     );
 }
+
 
 function queryUpdate(req, db_connection) {
     const _funcName = arguments.callee.name;
