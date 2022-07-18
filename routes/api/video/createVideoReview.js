@@ -137,7 +137,7 @@ function query_m3u8(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_video_review'
+        , 'call proc_create_video_review_m3u8'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
