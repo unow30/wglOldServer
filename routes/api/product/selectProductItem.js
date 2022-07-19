@@ -10,6 +10,8 @@
  *       path : /api/private/product
  *
  *       * 상품 상세
+ *       * 리뷰작성(영상,사진)시 주문내역에 대한 리뷰작성, 상품에 대한 리뷰 작성 화면에 주문정보 또는 상품정보 전달
+ *       * 상품이 없을경우 리뷰작성 불가
  *
  *     parameters:
  *       - in: query
@@ -20,6 +22,14 @@
  *           type: number
  *           example: 1
  *         description: 상품 uid
+ *       - in: query
+ *         name: order_product_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: 주문상품 uid
  *
  *     responses:
  *       200:
@@ -74,6 +84,7 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'order_product_uid');
 }
 
 function deleteBody(req) {
@@ -91,7 +102,12 @@ function queryDetail(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
+            req.paramBody['order_product_uid'],
         ]
     );
 }
 
+/*
+* 상품 아이템을 보여주는 경우는 order_product의 상품정보 - 내가 구매한 상품, 옵션, 가격, 확정일 이거나
+* 그냥 상품 아이템 - product.uid로 접근해서 현재 판매중인 상품정보
+* */
