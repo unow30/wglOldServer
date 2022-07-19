@@ -84,7 +84,6 @@
          , 'call proc_select_searchview_gongu_last_order_v1'
          , [
              req.headers['user_uid'],
-             // req.paramBody['product_uid'],
          ]
      );
  }
@@ -93,7 +92,9 @@
      return mysqlUtil.queryArray(db_connection
          , 'call proc_select_searchview_gongu_deal_v1'
          , [
-             req.headers['user_uid']
+             req.headers['user_uid'],
+             req.paramBody['random_seed'],
+             0, //offset
          ]
      );
  }
@@ -102,7 +103,9 @@
      return mysqlUtil.queryArray(db_connection
          , 'call proc_select_searchview_gongu_deadline_v1'
          , [
-             req.headers['user_uid']
+             req.headers['user_uid'],
+             req.paramBody['random_seed'],
+             0, //offset
          ]
      );
  }
