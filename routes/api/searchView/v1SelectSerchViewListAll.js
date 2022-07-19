@@ -47,16 +47,19 @@
          checkParam(req);
          mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
+
+            const ad_list = queryADList(req, db_connection);
             const last_order = queryLastOrder(req, db_connection); // 성공임박 공구
             const gongu_deal = queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
             const gongu_deadline = queryGonguDeadline(req, db_connection); // 시간이 얼마 안남은 공구
 
-            const [last_order_data, gongu_deal_data, gongu_deadline_data] = await Promise.all([last_order, gongu_deal, gongu_deadline])
+            const [last_order_data, gongu_deal_data, gongu_deadline_data, ad_list_data] = await Promise.all([last_order, gongu_deal, gongu_deadline, ad_list])
 
             req.innerBody['last_order'] = last_order_data
             req.innerBody['gongu_deal'] = gongu_deal_data
             req.innerBody['gongu_deadline'] = gongu_deadline_data
-     
+            req.innerBody['ad_list'] = ad_list_data
+
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
          }, function (err) {
@@ -78,6 +81,7 @@
      // delete req.innerBody['item']['push_token']
      // delete req.innerBody['item']['access_token']
  }
+
  function queryLastOrder(req, db_connection) {
      const _funcName = arguments.callee.name;
      return mysqlUtil.queryArray(db_connection
@@ -87,6 +91,7 @@
          ]
      );
  }
+
  function queryGonguDeal(req, db_connection) {
      const _funcName = arguments.callee.name;
      return mysqlUtil.queryArray(db_connection
@@ -98,6 +103,7 @@
          ]
      );
  }
+
  function queryGonguDeadline(req, db_connection) {
      const _funcName = arguments.callee.name;
      return mysqlUtil.queryArray(db_connection
@@ -109,3 +115,14 @@
          ]
      );
  }
+
+ function queryADList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_ad_list'
+        , [
+            req.headers['user_uid'],
+            // req.paramBody['product_uid'],
+        ]
+    );
+}
