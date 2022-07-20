@@ -178,6 +178,7 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
 app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기
 app.route('/v1/searchview/list/all').get(require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
 app.route('/v1/searchview/list/gongudeal').get(require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
+app.route('/v1/searchview/list/gongudeadline').get(require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
 app.route('/searchview/popular/category/product/preview/list').get( require('./searchView/selectSearchViewPopularCategoryProductList')) // 인기 카테고리 목록
 app.route('/searchview/new/category/video/list').get( require('./searchView/selectSearchViewNewCategoryVideoList') )// 신규 카테고리 영상 목록
 
