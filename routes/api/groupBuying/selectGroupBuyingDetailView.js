@@ -18,7 +18,7 @@
  *         required: true
  *         schema:
  *           type: number
- *           example: 1
+ *           example: 3
  *         description: 상품 uid
  *       - in: query
  *         name: groupbuying_uid
