@@ -55,6 +55,9 @@ module.exports = async function (req, res) {
             console.log(req.innerBody['item'])
             req.innerBody['item'] = mapfunc(req.innerBody['item']);
 
+            const countData = await queryCount(req, db_connection);
+            req.innerBody['count'] = countData.count;
+
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -83,18 +86,27 @@ function mapfunc(item){
                     uid: item.uid,
                     is_head: item.is_head,
                     profile_image: item.profile_image,
-                    user_uid: item.user_uid
+                    user_uid: item.user_uid,
+                    nickname: item.nickname
                 }
             })
         }
     })
 }
-// @@@@@
 function queryCreate(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_groupbuying_room_user'
+        , 'call proc_select_groupbuying_room_user_v1'
+        ,[ req.paramBody['groupbuying_uid']]
+    );
+}
+
+function queryCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_groupbuying_room_user_count_v1'
         ,[ req.paramBody['groupbuying_uid']]
     );
 }
