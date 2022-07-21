@@ -85,15 +85,20 @@ module.exports = function (req, res) {
         const qna_list = queryQnAList(req, db_connection);
         const item_types = queryDetailType(req, db_connection);
         const item_options = queryDetailOption(req, db_connection);
+        const rooms = queryRoomUser(req, db_connection);
+        const room_count = queryRoomCount(req, db_connection);
         
         const [
             item_data, image_list_data, 
             image_detail_list_data, qna_list_data, 
-            item_types_data, item_options_data ] = await Promise.all([item, image_list, image_detail_list, qna_list, item_types, item_options])
-
+            item_types_data, item_options_data, 
+            rooms_data, room_count_data] = await Promise.all([item, image_list, image_detail_list, qna_list, item_types, item_options, rooms, room_count])
+        
         req.innerBody['item'] = item_data;
         req.innerBody.item['types'] = item_types_data;
         req.innerBody.item['options'] = item_options_data;
+        req.innerBody.item['rooms'] = mapfunc(rooms_data);
+        req.innerBody.item['room_count'] = room_count_data.count;
         req.innerBody['image_list'] = image_list_data;
         req.innerBody['image_detail_list'] = image_detail_list_data;
         req.innerBody['qna_list'] = qna_list_data;
@@ -201,5 +206,47 @@ function queryQnAList(req, db_connection) {
             0,
             3
         ]
+    );
+}
+
+function mapfunc(item){
+    return item.map(result =>{
+
+        return {
+            room_end_time: result.room_end_time,
+            recruitment: result.recruitment,
+            participants: result.participants,
+            uid: result.uid,
+            is_active: result.recruitment <= result.participants? 0:1,
+            user: result.user.split('|').map(item=>{
+                item = JSON.parse(item);
+
+                return {
+                    uid: item.uid,
+                    is_head: item.is_head,
+                    profile_image: item.profile_image,
+                    user_uid: item.user_uid,
+                    nickname: item.nickname
+                }
+            })
+        }
+    })
+}
+
+function queryRoomUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_groupbuying_room_user_v1'
+        ,[ req.paramBody['groupbuying_uid']]
+    );
+}
+
+function queryRoomCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_groupbuying_room_user_count_v1'
+        ,[ req.paramBody['groupbuying_uid']]
     );
 }

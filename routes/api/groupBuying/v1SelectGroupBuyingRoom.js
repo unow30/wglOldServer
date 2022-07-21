@@ -3,12 +3,12 @@
  * @swagger
  * /api/private/v1/groupbuying/detail/room:
  *   get:
- *     summary: 공동구매에 참여한 방,유저 불러오기
+ *     summary: 공동구매에 참여한 방,유저 불러오기 ===== 이제 안쓰는 api (detail api 에서 한번에 불러옴) =====
  *     tags: [GroupBuying]
  *     description: |
  *       path : /api/private/v1/groupbuying/detail/room
  *
- *       * 공동구매에 참여한 방,유저 불러오기
+ *       * 공동구매에 참여한 방,유저 불러오기 ===== 이제 안쓰는 api (detail api 에서 한번에 불러옴) =====
  *
  *     parameters:
  *       - in: query
