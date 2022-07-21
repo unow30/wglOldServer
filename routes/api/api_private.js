@@ -264,6 +264,6 @@ app.route('/groupbuying/room').post( require('./groupBuying/createGroupBuyingRoo
 app.route('/groupbuying/room/user').post( require('./groupBuying/createGroupBuyingRoomUser') )
 
 app.route('/groupbuying/room').get( require('./groupBuying/selectGroupBuyingRoom') )
-app.route('/v1/groupbuying/detail').get( require('./groupBuying/selectGroupBuyingDetailView') )
+app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuyingDetailView') )
 
 module.exports = app;
