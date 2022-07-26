@@ -1,12 +1,12 @@
 /**
  *
  * @swagger
- * /api/private/review/photo:
+ * /api/v1/private/review/photo:
  *   put:
  *     summary: 상품의 포토리뷰 수정
  *     tags: [Review]
  *     description: |
- *       path : /api/private/review/photo
+ *       path : /api/v1/private/review/photo
  *
  *       * 포토리뷰 수정
  *
