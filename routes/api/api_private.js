@@ -106,6 +106,7 @@ app.route('/video/search/result/list').get( require('./video/selectVideoSearchRe
  * review api
  */
  app.route('/review/photo').get( require('./review/selectPhotoReview'))
+ app.route('/v1/review/photo').put( require('./review/updatePhotoReview'))
  app.route('/review/photo').post( require('./review/createPhotoReview'))
  app.route('/review/video').get( require('./review/selectVideoReview'))
 
