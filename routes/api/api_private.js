@@ -107,6 +107,7 @@ app.route('/video/search/result/list').get( require('./video/selectVideoSearchRe
  */
  app.route('/review/photo').get( require('./review/selectPhotoReview'))
  app.route('/v1/review/photo').put( require('./review/updatePhotoReview'))
+ app.route('/v1/review/photo').delete( require('./review/deletePhotoReview'))
  app.route('/review/photo').post( require('./review/createPhotoReview'))
  app.route('/review/video').get( require('./review/selectVideoReview'))
 
