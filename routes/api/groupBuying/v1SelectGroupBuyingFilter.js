@@ -97,17 +97,15 @@ module.exports = function (req, res) {
             return
         }
 
-        //groupbuying_room_uid가 있을 때 필터링
-        if(req.paramBody['groupbuying_room_uid']){
-            let groupbuyingRoom = await queryGroupBuyingRoom(req, db_connection);
-            if (!groupbuyingRoom){
-                errUtil.createCall(errCode.fail, `매칭이 해제된 방입니다. 다른 공동구매 방으로 입장하세요`)
-                return
-            }
-            if (groupbuyingRoom['recruitment'] >= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
-                errUtil.createCall(errCode.fail, `매칭이 완료된 방입니다. 다른 공동구매 방으로 입장하세요`)
-                return
-            }
+
+        let groupbuyingRoom = await queryGroupBuyingRoom(req, db_connection);
+        if (!groupbuyingRoom){
+            errUtil.createCall(errCode.fail, `매칭이 해제된 방입니다. 다른 공동구매 방으로 입장하세요`)
+            return
+        }
+        if (groupbuyingRoom['recruitment'] >= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
+            errUtil.createCall(errCode.fail, `매칭이 완료된 방입니다. 다른 공동구매 방으로 입장하세요`)
+            return
         }
 
         let groupbuyingOption = await queryGroupBuyingOption(req, db_connection);
