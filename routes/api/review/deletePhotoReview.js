@@ -78,7 +78,7 @@ function checkParam(req) {
 function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
+    return mysqlUtil.querySingle(db_connection
         , 'call proc_delete_photo_review'
         , [
             req.headers['user_uid'],
