@@ -27,11 +27,11 @@
  *         description: 공동구매 uid
  *       - in: query
  *         name: groupbuying_room_uid
- *         required: false
+ *         required: true
  *         schema:
  *           type: number
- *           example: 1
- *         description: 공동구매 방 uid(없으면 전달 안함)
+ *           example: 0
+ *         description: 공동구매 방 uid(없으면 0으로 전달)
  *       - in: query
  *         name: groupbuying_option_uid
  *         required: true
@@ -97,21 +97,24 @@ module.exports = function (req, res) {
             return
         }
 
-        //groupbuying_room_uid가 있을 때 필터링
-        if(req.paramBody['groupbuying_room_uid']){
+        // console.log(req.paramBody['groupbuying_room_uid'])
+        if(req.paramBody['groupbuying_room_uid'] !== 0){
+            console.log('공구방이 있으니 매칭 가능한지 확인')
             let groupbuyingRoom = await queryGroupBuyingRoom(req, db_connection);
+            console.log(groupbuyingRoom)
             if (!groupbuyingRoom){
                 errUtil.createCall(errCode.fail, `매칭이 해제된 방입니다. 다른 공동구매 방으로 입장하세요`)
                 return
             }
-            if (groupbuyingRoom['recruitment'] >= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
+            if (groupbuyingRoom['recruitment'] <= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
                 errUtil.createCall(errCode.fail, `매칭이 완료된 방입니다. 다른 공동구매 방으로 입장하세요`)
                 return
             }
         }
 
+
         let groupbuyingOption = await queryGroupBuyingOption(req, db_connection);
-        if (groupbuyingOption['soldout'] == 1) {
+        if (!groupbuyingOption || groupbuyingOption['soldout'] == 1 ) {
             errUtil.createCall(errCode.fail, `옵션이 품절되었습니다.`)
             return
         }
