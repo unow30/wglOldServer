@@ -103,7 +103,7 @@ module.exports = function (req, res) {
             errUtil.createCall(errCode.fail, `매칭이 해제된 방입니다. 다른 공동구매 방으로 입장하세요`)
             return
         }
-        if (groupbuyingRoom['recruitment'] >= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
+        if (groupbuyingRoom['recruitment'] <= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
             errUtil.createCall(errCode.fail, `매칭이 완료된 방입니다. 다른 공동구매 방으로 입장하세요`)
             return
         }
