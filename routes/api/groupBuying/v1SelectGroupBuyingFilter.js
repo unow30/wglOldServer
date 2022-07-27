@@ -88,11 +88,11 @@ module.exports = function (req, res) {
 
         //공구 종료, 공구 품절 체크
         let groupbuying = await queryGroupBuying(req, db_connection);
-        if (!groupbuying || groupbuying['is_authorized'] != 1) {
+        if (!groupbuying || groupbuying['is_authorized'] !== 1) {
             errUtil.createCall(errCode.fail, `공동구매가 종료된 상품입니다.`)
             return
         }
-        if (groupbuying['soldout'] == 1) {
+        if (groupbuying['soldout'] === 1) {
             errUtil.createCall(errCode.fail, `공동구매 상품이 품절되었습니다.`)
             return
         }
@@ -104,7 +104,7 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `매칭이 해제된 방입니다. 다른 공동구매 방으로 입장하세요`)
                 return
             }
-            if (groupbuyingRoom['recruitment'] == groupbuyingRoom['participants'] || groupbuyingRoom['status'] == 1) {
+            if (groupbuyingRoom['recruitment'] >= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
                 errUtil.createCall(errCode.fail, `매칭이 완료된 방입니다. 다른 공동구매 방으로 입장하세요`)
                 return
             }
@@ -148,9 +148,8 @@ function queryGroupBuying(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_filter_groupbuying'
+        , 'call proc_select_filter_groupbuying_v1'
         , [
-            req.headers['user_uid'],
             req.paramBody['groupbuying_uid'],
         ]
     );
@@ -160,9 +159,8 @@ function queryGroupBuyingRoom(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_filter_groupbuying_room'
+        , 'call proc_select_filter_groupbuying_room_v1'
         , [
-            req.headers['user_uid'],
             req.paramBody['groupbuying_room_uid'],
         ]
     );
@@ -172,9 +170,8 @@ function queryGroupBuyingOption(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_filter_groupbuying_option'
+        , 'call proc_select_filter_groupbuying_option_v1'
         , [
-            req.headers['user_uid'],
             req.paramBody['groupbuying_option_uid'],
         ]
     );
