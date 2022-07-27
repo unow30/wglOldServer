@@ -39,6 +39,14 @@
  *           type: number
  *           example: 1
  *         description: 공동구매 옵션 uid
+ *       - in: query
+ *         name: count
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         enum: [1,2,3,4,5,6,7,8,9,10]
+ *         description: 공동구매 옵션 구매수량(최대 10개)
  *
  *     responses:
  *       200:
@@ -88,17 +96,17 @@ module.exports = function (req, res) {
 
         //공구 종료, 공구 품절 체크
         let groupbuying = await queryGroupBuying(req, db_connection);
-        if (!groupbuying || groupbuying['is_authorized'] !== 1) {
+        if (!groupbuying || groupbuying['is_authorized'] != 1) {
             errUtil.createCall(errCode.fail, `공동구매가 종료된 상품입니다.`)
             return
         }
-        if (groupbuying['soldout'] === 1) {
+        if (groupbuying['soldout'] == 1) {
             errUtil.createCall(errCode.fail, `공동구매 상품이 품절되었습니다.`)
             return
         }
 
         // console.log(req.paramBody['groupbuying_room_uid'])
-        if(req.paramBody['groupbuying_room_uid'] !== 0){
+        if(req.paramBody['groupbuying_room_uid'] != 0){
             console.log('공구방이 있으니 매칭 가능한지 확인')
             let groupbuyingRoom = await queryGroupBuyingRoom(req, db_connection);
             console.log(groupbuyingRoom)
@@ -106,7 +114,7 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `매칭이 해제된 방입니다. 다른 공동구매 방으로 입장하세요`)
                 return
             }
-            if (groupbuyingRoom['recruitment'] <= groupbuyingRoom['participants'] || groupbuyingRoom['status'] === 1) {
+            if (groupbuyingRoom['recruitment'] <= groupbuyingRoom['participants'] || groupbuyingRoom['status'] == 1) {
                 errUtil.createCall(errCode.fail, `매칭이 완료된 방입니다. 다른 공동구매 방으로 입장하세요`)
                 return
             }
@@ -116,6 +124,14 @@ module.exports = function (req, res) {
         let groupbuyingOption = await queryGroupBuyingOption(req, db_connection);
         if (!groupbuyingOption || groupbuyingOption['soldout'] == 1 ) {
             errUtil.createCall(errCode.fail, `옵션이 품절되었습니다.`)
+            return
+        }
+        console.log(`구매수량: ${req.paramBody['count']}개`)
+        console.log(`구매가능 수량: ${Number(groupbuyingOption['sales_quantity'])}개`)
+        console.log(`구매시 수량: ${Number(groupbuyingOption['sales_quantity']) + Number(req.paramBody['count'])}개`)
+        console.log(`재고: ${Number(groupbuyingOption['stock'])}개`)
+        if (Number(groupbuyingOption['sales_quantity']) + Number(req.paramBody['count']) > Number(groupbuyingOption['stock']) ) {
+            errUtil.createCall(errCode.fail, `구매하려는 수량보다 재고가 적습니다. 남은재고: ${Number(groupbuyingOption['stock']) - Number(groupbuyingOption['sales_quantity'])}개`)
             return
         }
 
