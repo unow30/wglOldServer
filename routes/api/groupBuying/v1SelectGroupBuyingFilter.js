@@ -139,7 +139,7 @@ function checkParam(req) {
     // paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
 }
 
-function deleteBody(req) {경
+function deleteBody(req) {
     // delete req.innerBody['item']['latitude']
     // delete req.innerBody['product']
 }
