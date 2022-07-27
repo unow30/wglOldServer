@@ -20,6 +20,15 @@
  *           example: 1
  *         description: |
  *           구매 uid
+ *     parameters:
+ *       - in: query
+ *         name: group_buying_room_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           공구 방 uid
  *
  *     responses:
  *       200:
@@ -56,6 +65,10 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+
+            if(req.paramBody['group_buying_room_uid'] || req.paramBody['group_buying_room_uid']!=0){
+                req.innerBody.item['users'] = await querySelectGonguUser(req, db_connection);
+            }
 
             req.innerBody['seller_list'] = await querySelectList(req, db_connection);
 
@@ -112,6 +125,17 @@ function querySelect(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['order_uid'],
+        ]
+    );
+}
+
+function querySelectGonguUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_order_detail_gongu__user_v1'
+        , [
+            req.paramBody['group_buying_room_uid'],
         ]
     );
 }
