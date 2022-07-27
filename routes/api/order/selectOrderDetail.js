@@ -20,7 +20,6 @@
  *           example: 1
  *         description: |
  *           구매 uid
- *     parameters:
  *       - in: query
  *         name: group_buying_room_uid
  *         required: true
