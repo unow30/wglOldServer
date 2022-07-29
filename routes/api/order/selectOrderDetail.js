@@ -65,7 +65,7 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await querySelect(req, db_connection);
 
-            if(req.paramBody['group_buying_room_uid'] || req.paramBody['group_buying_room_uid']!=0){
+            if(req.paramBody['group_buying_room_uid']!=0){
                 req.innerBody.item['users'] = await querySelectGonguUser(req, db_connection);
             }
 
