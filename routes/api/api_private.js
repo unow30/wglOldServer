@@ -269,5 +269,6 @@ app.route('/v1/groupbuying/detail/room').get( require('./groupBuying/v1SelectGro
 app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuyingDetailView') )
 app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1SelectGroupBuyingRoomList') )
 app.route('/v1/groupbuying/filter').get( require('./groupBuying/v1SelectGroupBuyingFilter') )
+app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuyingOrder') )
 
 module.exports = app;
