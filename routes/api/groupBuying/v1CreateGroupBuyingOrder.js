@@ -100,6 +100,11 @@
  *               example: 8
  *               description: |
  *                 공구 방 uid(방을 생성할 경우 0으로 전달)
+ *             recruitment:
+ *               type: number
+ *               example: 2
+ *               description: |
+ *                 모집인원(2,5,10)
  *             groupbuying_option_uid:
  *               type: number
  *               example: 1
