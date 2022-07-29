@@ -207,39 +207,59 @@ module.exports = function (req, res) {
             req.innerBody['push_token_list'] = []
             req.innerBody['alrim_msg_list'] = []
             req.innerBody['product'] = req.paramBody['product_list'][0]
-            console.log('order 생성 시작')
-            req.innerBody['item'] = await queryOrder(req, db_connection);
 
-            if (!req.innerBody['item']) {
-                errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
-                return
-            }
-
-            //공구 주문상품 테이블 생성
-            //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
-            console.log('order_product 생성 시작')
-            let product = await queryProduct(req, db_connection);
-            req.innerBody['order_product_list'].push( product );
-            console.log('pushtoken aligo 변수 생성 시작')
-            makePushTokenAndAligoParam(req, product)
 
             // 공구방 uid가 없으면 공구방 생성, 공구방유저 생성을 한다.
-            console.log('공구방 uid는?')
-            console.log(req.paramBody['groupbuying_room_uid'])
+            // console.log('공구방 uid는?')
+            // console.log(req.paramBody['groupbuying_room_uid'])
             if(req.paramBody['groupbuying_room_uid'] == 0){
                 console.log('공구방 생성 공구방 유저 생성 시작')
-                await queryCreateGroupBuyingRoom(req, db_connection);
+                let groupbuyingRoom = await queryCreateGroupBuyingRoom(req, db_connection);
+                req.paramBody['groupbuying_room_uid'] = groupbuyingRoom['uid']
+
+                console.log('order 생성 시작')
+                req.innerBody['item'] = await queryOrder(req, db_connection);
+                if (!req.innerBody['item']) {
+                    errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
+                    return
+                }
+                //공구 주문상품 테이블 생성
+                //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
+                console.log('order_product 생성 시작')
+                let product = await queryProduct(req, db_connection);
+                req.innerBody['order_product_list'].push( product );
+                console.log('pushtoken aligo 변수 생성 시작')
+                makePushTokenAndAligoParam(req, product)
+
             }else{
                 // 공구방 uid가 있으면 공구방 업데이트, 공구방 유저 생성을 한다.
                 console.log('공구방 이미 생성됨. 업데이트 및 공구방 유저 생성 시작')
                 let roomIsFull = await queryCreateGroupBuyingRoomUser(req, db_connection);
+
+                console.log('order 생성 시작')
+                req.innerBody['item'] = await queryOrder(req, db_connection);
+                if (!req.innerBody['item']) {
+                    errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
+                    return
+                }
+                //공구 주문상품 테이블 생성
+                //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
+                console.log('order_product 생성 시작')
+                let product = await queryProduct(req, db_connection);
+                req.innerBody['order_product_list'].push( product );
+                console.log('pushtoken aligo 변수 생성 시작')
+                makePushTokenAndAligoParam(req, product)
+
                 //공구방이 풀로 찰 경우 매칭알림(?), 구매알림 보내야한다.
                 console.log(roomIsFull)
                 if(roomIsFull['status'] == 1){
+                    //같은 방에있는 주문상품의 status 50을 1로 바꿔줘야 한다.
+                    await queryUpdateOrderProduct(req, db_connection)
                     console.log('공구방 풀이니 알람 보내기')
                     await orderAlarm(req, res)
                 }
             }
+
 
             console.log('공구옵션 수량 업데이트 및 공구 솔드아웃 여부 확인')
             // 공구옵션값을 업데이트한다. sales_quantity와 soldout을 같이 업데이트해준다.
@@ -441,6 +461,18 @@ function queryUpdateGroupBuying_soldout(req, db_connection) {
     );
 }
 
+function queryUpdateOrderProduct(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_update_order_product_status_01_for_groupbuying_v1'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['groupbuying_room_uid'],
+        ]
+    );
+}
+
 async function orderAlarm(req, res) {
     // 공구하기는 하나의 상품만 구매할 수 있다. 여러 판매자한테 동시에 알람을 보내지 않아도 된다.
     // const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
@@ -487,9 +519,8 @@ function setArimMessage(alrim_msg_distinc_list, idx) {
     console.log("WOQIJCOEIWQJEOQWIEJO")
     return `상품 주문 알림
 
-${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
+${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.`
 
-□ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
 }
 
 
