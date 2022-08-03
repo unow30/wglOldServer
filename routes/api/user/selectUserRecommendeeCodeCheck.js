@@ -55,8 +55,12 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             let recommendee_data = await querySelect(req, db_connection);
-            if( recommendee_data['count'] === 0 ){
+            if( recommendee_data['recommender_count'] === 0 ){
                 errUtil.createCall(errCode.already, `유효하지 않은 추천인 코드입니다. 다시 확인해주세요.`)
+                return
+            }
+            if( recommendee_data['recommendee_count'] >= 5 ){
+                errUtil.createCall(errCode.already, `추천인 코드 입력횟수를 초과합니다.(최대 5명)`)
                 return
             }
 
@@ -99,6 +103,3 @@ function querySelect(req, db_connection) {
         ]
     );
 }
-
-
-
