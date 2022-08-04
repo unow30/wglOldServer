@@ -283,7 +283,7 @@ module.exports = function (req, res) {
             console.log(option_soldout_list)//[]로 날라오니 이부분 수정해서 공구 솔드아웃 안되도록 하기
             let isAllSoldout = option_soldout_list.every(function(el, idx, arr){
                 return el['soldout'] == 1//soldout = 1이면 옵션상품 품절
-            }) //true, false
+            }) //true, falses
             console.log('옵션 전부 솔드아웃이닝')
             console.log(isAllSoldout)
             if(isAllSoldout == true){
@@ -300,6 +300,9 @@ module.exports = function (req, res) {
             //     req.paramBody['use_point']
             //     req.innerBody['point'] = await queryPoint(req, db_connection);
             // }
+
+            console.log(req.innerBody['product']['product_uid'])
+            req.innerBody['kakao_link'] = await queryKakaoLink(req,db_connection);
 
             deleteBody(req)
 
@@ -486,6 +489,17 @@ function queryUpdateOrderProduct(req, db_connection) {
             req.paramBody['groupbuying_room_uid'],
         ]
     );
+}
+
+function queryKakaoLink(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_groupbuying_kakao_link_v1'
+        , [
+            req.innerBody['product']['product_uid']
+        ]
+    )
 }
 
 async function orderAlarm(req, res) {
