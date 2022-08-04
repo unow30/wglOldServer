@@ -149,6 +149,7 @@ function hotWegglerParse(hotWeggler) {
             amount: item.amount,
             video_count: item.video_count,
             user_profile_image: item.user_profile_image,
+            user_nickname: item.user_nickname,
             video_info: item.video_info? item.video_info.split('@!@').map(info_item=> JSON.parse(info_item)) : []
         }
     })
