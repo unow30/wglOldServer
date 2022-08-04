@@ -52,13 +52,17 @@
             const last_order = queryLastOrder(req, db_connection); // 성공임박 공구
             const gongu_deal = queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
             const gongu_deadline = queryGonguDeadline(req, db_connection); // 시간이 얼마 안남은 공구
+            const hot_weggler = queryHotWeggler(req, db_connection); //핫 위글러 리스트 및 동영상 데이터
 
-            const [last_order_data, gongu_deal_data, gongu_deadline_data, ad_list_data] = await Promise.all([last_order, gongu_deal, gongu_deadline, ad_list])
+            const [last_order_data, gongu_deal_data, gongu_deadline_data, ad_list_data, hot_weggler_data] = await Promise.all([last_order, gongu_deal, gongu_deadline, ad_list, hot_weggler])
 
-            req.innerBody['last_order'] = last_order_data
-            req.innerBody['gongu_deal'] = gongu_deal_data
-            req.innerBody['gongu_deadline'] = gongu_deadline_data
-            req.innerBody['ad_list'] = ad_list_data
+            const hot_weggler_parse = hotWegglerParse(hot_weggler_data);
+
+            req.innerBody['hot_weggler'] = hot_weggler_parse;
+            req.innerBody['last_order'] = last_order_data;
+            req.innerBody['gongu_deal'] = gongu_deal_data;
+            req.innerBody['gongu_deadline'] = gongu_deadline_data;
+            req.innerBody['ad_list'] = ad_list_data;
 
             deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -125,4 +129,27 @@
             // req.paramBody['product_uid'],
         ]
     );
+}
+
+function queryHotWeggler(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_hot_weggler_list_v1'
+        , [
+            req.headers['user_uid'],
+            // req.paramBody['product_uid'],
+        ]
+    );
+}
+
+function hotWegglerParse(hotWeggler) {
+    return hotWeggler.map(item=>{
+        return {
+            user_uid: item.user_uid,
+            amount: item.amount,
+            video_count: item.video_count,
+            user_profile_image: item.user_profile_image,
+            video_info: item.video_info? item.video_info.split('@!@').map(info_item=> JSON.parse(info_item)) : []
+        }
+    })
 }
