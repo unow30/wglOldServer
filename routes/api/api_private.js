@@ -261,11 +261,6 @@ app.route('/dev/searchview/new/product/list').get( require('./_dev/_dev_selectSe
 /**
  * dev groupbuying api
  */
-app.route('/groupbuying').post( require('./groupBuying/createGroupBuying') )
-app.route('/groupbuying/room').post( require('./groupBuying/createGroupBuyingRoom') )
-app.route('/groupbuying/room/user').post( require('./groupBuying/createGroupBuyingRoomUser') )
-
-app.route('/v1/groupbuying/detail/room').get( require('./groupBuying/v1SelectGroupBuyingRoom') )
 app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuyingDetailView') )
 app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1SelectGroupBuyingRoomList') )
 app.route('/v1/groupbuying/filter').get( require('./groupBuying/v1SelectGroupBuyingFilter') )
