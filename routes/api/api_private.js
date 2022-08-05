@@ -26,6 +26,7 @@ app.route('/user/profile/video/list').get( require('./user/selectUserProfileRevi
 app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
 
 app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
+app.route('/v1/product/confirm/list').get( require('./product/v1SelectProductConfirmList') )
 app.route('/product').get(require('./product/selectProductItem')) //상품 item만 불러온다.
 app.route('/product/detail').get( require('./product/selectProductDetail') )
 app.route('/product/detail/review/list').get( require('./product/selectProductDetailReviewList') )//2022/07/06 리뷰 영상, 사진, 카운트 같이 불러오기
