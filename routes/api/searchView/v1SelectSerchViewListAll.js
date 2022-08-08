@@ -173,6 +173,7 @@ function editionParse(edition) {
     return edition.map(item=>{
         return {
             edition_uid: item.edition_uid,
+            edition_filename: item.edition_filename,
             start_time: item.start_time,
             end_time: item.end_time,
             edition_name: item.edition_name,
