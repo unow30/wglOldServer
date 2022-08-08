@@ -87,15 +87,15 @@ module.exports = function (req, res) {
         const item_options = queryDetailOption(req, db_connection);
         const rooms = queryRoomUser(req, db_connection);
         const room_count = queryRoomCount(req, db_connection);
-        const kakao_link = queryKakaoLink(req, db_connection);
+
         const [
             item_data, image_list_data, 
             image_detail_list_data, qna_list_data, 
             item_types_data, item_options_data, 
-            rooms_data, room_count_data, kakao_link_data] = await Promise.all([item, image_list, image_detail_list, qna_list, item_types, item_options, rooms, room_count, kakao_link])
+            rooms_data, room_count_data] = await Promise.all([item, image_list, image_detail_list, qna_list, item_types, item_options, rooms, room_count])
         
         req.innerBody['item'] = item_data;
-        req.innerBody.item['kakao_link'] = kakao_link_data
+
         req.innerBody.item['types'] = item_types_data;
         req.innerBody.item['options'] = item_options_data;
         req.innerBody.item['rooms'] = mapfunc(rooms_data);
@@ -250,15 +250,4 @@ function queryRoomCount(req, db_connection) {
         , 'call proc_select_groupbuying_room_user_count_v1'
         ,[ req.paramBody['groupbuying_uid']]
     );
-}
-
-function queryKakaoLink(req, db_connection){
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_groupbuying_kakao_link_v1'
-        , [
-            req.paramBody['product_uid']
-        ]
-    )
 }
