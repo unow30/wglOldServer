@@ -67,6 +67,7 @@ module.exports = function (req, res) {
 
             if(req.paramBody['group_buying_room_uid']!=0){
                 req.innerBody.item['users'] = await querySelectGonguUser(req, db_connection);
+                req.innerBody.item['kakao_link'] = await queryKakaoLink(req, db_connection);
             }
 
             req.innerBody['seller_list'] = await querySelectList(req, db_connection);
@@ -149,4 +150,15 @@ function querySelectList(req, db_connection) {
             req.paramBody['order_uid'],
         ]
     );
+}
+
+function queryKakaoLink(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_groupbuying_kakao_link_v1'
+        , [
+            req.innerBody['item']['product_uid']
+        ]
+    )
 }
