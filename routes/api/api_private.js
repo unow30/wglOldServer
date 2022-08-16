@@ -83,6 +83,7 @@ app.route('/point/list').get( require('./point/selectPointList') )
  * feed api
  */
 app.route('/feed/list').get( require('./feed/selectFeedList') )
+app.route('/v1/gongu/feed/list').get( require('./feed/v1SelectGonguFeedList') )
 app.route('/feed/list/m3u8').get( require('./feed/selectFeedList_m3u8') )
 
 /**
