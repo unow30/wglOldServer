@@ -86,7 +86,7 @@ function videoList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_product_detail_video_review_list'
+        , 'call proc_select_product_detail_video_review_list_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
@@ -98,7 +98,7 @@ function photoList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_product_detail_photo_review_list'
+        , 'call proc_select_product_detail_photo_review_list_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
@@ -110,7 +110,7 @@ function videoListCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_product_detail_video_review_list_count'
+        , 'call proc_select_product_detail_video_review_list_count_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
@@ -122,7 +122,7 @@ function photoListCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_product_detail_photo_review_list_count'
+        , 'call proc_select_product_detail_photo_review_list_count_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],
