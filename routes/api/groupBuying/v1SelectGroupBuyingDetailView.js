@@ -165,7 +165,7 @@ function queryImageList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_image_list'
+        , 'call proc_select_image_list_v1'
         , [
             req.paramBody['product_uid'],
             2,
@@ -177,7 +177,7 @@ function queryImageDetailList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_image_detail_list'
+        , 'call proc_select_image_detail_list_v1'
         , [
             req.paramBody['product_uid'],
             5,
@@ -200,7 +200,7 @@ function queryQnAList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_qna_list'
+        , 'call proc_select_qna_list_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['product_uid'],

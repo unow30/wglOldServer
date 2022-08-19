@@ -109,7 +109,7 @@
      const _funcName = arguments.callee.name;
  
      return mysqlUtil.querySingle(db_connection
-         , 'call proc_create_photo_review'
+         , 'call proc_create_photo_review_v1'
          , [
              req.headers['user_uid'],
              req.paramBody['product_uid'],

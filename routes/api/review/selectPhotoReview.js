@@ -95,7 +95,7 @@
      const _funcName = arguments.callee.name;
  
      return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_photo_review'
+         , 'call proc_select_photo_review_v1'
          , [
              req.headers['user_uid'],
              req.paramBody['product_uid'],
@@ -108,7 +108,7 @@
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_photo_review_count'
+        , 'call proc_select_photo_review_count_v1'
         , [
             req.paramBody['product_uid'],
         ]

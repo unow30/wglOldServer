@@ -79,7 +79,7 @@ function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_delete_photo_review'
+        , 'call proc_delete_photo_review_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['photo_review_uid'],

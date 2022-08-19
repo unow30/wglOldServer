@@ -121,7 +121,7 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_order_detail'
+        , 'call proc_select_order_detail_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['order_uid'],
@@ -144,7 +144,7 @@ function querySelectList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_order_seller_list'
+        , 'call proc_select_order_seller_list_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['order_uid'],

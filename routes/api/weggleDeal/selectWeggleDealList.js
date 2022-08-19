@@ -137,7 +137,7 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_weggledeal_list'
+        , 'call proc_select_weggledeal_list_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['video_uid'],

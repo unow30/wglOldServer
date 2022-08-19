@@ -139,7 +139,7 @@ function queryGonguDeadline(req, db_connection) {
 function queryADList(req, db_connection) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_ad_list'
+        , 'call proc_select_searchview_ad_list_v1'
         , [
             req.headers['user_uid'],
             // req.paramBody['product_uid'],

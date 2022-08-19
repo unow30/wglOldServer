@@ -269,7 +269,7 @@ function querySelect(req, db_connection) {
         }break;
         case 'weggledeal':{
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_weggledeal_list'
+                , 'call proc_select_feed_weggledeal_list_v1'
                 , [
                     req.headers['user_uid'],
                     req.paramBody['video_uid'],
