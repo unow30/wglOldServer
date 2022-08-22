@@ -28,6 +28,12 @@ app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').up
 app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('../api/gift/updateGiftRefund') );
 
 /**
+ * app version check
+ */
+app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
+
+
+/**
  * dev api
  */
 app.route('/dev/test').get( require('./_dev/_dev_select') )
