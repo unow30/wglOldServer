@@ -1,38 +1,41 @@
 /**
- * Created by gunucklee on 2021. 08. 19.
+ * Created by yunhokim on 2022. 07. 19.
  *
  * @swagger
- * /api/private/product/confirm/list:
+ * /api/private/product:
  *   get:
- *     summary: 나의 구매확정 리스트
+ *     summary: 상품 아이템 전달
  *     tags: [Product]
  *     description: |
- *       path : /api/private/product/confirm/list
+ *       path : /api/private/product
  *
- *       * 나의 구매확정 리스트
- *       * 구매화정 상품 중 리뷰 미작성 상품 표시
+ *       * 상품 상세
+ *       * 리뷰작성(영상,사진)시 주문내역에 대한 리뷰작성, 상품에 대한 리뷰 작성 화면에 주문정보 또는 상품정보 전달
+ *       * 상품이 없을경우 리뷰작성 불가
  *
  *     parameters:
  *       - in: query
- *         name: last_uid
+ *         name: product_uid
  *         default: 0
  *         required: true
  *         schema:
  *           type: number
- *           example: 0
- *         description: |
- *           목록 마지막 uid (처음일 경우 0)
- *
+ *           example: 1
+ *         description: 상품 uid
+ *       - in: query
+ *         name: order_product_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: 주문상품 uid
  *
  *     responses:
  *       200:
  *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductConfirmListApi'
  *       400:
  *         description: 에러 코드 400
- *         schema:
- *           $ref: '#/definitions/Error'
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
@@ -41,6 +44,8 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+
+const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -58,12 +63,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let count_data = await querySelectCount(req, db_connection);
-
-            req.innerBody['item'] = await querySelect(req, db_connection);
-            console.log("ASDKSMADKSMDA: " + JSON.stringify(count_data))
-            req.innerBody['total_count'] = count_data['count'];
-
+            req.innerBody['item'] = await queryDetail(req, db_connection);
+            if (!req.innerBody['item']) {
+                errUtil.createCall(errCode.empty, `상품이 존재하지 않습니다.`)
+                return
+            }
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -79,6 +83,8 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    paramUtil.checkParam_noReturn(req.paramBody, 'product_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'order_product_uid');
 }
 
 function deleteBody(req) {
@@ -88,26 +94,20 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-
-function querySelectCount(req, db_connection) {
+function queryDetail(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_confirm_list_count_v1'
-        , [
-            req.headers['user_uid']
-        ]
-    );
-}
-
-function querySelect(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_product_confirm_list'
+        , 'call proc_select_product_item'
         , [
             req.headers['user_uid'],
-            req.paramBody['last_uid'],
+            req.paramBody['product_uid'],
+            req.paramBody['order_product_uid'],
         ]
     );
 }
+
+/*
+* 상품 아이템을 보여주는 경우는 order_product의 상품정보 - 내가 구매한 상품, 옵션, 가격, 확정일 이거나
+* 그냥 상품 아이템 - product.uid로 접근해서 현재 판매중인 상품정보
+* */

@@ -1,46 +1,55 @@
 /**
- * Created by gunucklee on 2021. 08. 19.
+ * Created by hyunhunhwang on 2021. 01. 19.
  *
  * @swagger
- * /api/private/product/confirm/list:
+ * /api/public/user/phone/check:
  *   get:
- *     summary: 나의 구매확정 리스트
- *     tags: [Product]
+ *     summary: 사용 가능 전화번호 여부 체크
+ *     tags: [User]
  *     description: |
- *       path : /api/private/product/confirm/list
+ *       path : /api/public/user/phone/check
  *
- *       * 나의 구매확정 리스트
- *       * 구매화정 상품 중 리뷰 미작성 상품 표시
+ *       * 사용 가능 전화번호 여부 체크
+ *       * 소셜 로그인당 하나의 전화번호만 가입 가능
+ *         : ex) 카카오 로그인시 해당 전화번호로 가입된 카카오 계정이 있다면 가입불가
  *
  *     parameters:
  *       - in: query
- *         name: last_uid
- *         default: 0
+ *         name: phone
  *         required: true
  *         schema:
- *           type: number
- *           example: 0
+ *           type: string
+ *           example: '01012341234'
+ *         description: 가입할 전화번호
+ *       - in: query
+ *         name: signup_type
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 'kakao'
  *         description: |
- *           목록 마지막 uid (처음일 경우 0)
- *
+ *           회원가입 타입
+ *           * kakao: 카카오
+ *           * naver: 네이버
+ *           * apple: 애플
+ *           * google: 구글
+ *         enum: [kakao,naver,apple,google]
  *
  *     responses:
  *       200:
  *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductConfirmListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -58,12 +67,15 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let count_data = await querySelectCount(req, db_connection);
-
-            req.innerBody['item'] = await querySelect(req, db_connection);
-            console.log("ASDKSMADKSMDA: " + JSON.stringify(count_data))
-            req.innerBody['total_count'] = count_data['count'];
-
+            //하나의 소셜계정에 하나의 번호 저장 가능
+            //해당 전화번호를 가지고있는 미탈퇴 유저정보 중에서 signup_type과 phone이 일치하면 회원가입 불가
+            let phone = await queryCheckPhone(req, db_connection);
+            console.log(phone)
+            if( phone ){
+                errUtil.createCall(errCode.already, `소셜 로그인별로 하나의 연락처만 가입할 수 있습니다.`)
+                return
+            }
+            req.innerBody['success'] = 1
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -79,6 +91,8 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    paramUtil.checkParam_noReturn(req.paramBody, 'phone');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'social_id');
 }
 
 function deleteBody(req) {
@@ -88,26 +102,15 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-
-function querySelectCount(req, db_connection) {
+function queryCheckPhone(req, db_connection){
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_confirm_list_count_v1'
-        , [
-            req.headers['user_uid']
-        ]
-    );
-}
-
-function querySelect(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_product_confirm_list'
+        , 'call proc_select_user_phone_check'
         , [
             req.headers['user_uid'],
-            req.paramBody['last_uid'],
+            req.paramBody['phone'],
+            req.paramBody['signup_type'],
         ]
     );
 }

@@ -101,7 +101,7 @@ function querySelectProductConfirmCount(req, db_connection) {
     const _funcName = arguments.callee.name;
     //리뷰 미작성 상품 개수
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_product_confirm_list_count'
+        , 'call proc_select_confirm_list_count_v1'
         , [
             req.headers['user_uid']
         ]

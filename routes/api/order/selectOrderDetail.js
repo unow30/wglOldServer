@@ -20,6 +20,14 @@
  *           example: 1
  *         description: |
  *           구매 uid
+ *       - in: query
+ *         name: group_buying_room_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           공구 방 uid
  *
  *     responses:
  *       200:
@@ -56,6 +64,11 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+
+            if(req.paramBody['group_buying_room_uid']!=0){
+                req.innerBody.item['users'] = await querySelectGonguUser(req, db_connection);
+                req.innerBody.item['kakao_link'] = await queryKakaoLink(req, db_connection);
+            }
 
             req.innerBody['seller_list'] = await querySelectList(req, db_connection);
 
@@ -108,10 +121,21 @@ function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_order_detail'
+        , 'call proc_select_order_detail_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['order_uid'],
+        ]
+    );
+}
+
+function querySelectGonguUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_order_detail_gongu__user_v1'
+        , [
+            req.paramBody['group_buying_room_uid'],
         ]
     );
 }
@@ -120,10 +144,21 @@ function querySelectList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_order_seller_list'
+        , 'call proc_select_order_seller_list_v1'
         , [
             req.headers['user_uid'],
             req.paramBody['order_uid'],
         ]
     );
+}
+
+function queryKakaoLink(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_groupbuying_kakao_link_v1'
+        , [
+            req.innerBody['item']['product_uid']
+        ]
+    )
 }

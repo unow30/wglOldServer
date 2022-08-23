@@ -11,6 +11,7 @@ app.route('/user/signup').post( require('./user/createUser') )
 app.route('/user/signup/check').get( require('./user/selectSignUpCheck') )
 app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
 app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck') )
+app.route('/user/phone/check').get( require('./user/selectUserPhoneCheck') )
 app.route('/user/recommendee/code/check').get( require('./user/selectUserRecommendeeCodeCheck') )
 
 /**
@@ -25,6 +26,12 @@ app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').up
  * cron order_cancel_gift
  */
 app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('../api/gift/updateGiftRefund') );
+
+/**
+ * app version check
+ */
+app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
+
 
 /**
  * dev api
