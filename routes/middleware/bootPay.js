@@ -299,7 +299,6 @@ function queryCancelInfo(req, db_connection){
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_cancel_info'
         , [
-            // parseInt(req.paramBody["status"]) === 0 ? 0 : 1,
             parseInt(req.paramBody["status"]),
             req.paramBody['order_uid'],
             req.paramBody['order_product_uid'],

@@ -159,6 +159,29 @@ module.exports = function (req, res) {
                             await queryRollbackReward(req, db_connection)
                         }
                         break;
+                    
+                    case 51:
+                        // 1명있는 방일경우 유저, 룸 drop
+                        // 1명 이상 있는 방일경우 유저 drop 및 room 참가인원 -1
+                        // order gongu_room_uid 0으로 변경 및 order_products status 51로 변경
+                        // 취소금액 환불 및 리워드 환급
+                        const gongu123 = await querySelectRoomUser(req, db_connection);
+                        console.log(gongu123)
+                        console.log('111들어옴')
+                        if(gongu123.participants == 1){
+                            await queryDropGongu(gongu123, db_connection);
+                        }
+                        else{
+                            await queryUpdateGongu(gongu123, db_connection);
+                        }
+
+                        if(req.innerBody['item']['refund_reward'] > 0) {
+                            console.log('들어왔다')
+                            await queryRollbackReward(req, db_connection);
+
+                        }
+
+                        break;
 
 
 
@@ -385,4 +408,39 @@ function queryPoint(data, db_connection, point) {
             `공동구매 ${point}포인트 제공`
         ]
     );
+}
+function querySelectRoomUser(req, db_connection){
+    console.log(req.headers['user_uid'], req.paramBody['order_uid'])
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_order_update_room_user_v1'
+        , [
+            req.headers['user_uid'], req.paramBody['order_uid']
+        ]
+    )
+}
+
+function queryDropGongu(data, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_delete_gongu_room_user_v1'
+        , [
+            data.order_uid, // order gongu_room_uid 0으로 변경 
+            data.order_product_uid, // order_products status 51로 변경
+            data.group_buying_room_uid, // 삭제
+            data.group_buying_room_user_uid // 삭제
+        ]
+    )
+}
+
+function queryUpdateGongu(data, db_connection){
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_update_gongu_room_user_v1'
+        ,[
+            data.order_uid, // order gongu_room_uid 0으로 변경 
+            data.order_product_uid, // order_products status 51로 변경
+            data.group_buying_room_uid, // participants -1해서 room 업데이트
+            data.group_buying_room_user_uid // 삭제
+        ]
+    )
 }
