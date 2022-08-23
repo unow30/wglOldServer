@@ -105,6 +105,7 @@ module.exports = function (req, res) {
             }
 
             req.innerBody['item'] = await query(req, db_connection);
+            // console.table(req.innerBody['item']['status'])
             let alertList = await queryAlertComment(req, db_connection);
 
 
@@ -122,6 +123,32 @@ module.exports = function (req, res) {
                             let fcmReward = await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward'])
                             await queryInsertFCM(fcmReward['data'], db_connection)
                         }
+                        //공구방의 참가가능인원(타입) 참가인원중 구매확정한 인원의 수를 가져온다.
+                        //공구방의 방장 uid와 order_no를 가져온다. 방장이 나가면 데이터가 drop이라 이 데이터가 없다.
+                        let count = await queryConfirm(req, db_connection)
+                        // console.table(count)
+
+                        //참가가능인원이 2,5,10일때 구매확정 인원이 2,3,5일때 포인트를 제공한다.
+                        //한번에 바뀌면 어떻하지? 크론으로 구매확정이 동시에 이뤄진다면?
+                        //방장이 있을경우만 작동
+                        if(count['confirm_count'] == 2 && count['recruitment'] == 2){
+                            //포인트 1000 제공
+                            await queryPoint(count, db_connection, 1000)
+                            console.log('포인트 1000 제공')
+                        }
+
+                        if(count['confirm_count'] == 3 && count['recruitment'] == 5){
+                            //포인트 2000 제공
+                            await queryPoint(count, db_connection, 2000)
+                            console.log('포인트 2000 제공')
+                        }
+
+                        if(count['confirm_count'] == 5 && count['recruitment'] == 10){
+                            //포인트 5000 제공
+                            await queryPoint(count, db_connection, 5000)
+                            console.log('포인트 5000 제공')
+                        }
+
                         break;
 
                     case 6:
@@ -171,7 +198,8 @@ function checkParam(req) {
     }
 
     if( !(req.paramBody['status'] === 5 || req.paramBody['status'] === 6 ||
-        req.paramBody['status'] === 10 || req.paramBody['status'] === 20  ) ) {
+        req.paramBody['status'] === 10 || req.paramBody['status'] === 20 ||
+        req.paramBody['status'] === 51) ) {
         errUtil.createCall(errCode.param, `파라미터 오류 발생. 파라미터를 확인해 주세요.\n확인 파마리터 : status 취소/확정 만 가능`);
     }
 
@@ -333,4 +361,28 @@ function queryAlertComment(req, db_connection){
             req.innerBody['item']['seller_uid']
         ]
     )
+}
+
+function queryConfirm(req, db_connection){
+    return mysqlUtil.querySingle(db_connection
+        , 'call select_groupbuyingroomuser_confirm_count_v1'
+        , [
+            req.innerBody['item']['group_buying_room_uid']
+        ]
+    )
+}
+
+function queryPoint(data, db_connection, point) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_use_point'
+        , [
+            data['user_uid'], //헤드에게 포인트를 줘야한다.
+            data['order_no'], //헤드의 주문번호
+            1, //지급
+            point,
+            `공동구매 ${point}포인트 제공`
+        ]
+    );
 }

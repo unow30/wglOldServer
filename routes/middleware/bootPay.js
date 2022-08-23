@@ -37,7 +37,7 @@ module.exports =  function (req, res, next) {
         * req.paramBody["status"]) === 0은 선물 결제완료를 취소(6으로 변경)하기 위해 확인하는 값
         * 둘 다 order_product.status를 확인한다.
         */
-        if (parseInt(req.paramBody["status"]) === 6 || parseInt(req.paramBody["status"]) === 0) {
+        if (parseInt(req.paramBody["status"]) === 6 || parseInt(req.paramBody["status"]) === 0 || parseInt(req.paramBody["status"]) === 51) {
 
 
             mysqlUtil.connectPool( async function (db_connection) {
