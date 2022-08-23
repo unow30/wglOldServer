@@ -103,5 +103,3 @@ function querySelect(req, db_connection) {
         ]
     );
 }
-
-
