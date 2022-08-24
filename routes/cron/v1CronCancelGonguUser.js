@@ -39,7 +39,7 @@ module.exports ={
                 // nickname: result.nickname
 
                 for(let i=0; i<item.length; i++){
-                    let result = itemData[i]
+                    let result = item[i]
 
                     if(result.cancelable_reward>0 || result.cancelable_price>0){
                         if(result.refund_payment>0){
