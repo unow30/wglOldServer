@@ -18,36 +18,27 @@ module.exports ={
             mysqlUtil.connectPool( async function (db_connection) {
                 const item = await queryGonguDeadline(db_connection);
 
-                let gonguRoomArr = []; // is_deleted = 1
+                let gonguRoomArr = []; // drop
+                let gongoRoomUser = []; // drop
                 let gonguArr = []; // is_deleted = 1
-                let orderProductArr = []; // status = 6
+                let orderProductArr = []; // status = 51
                 let userArr = []; // fcm알람때문에
-                let rewardArr = []; //
                 let orderArr = []; // cancelable_reward or cancelable_price 0 으로 만들어줄 배열
-                let bootPayArr = [];
 
-                const itemData = item.map(result=>{
-                    gonguRoomArr.push(result.group_buying_room_uid)
-                    gonguArr.push(result.group_buying_uid)
-                    
+                // cancelable_reward: result.cancelable_reward,
+                // cancelable_price: result.cancelable_price,
+                // price_total: result.price_total,
+                // price_payment: result.price_payment,
+                // order_uid: result.order_uid,
+                // order_product_uid: result.order_product_uid,
+                // group_buying_room_uid: result.group_buying_room_uid,
+                // group_buying_uid: result.group_buying_uid,
+                // user_uid: result.user_uid,
+                // refund_payment: result.refund_payment,
+                // pg_receipt_id: result.pg_receipt_id,
+                // nickname: result.nickname
 
-                    return {
-                        cancelable_reward: result.cancelable_reward,
-                        cancelable_price: result.cancelable_price,
-                        price_total: result.price_total,
-                        price_payment: result.price_payment,
-                        order_uid: result.order_uid,
-                        order_product_uid: result.order_product_uid,
-                        group_buying_room_uid: result.group_buying_room_uid,
-                        group_buying_uid: result.group_buying_uid,
-                        user_uid: result.user_uid,
-                        refund_payment: result.refund_payment,
-                        pg_receipt_id: result.pg_receipt_id,
-                        nickname: result.nickname
-                    }
-                });
-
-                for(let i=0; i<itemData.length; i++){
+                for(let i=0; i<item.length; i++){
                     let result = itemData[i]
 
                     if(result.cancelable_reward>0 || result.cancelable_price>0){
@@ -58,6 +49,7 @@ module.exports ={
                                 process.env.BOOTPAY_PRIVATE_KEY,
                             );
                             let token = await RestClient.getAccessToken();
+                            let rewardInfo = {};
 
                             if (token.status === 200){
                                 let bootRes = await RestClient.cancel({
@@ -71,26 +63,61 @@ module.exports ={
                                     orderProductArr.push(result.order_product_uid)
                                     userArr.push(result.user_token)
                                     orderArr.push(result.order_uid);
+                                    gongoRoomUser.push(result.group_buying_room_user_uid);
+                                    gonguRoomArr.push(result.group_buying_room_uid)
+                                    gonguArr.push(result.group_buying_uid)
                                 }
                                 if(result.cancelable_reward>0){
-                                    // 리워드 벌크 인서트 로직 추가되어야 함
+                                    // 리워드 환불
+                                    // req.innerBody['item']['user_uid'],
+                                    // req.innerBody['item']['seller_uid'],
+                                    // req.innerBody['item']['order_uid'],
+                                    // req.innerBody['item']['order_no'],
+                                    // 13,
+                                    // req.innerBody['item']['refund_reward'],
+                                    // '환불로 인한 사용 리워드 롤백',
+                                    rewardInfo = {
+                                        user_uid: result.user_uid,
+                                        seller_uid: result.seller_uid,
+                                        order_uid: result.order_uid,
+                                        order_no: result.order_no,
+                                        state: 13,
+                                        refund_reward: result.refund_reward,
+                                        text: '환불로 인한 사용 리워드 롤백'
+                                    }
+                                    // await queryRollbackReward(db_connection, rewardInfo);
+                                    // 위 함수 살려야 함
                                 }
                             }
                         }
                         else{
-                            // 리워드 벌크 인서트 로직 추가되어야 함
+                            rewardInfo = {
+                                user_uid: result.user_uid,
+                                seller_uid: result.seller_uid,
+                                order_uid: result.order_uid,
+                                order_no: result.order_no,
+                                state: 13,
+                                refund_reward: result.refund_reward,
+                                text: '환불로 인한 사용 리워드 롤백'
+                            }
+                            // await queryRollbackReward(db_connection) // 리워드 환불
+                            // 위 함수 살려야 함
                             orderProductArr.push(result.order_product_uid);
                             userArr.push(result.user_token);
                             orderArr.push(result.order_uid);
+                            gongoRoomUser.push(result.group_buying_room_user_uid);
+                            gonguRoomArr.push(result.group_buying_room_uid)
+                            gonguArr.push(result.group_buying_uid)
                         }
                     }   
                 }
 
 
-                gonguRoomArr = [...new Set(gonguRoomArr)];
-                gonguArr = [...new Set(gonguArr)];
-                userArr = [...new Set(userArr)];
-                // await queryGonguEndUpdate(db_connection, gonguRoomArr, gonguArr, orderProductArr);
+                gonguRoomArr = [...new Set(gonguRoomArr)]; // drop
+                gonguArr = [...new Set(gonguArr)]; // is_deleted
+                userArr = [...new Set(userArr)]; // push 토큰용
+                // await queryGonguEndUpdate(db_connection, gonguRoomArr, gonguArr, gongoRoomUser, orderProductArr, orderArr);
+                await alarm(userArr);
                 console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
                 console.log('gonguRoomArr===',gonguRoomArr)
                 console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
@@ -103,6 +130,14 @@ module.exports ={
                 console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
                 console.log('orderProductArr===',orderProductArr)
                 console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
+                console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
+                console.log('orderArr===',orderArr)
+                console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
+                console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
+                console.log('gonguRoomUserArr===',gonguRoomUserArr)
+                console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
+
+                
 
                 //공구 룸 삭제, 공구 삭제, 오더프로덕트 결제취소, 공구유저 fcm
             }, function (err) {
@@ -124,25 +159,43 @@ function queryGonguDeadline(db_connection) {
     );
 };
 
-function queryGonguEndUpdate(db_connection, gonguRoom, gongu, orderProduct) {
+function queryGonguEndUpdate(db_connection, gonguRoom, gongu, gonguRoomUser, orderProduct, order) {
     const gonguRoomData = JSON.stringify(gonguRoom);
     const gonguData = JSON.stringify(gongu);
     const orderProductData = JSON.stringify(orderProduct);
-
+    const orderData = JSON.stringify(order);
+    const gonguRoomUserData = JSON.stringify(gonguRoomUser);
     return mysqlUtil.queryArray(db_connection
         , 'call cron_gongu_end_update_v1'
         , [
             gonguRoomData,
             gonguData,
+            gonguRoomUserData,
             orderProductData,
+            orderData,
         ]
     );
 };
 
-async function alarm(req, res) {
+function queryRollbackReward(db_connection, rewardInfo) {
+    const _funcName = arguments.callee.name;
 
-    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
-    await fcmUtil.fcmCreateOrderList(push_token_list);
+    return mysqlUtil.querySingle(db_connection
+        , 'call cron_gongu_deadline_v1'
+        , [
+            rewardInfo.user_uid,
+            rewardInfo.seller_uid,
+            rewardInfo.order_uid,
+            rewardInfo.order_no,
+            rewardInfo.state,
+            rewardInfo.refund_reward,
+            rewardInfo.text,
+        ]
+    );
+}
+
+async function alarm(userList) {
+    await fcmUtil.fcmGonguCancelList(userList);
 
 }
 

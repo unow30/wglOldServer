@@ -444,5 +444,4 @@ function queryUpdateGongu(data, db_connection){
             data.group_buying_room_user_uid // 삭제
         ]
     )
-
 }
