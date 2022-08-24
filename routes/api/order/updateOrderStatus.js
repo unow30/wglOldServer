@@ -44,6 +44,7 @@
  *                 * 6: 구매 취소
  *                 * 10: 반품 신청
  *                 * 20: 교환 신청
+ *                 * 51: 교환 신청
  *               enum: [5,6,10,20]
  *             cancel_reason:
  *               type: string
@@ -221,8 +222,7 @@ function checkParam(req) {
     }
 
     if( !(req.paramBody['status'] === 5 || req.paramBody['status'] === 6 ||
-        req.paramBody['status'] === 10 || req.paramBody['status'] === 20 ||
-        req.paramBody['status'] === 51) ) {
+        req.paramBody['status'] === 10 || req.paramBody['status'] === 20  || req.paramBody['status'] === 51) ) {
         errUtil.createCall(errCode.param, `파라미터 오류 발생. 파라미터를 확인해 주세요.\n확인 파마리터 : status 취소/확정 만 가능`);
     }
 
@@ -303,7 +303,7 @@ function queryCancelCheck(req, db_connection, item) {
 
 function queryRollbackReward(req, db_connection) {
     const _funcName = arguments.callee.name;
-
+    console.log(req.innerBody['item'])
     return mysqlUtil.querySingle(db_connection
         , 'call w_seller_update_rollback_reward'
         , [
@@ -409,6 +409,7 @@ function queryPoint(data, db_connection, point) {
         ]
     );
 }
+
 function querySelectRoomUser(req, db_connection){
     console.log(req.headers['user_uid'], req.paramBody['order_uid'])
     return mysqlUtil.querySingle(db_connection
