@@ -27,6 +27,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 // 관리자사이트 서버 실행
 // 12: 위글 리뷰영상 이벤트 심사 승인 => 리뷰어에게 전달. 받는 uid 없음
 // 13: 위글 리뷰영상 이벤트 심사 거절 => 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
+// 14: 공동구매 종료시 매칭 실패 및 리워드, 금액 환불 알람
 
 
 
@@ -343,16 +344,16 @@ module.exports = {
             "registration_ids": item,
             "priority": "high",
             "data": {
-                "title": "위글 추천인 포인트 알림",
-                "message": "위글 추천인 이벤트! 바로 사용 가능한 포인트를 지급하였습니다.",
-                "channel" : "위글 추천인 포인트 알림",
-                "alarm_type" : "6",
+                "title": "공동구매 매칭 실패 알림",
+                "message": "공동구매 종료로 인한 리워드 및 금액이 환불 되었습니다.",
+                "channel" : "공동구매 매칭 실패 알림",
+                "alarm_type" : "14",
             },
             "notification": {
-                "title": "위글 추천인 포인트 알림",
-                "body": "위글 추천인 이벤트! 바로 사용 가능한 포인트를 지급하였습니다.",
-                "channel" : "위글 추천인 포인트 알림",
-                "alarm_type" : "6",
+                "title": "공동구매 매칭 실패 알림",
+                "body": "공동구매 종료로 인한 리워드 및 금액이 환불 되었습니다.",
+                "channel" : "공동구매 매칭 실패 알림",
+                "alarm_type" : "14",
                 "sound" : "default",
                 "badge": "1",
                 "content-available" : "true",
@@ -360,8 +361,6 @@ module.exports = {
                 "badge count" : "0",
                 "mutable-content": "1",
             },
-        }).then((res)=>{
-            return JSON.parse(res['config']['data']);
         }).catch((e) => console.log(e));
     },
 };
