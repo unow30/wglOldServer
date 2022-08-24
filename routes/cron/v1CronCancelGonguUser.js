@@ -94,7 +94,7 @@ module.exports ={
                         }
                     }   
                 }
-                userArr = new Set(userArr); // push 토큰용
+                userArr = [...new Set(userArr)]; // push 토큰용
 
                 /// 프로시저에서 find_in_set 위한 공백 다 삭제
                 console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
@@ -117,7 +117,7 @@ module.exports ={
                 console.log('==============>>>>>>>>>============>>>>>>>>>>>===========');
                 await queryGonguDrop(db_connection, gonguRoomArr, gonguRoomUserArr);
                 await queryGonguAndOrderUpdate(db_connection, gonguArr, orderProductArr, orderArr);
-
+                
                 if(userArr.length > 0){
                     await alarm(userArr);
                     console.log('취소 크론 끝')
