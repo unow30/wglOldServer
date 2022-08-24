@@ -43,7 +43,7 @@ module.exports ={
 
                     if(result.cancelable_reward>0 || result.cancelable_price>0){
                         let rewardInfo = {};
-                        if(result.refund_payment>0){
+                        if(result.cancelable_price>0){
                             //부트페이 실행
                             RestClient.setConfig(
                                 process.env.BOOTPAY_APPLICATION_ID,
