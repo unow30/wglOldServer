@@ -42,6 +42,7 @@ module.exports ={
                     let result = item[i]
 
                     if(result.cancelable_reward>0 || result.cancelable_price>0){
+                        let rewardInfo = {};
                         if(result.refund_payment>0){
                             //부트페이 실행
                             RestClient.setConfig(
@@ -49,9 +50,10 @@ module.exports ={
                                 process.env.BOOTPAY_PRIVATE_KEY,
                             );
                             let token = await RestClient.getAccessToken();
-                            let rewardInfo = {};
+                            console.log('token====>',token)
 
                             if (token.status === 200){
+                                console.log('bootpay token 200')
                                 let bootRes = await RestClient.cancel({
                                     receiptId: result.pg_receipt_id,
                                     price: result.refund_payment,                               // "[[ 결제 취소할 금액 ]]"
@@ -60,6 +62,7 @@ module.exports ={
                                 })
 
                                 if(bootRes.status === 200){
+                                    console.log('bootpay 통신 200')
                                     orderProductArr.push(result.order_product_uid)
                                     userArr.push(result.user_token)
                                     orderArr.push(result.order_uid);
