@@ -90,7 +90,7 @@
      const _funcName = arguments.callee.name;
  
      return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_profile_product_photo_review_list'
+         , 'call proc_select_profile_product_photo_review_list_v1'
          , [
              req.headers['user_uid'],
              req.paramBody['user_uid'],

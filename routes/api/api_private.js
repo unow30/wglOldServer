@@ -26,7 +26,10 @@ app.route('/user/profile/video/list').get( require('./user/selectUserProfileRevi
 app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
 
 app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
+app.route('/v1/product/confirm/list').get( require('./product/v1SelectProductConfirmList') )
+app.route('/product').get(require('./product/selectProductItem')) //상품 item만 불러온다.
 app.route('/product/detail').get( require('./product/selectProductDetail') )
+app.route('/product/detail/review/list').get( require('./product/selectProductDetailReviewList') )//2022/07/06 리뷰 영상, 사진, 카운트 같이 불러오기
 app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
 app.route('/product/review/list').get( require('./product/selectProductReviewList') )
 app.route('/product/option/list').get( require('./product/selectProductOptionList') )
@@ -80,6 +83,7 @@ app.route('/point/list').get( require('./point/selectPointList') )
  * feed api
  */
 app.route('/feed/list').get( require('./feed/selectFeedList') )
+app.route('/v1/gongu/feed/list').get( require('./feed/v1SelectGonguFeedList') )
 app.route('/feed/list/m3u8').get( require('./feed/selectFeedList_m3u8') )
 
 /**
@@ -104,7 +108,10 @@ app.route('/video/search/result/list').get( require('./video/selectVideoSearchRe
  * review api
  */
  app.route('/review/photo').get( require('./review/selectPhotoReview'))
+ app.route('/v1/review/photo').put( require('./review/updatePhotoReview'))
+ app.route('/v1/review/photo').delete( require('./review/deletePhotoReview'))
  app.route('/review/photo').post( require('./review/createPhotoReview'))
+ app.route('/review/video').get( require('./review/selectVideoReview'))
 
 /**
  * comment api
@@ -173,6 +180,9 @@ app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
  * searchView api
  */
 app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+app.route('/v1/searchview/list/all').get(require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+app.route('/v1/searchview/list/gongudeal').get(require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
+app.route('/v1/searchview/list/gongudeadline').get(require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
 app.route('/searchview/popular/category/product/preview/list').get( require('./searchView/selectSearchViewPopularCategoryProductList')) // 인기 카테고리 목록
 app.route('/searchview/new/category/video/list').get( require('./searchView/selectSearchViewNewCategoryVideoList') )// 신규 카테고리 영상 목록
 
@@ -250,5 +260,12 @@ app.route('/promotion/list').get( require('./promotion/selectPromotionList')) //
  */
 app.route('/dev/searchview/new/product/list').get( require('./_dev/_dev_selectSearchViewNewProductList'))
 
+/**
+ * dev groupbuying api
+ */
+app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuyingDetailView') )
+app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1SelectGroupBuyingRoomList') )
+app.route('/v1/groupbuying/filter').get( require('./groupBuying/v1SelectGroupBuyingFilter') )
+app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuyingOrder') )
 
 module.exports = app;

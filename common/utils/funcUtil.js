@@ -77,6 +77,16 @@ module.exports = {
         return _isRealServer() ? process.env.REAL_AWS_MEDIA_CONVERT_S3_DESTINATION : process.env.DEV_AWS_MEDIA_CONVERT_S3_DESTINATION;
     },
 
+    /**
+     * naver API
+     * @returns {*}
+     */
+    getNaverUserInformation: ()=>{
+        return {
+            naverId: process.env.NAVER_ID,
+            naverPw: process.env.NAVER_PW,
+        }
+    },
 }
 
 function _isRealServer(){

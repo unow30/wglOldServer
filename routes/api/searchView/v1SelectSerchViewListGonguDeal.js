@@ -1,37 +1,34 @@
 /**
- * Created by jongho on 2022. 06. 28.
+ * Created by jongho
  *
  * @swagger
- * /api/private/user/profile/video/list:
+ * /api/private/v1/searchview/list/gongudeal:
  *   get:
- *     summary: 프로필 리뷰영상/상품영상 목록
- *     tags: [User]
+ *     summary: 공구딜 전체보기
+ *     tags: [SearchView]
  *     description: |
- *       path : /api/private/user/profile/video/list
+ *      ## path : /api/private/v1/searchview/list/gongudeal
  *
- *       * 프로필 리뷰영상/상품영상 목록
+ *       * ## 공구딜 전체보기 
+ *         * ### 지금뜨는 공구딜 목록
  *
  *     parameters:
  *       - in: query
- *         name: user_uid
- *         default: 0
+ *         name: random_seed
  *         required: true
  *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
  *         name: offset
- *         default: 0
  *         required: true
  *         schema:
- *           type: number
+ *           type: int
  *           example: 0
  *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
- *           offset 0: 0~11
- *           offset 12: 12~23
- *           offset 24: 24~35
+ *           12개 단위
  *
  *     responses:
  *       400:
@@ -39,61 +36,42 @@
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-
  const paramUtil = require('../../../common/utils/paramUtil');
  const fileUtil = require('../../../common/utils/fileUtil');
  const mysqlUtil = require('../../../common/utils/mysqlUtil');
  const sendUtil = require('../../../common/utils/sendUtil');
  const errUtil = require('../../../common/utils/errUtil');
  const logUtil = require('../../../common/utils/logUtil');
- 
  let file_name = fileUtil.name(__filename);
- 
  module.exports = function (req, res) {
      const _funcName = arguments.callee.name;
- 
      try {
          req.file_name = file_name;
          logUtil.printUrlLog(req, `== function start ==================================`);
          req.paramBody = paramUtil.parse(req);
-         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
- 
-         checkParam(req);
- 
+         
          mysqlUtil.connectPool(async function (db_connection) {
-             req.innerBody = {};
- 
-             req.innerBody['item'] = await queryList(req, db_connection);
- 
-             deleteBody(req)
-             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
- 
+            req.innerBody = {};
+            req.innerBody['gongu_deal'] = await queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
+
+
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
          }, function (err) {
              sendUtil.sendErrorPacket(req, res, err);
          });
- 
      } catch (e) {
          let _err = errUtil.get(e);
          sendUtil.sendErrorPacket(req, res, _err);
      }
  }
- 
- function checkParam(req) {
-     paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
- 
- }
- 
- function deleteBody(req) {
- }
- 
- function queryList(req, db_connection) {
+
+ function queryGonguDeal(req, db_connection) {
      const _funcName = arguments.callee.name;
- 
      return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_profile_product_video_review_list_v1'
+         , 'call proc_select_searchview_gongu_deal_v1'
          , [
              req.headers['user_uid'],
-             req.paramBody['user_uid'],
+             req.paramBody['random_seed'],
              req.paramBody['offset'],
          ]
      );

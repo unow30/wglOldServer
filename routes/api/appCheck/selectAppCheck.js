@@ -1,46 +1,31 @@
 /**
- * Created by gunucklee on 2021. 08. 19.
+ * Created by hyunhunhwang on 2021. 01. 19.
  *
  * @swagger
- * /api/private/product/confirm/list:
+ * /api/public/app/version/check:
  *   get:
- *     summary: 나의 구매확정 리스트
- *     tags: [Product]
+ *     summary: 앱 버전 체크
+ *     tags: [appCheck]
  *     description: |
- *       path : /api/private/product/confirm/list
+ *       path : /api/public/app/version/check:
  *
- *       * 나의 구매확정 리스트
- *       * 구매화정 상품 중 리뷰 미작성 상품 표시
- *
- *     parameters:
- *       - in: query
- *         name: last_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           목록 마지막 uid (처음일 경우 0)
- *
+ *       * 앱 버전 체크
  *
  *     responses:
  *       200:
  *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductConfirmListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -58,12 +43,15 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let count_data = await querySelectCount(req, db_connection);
+            let app_version = await querySelect(req, db_connection);
+            console.log(app_version)
+            if( !app_version ){
+                errUtil.createCall(errCode.empty, `앱 버전정보를 불러올 수 없습니다.`)
+                return
+            }
 
-            req.innerBody['item'] = await querySelect(req, db_connection);
-            console.log("ASDKSMADKSMDA: " + JSON.stringify(count_data))
-            req.innerBody['total_count'] = count_data['count'];
-
+            // req.innerBody['is_already'] = 0
+            req.innerBody['item'] = app_version
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -79,6 +67,8 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    // paramUtil.checkParam_noReturn(req.paramBody, 'email');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'social_id');
 }
 
 function deleteBody(req) {
@@ -88,26 +78,18 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-
-function querySelectCount(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_confirm_list_count_v1'
-        , [
-            req.headers['user_uid']
-        ]
-    );
-}
-
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_product_confirm_list'
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_app_version'
         , [
-            req.headers['user_uid'],
-            req.paramBody['last_uid'],
+            // req.headers['user_uid'],
+            // req.paramBody['email'],
+            // req.headers['access_token'],
         ]
     );
 }
+
+
+
