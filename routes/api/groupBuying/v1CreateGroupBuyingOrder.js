@@ -271,6 +271,7 @@ module.exports = function (req, res) {
                     //같은 방에있는 주문상품의 status 50을 1로 바꿔줘야 한다.
                     await queryUpdateOrderProduct(req, db_connection);
                     const pushList = await queryGonguRoomUser(req, db_connection);
+                    console.log(pushList)
                     await orderMatchAlarm(pushList);
                     console.log('공구방 풀이니 알람 보내기')
                     await orderAlarm(req, res)
@@ -564,7 +565,7 @@ function makePushTokenAndAligoParam(req, product){
 function queryGonguRoomUser(req, db_connection){
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
+    return mysqlUtil.queryArray(db_connection
         , 'call proc_select_order_room_all_user_v1'
         , [
             req.paramBody['groupbuying_room_uid']
