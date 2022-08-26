@@ -168,14 +168,14 @@ module.exports = function (req, res) {
                         // 1명 이상 있는 방일경우 유저 drop 및 room 참가인원 -1
                         // order gongu_room_uid 0으로 변경 및 order_products status 51로 변경
                         // 취소금액 환불 및 리워드 환급
-                        const gongu123 = await querySelectRoomUser(req, db_connection);
-                        console.log(gongu123)
+                        const gonguUser = await querySelectRoomUser(req, db_connection);
                         console.log('111들어옴')
-                        if(gongu123.participants == 1){
-                            await queryDropGongu(gongu123, db_connection);
+                        console.log(gonguUser)
+                        if(gonguUser.participants == 1){
+                            await queryDropGongu(gonguUser, db_connection);
                         }
                         else{
-                            await queryUpdateGongu(gongu123, db_connection);
+                            await queryUpdateGongu(gonguUser, db_connection);
                         }
 
                         if(req.innerBody['item']['refund_reward'] > 0) {

@@ -27,6 +27,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 // 관리자사이트 서버 실행
 // 12: 위글 리뷰영상 이벤트 심사 승인 => 리뷰어에게 전달. 받는 uid 없음
 // 13: 위글 리뷰영상 이벤트 심사 거절 => 위글 앱 실행(위글앱으로 화면을 열 수 없는 경우)
+//
+// 공동구매 관련 fcm
 // 14: 공동구매 종료시 매칭 실패 및 리워드, 금액 환불 알람
 
 
@@ -354,6 +356,30 @@ module.exports = {
                 "body": "공동구매 종료로 인한 리워드 및 금액이 환불 되었습니다.",
                 "channel" : "공동구매 매칭 실패 알림",
                 "alarm_type" : "14",
+                "sound" : "default",
+                "badge": "1",
+                "content-available" : "true",
+                "apns-priority" : "5",
+                "badge count" : "0",
+                "mutable-content": "1",
+            },
+        }).catch((e) => console.log(e));
+    },
+    fcmGonguMatchSuccess : async function(item){
+        return  await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "registration_ids": item.push_token,
+            "priority": "high",
+            "data": {
+                "title": "공동구매 매칭 성공 알림",
+                "message": `공동구매에 참여하신 상품 ${item.product_name}이 매칭 완료되었습니다.`,
+                "channel" : "공동구매 매칭 성공 알림",
+                "alarm_type" : "15",
+            },
+            "notification": {
+                "title": "공동구매 매칭 성공 알림",
+                "body": `공동구매에 참여하신 상품 ${item.product_name}이 매칭 완료되었습니다.`,
+                "channel" : "공동구매 매칭 성공 알림",
+                "alarm_type" : "15",
                 "sound" : "default",
                 "badge": "1",
                 "content-available" : "true",

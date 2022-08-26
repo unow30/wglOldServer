@@ -269,7 +269,10 @@ module.exports = function (req, res) {
                 console.log(roomIsFull)
                 if(roomIsFull['status'] == 1){
                     //같은 방에있는 주문상품의 status 50을 1로 바꿔줘야 한다.
-                    await queryUpdateOrderProduct(req, db_connection)
+                    await queryUpdateOrderProduct(req, db_connection);
+                    const pushList = await queryGonguRoomUser(req, db_connection);
+                    console.log(pushList)
+                    await orderMatchAlarm(pushList);
                     console.log('공구방 풀이니 알람 보내기')
                     await orderAlarm(req, res)
                 }
@@ -557,4 +560,24 @@ function makePushTokenAndAligoParam(req, product){
     let obj = {"phone": product['phone'], name: product['name'], nickname: product['nickname']}
     req.innerBody['push_token_list'].push(product['push_token']);
     req.innerBody['alrim_msg_list'].push(obj)
+}
+
+function queryGonguRoomUser(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_order_room_all_user_v1'
+        , [
+            req.paramBody['groupbuying_room_uid']
+        ]
+    )
+}
+
+async function orderMatchAlarm(item) {
+    const pushData = {
+        push_token: item.map(result=>result.push_token),
+        product_name: item[0].product_name
+    }
+    
+    await fcmUtil.fcmGonguMatchSuccess(pushData);
 }
