@@ -14,6 +14,22 @@
  *
  *     parameters:
  *       - in: query
+ *         name: category
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: |
+ *           상품 카테고리
+ *           * 1: 식품
+ *           * 2: 뷰티, 주얼리
+ *           * 4: 인테리어
+ *           * 8: 패션,잡화
+ *           * 16: 반려동물
+ *           * 32: 생활용품
+ *         enum: [1,2,4,8,16,32]
+ *       - in: query
  *         name: random_seed
  *         required: true
  *         schema:
@@ -71,6 +87,7 @@
          , 'call proc_select_searchview_gongu_deal_v1'
          , [
              req.headers['user_uid'],
+             req.paramBody['category'],
              req.paramBody['random_seed'],
              req.paramBody['offset'],
          ]
