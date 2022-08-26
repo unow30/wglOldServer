@@ -118,6 +118,7 @@ function queryGonguDeal(req, db_connection) {
         , 'call proc_select_searchview_gongu_deal_v1'
         , [
             req.headers['user_uid'],
+            65535, //전체 카테고리 상품 보여주기
             req.paramBody['random_seed'],
             0, //offset
         ]
