@@ -127,7 +127,9 @@ module.exports = function (req, res) {
                         //공구방의 참가가능인원(타입) 참가인원중 구매확정한 인원의 수를 가져온다.
                         //공구방의 방장 uid와 order_no를 가져온다. 방장이 나가면 데이터가 drop이라 이 데이터가 없다.
                         let count = await queryConfirm(req, db_connection)
-                        // console.table(count)
+                        if(count == null || count == undefined){
+                            count = {"confirm_count": 0, "recruitment": 0};
+                        }
 
                         //참가가능인원이 2,5,10일때 구매확정 인원이 2,3,5일때 포인트를 제공한다.
                         //한번에 바뀌면 어떻하지? 크론으로 구매확정이 동시에 이뤄진다면?
