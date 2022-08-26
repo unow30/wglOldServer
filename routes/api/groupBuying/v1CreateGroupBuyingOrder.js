@@ -576,7 +576,7 @@ function queryGonguRoomUser(req, db_connection){
 async function orderMatchAlarm(item) {
     const pushData = {
         push_token: item.map(result=>result.push_token),
-        product_name: itemp[0].product_name
+        product_name: item[0].product_name
     }
     
     await fcmUtil.fcmGonguMatchSuccess(pushData);
