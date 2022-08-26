@@ -71,6 +71,7 @@
          , 'call proc_select_searchview_gongu_deal_v1'
          , [
              req.headers['user_uid'],
+             req.paramBody['category'],
              req.paramBody['random_seed'],
              req.paramBody['offset'],
          ]
