@@ -58,6 +58,7 @@ module.exports = function (req, res) {
         const hot_weggler = queryHotWeggler(req, db_connection); //핫 위글러 리스트 및 동영상 데이터
         const edition = queryEdition(req, db_connection); // 기획전 상품
         const mdPick = queryMdPick(req, db_connection); // mdPick
+        const newReviewProduct = queryNewReviewPreviewList(req, db_connection); //신규 리뷰 상품
 
         const {month, weekNo} = dateUtil();
         const date = `${month}${weekNo}`;
@@ -66,11 +67,16 @@ module.exports = function (req, res) {
         const [last_order_data, gongu_deal_data, 
             gongu_deadline_data, ad_list_data, 
             hot_weggler_data, edition_data,
-            md_pick_data, best_product_data] = await Promise.all([last_order, gongu_deal, gongu_deadline, ad_list, hot_weggler, edition, mdPick, bestProduct])
+            md_pick_data, best_product_data,
+            new_review_product_data
+        ] = await Promise.all([last_order, gongu_deal, gongu_deadline, ad_list, hot_weggler, edition, mdPick, bestProduct, 
+            newReviewProduct
+        ])
 
         const hot_weggler_parse = hotWegglerParse(hot_weggler_data);
         const edition_parse = editionParse(edition_data);
 
+        req.innerBody['new_review_preview_list'] = new_review_product_data
         req.innerBody['hot_weggler'] = hot_weggler_parse;
         req.innerBody['last_order'] = last_order_data;
         req.innerBody['gongu_deal'] = gongu_deal_data;
@@ -213,6 +219,16 @@ function queryBestProduct(req, db_connection, date) {
         , [
             req.headers['user_uid'],
             date
+        ]
+    );
+};
+
+function queryNewReviewPreviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_new_review_preview_list'
+        , [
+            req.headers['user_uid']
         ]
     );
 };
