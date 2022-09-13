@@ -39,7 +39,8 @@ app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
 app.route('/dev/test').get( require('./_dev/_dev_select') )
 app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_to_HLS') )
 app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
-app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
+// app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
+app.route('/dev/accesstoken').put( require('./_dev/_dev_updateAccessToken') )
 
 app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 
