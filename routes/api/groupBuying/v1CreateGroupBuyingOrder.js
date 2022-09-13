@@ -511,7 +511,7 @@ async function orderAlarm(req, res) {
     // await fcmUtil.fcmCreateOrderList(push_token_list);
 
     // const push_token_list = req.innerBody['push_token_list']
-    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
+    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))// 푸시토큰안에는 판매자가 아니라 구매자 푸시토큰이 있다.
 
     console.log('push_token_list', push_token_list)
 
@@ -555,7 +555,9 @@ function setArimMessage(alrim_msg_distinc_list, idx) {
     console.log("WOQIJCOEIWQJEOQWIEJO")
     return `상품 주문 알림
 
-${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.`
+${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
+
+□ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
 
 }
 
