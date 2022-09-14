@@ -13,11 +13,11 @@
  *     parameters:
  *       - in: query
  *         name: target_uid
- *         default: 0
+ *         default: 212
  *         required: true
  *         schema:
  *           type: integer
- *           example: 1
+ *           example: 212
  *         description: 검색 uid
  *       - in: query
  *         name: keyword
@@ -25,7 +25,7 @@
  *         required: true
  *         schema:
  *           type: string
- *           example: 0
+ *           example: 식스레시피
  *         description: |
  *
  *     responses:
