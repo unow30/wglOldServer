@@ -9,6 +9,8 @@ const sendUtil = require('../../common/utils/sendUtil');
 const errUtil = require('../../common/utils/errUtil');
 const logUtil = require('../../common/utils/logUtil');
 
+let file_name = fileUtil.name(__filename);
+
 const errCode = require('../../common/define/errCode');
 
 const RestClient = require('@bootpay/server-rest-client').RestClient;
@@ -20,10 +22,13 @@ const RestClient = require('@bootpay/server-rest-client').RestClient;
  *
  */
 module.exports =  function (req, res, next) {
-    req.paramBody = paramUtil.parse(req);
-    console.log('param: ',req.paramBody)
 
     try {
+        req.file_name = file_name;
+        logUtil.printUrlLog(req, `== function start ==================================`);
+        req.paramBody = paramUtil.parse(req);
+        console.log('param: ',req.paramBody)
+
         req.innerBody = {};
         RestClient.setConfig(
             process.env.BOOTPAY_APPLICATION_ID,
@@ -36,7 +41,8 @@ module.exports =  function (req, res, next) {
                 if (token.status === 200) {
                     RestClient.cancel({
                         receiptId: req.paramBody['pg_receipt_id'],
-                        price: 0,                               //0이면 결제내역 전체취소
+                        //price: 입력안하면 전체취소,
+                        name: '', //취소자명
                         reason: '결제실패'
                     }).then(function (response) {
                         // 결제 취소가 완료되었다면
