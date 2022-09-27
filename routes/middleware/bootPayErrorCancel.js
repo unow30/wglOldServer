@@ -41,7 +41,7 @@ module.exports =  function (req, res, next) {
                 if (token.status === 200) {
                     RestClient.cancel({
                         receiptId: req.paramBody['pg_receipt_id'],
-                        //price: 입력안하면 전체취소,
+                        price: 0,//입력안하면 전체취소
                         name: '', //취소자명
                         reason: '결제실패'
                     }).then(function (response) {
