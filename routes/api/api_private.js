@@ -141,6 +141,7 @@ app.route('/addressbook')
     .post( require('./addressBook/createAddressBook') )
     .put( require('./addressBook/updateAddressBook') )
     .delete( require('./addressBook/deleteAddressBook') )
+app.route('/addressbook/island').get( require('./addressBook/selectAddressBookIslandCheck') )
 app.route('/addressbook/list').get( require('./addressBook/selectAddressBookList') )
 app.route('/addressbook/detail').get( require('./addressBook/selectAddressBookDetail') )
 
