@@ -21,6 +21,7 @@ const RestClient = require('@bootpay/server-rest-client').RestClient;
  */
 module.exports =  function (req, res, next) {
     req.paramBody = paramUtil.parse(req);
+    console.log('param: ',req.paramBody)
 
     try {
         req.innerBody = {};
@@ -31,6 +32,7 @@ module.exports =  function (req, res, next) {
 
         RestClient.getAccessToken().then(function (token) {
             try {
+                console.log('token.status: ',token.status)
                 if (token.status === 200) {
                     RestClient.cancel({
                         receiptId: req.paramBody['pg_receipt_id'],

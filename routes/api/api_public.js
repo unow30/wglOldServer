@@ -26,6 +26,11 @@ app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').up
  * cron order_cancel_gift
  */
 app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('../api/gift/updateGiftRefund') );
+/**
+ * bootpay error all cancel
+ */
+app.route('/order/cancel').put(require('../middleware/bootPayErrorCancel'))
+
 
 /**
  * app version check
