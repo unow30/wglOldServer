@@ -41,7 +41,8 @@ module.exports =  function (req, res, next) {
                         if (response.status === 200) {
                             console.log(JSON.stringify(response));
                             console.log("부트페이 성공..!!!");
-                            res.send("결제가 실패했습니다")
+                            req.innerBody['is_success'] = 'OK'
+                            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
                         }
                     }).catch((e) => {
                         sendUtil.sendErrorPacket(req, res, errUtil.initError(e.path, `결제가 실패했습니다. 고객센터에 문의해주세요.`));
