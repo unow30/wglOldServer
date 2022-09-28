@@ -1,5 +1,37 @@
 /**
  * Created by yunhokim on 2022. 09. 27.
+ *
+ * @swagger
+ * /api/public/order/cancel:
+ *   put:
+ *     summary: 부트페이 에러 취소
+ *     tags: [Order]
+ *     description: |
+ *       path : /api/public/order/cancel
+ *
+ *       * 부트페이 에러 취소
+ *       * post /private/order 실행 실패시 부트페이 결제내역 전체 취소하기
+ *
+ *     parameters:
+ *       - in: body
+ *         name: body
+ *         description: |
+ *           상품 구매
+ *
+ *         schema:
+ *           type: object
+ *           properties:
+ *             pg_receipt_id:
+ *               type: string
+ *               example: 124ndfgpo12lzxv
+ *               description: |
+ *                 부트페이 receipt_id
+ *
+ *     responses:
+ *       400:
+ *         description: 에러 코드 400
+ *         schema:
+ *           $ref: '#/definitions/Error'
  */
 
 const paramUtil = require('../../common/utils/paramUtil');
@@ -8,6 +40,7 @@ const mysqlUtil = require('../../common/utils/mysqlUtil');
 const sendUtil = require('../../common/utils/sendUtil');
 const errUtil = require('../../common/utils/errUtil');
 const logUtil = require('../../common/utils/logUtil');
+const moment = require('moment');
 
 let file_name = fileUtil.name(__filename);
 
@@ -41,9 +74,9 @@ module.exports =  function (req, res, next) {
                 if (token.status === 200) {
                     RestClient.cancel({
                         receiptId: req.paramBody['pg_receipt_id'],
-                        price: 0,//입력안하면 전체취소
-                        name: '', //취소자명
-                        reason: '결제실패'
+                        // price: 0,//속성값을 안주면 전체취소
+                        name: '위글결제에러결제취소', //취소자명: 토큰을 잃으면 알수없으니 위글에러취소라 정함.
+                        reason: '위글결제에러결제취소'
                     }).then(function (response) {
                         // 결제 취소가 완료되었다면
                         if (response.status === 200) {
@@ -53,7 +86,8 @@ module.exports =  function (req, res, next) {
                             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
                         }
                     }).catch((e) => {
-                        sendUtil.sendErrorPacket(req, res, errUtil.initError(e.path, `결제가 실패했습니다. 고객센터에 문의해주세요.`));
+                        console.log(e)
+                        sendUtil.sendErrorPacket(req, res, errUtil.initError(e.status, `결제가 실패했습니다. 고객센터에 문의해주세요.`));
                         return;
                     });
                 }
