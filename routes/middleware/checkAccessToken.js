@@ -30,7 +30,13 @@ module.exports = function (req, res, next) {
 
             req.innerBody['item'] = await querySelect(req, db_connection);
             //유저 정보를 가져와서
-            console.log(req.innerBody['item']);
+            console.log('=======================================================================================================================================================');
+            console.log('유저 토큰 검사');
+            console.log('uid:',req.innerBody['item']['uid']);
+            console.log('email:',req.innerBody['item']['email'],);
+            console.log('email:',req.innerBody['item']['nickname'],);
+            console.log('access_token:',req.innerBody['item']['access_token']);
+            console.log('=======================================================================================================================================================');
             if( !req.innerBody['item'] ){
                 //유저 정보가 없으면 에러를 발생시킨다.
                 errUtil.createCall(errCode.auth, `해당 유저의 접속 토큰이 유효하지 않습니다. 다시 로그인해 주세요.`);
