@@ -43,6 +43,8 @@
  *         schema:
  *           $ref: '#/definitions/Error'
  */
+const crypto = require("crypto");
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
@@ -50,6 +52,11 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const errCode = require('../../../common/define/errCode');
+const aligoUtil = require('../../../common/utils/aligoUtil');
+
+
+
+
 
 let file_name = fileUtil.name(__filename);
 
@@ -75,7 +82,12 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.already, `소셜 로그인별로 하나의 연락처만 가입할 수 있습니다.`)
                 return
             }
+            const certificationNumber = crypto.randomBytes(20).toString('base64').substr(0, 5)
+            console.log()
+            const messageResult = await smsService(req, certificationNumber)
+            console.log(messageResult)
             req.innerBody['success'] = 1
+            req.innerBody['certificationNumber'] = certificationNumber
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -113,4 +125,20 @@ function queryCheckPhone(req, db_connection){
             req.paramBody['signup_type'],
         ]
     );
+}
+
+async function smsService(req, certificationNumber){
+            req.body.sender = process.env.ALIGO_WEGGLE_NUMBER  // (최대 16bytes)
+            req.body.receiver = req.paramBody['phone'] // 컴마()분기 입력으로 최대 1천명
+            req.body.msg = `위글 휴대폰 인증번호 [ ${certificationNumber} ]`	// (1~2,000Byte)
+            req.body.msg_type = 'SMS'
+  /*** 필수값입니다 ***/
+  //   msg_type: SMS(단문), LMS(장문), MMS(그림문자)
+  //   title: 문자제목(LMS, MMS만 허용) // (1~44Byte)
+  //   destination: %고객명% 치환용 입력
+  //   rdate: 예약일(현재일이상) // YYYYMMDD
+  //   rtime: 예약시간-현재시간기준 10분이후 // HHMM
+  //   image: 첨부이미지 // JPEG, PNG, GIF
+    
+    return await aligoUtil.smsSend(req);
 }
