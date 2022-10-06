@@ -12,6 +12,7 @@
  *       * 사용 가능 전화번호 여부 체크
  *       * 소셜 로그인당 하나의 전화번호만 가입 가능
  *         : ex) 카카오 로그인시 해당 전화번호로 가입된 카카오 계정이 있다면 가입불가
+ *       * certificationNumber == 인증번호 타입은 string입니다.
  *
  *     parameters:
  *       - in: query
@@ -38,12 +39,27 @@
  *     responses:
  *       200:
  *         description: 결과 정보
+ *         schema:
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: number
+ *               example: 200
+ *             success:
+ *               type: number
+ *               example: 1
+ *             data:
+ *               type: object
+ *               properties:
+ *                  certificationNumber:
+ *                    type: string
+ *                    example: 123827
+ *             
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-const crypto = require("crypto");
 
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
