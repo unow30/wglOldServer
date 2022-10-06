@@ -26,6 +26,11 @@ app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').up
  * cron order_cancel_gift
  */
 app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('../api/gift/updateGiftRefund') );
+/**
+ * bootpay error all cancel
+ */
+app.route('/order/cancel').put(require('../middleware/bootPayErrorCancel'))
+
 
 /**
  * app version check
@@ -39,9 +44,18 @@ app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
 app.route('/dev/test').get( require('./_dev/_dev_select') )
 app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_to_HLS') )
 app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
-// app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
+app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
 app.route('/dev/accesstoken').put( require('./_dev/_dev_updateAccessToken') )
 
 app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
+
+
+/**
+ * feed api(public)
+ */
+app.route('/feed/list').get( require('./feed/public_selectFeedList') )
+// app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
+// app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
+
 
 module.exports = app;
