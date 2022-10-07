@@ -265,6 +265,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
+                    req.paramBody['filter'],
                 ]
             );
         }break
@@ -291,7 +292,6 @@ function querySelect(req, db_connection) {
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.innerBody['type'],
-                    req.paramBody['filter']
                 ]
             );
         }break;
