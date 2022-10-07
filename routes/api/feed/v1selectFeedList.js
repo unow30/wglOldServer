@@ -130,6 +130,19 @@
  *         description: |
  *           해시태그 (영상 기준)
  *           * "핸드폰" 과 같이 #이 붙은 것만 검색됨
+ *       - in: query
+ *         name: filter
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           영상 정렬 필터링
+ *           * 0 : 전체
+ *           * 1 : 최신순(승인날짜순)
+ *           * 2 : 인기순(좋아요개수)
+ *           * 3 : 추천순(선호태그의 랜덤 => 우선 조회수로)
+ *         enum: [0,1,2,3]
  *
  *     responses:
  *       200:
@@ -278,6 +291,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.innerBody['type'],
+                    req.paramBody['filter']
                 ]
             );
         }break;
