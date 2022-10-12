@@ -203,7 +203,7 @@ function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'longitude');
     paramUtil.checkParam_noReturn(req.paramBody, 'km');
     paramUtil.checkParam_noReturn(req.paramBody, 'category');
-    paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
     paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 
@@ -248,7 +248,6 @@ function querySelect(req, db_connection) {
                     req.paramBody['longitude'],
                     req.paramBody['km'],
                     req.paramBody['category'],
-                    req.paramBody['ad_product_uid'],
                     req.paramBody['video_uid'],
                     // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
