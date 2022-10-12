@@ -75,16 +75,6 @@
  *           * 64 : 스포츠레저
  *           * 128 : 식물
  *       - in: query
- *         name: ad_product_uid
- *         required: true
- *         default: 0
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           광고 상품 uid
- *           * 광고 상품이 없을 경우 0
- *       - in: query
  *         name: video_uid
  *         required: true
  *         default: 0
