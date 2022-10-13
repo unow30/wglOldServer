@@ -241,7 +241,7 @@ function querySelect(req, db_connection) {
         case 'all':{
             console.log(req.headers['user_uid'])
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_list_v1'
+                , 'call proc_select_feed_list_v2'
                 , [
                     req.headers['user_uid'],
                     req.paramBody['latitude'],
