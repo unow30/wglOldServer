@@ -10,7 +10,7 @@ const RestClient = require('@bootpay/server-rest-client').RestClient;
 let file_name = fileUtil.name(__filename);
 
 module.exports ={
-    start: async function(){
+    start: function(){
         /**
          * 매일 새벽 00:30 에 진행
          */
