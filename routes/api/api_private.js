@@ -141,6 +141,7 @@ app.route('/addressbook')
     .post( require('./addressBook/createAddressBook') )
     .put( require('./addressBook/updateAddressBook') )
     .delete( require('./addressBook/deleteAddressBook') )
+app.route('/addressbook/island').get( require('./addressBook/selectAddressBookIslandCheck') )
 app.route('/addressbook/list').get( require('./addressBook/selectAddressBookList') )
 app.route('/addressbook/detail').get( require('./addressBook/selectAddressBookDetail') )
 
@@ -175,6 +176,10 @@ app.route('/follow')
     .post( require('./follow/createFollow') )
 app.route('/follow/list').get( require('./follow/selectFollowList') )
 app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
+app.route('/v1/follow/list').get( require('./follow/v1SelectFollowList') )
+app.route('/v1/follower/list').get( require('./follow/v1SelectFollowerList') )
+app.route('/v1/follow/search/list').get( require('./follow/v1SelectFollowSearchList') )
+app.route('/v1/follower/search/list').get( require('./follow/v1SelectFollowerSearchList') )
 
 /**
  * searchView api

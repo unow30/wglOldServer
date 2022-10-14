@@ -1,95 +1,97 @@
 /**
- * Created by jongho
  *
  * @swagger
- * /api/private/v1/searchview/list/gongudeal:
+ * /api/private/v1/follow/search/list:
  *   get:
- *     summary: 공구딜 전체보기
- *     tags: [SearchView]
+ *     summary: 팔로잉 검색 목록
+ *     tags: [Follow]
  *     description: |
- *      ## path : /api/private/v1/searchview/list/gongudeal
+ *       path : /api/private/v1/follow/search/list
  *
- *       * ## 공구딜 전체보기 
- *         * ### 지금뜨는 공구딜 목록
+ *       * 팔로잉 목록
  *
  *     parameters:
  *       - in: query
- *         name: category
- *         default: 0
+ *         name: target_uid
+ *         default: 212
  *         required: true
  *         schema:
- *           type: number
- *           example: 1
- *         description: |
- *           상품 카테고리
- *           * 1: 식품
- *           * 2: 뷰티, 주얼리
- *           * 4: 인테리어
- *           * 8: 패션,잡화
- *           * 16: 반려동물
- *           * 32: 생활용품
- *         enum: [1,2,4,8,16,32]
+ *           type: integer
+ *           example: 212
+ *         description: 검색 uid
  *       - in: query
- *         name: random_seed
+ *         name: keyword
+ *         default: 식스레시피
  *         required: true
  *         schema:
  *           type: string
- *           example: 133q1234
+ *           example: 식스레시피
  *         description: |
- *           검색할 때 필요한 랜덤 시드입니다.
- *       - in: query
- *         name: offset
- *         required: true
- *         schema:
- *           type: int
- *           example: 0
- *         description: |
- *           12개 단위
  *
  *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/FollowListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
  */
+
  const paramUtil = require('../../../common/utils/paramUtil');
  const fileUtil = require('../../../common/utils/fileUtil');
  const mysqlUtil = require('../../../common/utils/mysqlUtil');
  const sendUtil = require('../../../common/utils/sendUtil');
  const errUtil = require('../../../common/utils/errUtil');
  const logUtil = require('../../../common/utils/logUtil');
+ 
  let file_name = fileUtil.name(__filename);
+ 
  module.exports = function (req, res) {
      const _funcName = arguments.callee.name;
+ 
      try {
          req.file_name = file_name;
          logUtil.printUrlLog(req, `== function start ==================================`);
          req.paramBody = paramUtil.parse(req);
-         
+         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+ 
+         checkParam(req);
+ 
          mysqlUtil.connectPool(async function (db_connection) {
-            req.innerBody = {};
-            req.innerBody['gongu_deal'] = await queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
-
-
-            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+         req.innerBody = {};
+ 
+         req.innerBody['item'] = await querySelect(req, db_connection);
+ 
+         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+ 
          }, function (err) {
              sendUtil.sendErrorPacket(req, res, err);
          });
+ 
      } catch (e) {
          let _err = errUtil.get(e);
          sendUtil.sendErrorPacket(req, res, _err);
      }
  }
-
- function queryGonguDeal(req, db_connection) {
+  
+ function checkParam(req) {
+     paramUtil.checkParam_noReturn(req.paramBody, 'keyword');
+     paramUtil.checkParam_noReturn(req.paramBody, 'target_uid');
+ 
+ }
+ 
+  
+ function querySelect(req, db_connection) {
      const _funcName = arguments.callee.name;
+ 
      return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_searchview_gongu_deal_v1'
+         , 'call proc_select_follow_search_list_v1'
          , [
              req.headers['user_uid'],
-             req.paramBody['category'],
-             req.paramBody['random_seed'],
-             req.paramBody['offset'],
+             req.paramBody['target_uid'],
+             req.paramBody['keyword'],
          ]
      );
  }

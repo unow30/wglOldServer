@@ -243,8 +243,8 @@ module.exports = function (req, res) {
                 console.log('order_product 생성 시작')
                 let product = await queryProduct(req, db_connection);
                 req.innerBody['order_product_list'].push( product );
-                console.log('pushtoken aligo 변수 생성 시작')
-                makePushTokenAndAligoParam(req, product)
+                // console.log('pushtoken aligo 변수 생성 시작') => 방을 생성해 혼자있는데 알리고 매칭, 판매자 알림을 할수 없다.
+                // makePushTokenAndAligoParam(req, product)
 
             }else{
                 // 공구방 uid가 있으면 공구방 업데이트, 공구방 유저 생성을 한다.
@@ -269,8 +269,11 @@ module.exports = function (req, res) {
                 console.log(roomIsFull)
                 if(roomIsFull['status'] == 1){
                     //같은 방에있는 주문상품의 status 50을 1로 바꿔줘야 한다.
-                    await queryUpdateOrderProduct(req, db_connection)
-                    console.log('공구방 풀이니 알람 보내기')
+                    await queryUpdateOrderProduct(req, db_connection);
+                    const pushList = await queryGonguRoomUser(req, db_connection);
+                    console.log('매칭알람 보내기 pushList', pushList)
+                    await orderMatchAlarm(pushList);
+                    console.log('판매자 주문알람 보내기')
                     await orderAlarm(req, res)
                 }
             }
@@ -507,14 +510,18 @@ async function orderAlarm(req, res) {
     // const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
     // await fcmUtil.fcmCreateOrderList(push_token_list);
 
-    const push_token_list = req.innerBody['push_token_list']
-    await fcmUtil.fcmCreateOrderList(push_token_list);
+    // const push_token_list = req.innerBody['push_token_list']
+    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))// 푸시토큰안에는 판매자가 아니라 구매자 푸시토큰이 있다.
+
+    console.log('push_token_list', push_token_list)
+
+    await fcmUtil.fcmCreateOrderList(push_token_list);//판매자에게 fcm주문접수 알람을 보낸다.
 
     req.body= {
         type: 's',
         time: '9999'
     }
-    await aligoUtil.createToken(req, res);
+    await aligoUtil.createToken(req, res); //알리고 createToken을 보낸다.
 
 
     req.body= {
@@ -548,7 +555,9 @@ function setArimMessage(alrim_msg_distinc_list, idx) {
     console.log("WOQIJCOEIWQJEOQWIEJO")
     return `상품 주문 알림
 
-${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.`
+${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
+
+□ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
 
 }
 
@@ -557,4 +566,27 @@ function makePushTokenAndAligoParam(req, product){
     let obj = {"phone": product['phone'], name: product['name'], nickname: product['nickname']}
     req.innerBody['push_token_list'].push(product['push_token']);
     req.innerBody['alrim_msg_list'].push(obj)
+
+    console.log('push_token_list', req.innerBody['push_token_list'])
+    console.log('alrim_msg_list', req.innerBody['alrim_msg_list'])
+}
+
+function queryGonguRoomUser(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_order_room_all_user_v1'
+        , [
+            req.paramBody['groupbuying_room_uid']
+        ]
+    )
+}
+
+async function orderMatchAlarm(item) {
+    const pushData = {
+        push_token: item.map(result=>result.push_token),
+        product_name: item[0].product_name
+    }
+    
+    await fcmUtil.fcmGonguMatchSuccess(pushData);
 }
