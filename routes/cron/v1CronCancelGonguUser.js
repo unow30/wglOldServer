@@ -10,7 +10,7 @@ const RestClient = require('@bootpay/server-rest-client').RestClient;
 let file_name = fileUtil.name(__filename);
 
 module.exports ={
-    start: async function(){
+    start: function(){
         /**
          * 매일 새벽 00:30 에 진행
          */
@@ -55,20 +55,21 @@ module.exports ={
                                     gonguRoomUserArr+= result.group_buying_room_user_uid+','
                                     gonguRoomArr+= result.group_buying_room_uid+','
                                     gonguArr+= result.group_buying_uid+','
-                                    userArr.push(result.user_token)
-                                }
-                                if(result.cancelable_reward>0){
-                                    rewardInfo = {
-                                        user_uid: result.user_uid,
-                                        seller_uid: result.seller_uid,
-                                        order_uid: result.order_uid,
-                                        order_no: result.order_no,
-                                        state: 13,
-                                        refund_reward: result.cancelable_reward,
-                                        text: '환불로 인한 사용 리워드 롤백'
+                                    userArr.push(result.user_token);
+
+                                    if(result.cancelable_reward>0){
+                                        rewardInfo = {
+                                            user_uid: result.user_uid,
+                                            seller_uid: result.seller_uid,
+                                            order_uid: result.order_uid,
+                                            order_no: result.order_no,
+                                            state: 13,
+                                            refund_reward: result.cancelable_reward,
+                                            text: '환불로 인한 사용 리워드 롤백'
+                                        }
+                                        await queryRollbackReward(db_connection, rewardInfo);
+                                        // 위 함수 살려야 함
                                     }
-                                    await queryRollbackReward(db_connection, rewardInfo);
-                                    // 위 함수 살려야 함
                                 }
                             }
                         }
