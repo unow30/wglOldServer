@@ -8,6 +8,7 @@ const funcUtil = require('./common/utils/funcUtil');
 const sendUtil = require('./common/utils/sendUtil');
 const errUtil = require('./common/utils/errUtil');
 const errCode = require('./common/define/errCode');
+const authController = require('./routes/api/auth/createPublicToken');
 
 require('dotenv').config();
 
@@ -29,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if( !funcUtil.isRealServer ){
   app.use('/api-docs', require('./apiDocs/swaggerDocs'));
 }
-
+app.get('/api/auth/public/token', authController.createToken);
 // app.all('/api/callback/bootpay', require('./routes/callback/createBootpay'))
 app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay'))
 
