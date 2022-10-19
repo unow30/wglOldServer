@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if( !funcUtil.isRealServer ){
   app.use('/api-docs', require('./apiDocs/swaggerDocs'));
 }
-app.get('/api/auth/public/token', authController.createToken);
+app.get('/api/public/auth/token', authController.createToken);
 // app.all('/api/callback/bootpay', require('./routes/callback/createBootpay'))
 app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay'))
 

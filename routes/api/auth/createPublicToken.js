@@ -2,7 +2,7 @@
  * Created by hyunhunhwang on 2021. 01. 08.
  *
  * @swagger
- * /api/auth/public/token:
+ * /api/public/auth/token:
  *   get:
  *     summary: public token 발급
  *     tags: [Auth]
@@ -52,7 +52,7 @@ const createToken = function (req, res) {
     }
     catch (e) {
         let _err = errUtil.get(e);
-        sendUtil.sendErrorPacket(req, res, _err);
+        return sendUtil.sendErrorPacket(req, res, _err);
     }
 }
 module.exports = {
