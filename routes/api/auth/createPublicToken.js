@@ -52,7 +52,8 @@ const createToken = function (req, res) {
     }
     catch (e) {
         let _err = errUtil.get(e);
-        return sendUtil.sendErrorPacket(req, res, _err);
+        sendUtil.sendErrorPacket(req, res, _err);
+        return 
     }
 }
 module.exports = {
