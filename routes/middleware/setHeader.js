@@ -28,14 +28,16 @@ module.exports = function (req, res, next) {
             let token = req.headers['access_token'];
             let data = jwtUtil.getPayload(token);
             req.headers['user_uid'] = data['uid'];
+
+            next()
+        }
+        else{
+            return sendUtil.sendErrorPacket(req, res, err);
         }
 
     }
     catch (e) {
         // let _err = errUtil.get(e);
         // sendUtil.sendErrorPacket(req, res, _err);
-    }
-    finally {
-        next()
     }
 }
