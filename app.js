@@ -8,9 +8,10 @@ const funcUtil = require('./common/utils/funcUtil');
 const sendUtil = require('./common/utils/sendUtil');
 const errUtil = require('./common/utils/errUtil');
 const errCode = require('./common/define/errCode');
+require('dotenv').config();
 const authController = require('./routes/api/auth/createPublicToken');
 
-require('dotenv').config();
+
 
 const indexRouter = require('./routes/index');
 // const usersRouter = require('./routes/users');
