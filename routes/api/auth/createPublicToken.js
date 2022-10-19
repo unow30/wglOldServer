@@ -7,7 +7,7 @@
  *     summary: public token 발급
  *     tags: [Auth]
  *     description: |
- *       path : /api/auth/public/token
+ *       path : /api/public/auth/token
  *
  *       * public token 발급
  *
