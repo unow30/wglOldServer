@@ -55,7 +55,7 @@ app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 /**
  * feed api(public)
  */
-app.route('/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1selectFeedList'))
+app.route('/v1/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1selectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 
