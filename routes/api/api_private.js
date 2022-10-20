@@ -25,7 +25,7 @@ app.route('/user/profile/video/list').get( require('./user/selectUserProfileRevi
  */
 app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
 
-app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
+// app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') ) // 비로그인 때 주석함 22. 10. 20
 app.route('/v1/product/confirm/list').get( require('./product/v1SelectProductConfirmList') )
 app.route('/product').get(require('./product/selectProductItem')) //상품 item만 불러온다.
 app.route('/product/detail').get( require('./product/selectProductDetail') )
@@ -127,7 +127,7 @@ app.route('/comment/nested')
     .delete( require('./comment/deleteNestedComment') )
 
 app.route('/comment/list').get( require('./comment/selectCommentList') )
-app.route('/comment/nested/list').get( require('./comment/selectNestedCommentList') )
+// app.route('/comment/nested/list').get( require('./comment/selectNestedCommentList') ) // 비로그인 때 주석함 22. 10. 20
 
 /**
  * like api
@@ -196,10 +196,10 @@ app.route('/searchview/new/category/video/list').get( require('./searchView/sele
 app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') ) // 영상검색정보
 app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') ) // 태그검색정보
 app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') ) // 사용자검색정보
-app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )// 추천상품검색정보
+// app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )// 추천상품검색정보 // 비로그인 때 주석함 22. 10. 20
 
-app.route('/searchview/ad/list').get( require('./searchView/selectSearchViewAdList') ) // 광고이미지 목록
-app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') ); // 위글딜영상 목록
+// app.route('/searchview/ad/list').get( require('./searchView/selectSearchViewAdList') ) // 광고이미지 목록 // 비로그인 때 주석함 22. 10. 20
+// app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') ); // 위글딜영상 목록 // 비로그인 때 주석함 22. 10. 20
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') ); // 신규상품 목록
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') ); // 신규리뷰 목록
 
@@ -211,11 +211,11 @@ app.route('/searchview').get( require('./searchView/selectSearchViewInfo') ) // 
 
 // 모아보기 api legacy
 // app_version1.5.4, app_code73
-app.route('/searchview/new/product/preview/list').get( require('./searchView/selectSearchViewNewProductPreviewList') ); // 신규상품 미리보기
+// app.route('/searchview/new/product/preview/list').get( require('./searchView/selectSearchViewNewProductPreviewList') ); // 신규상품 미리보기 // 비로그인 때 주석함 22. 10. 20
 app.route('/searchview/new/review/preview/list').get( require('./searchView/selectSearchViewNewReviewPreviewList') ); // 신규리뷰 미리보기
-app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') ); // 위글딜 미리보기
-app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') ) // 핫위글러 목록
-app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') ); // 베스트 리뷰 목록
+// app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') ); // 위글딜 미리보기 // 비로그인 때 주석함 22. 10. 20
+// app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') ) // 핫위글러 목록 // 비로그인 때 주석함 22. 10. 20
+// app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') ); // 베스트 리뷰 목록 // 비로그인 때 주석함 22. 10. 20
 // app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
 
 

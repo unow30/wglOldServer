@@ -31,12 +31,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 if( !funcUtil.isRealServer ){
   app.use('/api-docs', require('./apiDocs/swaggerDocs'));
 }
-app.get('/api/public/auth/token', authController.createToken);
+app.get('/api/public/auth/token', authController.createToken); // 비로그인 때 추가함 22. 10. 20
 // app.all('/api/callback/bootpay', require('./routes/callback/createBootpay'))
 app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay'))
 
-// app.all('/api/public/*', require('./routes/middleware/setHeader'));
-// app.all('/api/private/*', require('./routes/middleware/setHeader'));
+// app.all('/api/public/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
+// app.all('/api/private/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
 
 app.all('/api/private/*', require('./routes/middleware/checkAccessToken'));
 
