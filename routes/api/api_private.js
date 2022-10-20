@@ -177,7 +177,7 @@ app.route('/follow')
     .delete( require('./follow/deleteFollow') )
     .post( require('./follow/createFollow') )
 app.route('/follow/list').get( require('./follow/selectFollowList') )
-app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
+// app.route('/follow/find/list').get( require('./follow/selectFollowFindList') ) // 비로그인 때 주석함 22. 10. 20
 app.route('/v1/follow/list').get( require('./follow/v1SelectFollowList') )
 app.route('/v1/follower/list').get( require('./follow/v1SelectFollowerList') )
 app.route('/v1/follow/search/list').get( require('./follow/v1SelectFollowSearchList') )
@@ -186,7 +186,7 @@ app.route('/v1/follower/search/list').get( require('./follow/v1SelectFollowerSea
 /**
  * searchView api
  */
-app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+// app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기 // 비로그인 때 주석함 22. 10. 20
 app.route('/v1/searchview/list/all').get(require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
 app.route('/v1/searchview/list/gongudeal').get(require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
 app.route('/v1/searchview/list/gongudeadline').get(require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
