@@ -4,8 +4,6 @@
 const express = require('express');
 const app = express();
 
-const publicTokenCheck = require('../middleware/publicCheckToken')
-
 /**
  * user api
  */
@@ -59,5 +57,13 @@ app.route('/v1/feed/list').get( require('../middleware/publicCheckToken') ,requi
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 
+
+/* 임시 안드로이드 라우터 */
+app.route('/v1/user/signup').post(require('../middleware/publicCheckToken'), require('./user/createUser') )
+app.route('/v1/user/signup/check').get(require('../middleware/publicCheckToken'), require('./user/selectSignUpCheck') )
+app.route('/v1/user/email/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserEmailCheck') )
+app.route('/v1/user/nickname/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserNicknameCheck') )
+app.route('/v1/user/phone/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserPhoneCheck') )
+app.route('/v1/user/recommendee/code/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserRecommendeeCodeCheck') )
 
 module.exports = app;
