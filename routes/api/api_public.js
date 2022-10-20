@@ -4,6 +4,8 @@
 const express = require('express');
 const app = express();
 
+const publicTokenCheck = require('../middleware/publicCheckToken')
+
 /**
  * user api
  */
@@ -53,7 +55,7 @@ app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 /**
  * feed api(public)
  */
-app.route('/feed/list').get( require('./feed/public_selectFeedList'))
+app.route('/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1selectFeedList'))
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 
