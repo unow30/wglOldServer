@@ -13,6 +13,9 @@ app.route('/user').put( require('./user/updateUser') )
                   .delete( require('./user/deleteUser') )
 // app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
 
+app.route('/v2/user/info/me').get( require('./user/selectUserInfoMe') )
+app.route('/v2/user/info/other').get( require('./user/selectUserInfoOther') )
+
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
 app.route('/user/info/other').get( require('./user/selectUserInfoOther') )
