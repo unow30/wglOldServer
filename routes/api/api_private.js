@@ -13,8 +13,8 @@ app.route('/user').put( require('./user/updateUser') )
                   .delete( require('./user/deleteUser') )
 // app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
 
-app.route('/v2/user/info/me').get( require('./user/v1SelectUserInfoMe') )
-app.route('/v2/user/info/other').get( require('./user/v1SelectUserInfoOther') )
+app.route('/v2/user/info/me').get( require('./user/v2SelectUserInfoMe') )
+app.route('/v2/user/info/other').get( require('./user/v2SelectUserInfoOther') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
