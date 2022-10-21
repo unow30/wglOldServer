@@ -25,6 +25,11 @@ module.exports = function (req, res, next) {
 
         checkParam(req);
 
+        if(req.headers['user_uid'] == 0 ){
+            //비회원일 경우 로그인을 유도 시킨다.
+            errUtil.createCall(errCode.auth, `로그인 후 사용할 수 있는 페이지입니다.`);
+        }
+        
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
@@ -41,6 +46,8 @@ module.exports = function (req, res, next) {
                 //유저 정보가 없으면 에러를 발생시킨다.
                 errUtil.createCall(errCode.auth, `해당 유저의 접속 토큰이 유효하지 않습니다. 다시 로그인해 주세요.`);
             }
+
+            
             //사용자 정보를 확인하고 나서 api 기능을 실행하는 부분
             next();
             // logUtil.printUrlLog(req, `item: ${JSON.stringify(req.innerBody['item'])}`);
@@ -66,7 +73,10 @@ function checkParam(req) {
     try {
         //jwt 인증
         let data = jwtUtil.getPayload(token);
+        console.log(data, '====================>>>>>>>>>>data')
         req.headers['user_uid'] = data['uid'];
+
+        
     }
     catch (ex) {
         //세션이 만료되거나 인증이 되지 않으면 에러를 발생시켜서 에러를 catch
