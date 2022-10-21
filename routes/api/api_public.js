@@ -53,12 +53,13 @@ app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 /**
  * feed api(public)
  */
-app.route('/v1/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1selectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
+app.route('/test/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1selectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 
 
-/* 임시 안드로이드 라우터 위에 feed list와 마찬가지로 ios, android */
+/* 임시 안드로이드용 라우터 */
+app.route('/test/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1selectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 app.route('/test/user/signup').post(require('../middleware/publicCheckToken'), require('./user/createUser') )
 app.route('/test/user/signup/check').get(require('../middleware/publicCheckToken'), require('./user/selectSignUpCheck') )
 app.route('/test/user/email/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserEmailCheck') )
