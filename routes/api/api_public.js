@@ -59,11 +59,11 @@ app.route('/v1/feed/list').get( require('../middleware/publicCheckToken') ,requi
 
 
 /* 임시 안드로이드 라우터 위에 feed list와 마찬가지로 ios, android */
-app.route('/v1/user/signup').post(require('../middleware/publicCheckToken'), require('./user/createUser') )
-app.route('/v1/user/signup/check').get(require('../middleware/publicCheckToken'), require('./user/selectSignUpCheck') )
-app.route('/v1/user/email/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserEmailCheck') )
-app.route('/v1/user/nickname/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserNicknameCheck') )
-app.route('/v1/user/phone/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserPhoneCheck') )
-app.route('/v1/user/recommendee/code/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserRecommendeeCodeCheck') )
+app.route('/test/user/signup').post(require('../middleware/publicCheckToken'), require('./user/createUser') )
+app.route('/test/user/signup/check').get(require('../middleware/publicCheckToken'), require('./user/selectSignUpCheck') )
+app.route('/test/user/email/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserEmailCheck') )
+app.route('/test/user/nickname/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserNicknameCheck') )
+app.route('/test/user/phone/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserPhoneCheck') )
+app.route('/test/user/recommendee/code/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserRecommendeeCodeCheck') )
 
 module.exports = app;
