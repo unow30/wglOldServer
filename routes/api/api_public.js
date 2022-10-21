@@ -79,6 +79,13 @@ app.route('/test/video/count/view').put(require('../middleware/publicCheckToken'
 app.route('/test/follow/list').get( require('../middleware/publicCheckToken'), require('./follow/selectFollowList') )
 app.route('/test/v1/follow/list').get( require('../middleware/publicCheckToken'), require('./follow/v1SelectFollowList') )
 app.route('/test/v1/follower/list').get( require('../middleware/publicCheckToken'), require('./follow/v1SelectFollowerList') )
+app.route('/test/product/option/list').get(require('../middleware/publicCheckToken'),  require('./product/selectProductOptionList') )
+app.route('/test/product/detail/review/list').get(require('../middleware/publicCheckToken'),  require('./product/selectProductDetailReviewList') )//2022/07/06 리뷰 영상, 사진, 카운트 같이 불러오기
+app.route('/test/user/profile/photo/list').get(require('../middleware/publicCheckToken'),  require('./user/selectUserProfileReviewPhotoList') )// 새 리뷰 리스트. 상품, 리뷰만 나온다.
+app.route('/test/user/profile/video/list').get(require('../middleware/publicCheckToken'),  require('./user/selectUserProfileReviewVideoList') )// 새 리뷰 리스트. 영상, 리뷰만 나온다.
+app.route('/test/promotion/list').get(require('../middleware/publicCheckToken'),  require('./promotion/selectPromotionList')) //프로모션 더보기
+app.route('/test/v1/searchview/list/gongudeal').get(require('../middleware/publicCheckToken'), require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
+app.route('/test/v1/searchview/list/gongudeadline').get(require('../middleware/publicCheckToken'), require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
 
 
 
