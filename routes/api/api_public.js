@@ -67,5 +67,17 @@ app.route('/test/user/nickname/check').get(require('../middleware/publicCheckTok
 app.route('/test/user/phone/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserPhoneCheck') )
 app.route('/test/user/recommendee/code/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserRecommendeeCodeCheck') )
 app.route('/test/video/count/view').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountView') )
+app.route('/test/comment/list').get(require('../middleware/publicCheckToken'), require('./comment/selectCommentList') )
+app.route('/test/video/info').get(require('../middleware/publicCheckToken'), require('./video/selectVideoInfo') )
+app.route('/test/product/detail').get(require('../middleware/publicCheckToken'), require('./product/selectProductDetail') )
+app.route('/test/user/info/other').get(require('../middleware/publicCheckToken'), require('./user/selectUserInfoOther') )
+app.route('/test/product/category/list').get(require('../middleware/publicCheckToken'), require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
+app.route('/test/v1/searchview/list/all').get(require('../middleware/publicCheckToken'), require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+app.route('/test/promotion/list/all').get(require('../middleware/publicCheckToken'), require('./promotion/selectPromotionPreviewList')) //모든 프로모션 화면 미리보기
+app.route('/test/video/count/shared').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountShared') )
+app.route('/test/video/count/view').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountView') )
+
+
+
 
 module.exports = app;
