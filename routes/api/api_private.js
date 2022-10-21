@@ -100,6 +100,7 @@ app.route('/weggledeal/list').get( require('./weggleDeal/selectWeggleDealList') 
 /**
  * video api
  */
+app.route('/v2/video/review').post( require('./video/v2CreateVideoReview') ) // 22. 10. 21 새로 만든 비디오 리뷰 생성
 app.route('/video/info').get( require('./video/selectVideoInfo') )
 app.route('/video/count/shared').put( require('./video/updateVideoCountShared') )
 app.route('/video/count/view').put( require('./video/updateVideoCountView') )

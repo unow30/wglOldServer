@@ -10,6 +10,7 @@
  *       path : /api/private/v2/user/info/me
  *
  *       * 내 유저 정보
+ *       * all_interests 정보 {"uid": 1, "name": "식품"},{  "uid": 2,  "name": "반려동물"},{  "uid": 3,  "name": "패션/잡화"},{  "uid": 4,  "name": "인테리어"},{  "uid": 5,  "name": "뷰티/주얼리"},{  "uid": 6,  "name": "생활용품"}
  *
  *     responses:
  *       200:
