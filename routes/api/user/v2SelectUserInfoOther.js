@@ -66,8 +66,10 @@
              req.innerBody['item']['is_follow'] = follow_data ? 1 : 0
 
              const interests = await querySelectInterest(req, db_connection);
+             const allInterests = await querySelectAllInterest(req, db_connection)
              console.log(interests, '======================>>>>>>>>>>interests')
              req.innerBody['item']['my_interests'] = [...interests];
+             req.innerBody['item']['all_interests'] = [...allInterests]
  
              deleteBody(req)
              sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -118,11 +120,19 @@
      );
  }
 
- function querySelectInterest(req, db_connection) {
+ function querySelectAllInterest(req, db_connection) {
     const _funcName = arguments.callee.name;
-    //좋아요 상품 개수 표시
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_interest_keyword_v2'
+        , [
+        ]
+    );
+}
+
+function querySelectInterest(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_my_interest_keyword_v2'
         , [
             req.headers['user_uid']
         ]
