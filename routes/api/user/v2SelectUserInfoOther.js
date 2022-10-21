@@ -121,7 +121,7 @@
  function querySelectInterest(req, db_connection) {
     const _funcName = arguments.callee.name;
     //좋아요 상품 개수 표시
-    return mysqlUtil.querySingle(db_connection
+    return mysqlUtil.queryArray(db_connection
         , 'call proc_select_interest_keyword_v2'
         , [
             req.headers['user_uid']
