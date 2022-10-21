@@ -57,6 +57,7 @@ function checkParam(req) {
         req.headers['user_uid'] = data['uid'];
     }
     catch (ex) {
+        console.log(ex, '===============>>>>>>>>토큰 에러 확인')
         //세션이 만료되거나 인증이 되지 않으면 에러를 발생시켜서 에러를 catch
         errUtil.createCall(errCode.auth, `접속 토큰이 유효하지 않습니다. msg : ${ex.message}`);
     }
