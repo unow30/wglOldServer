@@ -66,6 +66,6 @@ app.route('/test/user/email/check').get(require('../middleware/publicCheckToken'
 app.route('/test/user/nickname/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserNicknameCheck') )
 app.route('/test/user/phone/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserPhoneCheck') )
 app.route('/test/user/recommendee/code/check').get(require('../middleware/publicCheckToken'), require('./user/selectUserRecommendeeCodeCheck') )
-app.route('/video/count/view').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountView') )
+app.route('/test/video/count/view').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountView') )
 
 module.exports = app;
