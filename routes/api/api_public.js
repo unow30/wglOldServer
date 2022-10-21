@@ -76,6 +76,9 @@ app.route('/test/v1/searchview/list/all').get(require('../middleware/publicCheck
 app.route('/test/promotion/list/all').get(require('../middleware/publicCheckToken'), require('./promotion/selectPromotionPreviewList')) //모든 프로모션 화면 미리보기
 app.route('/test/video/count/shared').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountShared') )
 app.route('/test/video/count/view').put(require('../middleware/publicCheckToken'), require('./video/updateVideoCountView') )
+app.route('/test/follow/list').get( require('../middleware/publicCheckToken'), require('./follow/selectFollowList') )
+app.route('/test/v1/follow/list').get( require('../middleware/publicCheckToken'), require('./follow/v1SelectFollowList') )
+app.route('/test/v1/follower/list').get( require('../middleware/publicCheckToken'), require('./follow/v1SelectFollowerList') )
 
 
 
