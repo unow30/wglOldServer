@@ -129,8 +129,8 @@ function querySelect(req, db_connection) {
             req.headers['user_uid'],
             req.paramBody['product_uid'],
             req.paramBody['offset'],
-            req.innerBody['type'],
-            req.paramBody['filter'],
+            req.innerBody['filter'],
+            req.paramBody['sort'],
         ]
     );
 }
