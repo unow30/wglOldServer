@@ -93,7 +93,7 @@ function querySelect(req, db_connection) {
         , 'call proc_select_fcm_list'
         , [
             req.headers['user_uid'],
-            req.paramBody['offset'],
+            req.paramBody['offset']? req.paramBody['offset'] : 0,
         ]
     );
 }
