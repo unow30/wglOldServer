@@ -8,6 +8,7 @@ const app = express();
  * user api
  */
 app.route('/user/signup').post( require('./user/createUser') )
+app.route('/v2/user/signup').post(require('../middleware/publicCheckToken'), require('./user/v2CreateUser') )
 app.route('/user/signup/check').get( require('./user/selectSignUpCheck') )
 app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
 app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck') )
