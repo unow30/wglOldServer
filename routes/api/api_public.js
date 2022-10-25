@@ -100,6 +100,11 @@ app.route('/test/v2/user/info/other').get(require('../middleware/publicCheckToke
 app.route('/test/v1/follower/search/list').get(require('../middleware/publicCheckToken'),  require('./follow/v1SelectFollowerSearchList') )
 app.route('/test/user/profile/list').get(require('../middleware/publicCheckToken'),  require('./user/selectUserProfileList') )// 새 리뷰 리스트. 상품,영상,리뷰가 전부 나온다.
 
+app.route('/test/searchview/search/list/hashtag').get(require('../middleware/publicCheckToken'),  require('./searchView/selectSearchViewHashTagSearchList') ) // 태그검색정보
+app.route('/test/searchview/search/list/user').get(require('../middleware/publicCheckToken'),  require('./searchView/selectSearchViewUserSearchList') ) // 사용자검색정보
+app.route('/test/searchview/search/list').get(require('../middleware/publicCheckToken'),  require('./searchView/selectSearchViewSearchList') ) // 영상검색정보
+app.route('/test/product/review/list').get(require('../middleware/publicCheckToken'),  require('./product/selectProductReviewList') )
+app.route('/test/v1/groupbuying/detail/room/list').get(require('../middleware/publicCheckToken'),  require('./groupBuying/v1SelectGroupBuyingRoomList') )
 
 
 module.exports = app;
