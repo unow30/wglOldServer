@@ -97,5 +97,9 @@ app.route('/test/review/photo').get(require('../middleware/publicCheckToken'),  
 app.route('/test/review/video').get(require('../middleware/publicCheckToken'),  require('./review/selectVideoReview'))
 app.route('/test/v2/user/info/other').get(require('../middleware/publicCheckToken'),  require('./user/v2SelectUserInfoOther') )
 
+app.route('/test/v1/follower/search/list').get(require('../middleware/publicCheckToken'),  require('./follow/v1SelectFollowerSearchList') )
+app.route('/test/user/profile/list').get(require('../middleware/publicCheckToken'),  require('./user/selectUserProfileList') )// 새 리뷰 리스트. 상품,영상,리뷰가 전부 나온다.
+
+
 
 module.exports = app;
