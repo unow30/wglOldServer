@@ -93,7 +93,7 @@ module.exports = function (req, res) {
                 await queryUpdateImage(req, db_connection);
             }
 
-            if( req.paramBody.interests[0] ){
+            if( req.paramBody.interests && req.paramBody.interests[0] ){
                 await queryDeleteInterest(req, db_connection);
                 await queryUpdateInterest(req, db_connection);
             }
@@ -118,7 +118,6 @@ module.exports = function (req, res) {
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
     paramUtil.checkParam_noReturn(req.paramBody, 'about');
-    paramUtil.checkParam_noReturn(req.paramBody, 'interests');
 }
 
 function deleteBody(req) {
