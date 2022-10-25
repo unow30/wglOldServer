@@ -96,12 +96,21 @@ module.exports = function (req, res) {
                 await queryDeleteInterest(req, db_connection);
 
                 if(req.paramBody.interests[0] ){
+                    const interestsData = await querySelectAllInterest(req, db_connection);
+
+                    req.paramBody.interests.forEach(el => {
+                        if(el < interestsData[0].interests_uid || el > interestsData[interestsData.length-1].interests_uid){
+                            const err = new Error('전달 받은 파라미터의 uid가 최대 및 최소 uid 값을 벗어났습니다.')
+                            err.code = 400;
+                            
+                            sendUtil.sendErrorPacket(req, res, err);
+                        }
+                    });
+
                     await queryUpdateInterest(req, db_connection);
                 }
             }
             
-            
-
             req.innerBody['item'] = await query(req, db_connection);
 
             deleteBody(req)
@@ -191,4 +200,13 @@ async function queryDeleteInterest(req, db_connection) {
             set SQL_SAFE_UPDATES = 1;
     `
     await db_connection.query(deleteInterestSql);
+}
+
+function querySelectAllInterest(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_interest_keyword_v2'
+        , [
+        ]
+    );
 }
