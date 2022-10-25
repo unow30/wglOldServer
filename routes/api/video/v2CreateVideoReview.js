@@ -81,7 +81,7 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
-
+            console.log(req.paramBody, '=================>>>paramBody')
             const filenameExt = path.extname(req.paramBody['filename']).replace('.','')
 
             if(filenameExt === 'm3u8'){
@@ -127,6 +127,11 @@ function deleteBody(req) {
 
 function query(req, db_connection) {
     const _funcName = arguments.callee.name;
+    console.log(
+        req.headers['user_uid'],
+        req.paramBody['representative_product_uid'],
+        req.paramBody['content'],
+        req.paramBody['filename'],'함수 안========>')
 
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_video_review'

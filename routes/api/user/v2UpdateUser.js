@@ -92,11 +92,14 @@ module.exports = function (req, res) {
             if( req.paramBody['filename'] && req.paramBody['filename'].length >= 4 ){
                 await queryUpdateImage(req, db_connection);
             }
-
-            if( req.paramBody.interests && req.paramBody.interests[0] ){
+            if(req.paramBody.interests){
                 await queryDeleteInterest(req, db_connection);
-                await queryUpdateInterest(req, db_connection);
+
+                if(req.paramBody.interests[0] ){
+                    await queryUpdateInterest(req, db_connection);
+                }
             }
+            
             
 
             req.innerBody['item'] = await query(req, db_connection);
