@@ -135,7 +135,7 @@ function querySelectInterest(req, db_connection) {
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_my_interest_keyword_v2'
         , [
-            req.headers['user_uid']
+            req.paramBody['user_uid']
         ]
     );
 }

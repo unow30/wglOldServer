@@ -93,7 +93,7 @@ app.route('/test/v1/groupbuying/detail').get(require('../middleware/publicCheckT
 app.route('/test/product/name/list').get(require('../middleware/publicCheckToken'),  require('./product/selectProductNameList'))
 app.route('/test/review/photo').get(require('../middleware/publicCheckToken'),  require('./review/selectPhotoReview'))
 app.route('/test/review/video').get(require('../middleware/publicCheckToken'),  require('./review/selectVideoReview'))
-
+app.route('/test/v2/user/info/other').get(require('../middleware/publicCheckToken'),  require('./user/v2SelectUserInfoOther') )
 
 
 module.exports = app;
