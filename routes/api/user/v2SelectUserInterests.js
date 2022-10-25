@@ -46,7 +46,6 @@
              req.innerBody = {};
  
              const allInterests = await querySelectAllInterest(req, db_connection)
-             console.log(interests, '======================>>>>>>>>>>interests')
              req.innerBody['all_interests'] = [...allInterests]
  
              sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
