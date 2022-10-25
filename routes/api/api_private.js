@@ -87,8 +87,9 @@ app.route('/point/list').get( require('./point/selectPointList') )
  * feed api
  */
 app.route('/feed/list').get( require('./feed/selectFeedList') )
-app.route('/v1/feed/list').get( require('./feed/v1selectFeedList') )
-app.route('/v1/feed/product/list').get( require('./feed/v1selectFeedProductList') )
+app.route('/v1/feed/list').get( require('./feed/v1SelectFeedList') )
+app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
+app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList') )
 app.route('/v1/gongu/feed/list').get( require('./feed/v1SelectGonguFeedList') )
 app.route('/feed/list/m3u8').get( require('./feed/selectFeedList_m3u8') )
 
