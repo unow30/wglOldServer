@@ -64,7 +64,7 @@
              }
  
              let follow_data = await queryFollowCheck(req, db_connection);
-             req.innerBody['item']['is_follow'] = follow_data.uid? 1 : 0
+             req.innerBody['item']['is_follow'] = follow_data? 1 : 0
 
              const interests = await querySelectInterest(req, db_connection);
              const allInterests = await querySelectAllInterest(req, db_connection)
