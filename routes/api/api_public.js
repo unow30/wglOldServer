@@ -59,6 +59,12 @@ app.route('/test/feed/list').get( require('../middleware/publicCheckToken') ,req
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 
+/**
+ * weggler api
+ */
+ app.route('/v2/weggler/ranking').get( require('../middleware/publicCheckToken') ,require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
+
+
 
 /* 임시 안드로이드용 라우터 */
 app.route('/test/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
