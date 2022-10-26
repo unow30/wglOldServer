@@ -10,8 +10,8 @@
  *
  *       * 커뮤니티 위글꿀팁 게시물 생성
  *       * type: 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요 
- *       * 글만 작성의 경우 => { title: blah, representative_content: 안녕하세요, representative_filename: 빈문자열이든 null이든 상관 없음, contents: [] 빈 문자열 꼭 넣어줄것}
- *       * 글+이미지 작성의 경우 => { title: blah, representative_content: 안녕하세요, representative_filename: abcd.m3u8, contents: [{content: 안녕하세요, filename: abcd.m3u8}] }
+ *       * 글만 작성의 경우 => { title: blah, representative_content: 안녕하세요, representative_filename: 빈문자열이든 null이든 상관 없음, contents: [] 빈 배열 꼭 넣어줄것}
+ *       * 글+이미지 작성의 경우 => { title: blah, representative_content: 안녕하세요, representative_filename: abcd.jpg, contents: [{content: 안녕하세요, filename: abcd.jpg}] }
  *     parameters:
  *       - in: body
  *         name: body
@@ -34,7 +34,7 @@
  *               description: 대표 내용
  *             representative_filename:
  *               type: string
- *               example: abcd.m3u8
+ *               example: abcd.jpg
  *               description: 대표 파일명
  *             contents:
  *               type: array
@@ -45,7 +45,7 @@
  *                     type: string
  *                   filename:
  *                     type: abcd.m3u8
- *               example: [{content: 안녕하세요 반갑습니다., filename: abcd.m3u8}]
+ *               example: [{content: 안녕하세요 반갑습니다., filename: abcd.jpg}]
  *                 
  *
  *     responses:

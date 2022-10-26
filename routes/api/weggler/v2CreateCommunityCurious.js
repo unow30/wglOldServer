@@ -75,7 +75,7 @@
          req.paramBody = paramUtil.parse(req);
  
          checkParam(req);
-         req.paramBody['type'] = 2 // 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요
+         req.paramBody['type'] = 3 // 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요
  
          mysqlUtil.connectPool( async function (db_connection) {
              req.innerBody = {};
@@ -120,7 +120,7 @@
  
              if(req.paramBody['images'][0]){
                  req.innerBody['item'] = await queryAll(req, db_connection);
-                 await queryContentsBulkInsert(req, db_connection)
+                 await queryImagesBulkInsert(req, db_connection)
  
              }
              else{
@@ -186,7 +186,7 @@
      );
  }
  
- async function queryContentsBulkInsert(req, db_connection) {
+ async function queryImagesBulkInsert(req, db_connection) {
      const _funcName = arguments.callee.name;
  
      const contentData = req.paramBody['images'].map(el => [req.innerBody['item']['uid'], el]);
