@@ -23,8 +23,8 @@
  *             - content
  *           properties:
  *             title:
- *               type: number
- *               example: 1
+ *               type: string
+ *               example: 안녕하세요
  *               description: |
  *                 상품 uid
  *             content:
@@ -68,11 +68,15 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
+            
+            const dayPost = await queryPointDay(req, db_connection)
+            const allPost = await queryPointAll(req, db_connection)
+            console.log(allPost, '============>> all post')
+            console.log(dayPost, '============>> day post')
+
             req.innerBody['item'] = await query(req, db_connection);
             
             let pointPayment = 0
-            const dayPost = await queryPointDay(req, db_connection)
-            const allPost = await queryPointAll(req, db_connection)
             if(req.paramBody.content.length >= 10 && allPost.length == 0){
                 //첫 포인트 500포인트 지급
                 req.paramBody.point = 500
