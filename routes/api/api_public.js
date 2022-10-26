@@ -107,6 +107,6 @@ app.route('/test/product/review/list').get(require('../middleware/publicCheckTok
 app.route('/test/v1/groupbuying/detail/room/list').get(require('../middleware/publicCheckToken'),  require('./groupBuying/v1SelectGroupBuyingRoomList') )
 
 app.route('/test/v1/feed/product/list').get(require('../middleware/publicCheckToken'), require('./feed/v1SelectFeedProductList') )
-app.route('/test/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
+app.route('/test/video/hashtag/list').get(require('../middleware/publicCheckToken'), require('./video/selectVideoHashTagList') )
 
 module.exports = app;
