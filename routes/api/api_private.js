@@ -281,4 +281,9 @@ app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1Sele
 app.route('/v1/groupbuying/filter').get( require('./groupBuying/v1SelectGroupBuyingFilter') )
 app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuyingOrder') )
 
+/**
+ * weggler api
+ */
+ app.route('/v2/weggler/community/blah').post( require('./weggler/v2CreateCommunityBlah') )
+
 module.exports = app;
