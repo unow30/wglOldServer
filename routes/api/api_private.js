@@ -285,5 +285,6 @@ app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuy
  * weggler api
  */
  app.route('/v2/weggler/community/blah').post( require('./weggler/v2CreateCommunityBlah') )
+ app.route('/v2/weggler/community/hacks').post( require('./weggler/v2CreateCommunityHacks') )
 
 module.exports = app;
