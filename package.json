@@ -28,6 +28,7 @@
     "request": "^2.88.2",
     "sharp": "^0.27.0",
     "swagger-jsdoc": "^6.0.0-rc.5",
-    "swagger-ui-express": "^4.1.5"
+    "swagger-ui-express": "^4.1.5",
+    "twilio": "^3.82.0"
   }
 }

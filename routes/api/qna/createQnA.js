@@ -93,10 +93,10 @@ module.exports = function (req, res) {
 
     try{
         req.file_name = file_name;
-        // logUtil.printUrlLog(req, `== function start ==================================`);
+        logUtil.printUrlLog(req, `== function start ==================================`);
         logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 

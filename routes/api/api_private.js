@@ -8,9 +8,13 @@ const app = express();
 /**
  * user api
  */
+app.route('/v2/user').put( require('./user/v2UpdateUser') )
 app.route('/user').put( require('./user/updateUser') )
                   .delete( require('./user/deleteUser') )
 // app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
+
+app.route('/v2/user/info/me').get( require('./user/v2SelectUserInfoMe') )
+app.route('/v2/user/info/other').get( require('./user/v2SelectUserInfoOther') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
@@ -25,7 +29,7 @@ app.route('/user/profile/video/list').get( require('./user/selectUserProfileRevi
  */
 app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
 
-app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') )
+// app.route('/product/confirm/list').get( require('./product/selectProductConfirmList') ) // 비로그인 때 주석함 22. 10. 20
 app.route('/v1/product/confirm/list').get( require('./product/v1SelectProductConfirmList') )
 app.route('/product').get(require('./product/selectProductItem')) //상품 item만 불러온다.
 app.route('/product/detail').get( require('./product/selectProductDetail') )
@@ -83,6 +87,9 @@ app.route('/point/list').get( require('./point/selectPointList') )
  * feed api
  */
 app.route('/feed/list').get( require('./feed/selectFeedList') )
+app.route('/v1/feed/list').get( require('./feed/v1SelectFeedList') )
+app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
+app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList') )
 app.route('/v1/gongu/feed/list').get( require('./feed/v1SelectGonguFeedList') )
 app.route('/feed/list/m3u8').get( require('./feed/selectFeedList_m3u8') )
 
@@ -94,6 +101,7 @@ app.route('/weggledeal/list').get( require('./weggleDeal/selectWeggleDealList') 
 /**
  * video api
  */
+app.route('/v2/video/review').post( require('./video/v2CreateVideoReview') ) // 22. 10. 21 새로 만든 비디오 리뷰 생성
 app.route('/video/info').get( require('./video/selectVideoInfo') )
 app.route('/video/count/shared').put( require('./video/updateVideoCountShared') )
 app.route('/video/count/view').put( require('./video/updateVideoCountView') )
@@ -125,7 +133,7 @@ app.route('/comment/nested')
     .delete( require('./comment/deleteNestedComment') )
 
 app.route('/comment/list').get( require('./comment/selectCommentList') )
-app.route('/comment/nested/list').get( require('./comment/selectNestedCommentList') )
+// app.route('/comment/nested/list').get( require('./comment/selectNestedCommentList') ) // 비로그인 때 주석함 22. 10. 20
 
 /**
  * like api
@@ -175,7 +183,7 @@ app.route('/follow')
     .delete( require('./follow/deleteFollow') )
     .post( require('./follow/createFollow') )
 app.route('/follow/list').get( require('./follow/selectFollowList') )
-app.route('/follow/find/list').get( require('./follow/selectFollowFindList') )
+// app.route('/follow/find/list').get( require('./follow/selectFollowFindList') ) // 비로그인 때 주석함 22. 10. 20
 app.route('/v1/follow/list').get( require('./follow/v1SelectFollowList') )
 app.route('/v1/follower/list').get( require('./follow/v1SelectFollowerList') )
 app.route('/v1/follow/search/list').get( require('./follow/v1SelectFollowSearchList') )
@@ -184,7 +192,7 @@ app.route('/v1/follower/search/list').get( require('./follow/v1SelectFollowerSea
 /**
  * searchView api
  */
-app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+// app.route('/searchview/list/all').get(require('./searchView/selectSerchViewListAll')) // 모아보기 모든 정보 불러오기 // 비로그인 때 주석함 22. 10. 20
 app.route('/v1/searchview/list/all').get(require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
 app.route('/v1/searchview/list/gongudeal').get(require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
 app.route('/v1/searchview/list/gongudeadline').get(require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
@@ -194,10 +202,10 @@ app.route('/searchview/new/category/video/list').get( require('./searchView/sele
 app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') ) // 영상검색정보
 app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') ) // 태그검색정보
 app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') ) // 사용자검색정보
-app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )// 추천상품검색정보
+// app.route('/searchview/recommend/list').get( require('./searchView/selectSearchViewRecommendList') )// 추천상품검색정보 // 비로그인 때 주석함 22. 10. 20
 
-app.route('/searchview/ad/list').get( require('./searchView/selectSearchViewAdList') ) // 광고이미지 목록
-app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') ); // 위글딜영상 목록
+// app.route('/searchview/ad/list').get( require('./searchView/selectSearchViewAdList') ) // 광고이미지 목록 // 비로그인 때 주석함 22. 10. 20
+// app.route('/searchview/weggledeal/video/list').get( require('./searchView/selectSearchViewWeggledealVideoList') ); // 위글딜영상 목록 // 비로그인 때 주석함 22. 10. 20
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') ); // 신규상품 목록
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') ); // 신규리뷰 목록
 
@@ -209,11 +217,11 @@ app.route('/searchview').get( require('./searchView/selectSearchViewInfo') ) // 
 
 // 모아보기 api legacy
 // app_version1.5.4, app_code73
-app.route('/searchview/new/product/preview/list').get( require('./searchView/selectSearchViewNewProductPreviewList') ); // 신규상품 미리보기
+// app.route('/searchview/new/product/preview/list').get( require('./searchView/selectSearchViewNewProductPreviewList') ); // 신규상품 미리보기 // 비로그인 때 주석함 22. 10. 20
 app.route('/searchview/new/review/preview/list').get( require('./searchView/selectSearchViewNewReviewPreviewList') ); // 신규리뷰 미리보기
-app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') ); // 위글딜 미리보기
-app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') ) // 핫위글러 목록
-app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') ); // 베스트 리뷰 목록
+// app.route('/searchview/weggledeal/preview/list').get( require('./searchView/selectSearchViewWeggledealPreviewList') ); // 위글딜 미리보기 // 비로그인 때 주석함 22. 10. 20
+// app.route('/searchview/hot/weggler/list').get( require('./searchView/selectSearchViewHotWegglerlist') ) // 핫위글러 목록 // 비로그인 때 주석함 22. 10. 20
+// app.route('/searchview/best/review/list').get( require('./searchView/selectSearchViewBestReviewList') ); // 베스트 리뷰 목록 // 비로그인 때 주석함 22. 10. 20
 // app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') );
 
 
@@ -272,5 +280,11 @@ app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuy
 app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1SelectGroupBuyingRoomList') )
 app.route('/v1/groupbuying/filter').get( require('./groupBuying/v1SelectGroupBuyingFilter') )
 app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuyingOrder') )
+
+/**
+ * weggler api
+ */
+ app.route('/v2/weggler/community/blah').post( require('./weggler/v2CreateCommunityBlah') )
+ app.route('/v2/weggler/community/hacks').post( require('./weggler/v2CreateCommunityHacks') )
 
 module.exports = app;

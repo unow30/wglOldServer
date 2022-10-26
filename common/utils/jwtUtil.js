@@ -22,6 +22,16 @@ module.exports = {
         );
     },
 
+    createPublicToken: function(){
+        return jwt.sign(
+            {
+                uid: process.env.COMMON_USER_UID,
+            },
+            // payload,
+            process.env.JWT_SECURE_KEY
+        );
+    },
+
     getPayload: function(token){
         if( token ){
             console.log('token : ' + token);
