@@ -11,7 +11,7 @@
  *
  *       * 피드 목록
  *       * 피드 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.
- *       * 피드 목록(전체), 공구목록이 있습니다.
+ *       * 피드 목록(전체), 브랜드관, 공동구매, 마이굿즈가 있습니다.
  *       * 만약 위글 광고 클릭후 처음 목록 다음에 피드 목록을 새로 요청할때는 ad_product_uid 는 0으로 보내주세요
  *
  *     parameters:
@@ -23,9 +23,9 @@
  *           example: all
  *         description: |
  *           all or null: 피드리스트 실행
- *           recent: 최근 2개월 내 등록한 영상 실행
- *           weggledeal: 위글딜 영상 실행
- *         enum: ['', all, recent, weggledeal]
+ *           brand: 브랜드관
+ *           groupbuying: 공동구매(이전꺼실행, 필터링 및 기타이슈 수정중)
+ *         enum: ['', all, brand, groupbuying]
  *       - in: query
  *         name: latitude
  *         default: 37.536977
@@ -258,32 +258,82 @@ function querySelect(req, db_connection) {
                 ]
             );
         }break
-        case 'recent':{
+        case 'brand':{
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_recent_video_list'
+                , 'call proc_select_feed_brand_list_v1'
                 , [
                     req.headers['user_uid'],
-                    req.paramBody['video_uid'],
+                    req.paramBody['latitude'],
+                    req.paramBody['longitude'],
+                    req.paramBody['km'],
                     req.paramBody['category'],
+                    req.paramBody['video_uid'],
+                    // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
+                    req.paramBody['tag'],
                     req.innerBody['type'],
+                    req.paramBody['filter'],
                 ]
             );
         }break;
-        case 'weggledeal':{
+        case 'groupbuying':{
+            //공구쪽 영상에 상품 여러개 표시? 이전꺼 실행하고 방안 찾기
+            //필터링하기? 이전꺼 실행하고 방안 찾기
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_weggledeal_list_v1'
+                , 'call proc_select_gongu_feed_list_v1'
                 , [
                     req.headers['user_uid'],
-                    req.paramBody['video_uid'],
-                    req.paramBody['category'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
-                    req.innerBody['type'],
                 ]
             );
         }break;
+        // case 'groupbuying':{
+        //     return mysqlUtil.queryArray(db_connection
+        //         , 'call proc_select_feed_groupbuying_list_v1'
+        //         , [
+        //             req.headers['user_uid'],
+        //             req.paramBody['latitude'],
+        //             req.paramBody['longitude'],
+        //             req.paramBody['km'],
+        //             req.paramBody['category'],
+        //             req.paramBody['video_uid'],
+        //             // req.paramBody['keyword'], //v1에서 안쓴다.
+        //             req.paramBody['random_seed'],
+        //             req.paramBody['offset'],
+        //             req.paramBody['tag'],
+        //             req.innerBody['type'],
+        //             req.paramBody['filter'],
+        //         ]
+        //     );
+        // }break;
+        // case 'recent':{
+        //     return mysqlUtil.queryArray(db_connection
+        //         , 'call proc_select_feed_recent_video_list'
+        //         , [
+        //             req.headers['user_uid'],
+        //             req.paramBody['video_uid'],
+        //             req.paramBody['category'],
+        //             req.paramBody['random_seed'],
+        //             req.paramBody['offset'],
+        //             req.innerBody['type'],
+        //         ]
+        //     );
+        // }break;
+        // case 'weggledeal':{
+        //     return mysqlUtil.queryArray(db_connection
+        //         , 'call proc_select_feed_weggledeal_list_v1'
+        //         , [
+        //             req.headers['user_uid'],
+        //             req.paramBody['video_uid'],
+        //             req.paramBody['category'],
+        //             req.paramBody['random_seed'],
+        //             req.paramBody['offset'],
+        //             req.innerBody['type'],
+        //         ]
+        //     );
+        // }break;
     }
 
 
