@@ -51,6 +51,7 @@ app.use('/', indexRouter);
 require('./routes/cron/cronUpdateOrderStatus').start();
 require('./routes/cron/cronUpdateExpirationGift').start();
 require('./routes/cron/cronSendFcmExpirationGift').start();
+require('./routes/cron/v1CronExtentionGonguEndTime').start()
 require('./routes/cron/v1CronCancelGonguUser').start();
 
 app.use(function(req, res, next){

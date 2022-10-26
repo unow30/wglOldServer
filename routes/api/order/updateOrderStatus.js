@@ -126,8 +126,8 @@ module.exports = function (req, res) {
                         }
                         //공구방의 참가가능인원(타입) 참가인원중 구매확정한 인원의 수를 가져온다.
                         //공구방의 방장 uid와 order_no를 가져온다. 방장이 나가면 데이터가 drop이라 이 데이터가 없다.
-                        //09월 30일까지 이벤트 진행. 이후에는 진행 안한다.
-                        if(moment().format('Y-M-D H:m:S') <= '2022-9-30 23:59:59'){
+                        //22년 12월 31일까지 이벤트 진행. 이후 진행여부 확인 필요
+                        if(moment().format('Y-M-D H:m:S') <= '2022-12-31 23:59:59'){
                             let count = await queryConfirm(req, db_connection)
                             if(count == null || count == undefined){
                                 count = {"confirm_count": 0, "recruitment": 0};
