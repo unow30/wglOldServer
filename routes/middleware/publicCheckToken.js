@@ -27,8 +27,7 @@ module.exports = function (req, res, next) {
             req.innerBody = {};
             if(req.headers['user_uid']>0){
                 req.innerBody['item'] = await querySelect(req, db_connection);
-
-                if(!req.innerBody.item['id']){
+                if(!req.innerBody.item['uid']){
                     req.headers['user_uid'] = 0;
                 }
             }

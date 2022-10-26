@@ -56,7 +56,8 @@
  
          mysqlUtil.connectPool(async function (db_connection) {
              req.innerBody = {};
- 
+             console.log(req.paramBody.user_uid, '============user_uid')
+             console.log(req.headers.user_uid, '============token user_uid')
              req.innerBody['item'] = await querySelect(req, db_connection);
              if (!req.innerBody['item']) {
                  errUtil.createCall(errCode.empty, `회원가입하지 않은 유저입니다.`)
@@ -64,7 +65,7 @@
              }
  
              let follow_data = await queryFollowCheck(req, db_connection);
-             req.innerBody['item']['is_follow'] = follow_data ? 1 : 0
+             req.innerBody['item']['is_follow'] = follow_data? 1 : 0
 
              const interests = await querySelectInterest(req, db_connection);
              const allInterests = await querySelectAllInterest(req, db_connection)
