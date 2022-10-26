@@ -38,7 +38,7 @@
  *           offset 18: 18~35
  *           offset 36: 36~53
  *       - in: query
- *         name: filter
+ *         name: review_type
  *         required: true
  *         schema:
  *           type: number
@@ -50,7 +50,7 @@
  *           * 전체: 2
  *         enum: [0,1,2]
  *       - in: query
- *         name: sort
+ *         name: filter
  *         required: true
  *         schema:
  *           type: number
@@ -129,8 +129,8 @@ function querySelect(req, db_connection) {
             req.headers['user_uid'],
             req.paramBody['product_uid'],
             req.paramBody['offset'],
+            req.paramBody['review_type'],
             req.paramBody['filter'],
-            req.paramBody['sort'],
         ]
     );
 }
