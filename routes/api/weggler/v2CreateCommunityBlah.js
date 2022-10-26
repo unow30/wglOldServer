@@ -68,7 +68,7 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
-            
+
             const dayPost = await queryPointDay(req, db_connection)
             const allPost = await queryPointAll(req, db_connection)
             console.log(allPost, '============>> all post')
@@ -77,7 +77,9 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
             
             let pointPayment = 0
-            if(req.paramBody.content.length >= 10 && allPost.length == 0){
+
+            const content = req.paramBody.content.replace(/ /gi,'')
+            if(content.length >= 10 && allPost.length == 0){
                 //첫 포인트 500포인트 지급
                 req.paramBody.point = 500
                 req.paramBody.point_type = 1
@@ -86,7 +88,7 @@ module.exports = function (req, res) {
                 await queryAddPoint(req, db_connection)
                 pointPayment = 1
             }
-            else if(req.paramBody.content.length >= 10 && dayPost.length < 11){
+            else if(content.length >= 10 && dayPost.length < 11){
                 //하루에 10번까지 10포인트 지급
                 req.paramBody.point = 10
                 req.paramBody.point_type = 1
