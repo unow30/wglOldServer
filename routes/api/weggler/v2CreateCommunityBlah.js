@@ -79,7 +79,7 @@ module.exports = function (req, res) {
             let pointPayment = 0
 
             const content = req.paramBody.content.replace(/ /gi,'')
-            if(content.length >= 10 && allPost.length == 0){
+            if(allPost.length == 0){
                 //첫 포인트 500포인트 지급
                 req.paramBody.point = 500
                 req.paramBody.point_type = 1
