@@ -15,7 +15,7 @@ app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
 app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck') )
 app.route('/user/phone/check').get( require('./user/selectUserPhoneCheck') )
 app.route('/user/recommendee/code/check').get( require('./user/selectUserRecommendeeCodeCheck') )
-app.route('/v2/user/info/review').get( require('./user/v2SelectUserInfoReview') ) // 22. 10. 28 v2 유저 페이지 리뷰 리스트 api
+app.route('/v2/user/info/review').get(require('../middleware/publicCheckToken'), require('./user/v2SelectUserInfoReview') ) // 22. 10. 28 v2 유저 페이지 리뷰 리스트 api
 
 /**
  * file api
