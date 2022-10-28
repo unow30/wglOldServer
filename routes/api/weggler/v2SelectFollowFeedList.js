@@ -109,7 +109,7 @@ async function queryFollowFeedList(req, db_connection) {
     const query = `
         (
             select
-                0 as is_photo_review
+                1 as is_photo_review
                 ,if(_photo_review.user_uid = ${req.headers['user_uid']}, 1, 0) my_review
                 ,if(_like_count.count is null, 0, _like_count.count) as like_count
                 ,if(_comment_count.count is null, 0, _comment_count.count) as comment_count
