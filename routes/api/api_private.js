@@ -287,5 +287,6 @@ app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuy
  app.route('/v2/weggler/community/blah').post( require('./weggler/v2CreateCommunityBlah') )
  app.route('/v2/weggler/community/hacks').post( require('./weggler/v2CreateCommunityHacks') )
  app.route('/v2/weggler/community/curious').post( require('./weggler/v2CreateCommunityCurious') )
+ app.route('/v2/weggler/follow/feed/list').get( require('./weggler/v2SelectFollowFeedList') )
 
 module.exports = app;
