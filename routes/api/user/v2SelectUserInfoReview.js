@@ -18,7 +18,7 @@
  *         required: true
  *         schema:
  *           type: integer
- *           example: 1
+ *           example: 212
  *         description: 유저 uid
  * 
  *       - in: query
@@ -27,7 +27,7 @@
  *         required: true
  *         schema:
  *           type: integer
- *           example: 1
+ *           example: 0
  *         description: 유저 uid
  *
  *     responses:
