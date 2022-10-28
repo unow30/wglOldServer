@@ -90,7 +90,7 @@ function deleteBody(req) {
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
+    return mysqlUtil.queryArray(db_connection
         , 'call proc_select_user_info_v2'
         , [
             req.headers['user_uid'],
