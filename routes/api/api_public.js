@@ -40,6 +40,11 @@ app.route('/order/cancel').put(require('../middleware/bootPayErrorCancel'))
  */
 app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
 
+/**
+ * comment api
+ */
+ app.route('/v2/comment/list').get(require('../middleware/publicCheckToken'), require('./comment/v2SelectCommentList'))
+
 
 /**
  * dev api
