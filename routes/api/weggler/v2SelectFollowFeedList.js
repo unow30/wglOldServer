@@ -50,7 +50,6 @@ module.exports = function (req, res) {
         req.paramBody['followList'] = await queryFollowList(req, db_connection); //로그인 한 유저의 팔로우 리스트
         req.paramBody['followList'] = req.paramBody['followList'].map(el=> el.user_uid)
         req.paramBody['followList'].push(req.headers['user_uid'])
-        console.log(req.paramBody['followList'])
 
         req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
         req.innerBody['item'] = feedListParse(req.innerBody['item'])
@@ -318,7 +317,6 @@ async function queryFollowFeedList(req, db_connection) {
         ;
         
     `
-    console.log(query) 
     return await new Promise((resolve, reject)=>{
         db_connection.query(query,(err, rows, field)=>{
             if(err){
@@ -331,7 +329,6 @@ async function queryFollowFeedList(req, db_connection) {
 }
 
 function feedListParse(feedList) {
-    console.log(feedList)
     return feedList.map(item=>{
         const result = {
             ...item
