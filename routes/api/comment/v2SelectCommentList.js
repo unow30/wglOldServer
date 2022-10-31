@@ -76,8 +76,8 @@ module.exports = function (req, res) {
             if(req.paramBody['offset']==0){
                 req.innerBody['content'] = await queryTargetContent(req, db_connection);
             }
-            req.innerBody['comments'] = await querySelect(req, db_connection);
-
+            const comments = await querySelect(req, db_connection);
+            req.innerBody['comments'] = nestedCommentsParse(comments);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -128,4 +128,22 @@ function queryTargetContent(req, db_connection) {
             req.paramBody['target_uid'],
         ]
     );
+}
+
+function nestedCommentsParse(comments) {
+    const _funcName = arguments.callee.name;
+
+
+    return comments.map(el =>{
+        const comment = {
+            ...el
+        }
+        comment.nested_comments = el.nested_comments
+            ?
+            el.nested_comments.split('@!@').map(item => JSON.parse(item))
+            :
+            []
+            
+        return comment
+    })
 }
