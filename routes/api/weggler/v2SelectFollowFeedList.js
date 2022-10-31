@@ -85,7 +85,9 @@ async function queryFollowList(req, db_connection) {
     return await new Promise((resolve, reject)=>{
         db_connection.query(query,(err, rows, field)=>{
             if(err){
-                reject(new Error(err.message || 'db error'))
+                const date = new Date(Date.now())
+                
+                reject(new Error(err.message +=`follow feed list 에서 에러 난 것 ${date}` || 'db error'))
             }
             resolve(rows)
         });
@@ -317,10 +319,13 @@ async function queryFollowFeedList(req, db_connection) {
         ;
         
     `
+    
     return await new Promise((resolve, reject)=>{
         db_connection.query(query,(err, rows, field)=>{
             if(err){
-                reject(new Error(err.message || 'db error'))
+                const date = new Date(Date.now())
+
+                reject(new Error(err.message+=`follow feed list 에서 에러 난 것 ${date}` || 'db error'))
             }
             resolve(rows)
         });
