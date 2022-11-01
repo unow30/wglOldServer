@@ -142,8 +142,8 @@ function nestedCommentsParse(comments) {
             ?
             el.nested_comments.split('@!@').map(item => {
                 const parseItem = JSON.parse(item)
-                parseItem.created_time = new Date(parseItem.created_time)
-
+                parseItem.nested_comment_created_time = new Date(parseItem.nested_comment_created_time)
+                console.log(parseItem)
                 return parseItem
             })
             :
