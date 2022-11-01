@@ -140,10 +140,15 @@ function nestedCommentsParse(comments) {
         }
         comment.nested_comments = el.nested_comments
             ?
-            el.nested_comments.split('@!@').map(item => JSON.parse(item))
+            el.nested_comments.split('@!@').map(item => {
+                const parseItem = JSON.parse(item)
+                parseItem.created_time = new Date(parseItem.created_time)
+
+                return parseItem
+            })
             :
             []
-            
+        
         return comment
     })
 }
