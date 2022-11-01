@@ -149,6 +149,7 @@ function nestedCommentsParse(comments) {
             :
             []
         
+        console.log(comment)
         return comment
     })
 }
