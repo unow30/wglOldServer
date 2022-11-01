@@ -122,7 +122,7 @@ function queryTargetContent(req, db_connection) {
         query = 'call proc_select_comment_photo_content_v2'
     }
 
-    return mysqlUtil.queryArray(db_connection
+    return mysqlUtil.querySingle(db_connection
         , query
         , [
             req.paramBody['target_uid'],
