@@ -107,7 +107,8 @@ module.exports = function (req, res) {
                     el.product_info.split('@!@').map(item => JSON.parse(item))
                     :
                     []
-            
+                
+                return result
             })
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
