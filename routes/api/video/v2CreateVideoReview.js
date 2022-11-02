@@ -78,7 +78,7 @@ module.exports = function (req, res) {
         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
-
+        console.log('========================>>>>>>>>들어왔다<<<<<<<=======================')
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
             console.log(req.paramBody, '=================>>>paramBody')
@@ -86,10 +86,14 @@ module.exports = function (req, res) {
 
             if(filenameExt === 'm3u8'){
                 req.innerBody['item'] = await query_m3u8(req, db_connection);
+                console.log(req.innerBody,req.headers['user_uid'],'============video create 후 스코프 안=============')
             }
             else {
                 req.innerBody['item'] = await query(req, db_connection);
+                console.log(req.innerBody,req.headers['user_uid'],'============video create 후 스코프 안=============')
             }
+
+            console.log(req.innerBody['item'],'============video create 후=============')
             await queryProductBulkInsert(req, db_connection);
             
             console.log("ofjwepfiowjefpweofjwepowjfwedqfqfq2e2e2e2e2e");
@@ -185,6 +189,7 @@ function queryAlertComment(req, db_connection){
 }
 
 async function queryProductBulkInsert(req, db_connection){
+    console.log('일단 벌크 들어옴')
     const productData = req.paramBody['product_uid'].map(result => [req.innerBody.item['uid'], result]);
     const videoProductInsertSql = `
         insert into tbl_video_product(video_uid, product_uid)
