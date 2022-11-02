@@ -15,6 +15,7 @@ app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
 app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck') )
 app.route('/user/phone/check').get( require('./user/selectUserPhoneCheck') )
 app.route('/user/recommendee/code/check').get( require('./user/selectUserRecommendeeCodeCheck') )
+app.route('/v2/user/info/review').get(require('../middleware/publicCheckToken'), require('./user/v2SelectUserInfoReview') ) // 22. 10. 28 v2 유저 페이지 리뷰 리스트 api
 
 /**
  * file api
@@ -39,6 +40,11 @@ app.route('/order/cancel').put(require('../middleware/bootPayErrorCancel'))
  */
 app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
 
+/**
+ * comment api
+ */
+ app.route('/v2/comment/list').get(require('../middleware/publicCheckToken'), require('./comment/v2SelectCommentList'))
+
 
 /**
  * dev api
@@ -48,6 +54,7 @@ app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_
 app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
 app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
 app.route('/dev/accesstoken').put( require('./_dev/_dev_updateAccessToken') )
+app.route('/dev/update/reward/product/amount').put( require('./_dev/_dev_updateRewardProductAmount') )
 
 app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 
@@ -58,6 +65,11 @@ app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 app.route('/test/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
+
+/**
+ * weggler api
+ */
+ app.route('/v2/weggler/ranking').get( require('../middleware/publicCheckToken') ,require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
 
 
 /* 임시 안드로이드용 라우터 */
