@@ -15,6 +15,7 @@ app.route('/user').put( require('./user/updateUser') )
 
 app.route('/v2/user/info/me').get( require('./user/v2SelectUserInfoMe') )
 app.route('/v2/user/info/other').get( require('./user/v2SelectUserInfoOther') )
+app.route('/v2/user/reward/info').get( require('./user/v2SelectUserRefundInfo') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
