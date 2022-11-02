@@ -97,7 +97,20 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = req.innerBody['item'].map(el =>{
+                const result = {
+                    ...el
+                }
+                
+                // result.product_info = el.multiple_product==1
+                //     ?
+                //     el.product_info.split('@!@').map(item => JSON.parse(item))
+                //     :
+                //     []
+                result.product_info = el.product_info.split('@!@').map(item => JSON.parse(item))
 
+                return result
+            })
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
