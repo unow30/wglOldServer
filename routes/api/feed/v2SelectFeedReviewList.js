@@ -143,7 +143,7 @@ function querySelect(req, db_connection) {
             req.paramBody['product_uid'],
             req.paramBody['offset'],
             req.paramBody['review_type'],
-            req.paramBody['filter'],
+            // req.paramBody['filter'],
         ]
     );
 }
