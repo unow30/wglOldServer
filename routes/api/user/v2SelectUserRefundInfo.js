@@ -3,12 +3,12 @@
  *
  * 
  * @swagger
- * /api/public/v2/user/reward/info:
+ * /api/private/v2/user/reward/info:
  *   get:
  *     summary: 리워드 환급 정보 불러오는 api
  *     tags: [User]
  *     description: |
- *       path : /api/public/v2/user/reward/info
+ *       path : /api/private/v2/user/reward/info
  *
  *       * 유저 총 판매액, 환급가능 리워드, 유저프로필, 닉네임 가져오는 api
  *
