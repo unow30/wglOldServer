@@ -54,6 +54,7 @@ app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_
 app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
 app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
 app.route('/dev/accesstoken').put( require('./_dev/_dev_updateAccessToken') )
+app.route('/dev/update/reward/product/amount').put( require('./_dev/_dev_updateRewardProductAmount') )
 
 app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 
