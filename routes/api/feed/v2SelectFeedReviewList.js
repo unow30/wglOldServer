@@ -102,12 +102,13 @@ module.exports = function (req, res) {
                     ...el
                 }
                 
-                result.product_info = el.multiple_product==1
-                    ? 
-                    el.product_info.split('@!@').map(item => JSON.parse(item))
-                    :
-                    []
-                
+                // result.product_info = el.multiple_product==1
+                //     ?
+                //     el.product_info.split('@!@').map(item => JSON.parse(item))
+                //     :
+                //     []
+                result.product_info = el.product_info.split('@!@').map(item => JSON.parse(item))
+
                 return result
             })
             deleteBody(req)
@@ -142,7 +143,7 @@ function querySelect(req, db_connection) {
             req.paramBody['product_uid'],
             req.paramBody['offset'],
             req.paramBody['review_type'],
-            req.paramBody['filter'],
+            // req.paramBody['filter'],
         ]
     );
 }
