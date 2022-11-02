@@ -126,6 +126,7 @@ function queryTargetContent(req, db_connection) {
         , query
         , [
             req.paramBody['target_uid'],
+            req.headers['user_uid'],
         ]
     );
 }
