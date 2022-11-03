@@ -1,34 +1,36 @@
 /**
- * Created by yunhokim on 2022. 01. 21.
  *
  * @swagger
- * /api/private/alert/history/list:
+ * /api/public/v2/user/info/review:
  *   get:
- *     summary: 내 알림 정보
- *     tags: [Alert]
+ *     summary: 자 or 타 유저 리뷰 리스트
+ *     tags: [User]
  *     description: |
- *       path : /api/private/alert/history/list
+ *       path : /api/public/v2/user/info/review
  *
- *       * 내 알림 정보
+ *       * 자 or 타 유저 리뷰 리스트
+ *       * limit 20개씩 이므로 offset 20개씩 증가
+ *
  *     parameters:
+ *       - in: query
+ *         name: user_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 212
+ *         description: 유저 uid
+ * 
  *       - in: query
  *         name: offset
  *         default: 0
  *         required: true
  *         schema:
- *           type: number
+ *           type: integer
  *           example: 0
- *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 10
- *           offset 0: 0~9
- *           offset 10: 10~19
- *           offset 20: 20~29
+ *         description: 유저 uid
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/UserAlertHistoryApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -41,6 +43,7 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+
 const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
@@ -59,9 +62,10 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await querySelect(req, db_connection);
+            
+            const feedList = await querySelect(req, db_connection);
+            req.innerBody['item'] = feedListParse(feedList);
 
-            deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -75,25 +79,39 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'signup_type');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'social_id');
+    paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-    // delete req.innerBody['item']['longitude']
-    // delete req.innerBody['item']['push_token']
-    // delete req.innerBody['item']['access_token']
+
 }
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_fcm_list'
+        , 'call proc_select_user_info_review_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['offset']? req.paramBody['offset'] : 0,
+            req.paramBody['user_uid'],
+            req.paramBody['offset'],
         ]
     );
+}
+
+function feedListParse(feedList) {
+    return feedList.map(item=>{
+        const result = {
+            ...item
+        }
+        if(item.multiple_product == 1){
+            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
+        }
+        else{
+            result['product_info'] = [JSON.parse(item.product_info)]
+        }
+        
+        return result
+    })
 }

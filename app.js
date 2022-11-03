@@ -8,8 +8,10 @@ const funcUtil = require('./common/utils/funcUtil');
 const sendUtil = require('./common/utils/sendUtil');
 const errUtil = require('./common/utils/errUtil');
 const errCode = require('./common/define/errCode');
-
 require('dotenv').config();
+const authController = require('./routes/api/auth/createPublicToken');
+
+
 
 const indexRouter = require('./routes/index');
 // const usersRouter = require('./routes/users');
@@ -29,12 +31,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 if( !funcUtil.isRealServer ){
   app.use('/api-docs', require('./apiDocs/swaggerDocs'));
 }
-
+app.get('/api/public/auth/token', authController.createToken); // 비로그인 때 추가함 22. 10. 20
 // app.all('/api/callback/bootpay', require('./routes/callback/createBootpay'))
 app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay'))
 
-app.all('/api/public/*', require('./routes/middleware/setHeader'));
-app.all('/api/private/*', require('./routes/middleware/setHeader'));
+// app.all('/api/public/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
+// app.all('/api/private/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
 
 app.all('/api/private/*', require('./routes/middleware/checkAccessToken'));
 
@@ -44,7 +46,7 @@ app.use('/others', require('./routes/page/page_router'));
 
 
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+// app.use('/users', usersRouter) ;
 
 require('./routes/cron/cronUpdateOrderStatus').start();
 require('./routes/cron/cronUpdateExpirationGift').start();

@@ -1,34 +1,45 @@
 /**
- * Created by yunhokim on 2022. 01. 21.
+ * Created by yunhokim on 2022. 10. 13.
  *
  * @swagger
- * /api/private/alert/history/list:
+ * /api/private/v1/feed/product/list:
  *   get:
- *     summary: 내 알림 정보
- *     tags: [Alert]
+ *     summary: 피드 상품목록 (테섭전용)
+ *     tags: [Feed]
  *     description: |
- *       path : /api/private/alert/history/list
+ *       path : /api/private/v1/feed/product/list
  *
- *       * 내 알림 정보
+ *       * 피드 상품목록 (테섭전용)
+ *       * 해당 영상에 등록된 상품정보를 보여준다.
+ *
  *     parameters:
  *       - in: query
- *         name: offset
- *         default: 0
+ *         name: category
+ *         required: true
+ *         default: 65535
+ *         schema:
+ *           type: number
+ *           example: 65535
+ *         description: |
+ *           카테고리 (비트 연산)
+ *           해당값으로 상품목록 정렬
+ *           ==> 65535 : 모든 상품
+ *           * 1 : 식품
+ *           * 2 : 뷰티
+ *           * 4 : 홈데코
+ *           * 8 : 패션잡화
+ *           * 16 : 반려동물
+ *           * 32 : 유아
+ *           * 64 : 스포츠레저
+ *           * 128 : 식물
+ *       - in: query
+ *         name: video_uid
  *         required: true
  *         schema:
  *           type: number
- *           example: 0
- *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 10
- *           offset 0: 0~9
- *           offset 10: 10~19
- *           offset 20: 20~29
- *
+ *           example: 605
+ *         description: 비디오uid
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/UserAlertHistoryApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -41,7 +52,6 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const errCode = require('../../../common/define/errCode');
 
 let file_name = fileUtil.name(__filename);
 
@@ -52,14 +62,14 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = await querySelect(req, db_connection); //type이 1이면 in_video_uid제외한 정보가 있다.
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -75,25 +85,21 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'signup_type');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'social_id');
+    paramUtil.checkParam_noReturn(req.paramBody, 'category');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-    // delete req.innerBody['item']['longitude']
-    // delete req.innerBody['item']['push_token']
-    // delete req.innerBody['item']['access_token']
 }
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_fcm_list'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['offset']? req.paramBody['offset'] : 0,
-        ]
-    );
+        return mysqlUtil.queryArray(db_connection
+            , 'call proc_select_feed_product_list_v1'
+            , [
+                req.paramBody['category'],
+                req.paramBody['video_uid'],
+            ]
+        );
 }
