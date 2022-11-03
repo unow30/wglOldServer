@@ -108,6 +108,7 @@ app.route('/video/search/result/list').get( require('./video/selectVideoSearchRe
 app.route('/comment')
     .post( require('./comment/createComment') )
     .delete( require('./comment/deleteComment') )
+app.route('/v2/comment').post( require('./comment/v2CreateComment') )
 
 app.route('/comment/nested')
     .post( require('./comment/createNestedComment') )
