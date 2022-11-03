@@ -89,6 +89,7 @@ function querySelect(req, db_connection) {
         , [
             req.headers['user_uid'],
             // req.headers['access_token'],
+            req.paramBody['offset']? req.paramBody['offset'] : 0,
         ]
     );
 }
