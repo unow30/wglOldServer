@@ -21,6 +21,11 @@ app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
 app.route('/user/profile/review/list').get( require('./user/selectUserProfileReviewList') )
 
 /**
+ * file api
+ */
+app.route('/v2/file/reward/info/image').post(require('../middleware/rewardInfoImageUpload'), require('./file/v2UploadRewardInfoImage'))
+
+/**
  * product api
  */
 
