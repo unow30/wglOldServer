@@ -42,35 +42,65 @@ module.exports ={
                             console.log('token====>',token)
 
                             if (token.status === 200){
-                                let bootRes = await RestClient.cancel({
+                                // let bootRes = await RestClient.cancel({
+                                await RestClient.cancel({
                                     receiptId: result.pg_receipt_id,
                                     price: result.refund_payment,                               // "[[ 결제 취소할 금액 ]]"
                                     name: result.nickname,              // "[[ 취소자명 ]]"
                                     reason: '공동구매 매칭 취소'  // "[[ 취소사유 ]]"
                                 })
+                                .then(async function(res){
+                                    console.log(res)
+                                    if(res.status === 200){
+                                        orderProductArr+= result.order_product_uid+','
+                                        orderArr+= result.order_uid+','
+                                        gonguRoomUserArr+= result.group_buying_room_user_uid+','
+                                        gonguRoomArr+= result.group_buying_room_uid+','
+                                        gonguArr+= result.group_buying_uid+','
+                                        userArr.push(result.user_token);
 
-                                if(bootRes.status === 200){
-                                    orderProductArr+= result.order_product_uid+','
-                                    orderArr+= result.order_uid+','
-                                    gonguRoomUserArr+= result.group_buying_room_user_uid+','
-                                    gonguRoomArr+= result.group_buying_room_uid+','
-                                    gonguArr+= result.group_buying_uid+','
-                                    userArr.push(result.user_token);
-
-                                    if(result.cancelable_reward>0){
-                                        rewardInfo = {
-                                            user_uid: result.user_uid,
-                                            seller_uid: result.seller_uid,
-                                            order_uid: result.order_uid,
-                                            order_no: result.order_no,
-                                            state: 13,
-                                            refund_reward: result.cancelable_reward,
-                                            text: '환불로 인한 사용 리워드 롤백'
+                                        if(result.cancelable_reward>0){
+                                            rewardInfo = {
+                                                user_uid: result.user_uid,
+                                                seller_uid: result.seller_uid,
+                                                order_uid: result.order_uid,
+                                                order_no: result.order_no,
+                                                state: 13,
+                                                refund_reward: result.cancelable_reward,
+                                                text: '환불로 인한 사용 리워드 롤백'
+                                            }
+                                            await queryRollbackReward(db_connection, rewardInfo);
+                                            // 위 함수 살려야 함
                                         }
-                                        await queryRollbackReward(db_connection, rewardInfo);
-                                        // 위 함수 살려야 함
                                     }
-                                }
+                                })
+                                .catch(function (err) {
+                                    console.log(`부트페이 결제취소 실패===> order_uid:${result.order_uid}`)
+                                    console.log(err)
+                                });
+
+                                // if(bootRes.status === 200){
+                                //     orderProductArr+= result.order_product_uid+','
+                                //     orderArr+= result.order_uid+','
+                                //     gonguRoomUserArr+= result.group_buying_room_user_uid+','
+                                //     gonguRoomArr+= result.group_buying_room_uid+','
+                                //     gonguArr+= result.group_buying_uid+','
+                                //     userArr.push(result.user_token);
+                                //
+                                //     if(result.cancelable_reward>0){
+                                //         rewardInfo = {
+                                //             user_uid: result.user_uid,
+                                //             seller_uid: result.seller_uid,
+                                //             order_uid: result.order_uid,
+                                //             order_no: result.order_no,
+                                //             state: 13,
+                                //             refund_reward: result.cancelable_reward,
+                                //             text: '환불로 인한 사용 리워드 롤백'
+                                //         }
+                                //         await queryRollbackReward(db_connection, rewardInfo);
+                                //         // 위 함수 살려야 함
+                                //     }
+                                // }
                             }
                         }
                         else{
@@ -93,7 +123,7 @@ module.exports ={
                             gonguArr+= result.group_buying_uid+','
                             userArr.push(result.user_token)
                         }
-                    }   
+                    }
                 }
                 userArr = [...new Set(userArr)]; // push 토큰용
 
