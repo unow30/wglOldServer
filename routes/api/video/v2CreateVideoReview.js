@@ -190,6 +190,7 @@ function queryAlertComment(req, db_connection){
 
 async function queryProductBulkInsert(req, db_connection){
     console.log('일단 벌크 들어옴')
+    console.log(req.paramBody['product_uid'])
     const productData = req.paramBody['product_uid'].map(result => [req.innerBody.item['uid'], result]);
     const videoProductInsertSql = `
         insert into tbl_video_product(video_uid, product_uid)

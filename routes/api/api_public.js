@@ -7,7 +7,7 @@ const app = express();
 /**
  * user api
  */
-app.route('/user/signup').post( require('./user/createUser') )
+// app.route('/user/signup').post( require('./user/createUser') ) // 안쓰는것 22. 11. 04
 
 app.route('/user/signup/check').get( require('./user/selectSignUpCheck') )
 app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
@@ -45,14 +45,13 @@ app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
 /**
  * dev api
  */
-app.route('/dev/test').get( require('./_dev/_dev_select') )
-app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_to_HLS') )
-app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') )
+// app.route('/dev/test').get( require('./_dev/_dev_select') ) // 안쓰는것 22. 11. 04
+// app.route('/dev/change/mp4/to/hls').put( require('./_dev/_dev_update_change_MP4_to_HLS') ) // 안쓰는것 22. 11. 04
+// app.route('/dev/change/mp4/to/hls').get( require('./_dev/_dev_select_change_MP4_to_HLS') ) // 안쓰는것 22. 11. 04
 app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSearchViewNewReviewList') )
-app.route('/dev/accesstoken').put( require('./_dev/_dev_updateAccessToken') )
-app.route('/dev/update/reward/product/amount').put( require('./_dev/_dev_updateRewardProductAmount') )
-
-app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
+// app.route('/dev/accesstoken').put( require('./_dev/_dev_updateAccessToken') ) // 안쓰는것 22. 11. 04
+// app.route('/dev/update/reward/product/amount').put( require('./_dev/_dev_updateRewardProductAmount') ) // 안쓰는것 22. 11. 04
+// app.route('/user/auto/recommend').get( require('./user/autoRecommend') ) // 안쓰는것 22. 11. 04
 
 
 /**

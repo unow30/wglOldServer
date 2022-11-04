@@ -65,4 +65,8 @@ module.exports = {
         return token
 
     },
+    createBankAccount: function(bankAccount){
+        // jwt 토큰 생성(es256, apple private key 필요)
+        return jwt.sign({account: bankAccount,}, process.env.JWT_SECURE_KEY, {});
+    },
 };
