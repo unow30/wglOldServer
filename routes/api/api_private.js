@@ -114,7 +114,7 @@ app.route('/comment')
     .post( require('./comment/createComment') )
     .delete( require('./comment/deleteComment') )
 app.route('/v2/comment').post( require('./comment/v2CreateComment') )
-
+app.route('/v2/comment/nested').post( require('./comment/v2CreateNestedComment') )
 app.route('/comment/nested')
     .post( require('./comment/createNestedComment') )
     .delete( require('./comment/deleteNestedComment') )
