@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 01. 12.
  *
  * @swagger
- * /api/private/product/detail/review/list:
+ * /api/public/product/detail/review/list:
  *   get:
  *     summary: 상품 상세 영상, 사진리뷰 및 카운트
  *     tags: [Product]
  *     description: |
- *       path : /api/private/product/detail/review/list
+ *       path : /api/public/product/detail/review/list
  *
  *       * 상품 상세
  *

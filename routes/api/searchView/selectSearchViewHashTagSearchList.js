@@ -2,12 +2,12 @@
  * Created by gunucklee on 2021. 08. 19.
  *
  * @swagger
- * /api/private/searchview/search/list/hashtag:
+ * /api/public/searchview/search/list/hashtag:
  *   get:
  *     summary: 해시태그 검색 정보
  *     tags: [SearchView]
  *     description: |
- *       path : /api/private/searchview/search/list/hashtag
+ *       path : /api/public/searchview/search/list/hashtag
  *
  *       * 해시태그 검색 정보
  *

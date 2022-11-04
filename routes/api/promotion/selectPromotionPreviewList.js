@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 05. 11.
  *
  * @swagger
- * /api/private/promotion/list/all:
+ * /api/public/promotion/list/all:
  *   get:
  *     summary: 모든 프로모션 화면 미리보기
  *     tags: [Promotion]
  *     description: |
- *      ## path : /api/private/promotion/list/all
+ *      ## path : /api/public/promotion/list/all
  *
  *       * ## 모든 프로모션 화면 미리보기
  *         * ### 큰 배너 이미지 가져오기

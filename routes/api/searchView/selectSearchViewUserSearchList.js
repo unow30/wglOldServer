@@ -2,12 +2,12 @@
  * Created by yunhokim on 2021. 11. 03.
  *
  * @swagger
- * /api/private/searchview/search/list/user:
+ * /api/public/searchview/search/list/user:
  *   get:
  *     summary: 사용자 검색 정보
  *     tags: [SearchView]
  *     description: |
- *       path : /api/private/searchview/search/list/user
+ *       path : /api/public/searchview/search/list/user
  *
  *       * 사용자 검색 정보
  *

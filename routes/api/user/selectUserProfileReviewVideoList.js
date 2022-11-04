@@ -2,12 +2,12 @@
  * Created by jongho on 2022. 06. 28.
  *
  * @swagger
- * /api/private/user/profile/video/list:
+ * /api/public/user/profile/video/list:
  *   get:
  *     summary: 프로필 리뷰영상/상품영상 목록
  *     tags: [User]
  *     description: |
- *       path : /api/private/user/profile/video/list
+ *       path : /api/public/user/profile/video/list
  *
  *       * 프로필 리뷰영상/상품영상 목록
  *

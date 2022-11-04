@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 05. 20.
  *
  * @swagger
- * /api/private/product/category/list:
+ * /api/public/product/category/list:
  *   get:
  *     summary: 상품카테고리목록(220601부터 카테고리탭 생성됨)
  *     tags: [Category]
  *     description: |
- *       path : /api/private/product/category/list
+ *       path : /api/public/product/category/list
  *
  *       * 상품카테고리목록(220601부터 카테고리탭 생성됨)
  *

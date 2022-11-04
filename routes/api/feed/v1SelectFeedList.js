@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 09. 29.
  *
  * @swagger
- * /api/private/v1/feed/list:
+ * /api/public/v1/feed/list:
  *   get:
  *     summary: 피드 목록 업데이트(테섭전용)
  *     tags: [Feed]
  *     description: |
- *       path : /api/private/v1/feed/list
+ *       path : /api/public/v1/feed/list
  *
  *       * 피드 목록
  *       * 피드 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.

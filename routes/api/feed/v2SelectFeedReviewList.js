@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 10. 24.
  *
  * @swagger
- * /api/private/v2/feed/review/list:
+ * /api/public/v2/feed/review/list:
  *   get:
  *     summary: 피드 대표상품 리뷰 리스트
  *     tags: [Feed]
  *     description: |
- *       path : /api/private/v2/feed/review/list
+ *       path : /api/public/v2/feed/review/list
  *
  *       * 피드 대표상품 리뷰 리스트
  *       * 피드리스트에서 리뷰버튼을 클릭하면 해당 비디오의 대표상품의 리뷰리스트를 불러온다. (사진,영상)

@@ -2,12 +2,12 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v1/groupbuying/detail:
+ * /api/public/v1/groupbuying/detail:
  *   get:
  *     summary: 상품 상세
  *     tags: [GroupBuying]
  *     description: |
- *       path : /api/private/v1/groupbuying/detail
+ *       path : /api/public/v1/groupbuying/detail
  *
  *       * 상품 상세
  *

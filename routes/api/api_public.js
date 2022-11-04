@@ -8,20 +8,17 @@ const app = express();
  * user api
  */
 app.route('/user/signup').post( require('./user/createUser') )
-app.route('/v2/user/signup').post(require('../middleware/publicCheckToken'), require('./user/v2CreateUser') ) // 22. 10. 25 v2 유저생성 api
-app.route('/v2/user/interests/all').get(require('../middleware/publicCheckToken'),  require('./user/v2SelectUserInterests') ) // 22. 10. 25 v2 관심키워드 모두 가져오기 api
+
 app.route('/user/signup/check').get( require('./user/selectSignUpCheck') )
 app.route('/user/email/check').get( require('./user/selectUserEmailCheck') )
 app.route('/user/nickname/check').get( require('./user/selectUserNicknameCheck') )
 app.route('/user/phone/check').get( require('./user/selectUserPhoneCheck') )
 app.route('/user/recommendee/code/check').get( require('./user/selectUserRecommendeeCodeCheck') )
-app.route('/v2/user/info/review').get(require('../middleware/publicCheckToken'), require('./user/v2SelectUserInfoReview') ) // 22. 10. 28 v2 유저 페이지 리뷰 리스트 api
 
 /**
  * file api
  */
-app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, require('./file/uploadFile') );
-app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').uploadFile, require('./file/uploadFile_m3u8') );
+
 // app.route('/public/image').post( require('../../common/utils/awsS3Util_v2').uploadImage, require('./file/uploadFile') );
 // app.route('/public/video').post( require('../../common/utils/awsS3Util_v2').uploadVideo, require('./file/uploadFile') );
 
@@ -43,7 +40,6 @@ app.route('/app/version/check').get(require('./appCheck/selectAppCheck'))
 /**
  * comment api
  */
- app.route('/v2/comment/list').get(require('../middleware/publicCheckToken'), require('./comment/v2SelectCommentList'))
 
 
 /**
@@ -69,7 +65,6 @@ app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 /**
  * weggler api
  */
- app.route('/v2/weggler/ranking').get( require('../middleware/publicCheckToken') ,require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
 
 
 /* 임시 안드로이드용 라우터 */
@@ -126,6 +121,14 @@ app.route('/user/auto/recommend').get( require('./user/autoRecommend') )
 /**
  * 제데로 테스트 완료 되면 각 도메인마다 옮겨줘야 함
  */
+ app.route('/v2/user/signup').post(require('../middleware/publicCheckToken'), require('./user/v2CreateUser') ) // 22. 10. 25 v2 유저생성 api
+ app.route('/v2/user/interests/all').get(require('../middleware/publicCheckToken'),  require('./user/v2SelectUserInterests') ) // 22. 10. 25 v2 관심키워드 모두 가져오기 api
+ app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, require('./file/uploadFile') );
+ app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').uploadFile, require('./file/uploadFile_m3u8') );
+ app.route('/v2/user/info/review').get(require('../middleware/publicCheckToken'), require('./user/v2SelectUserInfoReview') ) // 22. 10. 28 v2 유저 페이지 리뷰 리스트 api
+ app.route('/v2/comment/list').get(require('../middleware/publicCheckToken'), require('./comment/v2SelectCommentList'))
+ app.route('/v2/weggler/ranking').get( require('../middleware/publicCheckToken') ,require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
+
 
 app.route('/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 app.route('/user/signup').post(require('../middleware/publicCheckToken'), require('./user/createUser') )

@@ -2,16 +2,16 @@
  * Created by hyunhunhwang on 2021. 01. 08.
  *
  * @swagger
- * /api/private/comment/list:
+ * /api/public/comment/list:
  *   get:
  *     summary: 댓글 목록
  *     tags: [Comment]
  *     description: |
- *       path : /api/private/comment/list
+ *       path : /api/public/comment/list
  *
  *       * 댓글 목록
  *       * 영상 댓글의 경우 영상 내용 api 호출하여 영상 내용 표시
- *       * 영상 내용 정보 가져오는 api: /api/private/video/info
+ *       * 영상 내용 정보 가져오는 api: /api/public/video/info
  *
  *     parameters:
  *       - in: query

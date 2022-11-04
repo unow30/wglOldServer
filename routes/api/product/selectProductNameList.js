@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 02. 23.
  *
  * @swagger
- * /api/private/product/name/list:
+ * /api/public/product/name/list:
  *   get:
  *     summary: 검색 미리보기
  *     tags: [Product]
  *     description: |
- *       path : /api/private/product/name/list
+ *       path : /api/public/product/name/list
  *
  *       * 검색 미리보기
  *

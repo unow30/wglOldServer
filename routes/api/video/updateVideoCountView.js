@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 01. 12.
  *
  * @swagger
- * /api/private/video/count/view:
+ * /api/public/video/count/view:
  *   put:
  *     summary: 영상 조회수 업데이트
  *     tags: [Video]
  *     description: |
- *       path : /api/private/video/count/view
+ *       path : /api/public/video/count/view
  *
  *       * 영상 조회수 업데이트
  *

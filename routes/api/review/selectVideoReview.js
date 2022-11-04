@@ -1,12 +1,12 @@
 /**
  *
  * @swagger
- * /api/private/review/video:
+ * /api/public/review/video:
  *   get:
  *     summary: 상품의 영상리뷰 가져오기
  *     tags: [Review]
  *     description: |
- *       path : /api/private/review/video
+ *       path : /api/public/review/video
  *
  *       * 상품 영상리뷰 가져오기
  *

@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 10. 13.
  *
  * @swagger
- * /api/private/video/hashTag/list:
+ * /api/public/video/hashTag/list:
  *   get:
  *     summary: 영상 해시태그 목록
  *     tags: [Video]
  *     description: |
- *       path : /api/private/video/hashTag/list
+ *       path : /api/public/video/hashTag/list
  *
  *       * 영상 해시태그 목록
  *

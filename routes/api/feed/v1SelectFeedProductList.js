@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 10. 13.
  *
  * @swagger
- * /api/private/v1/feed/product/list:
+ * /api/public/v1/feed/product/list:
  *   get:
  *     summary: 피드 상품목록 (테섭전용)
  *     tags: [Feed]
  *     description: |
- *       path : /api/private/v1/feed/product/list
+ *       path : /api/public/v1/feed/product/list
  *
  *       * 피드 상품목록 (테섭전용)
  *       * 해당 영상에 등록된 상품정보를 보여준다.
