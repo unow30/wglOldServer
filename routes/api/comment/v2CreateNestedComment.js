@@ -38,6 +38,7 @@
  *           example:
  *             comment_uid: 1
  *             content: 대댓글 입니다.
+ *             type: 1
  *
  *     responses:
  *       200:
