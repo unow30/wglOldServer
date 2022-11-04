@@ -94,6 +94,7 @@ module.exports = function (req, res) {
             else if(req.paramBody['type']===2){
 
                 req.innerBody['item'] = await queryPhotoReviewNestedComment(req, db_connection);
+                sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
             }
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
