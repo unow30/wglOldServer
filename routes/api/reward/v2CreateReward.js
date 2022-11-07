@@ -36,7 +36,7 @@
  *               description: 계좌번호
  *             bank_code:
  *               type: string
- *               example: 004
+ *               example: "004"
  *               description: 은행코드
  *             bank_book_filename:
  *               type: string
