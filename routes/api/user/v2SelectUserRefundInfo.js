@@ -25,6 +25,7 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+const jwtUtil = require('../../../common/utils/jwtUtil');
 
 let file_name = fileUtil.name(__filename);
 
@@ -45,6 +46,9 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await querySelect(req, db_connection);
             if(req.innerBody.item.bank_info){
                 req.innerBody.item.bank_info = JSON.parse(req.innerBody.item.bank_info)
+
+                const payload = jwtUtil.getPayload(req.innerBody.item.bank_info.bank_account)
+                req.innerBody.item.bank_info.bank_account = payload.account ?? null
             }
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
