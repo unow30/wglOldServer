@@ -413,7 +413,7 @@
      const _funcName = arguments.callee.name;
  
      return mysqlUtil.querySingle(db_connection
-         , 'call proc_select_user_deleted_email_check'
+         , 'call proc_select_user_deleted_email_check_v2'
          , [
              req.headers['user_uid'],
              req.paramBody['email'],
