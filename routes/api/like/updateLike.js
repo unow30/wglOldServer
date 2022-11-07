@@ -85,9 +85,9 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
-
+        
         checkParam(req);
-
+        console.log(req.paramBody, '======================>>>>>디버깅 위한 콘솔')
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
