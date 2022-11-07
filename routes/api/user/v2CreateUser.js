@@ -187,7 +187,7 @@
              // 피추천인: 2000
              // 이미 앱단에서 추천인 코드 유효성을 검사해주기 때문에 바로 포인트 지급을 해준다.
              let deleted_user_email = await queryCheckDeletedEmail(req, db_connection);
-             console.log(deleted_user_email)
+             console.log('이메일 중복사용 회원가입 체크',deleted_user_email)
              if(req.paramBody['recommendee_code']) {
                  if(deleted_user_email['v_recommendee_count'] <= 0) {
                      let point = await queryRecommendPointEvent(req, db_connection);

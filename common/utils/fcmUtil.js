@@ -257,6 +257,7 @@ module.exports = {
     },
 
     fcmEventPoint3000Single : async function(item){
+        console.log('회원가입 3000포인트 알람')
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "to": item['push_token'],
             "priority": "high",
@@ -288,6 +289,7 @@ module.exports = {
     },
 
     fcmPointRecommendCodeList : async function(item){
+        console.log('추천인 포인트 알람')
         return  await axios.post('https://fcm.googleapis.com/fcm/send', {
             "registration_ids": item['push_token_list'],
             "priority": "high",
