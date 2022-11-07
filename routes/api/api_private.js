@@ -62,7 +62,7 @@ app.route('/order/status').put(require('../middleware/bootPay'), require('./orde
  */
 app.route('/reward').post( require('./reward/createReward') )
     .get( require('./reward/selectReward') )
-app.route('/v2/reward').post( require('./reward/createReward') )
+app.route('/v2/reward').post( require('./reward/v2CreateReward') )
 app.route('/reward/accountBook').post( require('./reward/createRewardAccountBook') )
     .put( require('./reward/updateRewardAccountBook'))
 app.route('/reward/history/list').get( require('./reward/selectRewardHistoryList') )
