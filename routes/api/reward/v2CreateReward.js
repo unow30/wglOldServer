@@ -81,7 +81,12 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
             req.paramBody['bank_account'] = jwtUtil.createBankAccount(req.paramBody['bank_account'])
-            req.innerBody['item'] = await query(req, db_connection);
+            await query(req, db_connection);
+            
+            req.innerBody['item'] = {
+                message: 'success',
+                success: '1'
+            }
             
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
