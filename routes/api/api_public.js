@@ -172,5 +172,6 @@ app.route('/v1/groupbuying/detail/room/list').get(require('../middleware/publicC
 app.route('/v1/feed/product/list').get(require('../middleware/publicCheckToken'), require('./feed/v1SelectFeedProductList') )
 app.route('/video/hashtag/list').get(require('../middleware/publicCheckToken'), require('./video/selectVideoHashTagList') )
 app.route('/v2/feed/review/list').get(require('../middleware/publicCheckToken'), require('./feed/v2SelectFeedReviewList') )
+app.route('/v2/product/search/list').get(require('../middleware/publicCheckToken'), require('./product/v2SelectProductSearchList') )
 
 module.exports = app;
