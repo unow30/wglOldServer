@@ -128,7 +128,7 @@ app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSea
  app.route('/v2/comment/list').get(require('../middleware/publicCheckToken'), require('./comment/v2SelectCommentList'))
  app.route('/v2/weggler/ranking').get( require('../middleware/publicCheckToken') ,require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
 
-
+ app.route('/v1/feed/list').get(require('../middleware/publicCheckToken') , require('./feed/v1SelectFeedList') )
 app.route('/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 app.route('/user/signup').post(require('../middleware/publicCheckToken'), require('./user/createUser') )
 app.route('/user/signup/check').get(require('../middleware/publicCheckToken'), require('./user/selectSignUpCheck') )
