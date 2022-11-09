@@ -52,7 +52,9 @@
                  errUtil.createCall(errCode.empty, `회원가입하지 않은 유저입니다.`)
                  return
              }
- 
+
+             req.innerBody.item['video_count'] = req.innerBody.item['video_count'] + req.innerBody.item['photo_count']
+
              //기존 쿼리가 길어서 func으로 만들기 불편하기 때문에 프로시저 호출
              let unreview_count = await querySelectProductConfirmCount(req, db_connection)
              let like_product_count = await querySelectLikeProductCount(req, db_connection)
