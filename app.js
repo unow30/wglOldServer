@@ -39,6 +39,7 @@ app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay
 // app.all('/api/private/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
 
 app.all('/api/private/*', require('./routes/middleware/checkAccessToken'));
+app.all('/api/public/*', require('./routes/middleware/publicCheckToken'));
 
 app.use('/api/private', require('./routes/api/api_private'));
 app.use('/api/public', require('./routes/api/api_public'));
