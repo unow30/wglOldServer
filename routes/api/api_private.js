@@ -267,42 +267,42 @@ app.route('/v2/weggler/follow/recommend/list').get( require('./weggler/v2SelectF
 /**
  * private => public으로 옮긴 라우터들 22. 11. 02 
  */
-// app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
-// app.route('/video/count/view').put( require('./video/updateVideoCountView') )
-// app.route('/comment/list').get( require('./comment/selectCommentList') ) //확인 해봐야 함
-// app.route('/video/info').get( require('./video/selectVideoInfo') )
-// app.route('/product/detail').get( require('./product/selectProductDetail') )
-// app.route('/user/info/other').get( require('./user/selectUserInfoOther') )//확인 해봐야 함
-// app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
-// app.route('/v1/searchview/list/all').get(require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
-// app.route('/promotion/list/all').get( require('./promotion/selectPromotionPreviewList')) //모든 프로모션 화면 미리보기
-// app.route('/video/count/shared').put( require('./video/updateVideoCountShared') )
-// app.route('/follow/list').get( require('./follow/selectFollowList') )
-// app.route('/v1/follow/list').get( require('./follow/v1SelectFollowList') )
-// app.route('/v1/follower/list').get( require('./follow/v1SelectFollowerList') )
-// app.route('/product/option/list').get( require('./product/selectProductOptionList') )
-// app.route('/product/detail/review/list').get( require('./product/selectProductDetailReviewList') )//2022/07/06 리뷰 영상, 사진, 카운트 같이 불러오기
-// app.route('/user/profile/photo/list').get( require('./user/selectUserProfileReviewPhotoList') )// 새 리뷰 리스트. 상품, 리뷰만 나온다.
-// app.route('/user/profile/video/list').get( require('./user/selectUserProfileReviewVideoList') )// 새 리뷰 리스트. 영상, 리뷰만 나온다.
-// app.route('/promotion/list').get( require('./promotion/selectPromotionList')) //프로모션 더보기
-// app.route('/v1/searchview/list/gongudeal').get(require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
-// app.route('/v1/searchview/list/gongudeadline').get(require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
-// app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuyingDetailView') )
-// app.route('/product/name/list').get( require('./product/selectProductNameList'))
-// app.route('/review/photo').get( require('./review/selectPhotoReview'))
-// app.route('/review/video').get( require('./review/selectVideoReview'))
-// app.route('/v2/user/info/other').get( require('./user/v2SelectUserInfoOther') )
-// app.route('/v1/follow/search/list').get( require('./follow/v1SelectFollowSearchList') )
-// app.route('/v1/follower/search/list').get( require('./follow/v1SelectFollowerSearchList') )
-// app.route('/user/profile/list').get( require('./user/selectUserProfileList') )// 새 리뷰 리스트. 상품,영상,리뷰가 전부 나온다.
-// app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') ) // 태그검색정보
-// app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') ) // 사용자검색정보
-// app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') ) // 영상검색정보
-// app.route('/product/review/list').get( require('./product/selectProductReviewList') )
-// app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1SelectGroupBuyingRoomList') )
-// app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList') )
-// app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
-// app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
+app.route('/product/feed/list').get( require('./product/selectProductFeedList') )
+app.route('/video/count/view').put( require('./video/updateVideoCountView') )
+app.route('/comment/list').get( require('./comment/selectCommentList') ) //확인 해봐야 함
+app.route('/video/info').get( require('./video/selectVideoInfo') )
+app.route('/product/detail').get( require('./product/selectProductDetail') )
+app.route('/user/info/other').get( require('./user/selectUserInfoOther') )//확인 해봐야 함
+app.route('/product/category/list').get(require('./product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨
+app.route('/v1/searchview/list/all').get(require('./searchView/v1SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+app.route('/promotion/list/all').get( require('./promotion/selectPromotionPreviewList')) //모든 프로모션 화면 미리보기
+app.route('/video/count/shared').put( require('./video/updateVideoCountShared') )
+app.route('/follow/list').get( require('./follow/selectFollowList') )
+app.route('/v1/follow/list').get( require('./follow/v1SelectFollowList') )
+app.route('/v1/follower/list').get( require('./follow/v1SelectFollowerList') )
+app.route('/product/option/list').get( require('./product/selectProductOptionList') )
+app.route('/product/detail/review/list').get( require('./product/selectProductDetailReviewList') )//2022/07/06 리뷰 영상, 사진, 카운트 같이 불러오기
+app.route('/user/profile/photo/list').get( require('./user/selectUserProfileReviewPhotoList') )// 새 리뷰 리스트. 상품, 리뷰만 나온다.
+app.route('/user/profile/video/list').get( require('./user/selectUserProfileReviewVideoList') )// 새 리뷰 리스트. 영상, 리뷰만 나온다.
+app.route('/promotion/list').get( require('./promotion/selectPromotionList')) //프로모션 더보기
+app.route('/v1/searchview/list/gongudeal').get(require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
+app.route('/v1/searchview/list/gongudeadline').get(require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
+app.route('/v1/groupbuying/detail').get( require('./groupBuying/v1SelectGroupBuyingDetailView') )
+app.route('/product/name/list').get( require('./product/selectProductNameList'))
+app.route('/review/photo').get( require('./review/selectPhotoReview'))
+app.route('/review/video').get( require('./review/selectVideoReview'))
+app.route('/v2/user/info/other').get( require('./user/v2SelectUserInfoOther') )
+app.route('/v1/follow/search/list').get( require('./follow/v1SelectFollowSearchList') )
+app.route('/v1/follower/search/list').get( require('./follow/v1SelectFollowerSearchList') )
+app.route('/user/profile/list').get( require('./user/selectUserProfileList') )// 새 리뷰 리스트. 상품,영상,리뷰가 전부 나온다.
+app.route('/searchview/search/list/hashtag').get( require('./searchView/selectSearchViewHashTagSearchList') ) // 태그검색정보
+app.route('/searchview/search/list/user').get( require('./searchView/selectSearchViewUserSearchList') ) // 사용자검색정보
+app.route('/searchview/search/list').get( require('./searchView/selectSearchViewSearchList') ) // 영상검색정보
+app.route('/product/review/list').get( require('./product/selectProductReviewList') )
+app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1SelectGroupBuyingRoomList') )
+app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList') )
+app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
+app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
 
 
 module.exports = app;
