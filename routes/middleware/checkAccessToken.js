@@ -29,14 +29,13 @@ module.exports = function (req, res, next) {
             //비회원일 경우 로그인을 유도 시킨다.
             errUtil.createCall(errCode.auth, `로그인 후 사용할 수 있는 페이지입니다.`);
         }
-        
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
             req.innerBody['item'] = await querySelect(req, db_connection);
             //유저 정보를 가져와서
-            
-            if( !req.innerBody.item.uid ){
+            console.log(req.innerBody['item'],'==============>>>유저 정보<<<==========')
+            if( !req.innerBody.item ){
                 //유저 정보가 없으면 에러를 발생시킨다.
                 errUtil.createCall(errCode.auth, `해당 유저의 접속 토큰이 유효하지 않습니다. 다시 로그인해 주세요.`);
             }
@@ -49,7 +48,6 @@ module.exports = function (req, res, next) {
                 console.log('access_token:',req.innerBody['item']['access_token']);
                 console.log('=======================================================================================================================================================');
             }
-
             
             //사용자 정보를 확인하고 나서 api 기능을 실행하는 부분
             next();
@@ -71,7 +69,6 @@ function checkParam(req) {
     if( !paramUtil.checkParam_return(req.headers, 'access_token') ){
         errUtil.createCall(errCode.auth, `접속 토큰이 존재하지 않습니다. 다시 로그인해 주세요.`);
     }
-
     let token = req.headers['access_token'];
     try {
         //jwt 인증
@@ -89,7 +86,6 @@ function checkParam(req) {
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
-
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_user_access_token_check'
         , [
