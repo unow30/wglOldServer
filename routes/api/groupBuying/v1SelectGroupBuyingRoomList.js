@@ -1,12 +1,12 @@
 /**
  *
  * @swagger
- * /api/private/v1/groupbuying/detail/room/list:
+ * /api/public/v1/groupbuying/detail/room/list:
  *   get:
  *     summary: 공동구매에 참여한 방,유저 전체 불러오기
  *     tags: [GroupBuying]
  *     description: |
- *       path : /api/private/v1/groupbuying/detail/room/list
+ *       path : /api/public/v1/groupbuying/detail/room/list
  *
  *       * 공동구매에 참여한 방,유저 전체 불러오기
  *

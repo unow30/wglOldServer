@@ -1,12 +1,12 @@
 /**
  *
  * @swagger
- * /api/private/v1/follow/list:
+ * /api/public/v1/follow/list:
  *   get:
  *     summary: 팔로잉 목록
  *     tags: [Follow]
  *     description: |
- *       path : /api/private/v1/follow/list
+ *       path : /api/public/v1/follow/list
  *
  *       * 팔로잉 목록
  *

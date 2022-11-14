@@ -29,13 +29,16 @@ module.exports = function (req, res, next) {
             let data = jwtUtil.getPayload(token);
             req.headers['user_uid'] = data['uid'];
         }
+        // else{
+        //     return sendUtil.sendErrorPacket
+        // }
 
     }
     catch (e) {
         // let _err = errUtil.get(e);
         // sendUtil.sendErrorPacket(req, res, _err);
     }
-    finally {
+    finally{
         next()
     }
 }

@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 01. 12.
  *
  * @swagger
- * /api/private/product/detail:
+ * /api/public/product/detail:
  *   get:
  *     summary: 상품 상세
  *     tags: [Product]
  *     description: |
- *       path : /api/private/product/detail
+ *       path : /api/public/product/detail
  *
  *       * 상품 상세
  *

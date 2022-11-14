@@ -10,6 +10,19 @@
  *       path : /api/private/alert/history/list
  *
  *       * 내 알림 정보
+ *     parameters:
+ *       - in: query
+ *         name: offset
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 10
+ *           offset 0: 0~9
+ *           offset 10: 10~19
+ *           offset 20: 20~29
  *
  *     responses:
  *       200:
@@ -80,7 +93,6 @@ function querySelect(req, db_connection) {
         , 'call proc_select_fcm_list'
         , [
             req.headers['user_uid'],
-            // req.headers['access_token'],
             req.paramBody['offset']? req.paramBody['offset'] : 0,
         ]
     );

@@ -205,6 +205,10 @@ let swaggerDefinition = {
             name: 'GroupBuying',
             description: '공동구매 관련 API'
         },
+        {
+            name: 'Weggler',
+            description: '위글러 관련 API'
+        },
 
     ],
 };

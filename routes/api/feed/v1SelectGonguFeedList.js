@@ -96,7 +96,6 @@ function querySelect(req, db_connection) {
             req.paramBody['offset'],
             req.paramBody['filter']? req.paramBody['filter']: 0,
             req.paramBody['category']? req.paramBody['category']: 65535,
-
         ]
     );    
 }

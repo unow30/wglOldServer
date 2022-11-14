@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 02. 09.
  *
  * @swagger
- * /api/private/product/option/list:
+ * /api/public/product/option/list:
  *   get:
  *     summary: 상품 옵션 목록
  *     tags: [Product]
  *     description: |
- *       path : /api/private/product/option/list:
+ *       path : /api/public/product/option/list:
  *
  *       * 상품 옵션 목록
  *

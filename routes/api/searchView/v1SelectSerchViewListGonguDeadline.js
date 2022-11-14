@@ -2,12 +2,12 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v1/searchview/list/gongudeadline:
+ * /api/public/v1/searchview/list/gongudeadline:
  *   get:
  *     summary: 공구 마감임박 전체보기
  *     tags: [SearchView]
  *     description: |
- *      ## path : /api/private/v1/searchview/list/gongudeadline
+ *      ## path : /api/public/v1/searchview/list/gongudeadline
  *
  *       * ## 공구 마감임박 전체보기
  *         * ### 공구 마감임박 전체보기

@@ -2,12 +2,12 @@
  * Created by jongho on 2022. 06. 28.
  *
  * @swagger
- * /api/private/user/profile/photo/list:
+ * /api/public/user/profile/photo/list:
  *   get:
  *     summary: 프로필 리뷰/상품페이지 목록
  *     tags: [User]
  *     description: |
- *       path : /api/private/user/profile/photo/list
+ *       path : /api/public/user/profile/photo/list
  *
  *       * 프로필 리뷰/상품페이지 목록
  *

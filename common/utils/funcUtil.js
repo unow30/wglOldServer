@@ -52,6 +52,9 @@ module.exports = {
     getAWSBucket: function(){
         return _isRealServer() ? process.env.REAL_AWS_BUCKET : process.env.DEV_AWS_BUCKET;
     },
+    getAWSRewardBucket: function(){
+        return _isRealServer() ? process.env.REAL_AWS_REWARD_INFO_BUCKET : process.env.DEV_AWS_REWARD_INFO_BUCKET;
+    },
     getFilePath: function(){
         return _isRealServer() ? process.env.REAL_FILE_PATH : process.env.DEV_FILE_PATH;
     },

@@ -2,12 +2,12 @@
  * Created by yunhokim on 2021. 05. 11.
  *
  * @swagger
- * /api/private/user/profile/list:
+ * /api/public/user/profile/list:
  *   get:
  *     summary: 프로필 리뷰영상/상품영상/상품페이지 목록
  *     tags: [User]
  *     description: |
- *       path : /api/private/user/profile/list
+ *       path : /api/public/user/profile/list
  *
  *       * 프로필 리뷰영상/상품영상/상품페이지 목록
  *

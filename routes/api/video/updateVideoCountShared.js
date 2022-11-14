@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 01. 08.
  *
  * @swagger
- * /api/private/video/count/shared:
+ * /api/public/video/count/shared:
  *   put:
  *     summary: 영상 공유 횟수 업데이트
  *     tags: [Video]
  *     description: |
- *       path : /api/private/video/count/shared
+ *       path : /api/public/video/count/shared
  *
  *       * 영상 공유 횟수 업데이트
  *

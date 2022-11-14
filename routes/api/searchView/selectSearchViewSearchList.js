@@ -2,12 +2,12 @@
  * Created by gunucklee on 2021. 08. 19.
  *
  * @swagger
- * /api/private/searchview/search/list:
+ * /api/public/searchview/search/list:
  *   get:
  *     summary: 영상 검색 정보
  *     tags: [SearchView]
  *     description: |
- *       path : /api/private/searchview/search/list
+ *       path : /api/public/searchview/search/list
  *
  *       * 영상 검색 정보
  *

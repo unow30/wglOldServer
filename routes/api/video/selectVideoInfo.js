@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 01. 08.
  *
  * @swagger
- * /api/private/video/info:
+ * /api/public/video/info:
  *   get:
  *     summary: 영상 정보
  *     tags: [Video]
  *     description: |
- *       path : /api/private/video/info
+ *       path : /api/public/video/info
  *
  *       * 영상 정보
  *

@@ -2,12 +2,12 @@
  * Created by yunhokim on 2022. 05. 12.
  *
  * @swagger
- * /api/private/promotion/list:
+ * /api/public/promotion/list:
  *   get:
  *     summary: 프로모션 더보기
  *     tags: [Promotion]
  *     description: |
- *       path : /api/private/promotion/list
+ *       path : /api/public/promotion/list
  *
  *       * ## 프로모션 더보기
  *

@@ -2,12 +2,12 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v1/searchview/list/gongudeal:
+ * /api/public/v1/searchview/list/gongudeal:
  *   get:
  *     summary: 공구딜 전체보기
  *     tags: [SearchView]
  *     description: |
- *      ## path : /api/private/v1/searchview/list/gongudeal
+ *      ## path : /api/public/v1/searchview/list/gongudeal
  *
  *       * ## 공구딜 전체보기 
  *         * ### 지금뜨는 공구딜 목록

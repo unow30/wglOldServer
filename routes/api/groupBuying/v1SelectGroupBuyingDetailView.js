@@ -2,12 +2,12 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v1/groupbuying/detail:
+ * /api/public/v1/groupbuying/detail:
  *   get:
  *     summary: 상품 상세
  *     tags: [GroupBuying]
  *     description: |
- *       path : /api/private/v1/groupbuying/detail
+ *       path : /api/public/v1/groupbuying/detail
  *
  *       * 상품 상세
  *
@@ -83,6 +83,7 @@ module.exports = function (req, res) {
         const image_list = queryImageList(req, db_connection);
         const image_detail_list = queryImageDetailList(req, db_connection);
         const qna_list = queryQnAList(req, db_connection);
+        const faq_list = queryFaQList(req, db_connection);
         const item_types = queryDetailType(req, db_connection);
         const item_options = queryDetailOption(req, db_connection);
         const rooms = queryRoomUser(req, db_connection);
@@ -90,9 +91,10 @@ module.exports = function (req, res) {
 
         const [
             item_data, image_list_data, 
-            image_detail_list_data, qna_list_data, 
-            item_types_data, item_options_data, 
-            rooms_data, room_count_data] = await Promise.all([item, image_list, image_detail_list, qna_list, item_types, item_options, rooms, room_count])
+            image_detail_list_data, qna_list_data,
+            faq_list_data, item_types_data,
+            item_options_data, rooms_data,
+            room_count_data] = await Promise.all([item, image_list, image_detail_list, qna_list, faq_list, item_types, item_options, rooms, room_count])
         
         req.innerBody['item'] = item_data;
 
@@ -103,6 +105,7 @@ module.exports = function (req, res) {
         req.innerBody['image_list'] = image_list_data;
         req.innerBody['image_detail_list'] = image_detail_list_data;
         req.innerBody['qna_list'] = qna_list_data;
+        req.innerBody['faq_list'] = faq_list_data;
 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -249,5 +252,16 @@ function queryRoomCount(req, db_connection) {
     return mysqlUtil.querySingle(db_connection
         , 'call proc_select_groupbuying_room_user_count_v1'
         ,[ req.paramBody['groupbuying_uid']]
+    );
+}
+
+function queryFaQList(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_faq_list'
+        , [
+            req.paramBody['product_uid'],
+        ]
     );
 }

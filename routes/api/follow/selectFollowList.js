@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 09. 16.
  *
  * @swagger
- * /api/private/follow/list:
+ * /api/public/follow/list:
  *   get:
  *     summary: 팔로우 목록
  *     tags: [Follow]
  *     description: |
- *       path : /api/private/follow/list
+ *       path : /api/public/follow/list
  *
  *       * 팔로우 목록
  *

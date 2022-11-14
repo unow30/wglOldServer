@@ -2,12 +2,12 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v1/searchview/list/all:
+ * /api/public/v1/searchview/list/all:
  *   get:
  *     summary: 모아보기 모든 화면 불러오기
  *     tags: [SearchView]
  *     description: |
- *      ## path : /api/private/v1/searchview/list/all
+ *      ## path : /api/public/v1/searchview/list/all
  *
  *       * ## 모아보기 모든 화면 불러오기 (인기 카테고리 목록 제외)
  *         * ### 성공임박 공구 목록

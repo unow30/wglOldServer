@@ -2,12 +2,12 @@
  * Created by hyunhunhwang on 2021. 01. 02.
  *
  * @swagger
- * /api/private/user/info/other:
+ * /api/public/user/info/other:
  *   get:
  *     summary: 다른 유저 정보
  *     tags: [User]
  *     description: |
- *       path : /api/private/user/info/other
+ *       path : /api/public/user/info/other
  *
  *       * 다른 유저 정보
  *
