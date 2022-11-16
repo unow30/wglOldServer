@@ -27,7 +27,7 @@ module.exports = function (req, res, next) {
 
         if(req.headers['user_uid'] == 0 ){
             //비회원일 경우 로그인을 유도 시킨다.
-            errUtil.createCall(errCode.auth, `로그인 후 사용할 수 있는 페이지입니다.`);
+            errUtil.createCall(errCode.auth, `로그인 후 사용할 수 있는 기능입니다.`);
         }
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
