@@ -304,5 +304,4 @@ app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList'
 app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
 app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
 
-
 module.exports = app;
