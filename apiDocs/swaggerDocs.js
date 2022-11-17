@@ -118,7 +118,7 @@ let swaggerDefinition = {
     ],
     schemes: [
         "http",
-        // "https",
+        "https",
     ],
     tags: [
         {
