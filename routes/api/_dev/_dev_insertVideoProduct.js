@@ -1,3 +1,27 @@
+/**
+ *
+ * @swagger
+ * /api/public/dev/video/product:
+ *   get:
+ *     summary: tbl_video_product 에 추가하는 로직
+ *     tags: [Dev]
+ *     description: |
+ *       path : /api/public/dev/video/product
+ *
+ *       * tbl_video_product 에 추가하는 로직
+ *
+ *
+ *     responses:
+ *       200:
+ *         description: 결과 정보
+ *         schema:
+ *           $ref: '#/definitions/LikeProductListApi'
+ *       400:
+ *         description: 에러 코드 400
+ *         schema:
+ *           $ref: '#/definitions/Error'
+ */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
