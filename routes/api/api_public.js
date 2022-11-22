@@ -65,6 +65,10 @@ app.route('/dev/searchview/new/review/list').get( require('./_dev/_dev_selectSea
  * weggler api
  */
 
+/**
+ * dev api
+ */
+ app.route('/dev/video/product').get( require('./_dev/_dev_insertVideoProduct') )
 
 /* 임시 안드로이드용 라우터 */
 // app.route('/test/feed/list').get( require('../middleware/publicCheckToken') ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로

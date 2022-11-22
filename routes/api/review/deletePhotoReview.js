@@ -50,7 +50,7 @@ module.exports = function (req, res) {
         req.innerBody = {};
 
         req.innerBody['item'] = await query(req, db_connection);
-        if( req.innerBody['item']['is_deleted'] = 0  ){
+        if(!req.innerBody['item'] || req.innerBody['item']['is_deleted'] == 0  ){
             
             return errUtil.createCall(errCode.fail, `삭제에 실패하였습니다.`)
         }
