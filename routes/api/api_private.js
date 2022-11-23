@@ -24,6 +24,7 @@ app.route('/user/profile/review/list').get( require('./user/selectUserProfileRev
  * file api
  */
 app.route('/v2/file/reward/info/image').post(require('../middleware/rewardInfoImageUpload'), require('./file/v2UploadRewardInfoImage'))
+app.route('/v2/upload/files').post( require('../middleware/s3MediaUpload'), require('./file/v2UploadFileArray') );
 
 /**
  * product api
