@@ -83,12 +83,9 @@ module.exports = async function (req, res) {
 
         if(req.files){
             console.log(req.files)
-            console.log('넘어옴1')
             const asyncData = req.files.map(async result =>{
-                console.log(result.contentType,'map 안')
                 const contentType = result.contentType.split('/')[0] 
                 if(contentType == 'image'){
-                    console.log('이미지 안')
                     const params = {
                         Bucket: result.bucket,
                         Key: result.key
@@ -108,15 +105,10 @@ module.exports = async function (req, res) {
                     }
                 }
                 else if(contentType == 'video'){
-                console.log(result.contentType,'비디오 안')
                 const fileSize = result.size / (1024 * 1024);
-                console.log('되었다1',`${funcUtil.getFilePath()}${result.key}`)
                 const fileDimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${result.key}`, 'video');
-                console.log('되었다2')
                 const finalName = mediaConvertUtil(fileSize, result.key, fileDimensions['width'], fileDimensions['height']);
-                console.log('되었다3')
                 const thumbnail = finalName.replace('ConvertSuccess.m3u8', fileDimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
-                console.log('되었다4')
                 return {
                         filename: finalName,
                         thumbnail: thumbnail,

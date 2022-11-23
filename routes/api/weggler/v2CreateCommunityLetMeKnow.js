@@ -128,7 +128,6 @@ module.exports = function (req, res) {
             req.innerBody['item'] = await query(req, db_connection);
 
             if(req.paramBody['files'][0]){
-                console.log(req.paramBody['files'],'들옴?')
                 await queryfilesBulkInsert(req, db_connection)
             }
 
