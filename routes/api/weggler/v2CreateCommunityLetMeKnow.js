@@ -167,6 +167,7 @@ function query(req, db_connection) {
             req.paramBody['title'],
             req.paramBody['content'],
             req.paramBody['type'],
+            req.paramBody['link'],
         ]
     );
 }
