@@ -3,12 +3,12 @@
  * @swagger
  * /api/private/v2/weggler/search/groupbuying/list:
  *   get:
- *     summary: 영상 검색 정보
+ *     summary: 공동구매 상품 검색 정보
  *     tags: [Weggler]
  *     description: |
  *       path : /api/private/v2/weggler/search/groupbuying/list
  *
- *       * 영상 검색 정보
+ *       * 공동구매 상품 검색 정보
  *
  *     parameters:
  *       - in: query
