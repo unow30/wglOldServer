@@ -4,7 +4,7 @@
  * /api/private/v2/weggler/search/groupbuying/list:
  *   get:
  *     summary: 영상 검색 정보
- *     tags: [weggler]
+ *     tags: [Weggler]
  *     description: |
  *       path : /api/private/v2/weggler/search/groupbuying/list
  *
