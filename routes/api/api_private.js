@@ -263,7 +263,7 @@ app.route('/v2/weggler/follow/recommend/list').get( require('./weggler/v2SelectF
 app.route('/v2/weggler/community/letmeknow').post( require('./weggler/v2CreateCommunityLetMeKnow') )
 app.route('/v2/weggler/community/buytogether').post( require('./weggler/v2CreateCommunityBuyTogether') )
 app.route('/v2/weggler/search/groupbuying/list').get( require('./weggler/v2SelectSearchGroupBuying') )
-app.route('/v2/weggler/buytogether/detail').post( require('./weggler/v2SelectBuyTogetherDetail') )
+app.route('/v2/weggler/buytogether/detail').get( require('./weggler/v2SelectBuyTogetherDetail') )
 /**
  * private => public으로 옮긴 라우터들 22. 11. 02 
  */
