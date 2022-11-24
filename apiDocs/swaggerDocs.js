@@ -117,8 +117,8 @@ let swaggerDefinition = {
         }
     ],
     schemes: [
-        // "http",
-        "https",
+        // funcUtil.isRealServer? "http" : "https",
+        "http"
     ],
     tags: [
         {
