@@ -63,7 +63,7 @@ module.exports = function (req, res) {
 async function queryFollowFeedList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
+    return mysqlUtil.querySingle(db_connection
         , 'call proc_weggler_buytogether_detail_v2'
         , [
             req.headers['user_uid'],
