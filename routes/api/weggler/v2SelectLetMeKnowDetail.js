@@ -2,14 +2,14 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/buytogether/detail:
+ * /api/private/v2/weggler/letmeknow/detail:
  *   get:
- *     summary: 공구해요 상세페이지
+ *     summary: 알려줘요 상세페이지
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/buytogether/detail
+ *      ## path : /api/private/v2/weggler/letmeknow/detail
  *
- *       * 공구해요 게시물 상세페이지
+ *       * 알려줘요 게시물 상세페이지
  * 
  *     parameters:
  *       - in: query
@@ -19,7 +19,7 @@
  *           type: number
  *           example: 77
  *         description: |
- *           post_uid
+ *           offset
  *
  *     responses:
  *       400:
@@ -43,15 +43,14 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        req.paramBody['type'] = 2
-
+        req.paramBody['type'] = 1
+        
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
-
         req.innerBody['item'] = await query(req, db_connection);
-        
-        sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+        req.innerBody.item['files'] = await queryMedia(req, db_connection)
 
+        sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         });
@@ -65,11 +64,23 @@ async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_weggler_buytogether_detail_v2'
+        , 'call proc_weggler_letmeknow_detail_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['post_uid'],
             req.paramBody['type'],
+        ]
+    );
+}
+
+async function queryMedia(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_weggler_letmeknow_detail_media_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['post_uid'],
         ]
     );
 }
