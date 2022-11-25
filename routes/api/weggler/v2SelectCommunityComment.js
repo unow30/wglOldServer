@@ -5,7 +5,7 @@
  * @swagger
  * /api/private/v2/weggler/community/comment/list:
  *   get:
- *     summary: 포토, 비디오 리뷰 댓글 목록 및 리뷰 컨텐츠
+ *     summary: 위글러 커뮤니티 게시글 통합 댓글 리스트
  *     tags: [Weggler]
  *     description: |
  *       path : /api/private/v2/weggler/community/comment/list
