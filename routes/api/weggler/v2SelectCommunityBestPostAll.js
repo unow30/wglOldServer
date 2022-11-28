@@ -2,18 +2,27 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/community/home:
+ * /api/private/v2/weggler/community/best/post/all:
  *   get:
- *     summary: 커뮤니티 홈 피드 리스트
+ *     summary: 커뮤니티 인기게시글 리스트
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/community/home
+ *      ## path : /api/private/v2/weggler/community/best/post/all
  *
- *       * 커뮤니티 게시글 리스트 및 인기게시글
+ *       * 커뮤니티 인기게시글 리스트
  *       * limit 15 이므로 offset 15씩 증가
- *       * offset 0 일때만 인기게시글 4개 전달
+ *       * 전체보기 최대 limit 60, (공구해요, 알려줘요) 각 인기 30위까지만 노출이므로 최대 limit30
+ *       * 전체보기 마지막 offset 45, (공구해요, 알려줘요) 마지막 offset 15
  * 
  *     parameters:
+ *       - in: query
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           전체 게시물: 0, 알려줘요: 1, 궁금해요: 2
  *       - in: query
  *         name: offset
  *         required: true
@@ -47,20 +56,16 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
-
-        req.innerBody['item'] = await query(req, db_connection);
-
-        if(req.paramBody['offset'] == 0){
-            const letMeKnow = queryLetMeKnow(req, db_connection);
-            const buyTogether = queryBuyTogether(req, db_connection);
-            
-            const [letMeKnowData, buyTogetherData] = await Promise.all([letMeKnow, buyTogether]);
-            
-            req.innerBody['best_post'] = {
-                let_me_know: letMeKnowData,
-                buy_together: buyTogetherData,
+        
+        if((req.paramBody.type == 0 && req.paramBody.offset > 45) || 
+           (req.paramBody.type != 0 && req.paramBody.offset > 15) ){
+            const err = {
+                message: '인기 게시글은 전체보기 최대 60개, (알려줘요, 공구해요)는 최대 30개 까지 불러올 수 있습니다.'
             }
+            sendUtil.sendErrorPacket(req, res, err);
+            return
         }
+        req.innerBody['item'] = await query(req, db_connection);
         
 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -81,29 +86,8 @@ async function query(req, db_connection) {
         , 'call proc_weggler_community_home_v2'
         , [
             req.headers['user_uid'],
+            req.paramBody['type'],
             req.paramBody['offset'],
-        ]
-    );
-}
-
-async function queryLetMeKnow(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_weggler_community_letmeknow_best_v2'
-        , [
-            req.headers['user_uid'],
-        ]
-    );
-}
-
-async function queryBuyTogether(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_weggler_community_buytogether_best_v2'
-        , [
-            req.headers['user_uid'],
         ]
     );
 }
