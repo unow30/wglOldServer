@@ -35,7 +35,6 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
 
 
 let file_name = fileUtil.name(__filename);
@@ -50,8 +49,19 @@ module.exports = function (req, res) {
         req.innerBody = {};
 
         req.innerBody['item'] = await query(req, db_connection);
+
+        if(req.paramBody['offset'] == 0){
+            const letMeKnow = queryLetMeKnow(req, db_connection);
+            const buyTogether = queryBuyTogether(req, db_connection);
+            
+            const [letMeKnowData, buyTogetherData] = await Promise.all([letMeKnow, buyTogether]);
+            
+            req.innerBody['best_post'] = {
+                let_me_know: letMeKnowData,
+                buy_together: buyTogetherData,
+            }
+        }
         
-        //추천 위글러 추가되서 들어가야함
 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -72,6 +82,28 @@ async function query(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['offset'],
+        ]
+    );
+}
+
+async function queryLetMeKnow(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_weggler_community_letmeknow_best_v2'
+        , [
+            req.headers['user_uid'],
+        ]
+    );
+}
+
+async function queryBuyTogether(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_weggler_community_buytogether_best_v2'
+        , [
+            req.headers['user_uid'],
         ]
     );
 }
