@@ -59,10 +59,10 @@ module.exports = function (req, res) {
         
         if((req.paramBody.type == 0 && req.paramBody.offset > 45) || 
            (req.paramBody.type != 0 && req.paramBody.offset > 15) ){
-            const err = {
-                message: '인기 게시글은 전체보기 최대 60개, (알려줘요, 공구해요)는 최대 30개 까지 불러올 수 있습니다.'
-            }
+               
+            const err = new Error('인기 게시글은 전체보기 최대 60개, (알려줘요, 공구해요)는 최대 30개 까지 불러올 수 있습니다.')
             sendUtil.sendErrorPacket(req, res, err);
+
             return
         }
         req.innerBody['item'] = await query(req, db_connection);
