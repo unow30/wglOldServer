@@ -83,7 +83,7 @@ async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_weggler_community_home_v2'
+        , 'call proc_weggler_community_best_post_all_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['type'],
