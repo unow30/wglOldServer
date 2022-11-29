@@ -11,22 +11,25 @@
  *
  * 
  *     parameters:
- *       - in: query
- *         name: post_uid
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
+ *       - in: body
+ *         name: body
  *         description: |
- *           post_id
- *       - in: query
- *         name: content
- *         required: true
+ *           게시글 수정 바디
  *         schema:
- *           type: string
- *           example: 0
- *         description: |
- *           이건 바꿀 컨텐츠야
+ *           type: object
+ *           required:
+ *             - title
+ *             - content
+ *           properties:
+ *             post_uid:
+ *               type: number
+ *               example: 79
+ *               description: |
+ *                 게시글 uid
+ *             content:
+ *               type: string
+ *               example: 안녕하세요 반갑습니당당당.
+ *               description: 내용
  *
  *     responses:
  *       400:
