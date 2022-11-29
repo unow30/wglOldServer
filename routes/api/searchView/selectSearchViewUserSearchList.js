@@ -64,6 +64,7 @@ module.exports = function (req, res) {
 
             // req.innerBody['video_list'] = await querySelect(req, db_connection);
             req.innerBody['user_list'] = await queryUser(req, db_connection)
+            req.innerBody['count'] = await queryUserCount(req, db_connection)
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -115,4 +116,14 @@ function queryUser(req, db_connection) {
     );
 }
 
+function queryUserCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
 
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_searchview_user_search_count_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['keyword'],
+        ]
+    );
+}

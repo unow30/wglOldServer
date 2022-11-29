@@ -272,6 +272,7 @@ app.route('/v2/weggler/community/buytogether/list/all').get( require('./weggler/
 app.route('/v2/weggler/community/letmeknow/list/all').get( require('./weggler/v2SelectCommunityLetMeKnowList') )
 app.route('/v2/weggler/iwrote/post').get( require('./weggler/v2SelectThePostIWrotePost') )
 app.route('/v2/weggler/iwrote/comment').get( require('./weggler/v2SelectThePostIWroteComment') )
+app.route('/v2/weggler/recommend/review/list').get( require('./weggler/v2SelectRecommendReviewList') )
 
 /**
  * private => public으로 옮긴 라우터들 22. 11. 02 
