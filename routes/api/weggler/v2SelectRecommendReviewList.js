@@ -37,7 +37,13 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            req.innerBody['item'] = await query(req, db_connection)
+            const result = await query(req, db_connection)
+            req.innerBody['item'] = result.map(el =>{
+                const productInfo = el.product_info.split('@!@').map(item => JSOM.parse(item))
+                er.product_info = productInfo
+
+                return el
+            })
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
