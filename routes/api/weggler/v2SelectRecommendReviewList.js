@@ -40,7 +40,7 @@ module.exports = function (req, res) {
             const result = await query(req, db_connection)
             req.innerBody['item'] = result.map(el =>{
                 const productInfo = el.product_info.split('@!@').map(item => JSON.parse(item))
-                er.product_info = productInfo
+                el.product_info = productInfo
 
                 return el
             })
