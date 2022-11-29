@@ -1,5 +1,7 @@
 /**
- *
+ * 
+ * Created by jongho
+ * 
  * @swagger
  * /api/private/v2/weggler/search/groupbuying/list:
  *   get:

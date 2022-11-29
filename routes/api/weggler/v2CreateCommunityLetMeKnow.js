@@ -1,5 +1,8 @@
 /**
  *
+ * 
+ * Created by jongho
+ * 
  * @swagger
  * /api/private/v2/weggler/community/letmeknow:
  *   post:
