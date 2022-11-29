@@ -39,7 +39,7 @@ module.exports = function (req, res) {
             req.innerBody = {};
             const result = await query(req, db_connection)
             req.innerBody['item'] = result.map(el =>{
-                const productInfo = el.product_info.split('@!@').map(item => JSOM.parse(item))
+                const productInfo = el.product_info.split('@!@').map(item => JSON.parse(item))
                 er.product_info = productInfo
 
                 return el
