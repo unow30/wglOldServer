@@ -30,6 +30,10 @@
  *               type: string
  *               example: 안녕하세요 반갑습니당당당.
  *               description: 내용
+ *             title:
+ *               type: string
+ *               example: 안녕하세요 제목입니당당당.
+ *               description: 내용
  *
  *     responses:
  *       400:
@@ -73,6 +77,7 @@ module.exports = function (req, res) {
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'post_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'content');
+    paramUtil.checkParam_noReturn(req.paramBody, 'title');
 }
 
 async function query(req, db_connection) {
@@ -84,6 +89,7 @@ async function query(req, db_connection) {
             req.headers['user_uid'],
             req.paramBody['post_uid'],
             req.paramBody['content'],
+            req.paramBody['title'],
         ]
     );
 }
