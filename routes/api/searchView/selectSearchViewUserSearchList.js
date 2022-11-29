@@ -64,7 +64,9 @@ module.exports = function (req, res) {
 
             // req.innerBody['video_list'] = await querySelect(req, db_connection);
             req.innerBody['user_list'] = await queryUser(req, db_connection)
-            req.innerBody['count'] = await queryUserCount(req, db_connection)
+            const countResult = await queryUserCount(req, db_connection)
+            req.innerBody['count'] = countResult.count
+            
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
