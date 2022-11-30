@@ -92,7 +92,7 @@ module.exports = async function (req, res) {
                     }
 
                     const image = await s3.getObject(params).promise()                    
-                    const resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', { quality: 80 }).toBuffer()
+                    const resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', { quality: 50 }).toBuffer()
 
                     params.ACL = 'public-read'
                     params.Body = resizeImage
