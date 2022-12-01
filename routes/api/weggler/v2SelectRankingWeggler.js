@@ -2,12 +2,12 @@
  * Created by jongho
  *
  * @swagger
- * /api/public/v2/weggler/ranking:
+ * /api/private/v2/weggler/ranking:
  *   get:
  *     summary: 랭킹 위글러 불러오기
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/public/v2/weggler/ranking
+ *      ## path : /api/private/v2/weggler/ranking
  *
  *       * 랭킹 위글러 불러오기
  *

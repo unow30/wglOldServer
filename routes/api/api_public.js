@@ -86,11 +86,6 @@ app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') 
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 
 /**
- * weggler api
- */
-app.route('/v2/weggler/ranking').get( require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
-
-/**
  * video api
  */
 app.route('/video/info').get( require('./video/selectVideoInfo') )
