@@ -172,7 +172,7 @@ function query(req, db_connection) {
 
 async function queryfilesBulkInsert(req, db_connection) {
     const _funcName = arguments.callee.name;
-
+    console.log(req.paramBody['files'])
     const fileData = req.paramBody['files'].map(result =>{
         console.log(result, '맵 안')
         if(result.type == 1){
@@ -188,7 +188,8 @@ async function queryfilesBulkInsert(req, db_connection) {
         insert into tbl_post_media(post_uid, filename, thumbnail, type)
         values ?;
     `
-    await db_connection.query(bulkQuery, [fileData]);
+    const a = await db_connection.query(bulkQuery, [fileData]);
+    console.log(a,'디버깅용===================인서트 후')
 }
 
 function queryPointAll(req, db_connection) {
