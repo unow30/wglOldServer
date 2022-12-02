@@ -104,7 +104,7 @@ module.exports = async function (req, res) {
             }
             else{
                 const params = {
-                    Bucket: funcUtil.getFilePath(),
+                    Bucket: funcUtil.getAWSBucket(),
                     Key: req.file.key
                 }
 
@@ -113,7 +113,7 @@ module.exports = async function (req, res) {
 
                 params.ACL = 'public-read'
                 params.Body = resizeImage
-                
+
                 await s3.putObject(params).promise()
             }
 
