@@ -259,6 +259,7 @@ app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuy
  * weggler api
  */
 app.route('/v2/weggler/follow/feed/list').get( require('./weggler/v2SelectFollowFeedList') )
+app.route('/v2/weggler/recommend/feed/list').get( require('./weggler/v2SelectRecommendFeedList') )
 app.route('/v2/weggler/follow/recommend/list').get( require('./weggler/v2SelectFollowRecommendList') )
 app.route('/v2/weggler/community/letmeknow').post( require('./weggler/v2CreateCommunityLetMeKnow') )
 app.route('/v2/weggler/community/buytogether').post( require('./weggler/v2CreateCommunityBuyTogether') )

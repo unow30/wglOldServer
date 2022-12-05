@@ -67,7 +67,7 @@
      const _funcName = arguments.callee.name;
  
      return mysqlUtil.querySingle(db_connection
-         , 'call proc_weggler_story_detail_v2'
+         , 'call proc_weggler_story_detail_simple_v2'
          , [
              req.headers['user_uid'],
              req.paramBody['target_uid'],
