@@ -86,10 +86,7 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
         checkParam(req);
-        const os = req.innerBody.item['os']
-        if(os == 'android'){
-            throw new Error('좋아요 기능 점검중 입니다.')
-        }
+
         console.log(req.paramBody, '======================>>>>>디버깅 위한 콘솔')
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
