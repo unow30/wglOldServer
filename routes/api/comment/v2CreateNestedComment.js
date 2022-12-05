@@ -96,6 +96,11 @@ module.exports = function (req, res) {
                 req.innerBody['item'] = await queryPhotoReviewNestedComment(req, db_connection);
                 sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
             }
+            else if(req.paramBody['type']===3){
+
+                req.innerBody['item'] = await queryCommunityPostNestedComment(req, db_connection);
+                sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            }
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         } );
@@ -133,15 +138,28 @@ function query(req, db_connection) {
 function queryPhotoReviewNestedComment(req, db_connection) {
 const _funcName = arguments.callee.name;
 
-return mysqlUtil.querySingle(db_connection
-    , 'call proc_create_nested_comment_photo_review_v2'
-    , [
-        req.headers['user_uid'],
-        req.paramBody['comment_uid'],
-        req.paramBody['content'],
-    ]
-);
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_nested_comment_photo_review_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['comment_uid'],
+            req.paramBody['content'],
+        ]
+    );
 }
+
+function queryCommunityPostNestedComment(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    
+        return mysqlUtil.querySingle(db_connection
+            , 'call proc_create_nested_comment_community_post_v2'
+            , [
+                req.headers['user_uid'],
+                req.paramBody['comment_uid'],
+                req.paramBody['content'],
+            ]
+        );
+    }
 
 
 function queryInsertFCM(data, db_connection){
