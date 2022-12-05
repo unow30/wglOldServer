@@ -93,6 +93,11 @@ module.exports = function (req, res) {
 
                 sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
             }
+            else if(req.paramBody['type']=== 3){
+                req.innerBody['item'] = await queryCommunityPostComment(req, db_connection)
+
+                sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            }
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         } );
@@ -132,6 +137,19 @@ function queryPhotoReviewComment(req, db_connection) {
 
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_comment_photo_review_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['target_uid'],
+            req.paramBody['content'],
+        ]
+    );
+}
+
+function queryCommunityPostComment(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_comment_community_post_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['target_uid'],
