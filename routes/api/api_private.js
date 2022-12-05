@@ -278,6 +278,7 @@ app.route('/v2/weggler/community/post').put( require('./weggler/v2UpdateCommunit
 app.route('/v2/weggler/story/visit').post( require('./weggler/v2CreateWegglerStoryVisit') )
 app.route('/v2/weggler/follow/feed/story/list').post( require('./weggler/v2SelectFeedStoryList') )
 app.route('/v2/weggler/story/detail').get( require('./weggler/v2SelectWegglerStoryDetail') )
+app.route('/v2/weggler/story/detail/simple').get( require('./weggler/v2SelectWegglerStoryDetailSimple') )
 app.route('/v2/weggler/ranking').get( require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
 
 /**

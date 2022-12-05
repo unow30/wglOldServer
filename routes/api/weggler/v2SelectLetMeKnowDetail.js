@@ -48,6 +48,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
         req.innerBody['item'] = await query(req, db_connection);
+        const files = await queryMedia(req, db_connection)
+        console.log(files,'==========>>>files')
+        console.log(req.innerBody['item'],'==========>>>files')
         req.innerBody.item['files'] = await queryMedia(req, db_connection)
 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
