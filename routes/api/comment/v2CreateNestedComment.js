@@ -33,7 +33,7 @@
  *             type:
  *               type: number
  *               description: |
- *                 1: 비디오 리뷰, 2: 포토 리뷰
+ *                 1: 비디오 리뷰, 2: 포토 리뷰 3: 위글러 커뮤니티 게시글
  *
  *           example:
  *             comment_uid: 1
