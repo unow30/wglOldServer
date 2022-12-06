@@ -2,14 +2,15 @@
  * Created by yunhokim on 2022. 12. 06.
  *
  * @swagger
- * /api/public/promotion/list:
+ * /api/public/v2/searchview/promotion/list:
  *   get:
  *     summary: 프로모션 더보기
- *     tags: [Promotion]
+ *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/promotion/list
+ *       path : /api/public/v2/searchview/promotion/list
  *
  *       * ## 프로모션 더보기
+ *       * ### offset으로 패이징한다.
  *
  *     parameters:
  *       - in: query
