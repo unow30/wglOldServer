@@ -4,12 +4,12 @@
  * @swagger
  * /api/public/v2/searchview/price/range/list:
  *   get:
- *     summary: 가격대별 상품목록 불러오기
- *     tags: [SearchView]
+ *     summary: 가격대별 상품목록 더보기
+ *     tags: [v2SearchView]
  *     description: |
- *      ## path : /api/public/v2/searchview/price/range/list:
+ *      ## path : /api/public/v2/searchview/price/range/list
  *
- *       * ## 가격대별 상품목록 불러오기
+ *         * ## 가격대별 상품목록 더보기
  *         * ### n원 이상 m원 미만 상품목록을 불러온다.
  *         * ### 12개씩 불러오니 10개만 표시한다.
  *         * ### 홈뷰에서는 offset= 0, category=65535 고정이다.
@@ -99,12 +99,8 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
-            req.innerBody = {
-                'price_range': null,
-                // 'data': null,
-                // 'title': '가격대별 인기상품',
-                // 'subTitle': '가격대별로 인기상품을 만나보세요'
-            };
+            req.innerBody = {};
+
             req.innerBody['price_range'] = await queryProductPriceRange(req, db_connection); // 지금뜨는 공구딜
 
             console.log(req.innerBody['price_range'])
