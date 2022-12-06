@@ -49,7 +49,9 @@ module.exports = function (req, res) {
         
         checkParam(req);
         mysqlUtil.connectPool(async function (db_connection) {
-        req.innerBody = {};
+        // req.innerBody = {};
+        req.innerBody = {
+        };
 
         const ad_list = queryADList(req, db_connection); //배너광고리스트
         const last_order = queryLastOrder(req, db_connection); // 성공임박 공동구매
@@ -79,11 +81,12 @@ module.exports = function (req, res) {
             last_order_data,
             last_view_data,
             brand_list_data,
+            interest_data,
+            new_review_product_data,
             gongu_video_data,
+            //배너띠
             edition_data,
             best_product_data,
-            new_review_product_data,
-            interest_data,
             price_data,
             // md_pick_data,
             // hot_weggler_data,
@@ -94,11 +97,12 @@ module.exports = function (req, res) {
             last_order,
             last_view,
             brand_list,
+            interest_list,
+            newReviewProduct,
             gongu_video_list,
+            //배너띠
             edition,
             bestProduct,
-            newReviewProduct,
-            interest_list,
             price_list,
             // mdPick,
             // hot_weggler,
@@ -109,18 +113,47 @@ module.exports = function (req, res) {
         // const hot_weggler_parse = hotWegglerParse(hot_weggler_data); //핫 위글러 리스트 및 동영상 데이터
         const edition_parse = editionParse(edition_data);
         //기존대로 작동
-        req.innerBody['last_view'] = last_view_data
-        req.innerBody['last_order'] = last_order_data
-        req.innerBody['brand_list'] = brand_list_data
-        req.innerBody['gongu_video_list'] = gongu_video_data
-        req.innerBody['interest_data'] = interest_data
         req.innerBody['ad_list'] = ad_list_data
-        req.innerBody['edition'] = edition_parse
-        // req.innerBody['md_pick'] = md_pick_data
-        req.innerBody['best_product'] = best_product_data
-        req.innerBody['new_review_preview_list'] = new_review_product_data
-        req.innerBody['prict_range_data'] = price_data
 
+        req.innerBody['last_view'] = createProperties(last_view_data)
+        req.innerBody['last_view']['title'] = '최근 본 상품'
+        req.innerBody['last_view']['subTitle'] = '눈여겨본 상품 놓치지 마세요'
+
+
+        req.innerBody['last_order'] = createProperties(last_order_data)
+        req.innerBody['last_order']['title'] = '성공임박 공동구매'
+        req.innerBody['last_order']['subTitle'] = '서두르세요 마지막 한명!'
+
+        req.innerBody['brand_list'] = createProperties(brand_list_data)
+        req.innerBody['brand_list']['title'] = '위글에서 사랑받는 브랜드'
+        req.innerBody['brand_list']['subTitle'] = '위글러들이 많이 구매한 브랜드'
+
+        req.innerBody['interest_data'] = createProperties(interest_data)
+        req.innerBody['interest_data']['title'] = 'ooo님의 취향저격 상품'
+        req.innerBody['interest_data']['subTitle'] = '최근 본 상품과 유사한 상품들을 모아봤어요!'
+
+        req.innerBody['new_review_preview_list'] = createProperties(new_review_product_data)
+        req.innerBody['new_review_preview_list']['title'] = '따끈따끈 신규 리뷰영상'
+        req.innerBody['new_review_preview_list']['subTitle'] = '새로 올라온 리뷰영상을 확인해 보세요'
+
+        req.innerBody['gongu_video_list'] = createProperties(gongu_video_data)
+        req.innerBody['gongu_video_list']['title'] = '영상으로 만나는 공동구매'
+        req.innerBody['gongu_video_list']['subTitle'] = '생생한 숏폼 영상으로 리얼하게!'
+        //배너띠 보내기
+        req.innerBody['edition'] = createProperties(edition_parse)
+        req.innerBody['edition']['title'] = 'ONLY 위글, 기획전'
+        req.innerBody['edition']['subTitle'] = '테마별로 기획전을 만나보세요'
+
+        req.innerBody['best_product'] = createProperties(best_product_data)
+        req.innerBody['best_product']['title'] = '인기 상품 랭킹'
+        req.innerBody['best_product']['subTitle'] = '위글의 인기 상품을 만나보세요'
+
+        req.innerBody['prict_range_data'] = createProperties(price_data)
+        req.innerBody['prict_range_data']['title'] = '가격대별 인기 상품'
+        req.innerBody['prict_range_data']['subTitle'] = '가격대별로 인기 상품을 만나보세요'
+
+
+        // req.innerBody['md_pick'] = md_pick_data
         // req.innerBody['hot_weggler'] = hot_weggler_parse; //핫 위글러 리스트 및 동영상 데이터
         // req.innerBody['gongu_deal'] = gongu_deal_data; // 지금뜨는 공구딜
         // req.innerBody['gongu_deadline'] = gongu_deadline_data; //시간이 얼마 안남은 공구
@@ -347,4 +380,12 @@ function queryInterestsList(req, db_connection){
             0, //req.paramBody['offset'],
         ]
     );
+}
+
+function createProperties(data) {
+    return {
+        'title': '',
+        'subTitle': '',
+        'data': data
+    }
 }
