@@ -187,6 +187,12 @@ app.route('/searchview/new/category/video/list').get( require('./searchView/sele
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') ); // 신규상품 목록
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') ); // 신규리뷰 목록
 
+/**
+ * v2SearchView api
+ * 22년 12월 24일부터 적용
+ */
+app.route('/v2/searchview/recent/viewed').get( require('./v2SearchView/v2SelectProductRecentViewedList') ) //최근 본 상품목록 더보기
+
 
 // 모아보기 api legacy
 // 앱 초창기 모아보기 리스트

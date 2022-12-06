@@ -5,7 +5,7 @@
  * /api/public/v2/searchview/list/all:
  *   get:
  *     summary: 모아보기 모든 화면 불러오기
- *     tags: [SearchView]
+ *     tags: [v2SearchView]
  *     description: |
  *      ## path : /api/public/v2/searchview/list/all
  *
@@ -48,16 +48,22 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
         
         checkParam(req);
+
+        let nickname = ''
+        if(req.innerBody['item']){
+            nickname = req.innerBody['item']['nickname']
+        }
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 
         const ad_list = queryADList(req, db_connection); //배너광고리스트
-        const last_view = queryLastViewList(req, db_connection) //최근 본 상품 목록
+        const last_view = queryLastViewList(req, db_connection); //최근 본 상품 목록
         const last_order = queryLastOrder(req, db_connection); // 성공임박 공동구매
-        const brand_list = queryBrandUserList(req, db_connection) //브랜드관 배너 이미지 목록
-        const interest_list = queryInterestsList(req, db_connection)//취향저격 상품 목록
+        const brand_list = queryBrandUserList(req, db_connection); //브랜드관 배너 이미지 목록
+
+        const interest_list = queryInterestsList(req, db_connection);//취향저격 상품 목록
         const newReviewProduct = queryNewReviewPreviewList(req, db_connection); //신규 리뷰 영상 목록
-        const gongu_video_list= queryGonguFeedList(req, db_connection)//공구영상리스트
+        const gongu_video_list= queryGonguFeedList(req, db_connection);//공구영상리스트
         // const banner_list = '배너띠 목록?'
         const edition = queryEdition(req, db_connection); //기획전 상품 mdPick 배너리스트 보여주기
 
@@ -67,10 +73,10 @@ module.exports = function (req, res) {
         const price_list = queryProductPriceRange(req, db_connection)//'가격대별 인기상품'
 
         //안쓰는 데이터??
-        const mdPick = queryMdPick(req, db_connection); //mdPick
-        const gongu_deal = queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
-        const gongu_deadline = queryGonguDeadline(req, db_connection); // 시간이 얼마 안남은 공구
-        const hot_weggler = queryHotWeggler(req, db_connection); //핫 위글러 리스트 및 동영상 데이터
+        // const mdPick = queryMdPick(req, db_connection); //mdPick
+        // const gongu_deal = queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
+        // const gongu_deadline = queryGonguDeadline(req, db_connection); // 시간이 얼마 안남은 공구
+        // const hot_weggler = queryHotWeggler(req, db_connection); //핫 위글러 리스트 및 동영상 데이터
 
 
 
@@ -109,47 +115,21 @@ module.exports = function (req, res) {
         ])
 
         // const hot_weggler_parse = hotWegglerParse(hot_weggler_data); //핫 위글러 리스트 및 동영상 데이터
-        const edition_parse = editionParse(edition_data);
+        // const edition_parse = editionParse(edition_data);
         //기존대로 작동
         req.innerBody['ad_list'] = ad_list_data
 
-        req.innerBody['last_view'] = createProperties(last_view_data)
-        req.innerBody['last_view']['title'] = '최근 본 상품'
-        req.innerBody['last_view']['subTitle'] = '눈여겨본 상품 놓치지 마세요'
-
-
-        req.innerBody['last_order'] = createProperties(last_order_data)
-        req.innerBody['last_order']['title'] = '성공임박 공동구매'
-        req.innerBody['last_order']['subTitle'] = '서두르세요 마지막 한명!'
-
-        req.innerBody['brand_list'] = createProperties(brand_list_data)
-        req.innerBody['brand_list']['title'] = '위글에서 사랑받는 브랜드'
-        req.innerBody['brand_list']['subTitle'] = '위글러들이 많이 구매한 브랜드'
-
-        req.innerBody['interest_data'] = createProperties(interest_data)
-        req.innerBody['interest_data']['title'] = 'ooo님의 취향저격 상품'
-        req.innerBody['interest_data']['subTitle'] = '최근 본 상품과 유사한 상품들을 모아봤어요!'
-
-        req.innerBody['new_review_preview_list'] = createProperties(new_review_product_data)
-        req.innerBody['new_review_preview_list']['title'] = '따끈따끈 신규 리뷰영상'
-        req.innerBody['new_review_preview_list']['subTitle'] = '새로 올라온 리뷰영상을 확인해 보세요'
-
-        req.innerBody['gongu_video_list'] = createProperties(gongu_video_data)
-        req.innerBody['gongu_video_list']['title'] = '영상으로 만나는 공동구매'
-        req.innerBody['gongu_video_list']['subTitle'] = '생생한 숏폼 영상으로 리얼하게!'
+        req.innerBody['last_view'] = createProperties('최근 본 상품', '눈여겨본 상품 놓치지 마세요', last_view_data)
+        req.innerBody['last_order'] = createProperties('성공임박 공동구매','서두르세요 마지막 한명!', last_order_data)
+        req.innerBody['brand_list'] = createProperties('위글에서 사랑받는 브랜드', '위글러들이 많이 구매한 브랜드', brand_list_data)
+        req.innerBody['interest_data'] = createProperties(`ooo님 취향저격 상품`, '최근 본 상품과 유사한 상품들을 모아봤어요!', interest_data)
+            // ${req.headers['nickname']}
+        req.innerBody['new_review_preview_list'] = createProperties('따끈따끈 신규 리뷰영상', '새로 올라온 리뷰영상을 확인해 보세요', new_review_product_data)
+        req.innerBody['gongu_video_list'] = createProperties('영상으로 만나는 공동구매', '생생한 숏폼 영상으로 리얼하게!', gongu_video_data)
         //배너띠 보내기
-        req.innerBody['edition'] = createProperties(edition_parse)
-        req.innerBody['edition']['title'] = 'ONLY 위글, 기획전'
-        req.innerBody['edition']['subTitle'] = '테마별로 기획전을 만나보세요'
-
-        req.innerBody['best_product'] = createProperties(best_product_data)
-        req.innerBody['best_product']['title'] = '인기 상품 랭킹'
-        req.innerBody['best_product']['subTitle'] = '위글의 인기 상품을 만나보세요'
-
-        req.innerBody['prict_range_data'] = createProperties(price_data)
-        req.innerBody['prict_range_data']['title'] = '가격대별 인기 상품'
-        req.innerBody['prict_range_data']['subTitle'] = '가격대별로 인기 상품을 만나보세요'
-
+        req.innerBody['edition'] = createProperties('ONLY 위글, 기획전', '테마별로 기획전을 만나보세요', edition_data)
+        req.innerBody['best_product'] = createProperties('인기 상품 랭킹', '위글의 인기 상품을 만나보세요', best_product_data)
+        req.innerBody['prict_range_data'] = createProperties('가격대별 인기 상품', '가격대별로 인기 상품을 만나보세요', price_data)
 
         // req.innerBody['md_pick'] = md_pick_data
         // req.innerBody['hot_weggler'] = hot_weggler_parse; //핫 위글러 리스트 및 동영상 데이터
@@ -257,7 +237,7 @@ function hotWegglerParse(hotWeggler) {
 function queryEdition(req, db_connection) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_gongu_edition_v1'
+        , 'call proc_select_searchview_gongu_edition_v2'
         , [
             req.headers['user_uid'],
             // req.paramBody['product_uid'],
@@ -265,18 +245,18 @@ function queryEdition(req, db_connection) {
     );
 }
 
-function editionParse(edition) {
-    return edition.map(item=>{
-        return {
-            edition_uid: item.edition_uid,
-            edition_filename: item.edition_filename,
-            start_time: item.start_time,
-            end_time: item.end_time,
-            edition_name: item.edition_name,
-            edition_list: item.edition_list? item.edition_list.split('@!@').map(info_item=> JSON.parse(info_item)) : []
-        }
-    })
-}
+// function editionParse(edition) {
+//     return edition.map(item=>{
+//         return {
+//             edition_uid: item.edition_uid,
+//             edition_filename: item.edition_filename,
+//             start_time: item.start_time,
+//             end_time: item.end_time,
+//             edition_name: item.edition_name,
+//             edition_list: item.edition_list? item.edition_list.split('@!@').map(info_item=> JSON.parse(info_item)) : []
+//         }
+//     })
+// }
 
 //mdPick
 function queryMdPick(req, db_connection) {
@@ -380,10 +360,10 @@ function queryInterestsList(req, db_connection){
     );
 }
 
-function createProperties(data) {
+function createProperties(title, subTitle, data) {
     return {
-        'title': '',
-        'subTitle': '',
+        'title': title,
+        'subTitle': subTitle,
         'data': data
     }
 }

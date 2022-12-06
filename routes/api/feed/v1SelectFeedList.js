@@ -4,7 +4,7 @@
  * @swagger
  * /api/public/v1/feed/list:
  *   get:
- *     summary: 피드 목록 업데이트(테섭전용)
+ *     summary: 피드 목록 업데이트
  *     tags: [Feed]
  *     description: |
  *       path : /api/public/v1/feed/list
