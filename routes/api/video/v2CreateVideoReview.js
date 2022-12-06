@@ -191,6 +191,10 @@ function queryAlertComment(req, db_connection){
 async function queryProductBulkInsert(req, db_connection){
     console.log('일단 벌크 들어옴')
     console.log(req.paramBody['product_uid'])
+    if(req.paramBody['product_uid'].length > 6){
+        const err = new Error('동영상 리뷰에 6개의 상품까지 등록할 수 있습니다.')
+        throw err
+    }
     const productData = req.paramBody['product_uid'].map(result => [req.innerBody.item['uid'], result]);
     const videoProductInsertSql = `
         insert into tbl_video_product(video_uid, product_uid)
