@@ -104,6 +104,11 @@ app.route('/v1/searchview/list/all').get( require('./searchView/v1SelectSerchVie
 app.route('/v1/searchview/list/gongudeal').get( require('./searchView/v1SelectSerchViewListGonguDeal')) // 공구딜 전체보기
 app.route('/v1/searchview/list/gongudeadline').get( require('./searchView/v1SelectSerchViewListGonguDeadline')) // 공구 마감임박 전체보기
 
+app.route('/v2/searchview/list/all').get(require('../middleware/publicCheckToken'), require('./searchView/v2SelectSerchViewListAll')) // 모아보기 모든 정보 불러오기
+app.route('/v2/searchview/price/range/list').get(require('../middleware/publicCheckToken'), require('./searchView/v2SelectSearchViewPriceRangeList'))//가격범위불러오기
+
+
+
 /**
  * comment api
  */
