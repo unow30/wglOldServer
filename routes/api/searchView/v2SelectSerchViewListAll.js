@@ -51,8 +51,6 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 
-        errUtil.createCall(400, '일반적인 에러 보냅니다.')
-
         const ad_list = queryADList(req, db_connection); //배너광고리스트
         const last_view = queryLastViewList(req, db_connection) //최근 본 상품 목록
         const last_order = queryLastOrder(req, db_connection); // 성공임박 공동구매
