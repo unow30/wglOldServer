@@ -11,7 +11,8 @@
  *
  *       * ## 무료배송상품 더보기
  *       * ### 홈뷰에서 띠배너 클릭해서 들어온 화면
- *       * ### /product/category/list api의
+ *       * ### /product/category/list api 내용 복붙
+ *       * proc_select_category_product_list_v2로 해서 is_like 적용
  *
  *     parameters:
  *       - in: query
@@ -129,7 +130,7 @@ function queryUser(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_category_product_list_v1'
+        , 'call proc_select_category_product_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['category'],
