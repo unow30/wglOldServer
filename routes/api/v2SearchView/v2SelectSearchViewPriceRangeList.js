@@ -43,12 +43,16 @@
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
  *         name: offset
+ *         default: 0
  *         required: true
  *         schema:
- *           type: int
+ *           type: number
  *           example: 0
  *         description: |
- *           12개 단위
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *       - in: query
  *         name: min_price_range
  *         required: true
@@ -103,7 +107,6 @@ module.exports = function (req, res) {
 
             req.innerBody['price_range'] = await queryProductPriceRange(req, db_connection); // 지금뜨는 공구딜
 
-            console.log(req.innerBody['price_range'])
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -117,7 +120,7 @@ module.exports = function (req, res) {
 //'가격대별 인기상품' 사실 새로 api를 파야한다.
 function queryProductPriceRange(req, db_connection){
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_price_range_preview_list_v2'
+        , 'call proc_select_searchview_price_range_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],

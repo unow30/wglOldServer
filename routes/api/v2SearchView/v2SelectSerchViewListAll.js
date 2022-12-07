@@ -62,7 +62,7 @@ module.exports = function (req, res) {
         const last_order = queryLastOrder(req, db_connection); // 성공임박 공동구매
         const brand_list = queryBrandUserList(req, db_connection); //브랜드관 배너 이미지 목록
 
-        const interest_list = queryInterestsList(req, db_connection);//취향저격 상품 목록
+        const interest_list = queryInterestList(req, db_connection);//취향저격 상품 목록
         const newReviewProduct = queryNewReviewPreviewList(req, db_connection); //신규 리뷰 영상 목록
         const gongu_video_list= queryGonguFeedList(req, db_connection);//공구영상리스트
         // const banner_list = '배너띠 목록?'
@@ -70,8 +70,8 @@ module.exports = function (req, res) {
 
         const {month, weekNo} = dateUtil();
         const date = `${month}${weekNo}`;
-        const bestProduct = queryBestProduct(req, db_connection, date); //베스트 프로덕트 인기상품랭
-        const price_list = queryProductPriceRange(req, db_connection)//'가격대별 인기상품'
+        const bestProduct = queryBestProduct(req, db_connection, date); //베스트 프로덕트 인기상품
+        const price_list = queryProductPriceRange(req, db_connection)//가격대별 인기상품
 
         //안쓰는 데이터??
         // const mdPick = queryMdPick(req, db_connection); //mdPick
@@ -233,11 +233,11 @@ function hotWegglerParse(hotWeggler) {
     })
 }
 
-//기획전 상품 mdPick
+//기획전 상품
 function queryEdition(req, db_connection) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_gongu_edition_v2'
+        , 'call proc_select_searchview_edition_v2'
         , [
             req.headers['user_uid'],
             // req.paramBody['product_uid'],
@@ -269,7 +269,7 @@ function queryMdPick(req, db_connection) {
     );
 };
 
-//베스트 프로덕트 인기상품랭
+//베스트 프로덕트 인기상품
 function queryBestProduct(req, db_connection, date) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
@@ -334,7 +334,7 @@ function queryGonguFeedList(req, db_connection){
     );
 }
 
-//'가격대별 인기상품' 사실 새로 api를 파야한다.
+//가격대별 인기상품
 function queryProductPriceRange(req, db_connection){
     return mysqlUtil.queryArray(db_connection
             , 'call proc_select_searchview_price_range_preview_list_v2'
@@ -349,7 +349,8 @@ function queryProductPriceRange(req, db_connection){
     );
 }
 
-function queryInterestsList(req, db_connection){
+//취향저격 상품 목록
+function queryInterestList(req, db_connection){
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_interests_product_list_v2'
         , [
