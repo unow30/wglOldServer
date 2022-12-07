@@ -65,7 +65,7 @@ module.exports = function (req, res) {
         const interest_list = queryInterestList(req, db_connection);//취향저격 상품 목록
         const newReviewProduct = queryNewReviewPreviewList(req, db_connection); //신규 리뷰 영상 목록
         const gongu_video_list= queryGonguFeedList(req, db_connection);//공구영상리스트
-        // const banner_list = '배너띠 목록?'
+        // const banner_list = queryBannerStripList(req, db_connection)//배너띠 목록
         const edition = queryEdition(req, db_connection); //기획전 상품 mdPick 배너리스트 보여주기
 
         const {month, weekNo} = dateUtil();
@@ -337,7 +337,7 @@ function queryGonguFeedList(req, db_connection){
 //가격대별 인기상품
 function queryProductPriceRange(req, db_connection){
     return mysqlUtil.queryArray(db_connection
-            , 'call proc_select_searchview_price_range_preview_list_v2'
+            , 'call proc_select_searchview_price_range_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
@@ -357,6 +357,16 @@ function queryInterestList(req, db_connection){
             req.headers['user_uid'],
             req.paramBody['random_seed'],
             0, //req.paramBody['offset'],
+        ]
+    );
+}
+
+function queryBannerStripList(req, db_connection){
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_banner_strip_list_v2'
+        , [
+            req.headers['user_uid'],
+
         ]
     );
 }
