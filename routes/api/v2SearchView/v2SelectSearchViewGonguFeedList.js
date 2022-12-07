@@ -1,19 +1,27 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/private/v2/searchview/recent/viewed/list:
+ * /api/public/v2/searchview/gongu/feed/list:
  *   get:
- *     summary: 최근 본 상품목록 더보기
+ *     summary: 영상으로 만나는 공동구매 더보기
  *     tags: [v2SearchView]
  *     description: |
- *       path :/api/private/v2/searchview/recent/viewed/list
+ *       path : /api/public/v2/searchview/gongu/feed/list
  *
- *       * ### 최근 본 상품목록 더보기(홈뷰 최근 본 상품)
- *       * ### 유저탭 - 최근 본 상품과 같은 기능이나 홈뷰 전용으로 분리
- *       * ### offset으로 패이징한다.
+ *       * ## 영상으로 만나는 공동구매 더보기
+ *       * ### category: 전체표시, filter: 랜덤정렬 고정됨
+ *       * 피드 목록(전체), 브랜드관, 공동구매, 마이굿즈가 있습니다.
  *
  *     parameters:
+ *       - in: query
+ *         name: random_seed
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 133q1234
+ *         description: |
+ *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
  *         name: offset
  *         default: 0
@@ -31,12 +39,11 @@
  *       200:
  *         description: 결과 정보
  *         schema:
- *           $ref: '#/definitions/ProductRecentViewedApi'
+ *           $ref: '#/definitions/FeedListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
- *
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
@@ -55,16 +62,14 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            // let count_data = await querySelectTotalCount(req, db_connection);
-            req.innerBody['item'] = await queryLastViewList(req, db_connection);
-            // req.innerBody['total_count'] = count_data['total_count'];
+            req.innerBody['item'] = await queryGonguFeedList(req, db_connection);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -80,35 +85,28 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    // paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
     // delete req.innerBody['item']['longitude']
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
 }
 
-function queryLastViewList(req, db_connection) {
+function queryGonguFeedList(req, db_connection) {
     const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_recent_viewed_list_v2'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['offset'],
-        ]
-    );
-}
-
-function querySelectTotalCount(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_recent_viewed_list_count'
-        , [
-            req.headers['user_uid'],
-        ]
-    );
+        return mysqlUtil.queryArray(db_connection
+            , 'call proc_select_gongu_feed_list_v1'
+            , [
+                req.headers['user_uid'],
+                req.paramBody['random_seed'],
+                req.paramBody['offset'],
+                0,//req.paramBody['filter'],
+                65535,//req.paramBody['category'],
+            ]
+        );
 }

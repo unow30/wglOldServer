@@ -1,42 +1,33 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/private/v2/searchview/recent/viewed/list:
+ * /api/public/v2/searchview/edition/list:
  *   get:
- *     summary: 최근 본 상품목록 더보기
+ *     summary: 기획전 리스트 더보기
  *     tags: [v2SearchView]
  *     description: |
- *       path :/api/private/v2/searchview/recent/viewed/list
+ *       path : /api/public/v2/searchview/edition/list
  *
- *       * ### 최근 본 상품목록 더보기(홈뷰 최근 본 상품)
- *       * ### 유저탭 - 최근 본 상품과 같은 기능이나 홈뷰 전용으로 분리
- *       * ### offset으로 패이징한다.
+ *       * ## 기획전 리스트 더보기
+ *       * ### edition_uid별로 랜덤하게 정렬해서 보낸다.
+ *       * ### filename_strip는 edition_uid와 같이 보낸다.
  *
  *     parameters:
  *       - in: query
- *         name: offset
- *         default: 0
+ *         name: random_seed
  *         required: true
  *         schema:
- *           type: number
- *           example: 0
+ *           type: string
+ *           example: 133q1234
  *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
- *           offset 0: 0~11
- *           offset 12: 12~23
- *           offset 24: 24~35
+ *           검색할 때 필요한 랜덤 시드입니다.
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductRecentViewedApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
- *
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
@@ -62,9 +53,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            // let count_data = await querySelectTotalCount(req, db_connection);
-            req.innerBody['item'] = await queryLastViewList(req, db_connection);
-            // req.innerBody['total_count'] = count_data['total_count'];
+            req.innerBody['item'] = await queryEditionList(req, db_connection);
+            req.innerBody['strip_banner'] = await queryEditionStripBanner(req, db_connection);
+
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -80,35 +71,32 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-
+    // paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-    // delete req.innerBody['item']['longitude']
-    // delete req.innerBody['item']['push_token']
-    // delete req.innerBody['item']['access_token']
 }
 
-function queryLastViewList(req, db_connection) {
+//기획전 상품 리스트
+function queryEditionList(req, db_connection) {
     const _funcName = arguments.callee.name;
-
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_recent_viewed_list_v2'
+        , 'call proc_select_searchview_edition_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['offset'],
+            req.paramBody['random_seed'],
         ]
     );
-}
+};
 
-function querySelectTotalCount(req, db_connection) {
+//기획전 상품 띠 리스트
+function queryEditionStripBanner(req, db_connection, date) {
     const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_recent_viewed_list_count'
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_edition_strip_banner_v2'
         , [
             req.headers['user_uid'],
         ]
     );
-}
+};

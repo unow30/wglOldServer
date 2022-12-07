@@ -1,16 +1,15 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/private/v2/searchview/recent/viewed/list:
+ * /api/public/v2/searchview/new/review/list:
  *   get:
- *     summary: 최근 본 상품목록 더보기
+ *     summary: New Review(신규 리뷰영상) 목록
  *     tags: [v2SearchView]
  *     description: |
- *       path :/api/private/v2/searchview/recent/viewed/list
+ *       path : /api/public/v2/searchview/new/review/list
  *
- *       * ### 최근 본 상품목록 더보기(홈뷰 최근 본 상품)
- *       * ### 유저탭 - 최근 본 상품과 같은 기능이나 홈뷰 전용으로 분리
+ *       * ## 검색 화면 - New Review(신규 리뷰영상) 목록
  *       * ### offset으로 패이징한다.
  *
  *     parameters:
@@ -28,15 +27,10 @@
  *           offset 24: 24~35
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductRecentViewedApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
- *
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
@@ -62,11 +56,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            // let count_data = await querySelectTotalCount(req, db_connection);
-            req.innerBody['item'] = await queryLastViewList(req, db_connection);
+            // let count_data = await querySelectCount(req, db_connection);
+            req.innerBody['item'] = await queryNewReviewList(req, db_connection);
             // req.innerBody['total_count'] = count_data['total_count'];
 
-            deleteBody(req)
+            deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -80,35 +74,30 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-
 }
 
 function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-    // delete req.innerBody['item']['longitude']
-    // delete req.innerBody['item']['push_token']
-    // delete req.innerBody['item']['access_token']
 }
 
-function queryLastViewList(req, db_connection) {
+function querySelectCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_searchview_new_review_list_count'
+        , [
+            req.headers['user_uid']
+        ]
+    );
+}
+
+//신규 리뷰 영상 목록
+function queryNewReviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_recent_viewed_list_v2'
+        , 'call proc_select_searchview_new_review_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['offset'],
         ]
     );
-}
-
-function querySelectTotalCount(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_recent_viewed_list_count'
-        , [
-            req.headers['user_uid'],
-        ]
-    );
-}
+};

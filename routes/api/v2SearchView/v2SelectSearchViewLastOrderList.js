@@ -46,7 +46,7 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            req.innerBody['gongu_deal'] = await queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
+            req.innerBody['item'] = await queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
 
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
