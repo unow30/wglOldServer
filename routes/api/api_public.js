@@ -116,7 +116,8 @@ app.route('/v2/searchview/new/review/list').get( require('./v2SearchView/v2Selec
 app.route('/v2/searchview/gongu/feed/list').get( require('./v2SearchView/v2SelectSearchViewGonguFeedList') )//공구영상 더보기
 app.route('/v2/searchview/best/product/list').get( require('./v2SearchView/v2SelectSearchViewBestProductList') )//인기상품 더보기
 app.route('/v2/searchview/edition/list').get( require('./v2SearchView/v2SelectSearchViewEditionList') )//기회전 더보기
-app.route('/v2/searchview/interest/list').get( require('./v2SearchView/v2SelectSearchViewInterestList') )//기회전 더보기
+app.route('/v2/searchview/interest/list').get( require('./v2SearchView/v2SelectSearchViewInterestList') )//취향저격 더보기
+app.route('/v2/searchview/delivery/free').get( require('./v2SearchView/v2SelectSearchViewDeliveryFreeList') )//배송무료 더보기
 
 
 /**

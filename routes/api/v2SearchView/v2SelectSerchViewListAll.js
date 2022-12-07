@@ -66,6 +66,7 @@ module.exports = function (req, res) {
         const newReviewProduct = queryNewReviewPreviewList(req, db_connection); //신규 리뷰 영상 목록
         const gongu_video_list= queryGonguFeedList(req, db_connection);//공구영상리스트
         // const banner_list = queryBannerStripList(req, db_connection)//배너띠 목록
+        const banner_list = '_banner_free_delivery.png'//무료배송배너띠 파일명. 지금은 파일명 그대로 던져주자
         const edition = queryEdition(req, db_connection); //기획전 상품 mdPick 배너리스트 보여주기
 
         const {month, weekNo} = dateUtil();
@@ -126,7 +127,7 @@ module.exports = function (req, res) {
         req.innerBody['interest_data'] = createProperties(`${nickname}님 취향저격 상품`, '최근 본 상품과 유사한 상품들을 모아봤어요!', interest_data)
         req.innerBody['new_review_preview_list'] = createProperties('따끈따끈 신규 리뷰영상', '새로 올라온 리뷰영상을 확인해 보세요', new_review_product_data)
         req.innerBody['gongu_video_list'] = createProperties('영상으로 만나는 공동구매', '생생한 숏폼 영상으로 리얼하게!', gongu_video_data)
-        //배너띠 보내기
+        req.innerBody['strip_banner_delivery_free'] = banner_list
         req.innerBody['edition'] = createProperties('ONLY 위글, 기획전', '테마별로 기획전을 만나보세요', edition_data)
         req.innerBody['best_product'] = createProperties('인기 상품 랭킹', '위글의 인기 상품을 만나보세요', best_product_data)
         req.innerBody['price_range_data'] = createProperties('가격대별 인기 상품', '가격대별로 인기 상품을 만나보세요', price_data)
