@@ -53,6 +53,7 @@ module.exports = function (req, res) {
         if(req.innerBody['item']){
             nickname = req.innerBody['item']['nickname']
         }
+
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 
@@ -123,13 +124,12 @@ module.exports = function (req, res) {
         req.innerBody['last_order'] = createProperties('성공임박 공동구매','서두르세요 마지막 한명!', last_order_data)
         req.innerBody['brand_list'] = createProperties('위글에서 사랑받는 브랜드', '위글러들이 많이 구매한 브랜드', brand_list_data)
         req.innerBody['interest_data'] = createProperties(`${nickname}님 취향저격 상품`, '최근 본 상품과 유사한 상품들을 모아봤어요!', interest_data)
-            // ${req.headers['nickname']}
         req.innerBody['new_review_preview_list'] = createProperties('따끈따끈 신규 리뷰영상', '새로 올라온 리뷰영상을 확인해 보세요', new_review_product_data)
         req.innerBody['gongu_video_list'] = createProperties('영상으로 만나는 공동구매', '생생한 숏폼 영상으로 리얼하게!', gongu_video_data)
         //배너띠 보내기
         req.innerBody['edition'] = createProperties('ONLY 위글, 기획전', '테마별로 기획전을 만나보세요', edition_data)
         req.innerBody['best_product'] = createProperties('인기 상품 랭킹', '위글의 인기 상품을 만나보세요', best_product_data)
-        req.innerBody['prict_range_data'] = createProperties('가격대별 인기 상품', '가격대별로 인기 상품을 만나보세요', price_data)
+        req.innerBody['price_range_data'] = createProperties('가격대별 인기 상품', '가격대별로 인기 상품을 만나보세요', price_data)
 
         // req.innerBody['md_pick'] = md_pick_data
         // req.innerBody['hot_weggler'] = hot_weggler_parse; //핫 위글러 리스트 및 동영상 데이터
