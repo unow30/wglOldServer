@@ -4,12 +4,12 @@
  * @swagger
  * /api/public/v2/searchview/list/all:
  *   get:
- *     summary: 모아보기 모든 화면 불러오기
+ *     summary: 모아보기 전체 탭 정보 불러오기
  *     tags: [v2SearchView]
  *     description: |
  *      ## path : /api/public/v2/searchview/list/all
  *
- *       * ## 모아보기 모든 화면 불러오기 (인기 카테고리 목록 제외)
+ *       * ## 모아보기 전체 탭 정보 불러오기
  *         * ### 최근 본 상품(회원만 보인다)
  *         * ### 성공임박 공동구매
  *         * ### 위글에서 사랑받는 브랜드(브랜드관)
@@ -79,7 +79,7 @@ module.exports = function (req, res) {
         const {month, weekNo} = dateUtil();
         const date = `${month}${weekNo}`;
         const bestProduct = queryBestProduct(req, db_connection, date); //베스트 프로덕트 인기상품
-        const price_list = queryProductPriceRange(req, db_connection)//가격대별 인기상품
+        const price_list = queryProductPriceRange(req, db_connection, date)//가격대별 인기상품
 
         //안쓰는 데이터??
         // const mdPick = queryMdPick(req, db_connection); //mdPick
@@ -284,7 +284,7 @@ function queryBestProduct(req, db_connection, date) {
         , 'call proc_select_searchview_best_product_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date,
             0, // req.paramBody['offset'],
             65535 // req.paramBody['category']
         ]
@@ -344,12 +344,12 @@ function queryGonguFeedList(req, db_connection){
 }
 
 //가격대별 인기상품
-function queryProductPriceRange(req, db_connection){
+function queryProductPriceRange(req, db_connection, date){
     return mysqlUtil.queryArray(db_connection
             , 'call proc_select_searchview_price_range_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date,
             0, //req.paramBody['offset'],
             65535,//req.paramBody['category'],
             1000, //req.paramBody['min_price_range'] 0원은 없으니 1000원이라고 잡자 100원 10원도 없어 나오는게 이상해

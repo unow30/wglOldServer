@@ -53,9 +53,8 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryEditionList(req, db_connection);
-            req.innerBody['strip_banner'] = await queryEditionStripBanner(req, db_connection);
-
+            let data = await queryEditionList(req, db_connection);
+            req.innerBody['item'] = editionParse(data);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -90,13 +89,15 @@ function queryEditionList(req, db_connection) {
     );
 };
 
-//기획전 상품 띠 리스트
-function queryEditionStripBanner(req, db_connection, date) {
-    const _funcName = arguments.callee.name;
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_edition_strip_banner_v2'
-        , [
-            req.headers['user_uid'],
-        ]
-    );
-};
+function editionParse(edition) {
+    return edition.map(item=>{
+        return {
+            edition_uid: item.edition_uid,
+            edition_filename: item.edition_filename,
+            start_time: item.start_time,
+            end_time: item.end_time,
+            edition_name: item.edition_name,
+            edition_list: item.edition_list? item.edition_list.split('@!@').map(info_item=> JSON.parse(info_item)) : []
+        }
+    })
+}
