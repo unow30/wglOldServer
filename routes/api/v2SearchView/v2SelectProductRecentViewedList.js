@@ -28,10 +28,6 @@
  *           offset 24: 24~35
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductRecentViewedApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
