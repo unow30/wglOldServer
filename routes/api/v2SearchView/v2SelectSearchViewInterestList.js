@@ -24,6 +24,21 @@
  *           example: 0
  *         description: |
  *           페이지네이션 숫자
+ *       - in: query
+ *         name: filter_type
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           각종 필터 선택 리스트입니다
+ *           * 0: 인기순(기본값)
+ *           * 1: 리뷰순
+ *           * 2: 신상품순
+ *           * 3: 저가순
+ *           * 4: 고가순
+ *           * 5: 할인율순
+ *         enum: [0,1,2,3,4,5]
  *
  *     responses:
  *       400:
@@ -67,6 +82,7 @@ function queryInterestsList(req, db_connection){
             req.headers['user_uid'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
+            req.paramBody['filter_type'],
         ]
     );
 }

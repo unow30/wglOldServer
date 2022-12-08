@@ -33,6 +33,24 @@
  *           offset 0: 0~11
  *           offset 12: 12~23
  *           offset 24: 24~35
+ *       - in: query
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 65535
+ *         description: |
+ *           상품 카테고리
+ *           * 1: 식품
+ *           * 2: 뷰티
+ *           * 4: 홈데코
+ *           * 8: 패션잡화
+ *           * 16: 반려동물
+ *           * 32: 유아
+ *           * 64: 스포츠레저
+ *           * 128: 식물
+ *           * 65535: 전체
+ *         enum: [1,2,4,8,16,32,64,128,65535]
  *
  *     responses:
  *       400:
@@ -96,6 +114,7 @@ function queryBestProduct(req, db_connection, date) {
             req.headers['user_uid'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
+            req.paramBody['category']
         ]
     );
 };

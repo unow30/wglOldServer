@@ -285,7 +285,8 @@ function queryBestProduct(req, db_connection, date) {
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
-            0// req.paramBody['offset'],
+            0, // req.paramBody['offset'],
+            65535 // req.paramBody['category']
         ]
     );
 };
@@ -365,6 +366,7 @@ function queryInterestList(req, db_connection){
             req.headers['user_uid'],
             req.paramBody['random_seed'],
             0, //req.paramBody['offset'],
+            0, //req.paramBody['filter_type']
         ]
     );
 }
