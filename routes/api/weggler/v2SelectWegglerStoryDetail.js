@@ -51,7 +51,9 @@ module.exports = function (req, res) {
         
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
-        req.innerBody['item'] = await query(req, db_connection);
+
+        const feedList = await querySelect(req, db_connection);
+        req.innerBody['item'] = feedListParse(feedList)
 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
@@ -63,10 +65,11 @@ module.exports = function (req, res) {
     }
 }
 
-async function query(req, db_connection) {
+async function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
+    // return mysqlUtil.querySingle(db_connection
+    return mysqlUtil.queryArray(db_connection
         , 'call proc_weggler_story_detail_v2'
         , [
             req.headers['user_uid'],
@@ -74,4 +77,20 @@ async function query(req, db_connection) {
             req.paramBody['offset'],
         ]
     );
+}
+
+function feedListParse(feedList) {
+    return feedList.map(item=>{
+        const result = {
+            ...item
+        }
+        if(item.multiple_product == 1){
+            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
+        }
+        else{
+            result['product_info'] = [JSON.parse(item.product_info)]
+        }
+
+        return result
+    })
 }
