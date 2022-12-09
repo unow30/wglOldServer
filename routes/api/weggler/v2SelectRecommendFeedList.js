@@ -25,8 +25,8 @@
  *         name: random_seed
  *         required: true
  *         schema:
- *           type: number
- *           example: 0
+ *           type: string
+ *           example: asdasd
  *         description: |
  *           offset
  *
