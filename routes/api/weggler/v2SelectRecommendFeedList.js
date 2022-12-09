@@ -28,7 +28,7 @@
  *           type: string
  *           example: asdasd
  *         description: |
- *           offset
+ *           랜덤시드
  *
  *     responses:
  *       400:
