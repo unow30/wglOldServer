@@ -383,8 +383,8 @@ function queryParticipantStatus(req, db_connection) {
         , 'call proc_select_searchview_gongu_participant_status_v2'
         , [
             req.headers['user_uid'],
-            0,//req.paramBody['offset'],
             req.paramBody['random_seed'],
+            0,//req.paramBody['offset'],
             2,//req.paramBody['room_type'],
             0,//req.paramBody['is_room'],
             2,//req.paramBody['filter_type'],
