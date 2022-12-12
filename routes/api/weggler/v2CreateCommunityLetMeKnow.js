@@ -105,7 +105,7 @@ module.exports = function (req, res) {
                 await queryAddPoint(req, db_connection)
                 pointPayment = 1
             }
-            else if(req.paramBody['files'][0] && dayPost.length < 11){
+            else if(req.paramBody['files'][0] && dayPost.length < 10){
                 //하루에 10번까지 이미지 업로드 게시물의 경우 30포인트
                 req.paramBody.point = 30
                 req.paramBody.point_type = 1
@@ -114,7 +114,7 @@ module.exports = function (req, res) {
                 await queryAddPoint(req, db_connection)
                 pointPayment = 1
             }
-            else if(content.length >= 10&& dayPost.length < 11){
+            else if(content.length >= 10&& dayPost.length < 10){
                 //하루에 10번까지 일반 업로드 게시물의 경우 10포인트
                 req.paramBody.point = 10
                 req.paramBody.point_type = 1
