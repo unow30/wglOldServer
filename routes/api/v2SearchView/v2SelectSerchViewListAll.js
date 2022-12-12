@@ -12,14 +12,15 @@
  *       * ## 모아보기 전체 탭 정보 불러오기
  *         * ### 최근 본 상품(회원만 보인다)
  *         * ### 성공임박 공동구매
+ *         * ### 인원별 공구 참여
  *         * ### 위글에서 사랑받는 브랜드(브랜드관)
- *         * ooo님의 취향저격상품(비회원, 관심사 없으면 랜덤)
- *         * 따끈따끈 신규 리뷰영상
- *         * 영상으로 만나는 공동구매
- *         * 무료배송 상품 모아보기(띠배너)
- *         * ONLY위글, 기획전
- *         * 인기 상품 랭킹
- *         * 가격대별 인기 상품
+ *         * ### ooo님의 취향저격상품(비회원, 관심사 없으면 랜덤)
+ *         * ### 따끈따끈 신규 리뷰영상
+ *         * ### 영상으로 만나는 공동구매
+ *         * ### 무료배송 상품 모아보기(띠배너)
+ *         * ### ONLY위글, 기획전
+ *         * ### 인기 상품 랭킹
+ *         * ### 가격대별 인기 상품
  *
  *     parameters:
  *       - in: query
@@ -66,6 +67,7 @@ module.exports = function (req, res) {
 
         const ad_list = queryADList(req, db_connection); //배너광고리스트
         const last_view = queryLastViewList(req, db_connection); //최근 본 상품 목록
+        const participant_list = queryParticipantStatus(req, db_connection);
         const last_order = queryLastOrder(req, db_connection); // 성공임박 공동구매
         const brand_list = queryBrandUserList(req, db_connection); //브랜드관 배너 이미지 목록
 
@@ -92,6 +94,7 @@ module.exports = function (req, res) {
         const [
             ad_list_data,
             last_order_data,
+            participant_data,
             last_view_data,
             brand_list_data,
             interest_data,
@@ -108,6 +111,7 @@ module.exports = function (req, res) {
         ] = await Promise.all([
             ad_list,
             last_order,
+            participant_list,
             last_view,
             brand_list,
             interest_list,
@@ -130,6 +134,7 @@ module.exports = function (req, res) {
 
         req.innerBody['last_view'] = createProperties('최근 본 상품', '눈여겨본 상품 놓치지 마세요', last_view_data)
         req.innerBody['last_order'] = createProperties('성공임박 공동구매','서두르세요 마지막 한명!', last_order_data)
+        req.innerBody['participant_list'] = createProperties('인원별 공구에 참여해보세요','모일수록 저렴해지는 매력적인 공구', participant_data)
         req.innerBody['brand_list'] = createProperties('위글에서 사랑받는 브랜드', '위글러들이 많이 구매한 브랜드', brand_list_data)
         req.innerBody['interest_data'] = createProperties(`${nickname}님 취향저격 상품`, '최근 본 상품과 유사한 상품들을 모아봤어요!', interest_data)
         req.innerBody['new_review_preview_list'] = createProperties('따끈따끈 신규 리뷰영상', '새로 올라온 리뷰영상을 확인해 보세요', new_review_product_data)
