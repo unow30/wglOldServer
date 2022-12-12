@@ -371,12 +371,18 @@ function queryInterestList(req, db_connection){
     );
 }
 
-function queryBannerStripList(req, db_connection){
+//인원별 공구 참여
+function queryParticipantStatus(req, db_connection) {
+    const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_banner_strip_list_v2'
+        , 'call proc_select_searchview_gongu_participant_status_v2'
         , [
             req.headers['user_uid'],
-
+            0,//req.paramBody['offset'],
+            req.paramBody['random_seed'],
+            2,//req.paramBody['room_type'],
+            0,//req.paramBody['is_room'],
+            2,//req.paramBody['filter_type'],
         ]
     );
 }
