@@ -380,7 +380,7 @@ function queryInterestList(req, db_connection){
 function queryParticipantStatus(req, db_connection) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_gongu_participant_status_v2'
+        , 'call proc_select_searchview_gongu_participant_status_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
