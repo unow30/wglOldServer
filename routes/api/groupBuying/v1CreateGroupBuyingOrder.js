@@ -244,7 +244,7 @@ module.exports = function (req, res) {
                 let product = await queryProduct(req, db_connection);
                 req.innerBody['order_product_list'].push( product );
                 // console.log('pushtoken aligo 변수 생성 시작') => 방을 생성해 혼자있는데 알리고 매칭, 판매자 알림을 할수 없다.
-                // makePushTokenAndAligoParam(req, product)
+                makePushTokenAndAligoParam(req, product)
 
             }else{
                 // 공구방 uid가 있으면 공구방 업데이트, 공구방 유저 생성을 한다.
@@ -274,7 +274,7 @@ module.exports = function (req, res) {
                     console.log('매칭알람 보내기 pushList', pushList)
                     await orderMatchAlarm(pushList);
                     console.log('판매자 주문알람 보내기')
-                    // await orderAlarm(req, res)
+                    await orderAlarm(req, res)
                 }
             }
 

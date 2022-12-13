@@ -251,7 +251,7 @@ module.exports = function (req, res) {
             }
 
             if(req.innerBody['item']['payment_method'] !== 3){
-                // await alarm(req, res)
+                await alarm(req, res)
             }else{
                 delete req.innerBody['push_token_list']
                 delete req.innerBody['alrim_msg_list']
