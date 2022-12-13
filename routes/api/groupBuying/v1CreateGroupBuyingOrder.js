@@ -263,7 +263,7 @@ module.exports = function (req, res) {
                 let product = await queryProduct(req, db_connection);
                 req.innerBody['order_product_list'].push( product );
                 console.log('pushtoken aligo 변수 생성 시작')
-                makePushTokenAndAligoParam(req, product)
+                // makePushTokenAndAligoParam(req, product)
 
                 //공구방이 풀로 찰 경우 매칭알림(?), 구매알림 보내야한다.
                 console.log(roomIsFull)
@@ -274,7 +274,7 @@ module.exports = function (req, res) {
                     console.log('매칭알람 보내기 pushList', pushList)
                     await orderMatchAlarm(pushList);
                     console.log('판매자 주문알람 보내기')
-                    await orderAlarm(req, res)
+                    // await orderAlarm(req, res)
                 }
             }
 
