@@ -274,7 +274,7 @@ module.exports = function (req, res) {
                     console.log('매칭알람 보내기 pushList', pushList)
                     await orderMatchAlarm(pushList);
                     console.log('판매자 주문알람 보내기')
-                    await orderAlarm(req, res)
+                    // await orderAlarm(req, res)
                 }
             }
 
