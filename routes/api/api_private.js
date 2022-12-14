@@ -332,7 +332,7 @@ app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') 
 /**
  * event
  */
-app.route('/v2/event/check').get( require('./event/v2SelectEventUser'))
-app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))
+app.route('/v2/event/check').get( require('./event/v2SelectEventUser'))//이벤트 당첨자 체크
+app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))//이벤트 상품 구매
 
 module.exports = app;
