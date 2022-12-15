@@ -94,6 +94,7 @@ function editionParse(edition) {
         return {
             edition_uid: item.edition_uid,
             edition_filename: item.edition_filename,
+            edition_filename_strip: item.edition_filename_strip,
             start_time: item.start_time,
             end_time: item.end_time,
             edition_name: item.edition_name,

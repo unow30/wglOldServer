@@ -82,14 +82,14 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let obj = []
-            if(Number(req.paramBody['offset']) === 0){
-                obj = await queryBest5Product(req, db_connection);
-            }
+            // let obj = []
+            // if(Number(req.paramBody['offset']) === 0){
+            //     obj = await queryBest5Product(req, db_connection);
+            // }
 
             req.innerBody['item'] = await queryBestProduct(req, db_connection);
 
-            req.innerBody['item'] = [...obj, ...req.innerBody['item']]; //두 정보 통합
+            // req.innerBody['item'] = [...obj, ...req.innerBody['item']]; //두 정보 통합
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -124,7 +124,7 @@ function queryBest5Product(req, db_connection, date) {
     );
 };
 
-//베스트 프로덕트 인기상품
+//베스트 프로덕트 인기상품 ** 위 정보랑 중복이슈를 어떻게 막지?
 function queryBestProduct(req, db_connection, date) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
