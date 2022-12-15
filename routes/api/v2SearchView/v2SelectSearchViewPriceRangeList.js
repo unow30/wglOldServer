@@ -105,7 +105,10 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['price_range'] = await queryProductPriceRange(req, db_connection); // 지금뜨는 공구딜
+            const {year, month, weekNo, date} = dateUtil();
+            const week = `${month}${weekNo}`;
+            const day = `${year}${month}${date}`
+            req.innerBody['price_range'] = await queryProductPriceRange(req, db_connection, week); // 지금뜨는 공구딜
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
@@ -118,12 +121,12 @@ module.exports = function (req, res) {
 }
 
 //'가격대별 인기상품' 사실 새로 api를 파야한다.
-function queryProductPriceRange(req, db_connection){
+function queryProductPriceRange(req, db_connection, date){
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_price_range_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date,//req.paramBody['random_seed'],
             req.paramBody['offset'],
             req.paramBody['category'],
             req.paramBody['min_price_range'],

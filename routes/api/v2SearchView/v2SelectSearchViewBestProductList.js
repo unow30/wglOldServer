@@ -81,8 +81,10 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-
-            req.innerBody['item'] = await queryBestProduct(req, db_connection);
+            const {year, month, weekNo, date} = dateUtil();
+            const week = `${month}${weekNo}`;
+            const day = `${year}${month}${date}`
+            req.innerBody['item'] = await queryBestProduct(req, db_connection, week);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);

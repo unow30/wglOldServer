@@ -32,13 +32,13 @@
  *           example: 0
  *         description: |
  *           각종 필터 선택 리스트입니다
- *           * 0: 인기순(기본값)
- *           * 1: 리뷰순
+ *           * 0: 인기순 (추후 업데이트)
+ *           * 1: 리뷰순 (추후 업데이트)
  *           * 2: 신상품순
  *           * 3: 저가순
  *           * 4: 고가순
  *           * 5: 할인율순
- *         enum: [0,1,2,3,4,5]
+ *         enum: [2,3,4,5]
  *
  *     responses:
  *       400:
@@ -62,7 +62,10 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            req.innerBody['item'] = await queryInterestsList(req, db_connection); // 지금뜨는 공구딜
+            const {year, month, weekNo, date} = dateUtil();
+            const week = `${month}${weekNo}`;
+            const day = `${year}${month}${date}`
+            req.innerBody['item'] = await queryInterestsList(req, db_connection, day); // 지금뜨는 공구딜
 
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -75,12 +78,12 @@ module.exports = function (req, res) {
     }
 }
 
-function queryInterestsList(req, db_connection){
+function queryInterestsList(req, db_connection, date){
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_interests_product_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date,//req.paramBody['random_seed'],
             req.paramBody['offset'],
             req.paramBody['filter_type'],
         ]
