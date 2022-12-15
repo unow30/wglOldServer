@@ -65,25 +65,28 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 
+        const {year, month, weekNo, date} = dateUtil();
+        const week = `${month}${weekNo}`;
+        const day = `${year}${month}${date}`
+
         const ad_list = queryADList(req, db_connection); //배너광고리스트
         const last_view = queryLastViewList(req, db_connection); //최근 본 상품 목록
-        const participant_list = queryParticipantStatus(req, db_connection);
+        const participant_list = queryParticipantStatus(req, db_connection, day); //인원별 공구 참여
         const last_order = queryLastOrder(req, db_connection); // 성공임박 공동구매
-        const brand_list = queryBrandUserList(req, db_connection); //브랜드관 배너 이미지 목록
+        const brand_list = queryBrandUserList(req, db_connection, day); //브랜드관 배너 이미지 목록
 
-        const interest_list = queryInterestList(req, db_connection);//취향저격 상품 목록
+        const interest_list = queryInterestList(req, db_connection, day);//취향저격 상품 목록
         const newReviewProduct = queryNewReviewPreviewList(req, db_connection); //신규 리뷰 영상 목록
         const gongu_video_list= queryGonguFeedList(req, db_connection);//공구영상리스트
         // const banner_list = queryBannerStripList(req, db_connection)//배너띠 목록
         const banner_list = '_banner_free_delivery.png'//무료배송배너띠 파일명. 지금은 파일명 그대로 던져주자
         const edition = queryEdition(req, db_connection); //기획전 상품 mdPick 배너리스트 보여주기
 
-        const {month, weekNo} = dateUtil();
-        const date = `${month}${weekNo}`;
-        const bestProduct = queryBestProduct(req, db_connection, date); //베스트 프로덕트 인기상품
-        const price_list = queryProductPriceRange(req, db_connection, date)//가격대별 인기상품
 
-        //안쓰는 데이터??
+        const bestProduct = queryBestProduct(req, db_connection, week); //베스트 프로덕트 인기상품
+        const price_list = queryProductPriceRange(req, db_connection, week)//가격대별 인기상품
+
+        //안쓰는 데이터
         // const mdPick = queryMdPick(req, db_connection); //mdPick
         // const gongu_deal = queryGonguDeal(req, db_connection); // 지금뜨는 공구딜
         // const gongu_deadline = queryGonguDeadline(req, db_connection); // 시간이 얼마 안남은 공구
@@ -322,14 +325,14 @@ function queryLastViewList(req, db_connection) {
 }
 
 //브랜드관 배너 이미지 목록
-function queryBrandUserList(req, db_connection){
+function queryBrandUserList(req, db_connection, date){
     const _funcName = arguments.callee.name;
 
     //배너이미지 이름이 한글이고 이미지 가운데 이름을 붙인다.
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_promotion_user_list_v2'
         , [
-            req.paramBody['random_seed']
+            date//req.paramBody['random_seed']
         ]
     );
 }
@@ -354,7 +357,7 @@ function queryProductPriceRange(req, db_connection, date){
             , 'call proc_select_searchview_price_range_list_v2'
         , [
             req.headers['user_uid'],
-            date,
+            date, //req.paramBody['random_seed'],
             0, //req.paramBody['offset'],
             65535,//req.paramBody['category'],
             1000, //req.paramBody['min_price_range'] 0원은 없으니 1000원이라고 잡자 100원 10원도 없어 나오는게 이상해
@@ -364,26 +367,26 @@ function queryProductPriceRange(req, db_connection, date){
 }
 
 //취향저격 상품 목록
-function queryInterestList(req, db_connection){
+function queryInterestList(req, db_connection, date){
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_interests_product_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date, //req.paramBody['random_seed'],
             0, //req.paramBody['offset'],
-            0, //req.paramBody['filter_type']
+            2, //req.paramBody['filter_type']
         ]
     );
 }
 
 //인원별 공구 참여
-function queryParticipantStatus(req, db_connection) {
+function queryParticipantStatus(req, db_connection, date) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_gongu_participant_status_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date,//req.paramBody['random_seed'],
             0,//req.paramBody['offset'],
             2,//req.paramBody['room_type'],
             0,//req.paramBody['is_room'],

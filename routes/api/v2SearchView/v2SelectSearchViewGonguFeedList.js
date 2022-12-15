@@ -10,7 +10,7 @@
  *       path : /api/public/v2/searchview/gongu/feed/list
  *
  *       * ## 영상으로 만나는 공동구매 더보기
- *       * ### category: 전체표시, filter: 랜덤정렬 고정됨
+ *       * ### category: 전체표시, filter: 피드 들어가서 필터링 진행 가능
  *       * 피드 목록(전체), 브랜드관, 공동구매, 마이굿즈가 있습니다.
  *
  *     parameters:
