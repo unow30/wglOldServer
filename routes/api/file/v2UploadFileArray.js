@@ -97,7 +97,9 @@ module.exports = async function (req, res) {
                     ext == '.webp' ||
                     ext == '.WEBP' ||
                     ext == '.jpeg' ||
-                    ext == '.JPEG'
+                    ext == '.JPEG' ||
+                    ext == '.gif' ||
+                    ext == '.GIF'
                     ){
 
                     const params = {
