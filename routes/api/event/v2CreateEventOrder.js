@@ -214,8 +214,8 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             let event_check = await queryEventUpdate(req, db_connection)
-            console.log(event_check['event_code'])
-            console.log(req.paramBody['event_code'])
+            // console.log(event_check['event_code'])
+            // console.log(req.paramBody['event_code'])
 
             if(event_check['event_code'] !== req.paramBody['event_code']){
                 errUtil.createCall(errCode.fail, `이벤트 코드가 정확하지 않습니다. 다시 입력해주세요`)
