@@ -82,14 +82,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            // let obj = []
-            // if(Number(req.paramBody['offset']) === 0){
-            //     obj = await queryBest5Product(req, db_connection);
-            // }
-
             req.innerBody['item'] = await queryBestProduct(req, db_connection);
-
-            // req.innerBody['item'] = [...obj, ...req.innerBody['item']]; //두 정보 통합
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -112,26 +105,14 @@ function checkParam(req) {
 function deleteBody(req) {
 }
 
-//베스트 프로덕트 탑 5 상품들
-function queryBest5Product(req, db_connection, date) {
-    const _funcName = arguments.callee.name;
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_best5_product_v2'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['category']
-        ]
-    );
-};
 
-//베스트 프로덕트 인기상품 ** 위 정보랑 중복이슈를 어떻게 막지?
 function queryBestProduct(req, db_connection, date) {
     const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_searchview_best_product_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            date,
             req.paramBody['offset'],
             req.paramBody['category']
         ]
