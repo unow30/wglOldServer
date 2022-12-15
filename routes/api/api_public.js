@@ -119,6 +119,7 @@ app.route('/v2/searchview/best/product/list').get( require('./v2SearchView/v2Sel
 app.route('/v2/searchview/edition/list').get( require('./v2SearchView/v2SelectSearchViewEditionList') )//기획전 더보기
 app.route('/v2/searchview/interest/list').get( require('./v2SearchView/v2SelectSearchViewInterestList') )//취향저격 더보기
 app.route('/v2/searchview/delivery/free').get( require('./v2SearchView/v2SelectSearchViewDeliveryFreeList') )//배송무료 더보기
+app.route('/v2/searchview/integerated/search/list').get( require('./v2SearchView/v2SelectSearchViewIntegratedSearchList') )//통합검색 결과
 
 
 /**
