@@ -1,26 +1,18 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/public/v2/searchview/promotion/list:
+ * /api/public/v2/searchview/best/product/list:
  *   get:
- *     summary: 브랜드관 더보기
+ *     summary: 인기상품 랭킹 더보기
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/promotion/list
+ *       path : /api/public/v2/searchview/best/product/list
  *
- *       * ## 브랜드관 더보기
+ *       * ## 인기상품 랭킹 더보기
  *       * ### offset으로 패이징한다.
  *
  *     parameters:
- *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid(브랜드 판매자 uid)
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -41,6 +33,24 @@
  *           offset 0: 0~11
  *           offset 12: 12~23
  *           offset 24: 24~35
+ *       - in: query
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 65535
+ *         description: |
+ *           상품 카테고리
+ *           * 1: 식품
+ *           * 2: 뷰티
+ *           * 4: 홈데코
+ *           * 8: 패션잡화
+ *           * 16: 반려동물
+ *           * 32: 유아
+ *           * 64: 스포츠레저
+ *           * 128: 식물
+ *           * 65535: 전체
+ *         enum: [1,2,4,8,16,32,64,128,65535]
  *
  *     responses:
  *       400:
@@ -71,8 +81,10 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-
-            req.innerBody['item'] = await queryList(req, db_connection);
+            const {year, month, weekNo, date} = dateUtil();
+            const week = `${month}${weekNo}`;
+            const day = `${year}${month}${date}`
+            req.innerBody['item'] = await queryBestProduct(req, db_connection, week);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -95,16 +107,17 @@ function checkParam(req) {
 function deleteBody(req) {
 }
 
-function queryList(req, db_connection) {
-    const _funcName = arguments.callee.name;
 
+function queryBestProduct(req, db_connection, date) {
+    const _funcName = arguments.callee.name;
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_promotion_list'
+        , 'call proc_select_searchview_best_product_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['user_uid'],
-            req.paramBody['random_seed'],
+            date,
             req.paramBody['offset'],
+            req.paramBody['category']
         ]
     );
-}
+};
+

@@ -1,26 +1,18 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 12.
  *
  * @swagger
- * /api/public/v2/searchview/promotion/list:
+ * /api/public/v2/searchview/participant/list:
  *   get:
- *     summary: 브랜드관 더보기
+ *     summary: 인원별 공구 참여
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/promotion/list
+ *       path : /api/public/v2/searchview/participant/list:
  *
- *       * ## 브랜드관 더보기
+ *       * ## 인원별 공구 참여 더보기
  *       * ### offset으로 패이징한다.
  *
  *     parameters:
- *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid(브랜드 판매자 uid)
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -41,6 +33,43 @@
  *           offset 0: 0~11
  *           offset 12: 12~23
  *           offset 24: 24~35
+ *       - in: query
+ *         name: room_type
+ *         default: 2
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 2
+ *         description: |
+ *           검색할 공구방 타입을 입력합니다.
+ *         enum: [2,5,10]
+ *       - in: query
+ *         name: is_room
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           열린 공구방이 있는 상품만 표시합니다.
+ *           * 0: 전체
+ *           * 1: 열린 공구방만 보기
+ *         enum: [0,1]
+ *       - in: query
+ *         name: filter_type
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           각종 필터 선택 리스트입니다
+ *           * 0: 인기순 (추후 업데이트)
+ *           * 1: 리뷰순 (추후 업데이트)
+ *           * 2: 신상품순(사용)
+ *           * 3: 저가순(사용)
+ *           * 4: 고가순(사용)
+ *           * 5: 할인율 높은순
+ *         enum: [2,3,4,5]
  *
  *     responses:
  *       400:
@@ -72,9 +101,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryList(req, db_connection);
+            // let count_data = await querySelectCount(req, db_connection);
+            req.innerBody['item'] = await queryParticipantStatus(req, db_connection);
+            // req.innerBody['total_count'] = count_data['total_count'];
 
-            deleteBody(req)
+            deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -88,23 +119,23 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
 }
 
 function deleteBody(req) {
 }
 
-function queryList(req, db_connection) {
+//인원별 공구 참여
+function queryParticipantStatus(req, db_connection) {
     const _funcName = arguments.callee.name;
-
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_promotion_list'
+        , 'call proc_select_searchview_gongu_participant_status_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['user_uid'],
             req.paramBody['random_seed'],
             req.paramBody['offset'],
+            req.paramBody['room_type'],
+            req.paramBody['is_room'],
+            req.paramBody['filter_type'],
         ]
     );
 }

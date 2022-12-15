@@ -1,46 +1,33 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by jongho
  *
  * @swagger
- * /api/public/v2/searchview/promotion/list:
+ * /api/public/v2/searchview/integerated/search/list:
  *   get:
- *     summary: 브랜드관 더보기
+ *     summary: 통합 검색기능
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/promotion/list
+ *       path : /api/public/v2/searchview/integerated/search/list
  *
- *       * ## 브랜드관 더보기
- *       * ### offset으로 패이징한다.
+ *       * 해시태그 검색 정보
  *
  *     parameters:
  *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid(브랜드 판매자 uid)
- *       - in: query
- *         name: random_seed
+ *         name: keyword
  *         required: true
  *         schema:
  *           type: string
- *           example: 133q1234
+ *           example: 테스트
  *         description: |
- *           검색할 때 필요한 랜덤 시드입니다.
+ *           검색 키워드입니다.
  *       - in: query
  *         name: offset
- *         default: 0
  *         required: true
  *         schema:
- *           type: number
+ *           type: int
  *           example: 0
  *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
- *           offset 0: 0~11
- *           offset 12: 12~23
- *           offset 24: 24~35
+ *            offset
  *
  *     responses:
  *       400:
@@ -65,16 +52,16 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        //  logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryList(req, db_connection);
+            // req.innerBody['video_list'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = await querySelect(req, db_connection)
 
-            deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -88,22 +75,18 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'keyword');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 }
 
-function deleteBody(req) {
-}
-
-function queryList(req, db_connection) {
+function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_promotion_list'
+        , 'call proc_select_searchview_integerated_search_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['user_uid'],
-            req.paramBody['random_seed'],
+            req.paramBody['keyword'],
             req.paramBody['offset'],
         ]
     );

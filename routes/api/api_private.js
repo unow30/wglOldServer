@@ -191,7 +191,7 @@ app.route('/searchview/new/review/list').get( require('./searchView/selectSearch
  * v2SearchView api
  * 22년 12월 24일부터 적용
  */
-app.route('/v2/searchview/recent/viewed').get( require('./v2SearchView/v2SelectProductRecentViewedList') ) //최근 본 상품목록 더보기
+app.route('/v2/searchview/recent/viewed/list').get( require('./v2SearchView/v2SelectProductRecentViewedList') ) //최근 본 상품목록 더보기
 
 
 // 모아보기 api legacy
@@ -328,5 +328,11 @@ app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1Sele
 app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList') )
 app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
 app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
+
+/**
+ * event
+ */
+app.route('/v2/event/check').get( require('./event/v2SelectEventUser'))//이벤트 당첨자 체크
+app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))//이벤트 상품 구매
 
 module.exports = app;

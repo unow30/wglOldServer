@@ -40,7 +40,8 @@ module.exports = function (req, res) {
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
-
+        req.paramBody = paramUtil.parse(req);
+        
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 

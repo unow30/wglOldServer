@@ -1,26 +1,19 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/public/v2/searchview/promotion/list:
+ * /api/public/v2/searchview/gongu/feed/list:
  *   get:
- *     summary: 브랜드관 더보기
+ *     summary: 영상으로 만나는 공동구매 더보기
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/promotion/list
+ *       path : /api/public/v2/searchview/gongu/feed/list
  *
- *       * ## 브랜드관 더보기
- *       * ### offset으로 패이징한다.
+ *       * ## 영상으로 만나는 공동구매 더보기
+ *       * ### category: 전체표시, filter: 피드 들어가서 필터링 진행 가능
+ *       * 피드 목록(전체), 브랜드관, 공동구매, 마이굿즈가 있습니다.
  *
  *     parameters:
- *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid(브랜드 판매자 uid)
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -65,14 +58,14 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryList(req, db_connection);
+            req.innerBody['item'] = await queryGonguFeedList(req, db_connection);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -88,23 +81,28 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'ad_product_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'random_seed');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
+
 }
 
 function deleteBody(req) {
+    // delete req.innerBody['item']['longitude']
+    // delete req.innerBody['item']['push_token']
+    // delete req.innerBody['item']['access_token']
 }
 
-function queryList(req, db_connection) {
+function queryGonguFeedList(req, db_connection) {
     const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_promotion_list'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['user_uid'],
-            req.paramBody['random_seed'],
-            req.paramBody['offset'],
-        ]
-    );
+        return mysqlUtil.queryArray(db_connection
+            , 'call proc_select_gongu_feed_list_v1'
+            , [
+                req.headers['user_uid'],
+                req.paramBody['random_seed'],
+                req.paramBody['offset'],
+                0,//req.paramBody['filter'],
+                65535,//req.paramBody['category'],
+            ]
+        );
 }

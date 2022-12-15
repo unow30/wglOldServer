@@ -1,26 +1,19 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/public/v2/searchview/promotion/list:
+ * /api/public/v2/searchview/edition/list:
  *   get:
- *     summary: 브랜드관 더보기
+ *     summary: 기획전 리스트 더보기
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/promotion/list
+ *       path : /api/public/v2/searchview/edition/list
  *
- *       * ## 브랜드관 더보기
- *       * ### offset으로 패이징한다.
+ *       * ## 기획전 리스트 더보기
+ *       * ### edition_uid별로 랜덤하게 정렬해서 보낸다.
+ *       * ### filename_strip는 edition_uid와 같이 보낸다.
  *
  *     parameters:
- *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid(브랜드 판매자 uid)
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -29,18 +22,6 @@
  *           example: 133q1234
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
- *       - in: query
- *         name: offset
- *         default: 0
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
- *           offset 0: 0~11
- *           offset 12: 12~23
- *           offset 24: 24~35
  *
  *     responses:
  *       400:
@@ -72,7 +53,8 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryList(req, db_connection);
+            let data = await queryEditionList(req, db_connection);
+            req.innerBody['item'] = editionParse(data);
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -95,16 +77,28 @@ function checkParam(req) {
 function deleteBody(req) {
 }
 
-function queryList(req, db_connection) {
+//기획전 상품 리스트
+function queryEditionList(req, db_connection) {
     const _funcName = arguments.callee.name;
-
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_promotion_list'
+        , 'call proc_select_searchview_edition_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['user_uid'],
             req.paramBody['random_seed'],
-            req.paramBody['offset'],
         ]
     );
+};
+
+function editionParse(edition) {
+    return edition.map(item=>{
+        return {
+            edition_uid: item.edition_uid,
+            edition_filename: item.edition_filename,
+            edition_filename_strip: item.edition_filename_strip,
+            start_time: item.start_time,
+            end_time: item.end_time,
+            edition_name: item.edition_name,
+            edition_list: item.edition_list? item.edition_list.split('@!@').map(info_item=> JSON.parse(info_item)) : []
+        }
+    })
 }

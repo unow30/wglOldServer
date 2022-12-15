@@ -25,10 +25,10 @@
  *         name: random_seed
  *         required: true
  *         schema:
- *           type: number
- *           example: 0
+ *           type: string
+ *           example: asdasd
  *         description: |
- *           offset
+ *           랜덤시드
  *
  *     responses:
  *       400:

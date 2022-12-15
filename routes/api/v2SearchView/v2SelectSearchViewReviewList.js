@@ -1,34 +1,18 @@
 /**
- * Created by yunhokim on 2022. 12. 06.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/public/v2/searchview/promotion/list:
+ * /api/public/v2/searchview/new/review/list:
  *   get:
- *     summary: 브랜드관 더보기
+ *     summary: New Review(신규 리뷰영상) 목록
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/promotion/list
+ *       path : /api/public/v2/searchview/new/review/list
  *
- *       * ## 브랜드관 더보기
+ *       * ## 검색 화면 - New Review(신규 리뷰영상) 목록
  *       * ### offset으로 패이징한다.
  *
  *     parameters:
- *       - in: query
- *         name: user_uid
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: 유저 uid(브랜드 판매자 uid)
- *       - in: query
- *         name: random_seed
- *         required: true
- *         schema:
- *           type: string
- *           example: 133q1234
- *         description: |
- *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
  *         name: offset
  *         default: 0
@@ -72,9 +56,11 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryList(req, db_connection);
+            // let count_data = await querySelectCount(req, db_connection);
+            req.innerBody['item'] = await queryNewReviewList(req, db_connection);
+            // req.innerBody['total_count'] = count_data['total_count'];
 
-            deleteBody(req)
+            deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -88,23 +74,30 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
 }
 
 function deleteBody(req) {
 }
 
-function queryList(req, db_connection) {
+function querySelectCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_promotion_list'
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_searchview_new_review_list_count'
         , [
-            req.headers['user_uid'],
-            req.paramBody['user_uid'],
-            req.paramBody['random_seed'],
-            req.paramBody['offset'],
+            req.headers['user_uid']
         ]
     );
 }
+
+//신규 리뷰 영상 목록
+function queryNewReviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_new_review_list_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['offset'],
+        ]
+    );
+};

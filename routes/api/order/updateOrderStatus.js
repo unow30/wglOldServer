@@ -7,7 +7,7 @@
  *     summary: 상품 구매 상태 수정
  *     tags: [Order]
  *     description: |
- *       path : /정
+ *       path : /api/private/order/status
  *
  *       * 상품 구매 상태 수정
  *         * 구매 상태 값 {5: 구매 확정, 6: 구매 취소, 10: 반품 신청, 20: 교환 신청}

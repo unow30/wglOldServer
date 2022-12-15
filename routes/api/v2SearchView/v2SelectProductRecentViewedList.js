@@ -22,13 +22,12 @@
  *           type: number
  *           example: 0
  *         description: |
- *           페이지네이션 숫자
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/ProductRecentViewedApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -59,8 +58,8 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let count_data = await querySelectTotalCount(req, db_connection);
-            req.innerBody['item'] = await querySelect(req, db_connection);
+            // let count_data = await querySelectTotalCount(req, db_connection);
+            req.innerBody['item'] = await queryLastViewList(req, db_connection);
             // req.innerBody['total_count'] = count_data['total_count'];
 
             deleteBody(req)
@@ -87,14 +86,14 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-function querySelect(req, db_connection) {
+function queryLastViewList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
         , 'call proc_select_recent_viewed_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['last_uid'],
+            req.paramBody['offset'],
         ]
     );
 }

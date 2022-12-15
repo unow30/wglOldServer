@@ -19,14 +19,6 @@
  *           type: number
  *           example: 212
  *         description: |
- *       - in: query
- *         name: offset
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           offset 10개씩 추가
  *
  *     responses:
  *       400:
@@ -51,8 +43,12 @@ module.exports = function (req, res) {
         
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
-        req.innerBody['item'] = await query(req, db_connection);
 
+        const feedList = await querySelect(req, db_connection);
+        const parseItem = feedListParse(feedList)
+        req.innerBody['item'] = parseItem.result
+        req.innerBody['index'] = parseItem.index
+ 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -63,15 +59,38 @@ module.exports = function (req, res) {
     }
 }
 
-async function query(req, db_connection) {
+async function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
+    // return mysqlUtil.querySingle(db_connection
+    return mysqlUtil.queryArray(db_connection
         , 'call proc_weggler_story_detail_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['target_uid'],
-            req.paramBody['offset'],
         ]
     );
+}
+
+function feedListParse(feedList) {
+    let visitObject = {}
+    const mapData = feedList.map((item, index)=>{
+        const result = {
+            ...item
+        }
+        if(item.multiple_product == 1){
+            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
+        }
+        else{
+            result['product_info'] = [JSON.parse(item.product_info)]
+        }
+
+        if(visitObject.index === undefined && item.visit == 0){
+            visitObject.index = index
+        }
+        
+        return result
+    })
+
+    return {result: mapData, index: visitObject.index ?? 0}
 }
