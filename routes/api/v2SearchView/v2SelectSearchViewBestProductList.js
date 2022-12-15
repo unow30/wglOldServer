@@ -65,6 +65,7 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
+const dateUtil = require('../../../common/utils/dateUtil')
 
 let file_name = fileUtil.name(__filename);
 
