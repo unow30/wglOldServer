@@ -52,6 +52,7 @@
 const AWS = require("aws-sdk");
 const sharp = require('sharp')
 const getMediaDimensions = require('get-media-dimensions');
+const path = require('path')
 
 const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil_m3u8');
 const sendUtil = require('../../../common/utils/sendUtil');
@@ -85,7 +86,20 @@ module.exports = async function (req, res) {
             console.log(req.files)
             const asyncData = req.files.map(async result =>{
                 const contentType = result.contentType.split('/')[0] 
-                if(contentType == 'image'){
+                const ext = path.extname(result.key);
+
+                if(
+                    contentType == 'image' || 
+                    ext == '.jpg' || 
+                    ext == '.JPG' || 
+                    ext == '.png' || 
+                    ext == '.PNG' || 
+                    ext == '.webp' ||
+                    ext == '.WEBP' ||
+                    ext == '.jpeg' ||
+                    ext == '.JPEG'
+                    ){
+
                     const params = {
                         Bucket: result.bucket,
                         Key: result.key
@@ -104,7 +118,12 @@ module.exports = async function (req, res) {
                         type: 2
                     }
                 }
-                else if(contentType == 'video'){
+                else if(
+                    contentType == 'video' ||
+                    ext == '.mp4' ||
+                    ext == '.MP4'
+                    ){
+
                 const fileSize = result.size / (1024 * 1024);
                 const fileDimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${result.key}`, 'video');
                 const finalName = mediaConvertUtil(fileSize, result.key, fileDimensions['width'], fileDimensions['height']);
