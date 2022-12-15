@@ -282,22 +282,15 @@ function queryMdPick(req, db_connection) {
     );
 };
 
-//베스트 프로덕트 탑 5 상품들
+//베스트 프로덕트 상품들
 function queryBestProduct(req, db_connection, date) {
     const _funcName = arguments.callee.name;
-    // return mysqlUtil.queryArray(db_connection
-    //     , 'call proc_select_searchview_best_product_v2'
-    //     , [
-    //         req.headers['user_uid'],
-    //         date,
-    //         0, // req.paramBody['offset'],
-    //         65535 // req.paramBody['category']
-    //     ]
-    // );
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_best5_product_v2'
+        , 'call proc_select_searchview_best_product_v2'
         , [
             req.headers['user_uid'],
+            date, // req.paramBody['random_seed'],
+            0, // req.paramBody['offset'],
             65535 // req.paramBody['category']
         ]
     );
