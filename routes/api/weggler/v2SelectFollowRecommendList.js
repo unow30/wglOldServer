@@ -16,7 +16,7 @@
  *
  *     parameters:
  *       - in: query
- *         name: in_random_seed
+ *         name: random_seed
  *         required: true
  *         schema:
  *           type: string
@@ -82,7 +82,7 @@ async function queryFollowRecommendList(req, db_connection) {
     , 'call proc_select_recommend_user_follow_list_v2'
     ,   [
             req.headers['user_uid'],
-            req.paramBody['last_uid'],
+            req.paramBody['random_seed'],
         ]
     )
 }
