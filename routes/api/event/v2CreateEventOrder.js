@@ -264,7 +264,7 @@ function query(req, db_connection) {
             seller_uid,
             req.paramBody['addressbook_uid'],
             req.paramBody['delivery_msg'],
-            null,//req.paramBody['seller_msg'],
+            '',//req.paramBody['seller_msg'],
             0,//req.paramBody['use_point'],
             0,//req.paramBody['use_reward'],
             req.paramBody['price_total'],
