@@ -67,9 +67,9 @@ module.exports = function (req, res) {
                 }
 
                 let endTime = new Date(el['end_time'])
-                console.log(year, month, date)
-                console.log(today)
-                console.log(endTime)
+                // console.log(year, month, date)
+                // console.log(today)
+                // console.log(endTime)
                 if(today >= endTime){
                     errUtil.createCall(errCode.err, '입력기한이 초과된 이벤트 코드입니다.')
                 }
