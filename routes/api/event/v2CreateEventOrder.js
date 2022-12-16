@@ -14,8 +14,7 @@
  *       * ### 당첨자 결제비용 안들어간다. 부트페이 로직 없음
  *       * ### (상품가격+옵션가격+수량) + 배송비의 합을 저장한다. 기존 방식과 동일
  *       * ### 결제타입을 6: 이벤트 결제내역이라고 만들고 위글에서 대금을 지불한다.
- *       * ### 옵션 id를 무지성으로 101로 준 다음 이벤트 테이블에서 상품 옵션명을 그대로 가져와서 기록한다면?
- *       아니면 옵션명까지 전부 저장해둔다면? 이번에는 무조건 101, 옵션명을 전달하도록 하고, 다음에는 당첨자의 상품옵션정보를 엑셀에서 직접 수정해서 저장한다.
+ *       * ### 옵션 id를 101로 고정한다. 이번에는 상품 옵션을 여러가지 고려안해도 된다.
  *       * ### order_product가 전부 추가되었다면 code값이 일치하는 event의 코드사용여부를 사용함으로 변경한다.
  *
  *     parameters:
@@ -25,12 +24,6 @@
  *           상품 구매
  *
  *           payment_method
- *           * 0: 신용카드
- *           * 1: 카카오페이
- *           * 2: 무통장입금
- *           * 3: 가상계좌
- *           * 4: 네이버페이
- *           * 5: 포인트/리워드 결제
  *           * 6: 이벤트상품 증정
  *         schema:
  *           type: object
@@ -56,23 +49,6 @@
  *               example: 집 문앞에 놔주세요
  *               description: |
  *                 배송메모
- *             seller_msg:
- *               type: string
- *               example: 잘 보내주세요
- *               description: |
- *                 판매자에게 메세지
- *             use_point:
- *               type: number
- *               example: 0
- *               description: |
- *                 포인트 사용 금액
- *                 * 사용 안할 경우 0
- *             use_reward:
- *               type: number
- *               example: 0
- *               description: |
- *                 리워드 사용 금액
- *                 * 사용 안할 경우 0
  *             price_total:
  *               type: number
  *               example: 50000
@@ -89,26 +65,6 @@
  *               example: 52500
  *               description: |
  *                 결제 금액
- *             pg_receipt_id:
- *               type: string
- *               example: 5fffad430c20b903e88a2d17
- *               description: |
- *                 PG사 결제 완료 값 id
- *             v_bank_account_number:
- *               type: string
- *               example: 027038824568800
- *               description: |
- *                 가상계좌 계좌번호
- *             v_bank_bank_name:
- *               type: string
- *               example: 신한은행
- *               description: |
- *                 가상계좌 은행명
- *             v_bank_expired_time:
- *               type: timestamp
- *               example: 2021-10-10
- *               description: |
- *                 가상계좌 입금요청기한
  *             payment_method:
  *               type: number
  *               example: 6
@@ -144,7 +100,7 @@
  *                       * 리뷰어가 없을 경우 0으로 보내면 됩니다.
  *                   option_ids:
  *                     type: string
- *                     example: '101,202,303'
+ *                     example: '101'
  *                     description: |
  *                       옵션 option_id 목록
  *                       * ','로 구분
@@ -258,13 +214,13 @@ module.exports = function (req, res) {
             }
             // pushTokenFCM(push_token_list);
 
-            if(req.paramBody['use_reward'] > 0 ) {
-                req.innerBody['reward'] = await queryReward(req, db_connection);
-            }
-            if(req.paramBody['use_point'] > 0) {
-                req.paramBody['use_point']
-                req.innerBody['point'] = await queryPoint(req, db_connection);
-            }
+            // if(req.paramBody['use_reward'] > 0 ) {
+            //     req.innerBody['reward'] = await queryReward(req, db_connection);
+            // }
+            // if(req.paramBody['use_point'] > 0) {
+            //     req.paramBody['use_point']
+            //     req.innerBody['point'] = await queryPoint(req, db_connection);
+            // }
 
             deleteBody(req)
 
@@ -308,16 +264,16 @@ function query(req, db_connection) {
             seller_uid,
             req.paramBody['addressbook_uid'],
             req.paramBody['delivery_msg'],
-            req.paramBody['seller_msg'],
-            req.paramBody['use_point'],
-            req.paramBody['use_reward'],
+            null,//req.paramBody['seller_msg'],
+            0,//req.paramBody['use_point'],
+            0,//req.paramBody['use_reward'],
             req.paramBody['price_total'],
             req.paramBody['delivery_total'],
             req.paramBody['price_payment'],
-            req.paramBody['pg_receipt_id'],
-            req.paramBody['v_bank_account_number'],
-            req.paramBody['v_bank_expired_time'],
-            req.paramBody['v_bank_bank_name'],
+            '',//req.paramBody['pg_receipt_id'],
+            '',//req.paramBody['v_bank_account_number'],
+            '',//req.paramBody['v_bank_expired_time'],
+            '',//req.paramBody['v_bank_bank_name'],
             req.paramBody['payment_method'],
         ]
     );
