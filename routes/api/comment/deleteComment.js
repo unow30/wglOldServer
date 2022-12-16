@@ -60,9 +60,13 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             req.innerBody['item'] = await query(req, db_connection);
-            if (!req.innerBody['item']) {
+            if (!req.innerBody['item'] || req.innerBody['item']['is_deleted'] == 0) {
                 errUtil.createCall(errCode.param, `댓글 삭제에 실패하였습니다.`)
                 return
+            }
+            else if(req.innerBody['item']['is_deleted'] == 1 && req.innerBody['item']['type'] == 1){
+                req.paramBody['video_uid'] = req.innerBody['item']['target_uid'];
+                await queryVideoUpdate(req, db_connection);
             }
             req.innerBody['success'] = '댓글 삭제가 완료되었습니다.'
 
@@ -97,6 +101,18 @@ function query(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['comment_uid'],
+        ]
+    );
+}
+
+function queryVideoUpdate(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_video_comment_count_minus_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['video_uid'],
         ]
     );
 }
