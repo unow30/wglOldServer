@@ -82,7 +82,7 @@ module.exports = function (req, res) {
 
         checkParam(req);
         req.paramBody['type'] = 1 // 1: 알려줘요, 2: 공구해요
-
+        console.log(req.paramBody, '========================>>>>>>>>>>>body값<<<<<<<<<<<===================')
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
