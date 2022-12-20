@@ -2,14 +2,15 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/ranking:
+ * /api/private/v2/weggler/recommend/review/list:
  *   get:
- *     summary: 랭킹 위글러 불러오기
+ *     summary: 추천 영상 불러오기
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/ranking
+ *      ## path : /api/private/v2/weggler/recommend/review/list:
  *
- *       * 랭킹 위글러 불러오기
+ *       * ## 추천영상 불러오기
+ *       * ## 전체 10개 랜덤으로 불러온다.
  *
  *     responses:
  *       400:
@@ -23,7 +24,6 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
 
 
 let file_name = fileUtil.name(__filename);
@@ -32,15 +32,20 @@ module.exports = function (req, res) {
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
+        req.paramBody = paramUtil.parse(req);
+        req.paramBody['random_seed'] = `${Math.floor(Math.random() * 10)}`
 
         mysqlUtil.connectPool(async function (db_connection) {
-        req.innerBody = {};
+            req.innerBody = {};
+            const result = await query(req, db_connection)
+            req.innerBody['item'] = result.map(el =>{
+                const productInfo = el.product_info.split('@!@').map(item => JSON.parse(item))
+                el.product_info = productInfo
 
-        const lanking_weggler = await queryLankingWeggler(req, db_connection); //핫 위글러 리스트 및 동영상 데이터
-   
-        req.innerBody['lanking_weggler'] = lanking_weggler;
+                return el
+            })
 
-        sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -50,19 +55,16 @@ module.exports = function (req, res) {
         sendUtil.sendErrorPacket(req, res, _err);
     }
 }
-function checkParam(req) {
-}
 
-function deleteBody(req) {
-}
 
-function queryLankingWeggler(req, db_connection) {
+async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
+
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_ranking_weggler_list_v2'
-        , [
+    , 'call proc_select_weggler_recommend_review_list_v2'
+    ,   [
             req.headers['user_uid'],
-            // req.paramBody['product_uid'],
+            req.paramBody['random_seed']
         ]
-    );
+    )
 }

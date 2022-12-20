@@ -24,6 +24,7 @@ app.route('/user/profile/review/list').get( require('./user/selectUserProfileRev
  * file api
  */
 app.route('/v2/file/reward/info/image').post(require('../middleware/rewardInfoImageUpload'), require('./file/v2UploadRewardInfoImage'))
+app.route('/v2/upload/files').post( require('../middleware/s3MediaUpload'), require('./file/v2UploadFileArray') );
 
 /**
  * product api
@@ -186,6 +187,12 @@ app.route('/searchview/new/category/video/list').get( require('./searchView/sele
 app.route('/searchview/new/product/list').get( require('./searchView/selectSearchViewNewProductList') ); // 신규상품 목록
 app.route('/searchview/new/review/list').get( require('./searchView/selectSearchViewNewReviewList') ); // 신규리뷰 목록
 
+/**
+ * v2SearchView api
+ * 22년 12월 24일부터 적용
+ */
+app.route('/v2/searchview/recent/viewed/list').get( require('./v2SearchView/v2SelectProductRecentViewedList') ) //최근 본 상품목록 더보기
+
 
 // 모아보기 api legacy
 // 앱 초창기 모아보기 리스트
@@ -257,12 +264,30 @@ app.route('/v1/groupbuying/order').post( require('./groupBuying/v1CreateGroupBuy
 /**
  * weggler api
  */
-app.route('/v2/weggler/community/blah').post( require('./weggler/v2CreateCommunityBlah') )
-app.route('/v2/weggler/community/hacks').post( require('./weggler/v2CreateCommunityHacks') )
-app.route('/v2/weggler/community/curious').post( require('./weggler/v2CreateCommunityCurious') )
 app.route('/v2/weggler/follow/feed/list').get( require('./weggler/v2SelectFollowFeedList') )
-app.route('/v2/weggler/community/blah/detail').get( require('./weggler/v2SelectCommunityBlahDetail') )
+app.route('/v2/weggler/recommend/feed/list').get( require('./weggler/v2SelectRecommendFeedList') )
 app.route('/v2/weggler/follow/recommend/list').get( require('./weggler/v2SelectFollowRecommendList') )
+app.route('/v2/weggler/community/letmeknow').post( require('./weggler/v2CreateCommunityLetMeKnow') )
+app.route('/v2/weggler/community/buytogether').post( require('./weggler/v2CreateCommunityBuyTogether') )
+app.route('/v2/weggler/search/groupbuying/list').get( require('./weggler/v2SelectSearchGroupBuying') )
+app.route('/v2/weggler/buytogether/detail').get( require('./weggler/v2SelectBuyTogetherDetail') )
+app.route('/v2/weggler/letmeknow/detail').get( require('./weggler/v2SelectLetMeKnowDetail') )
+app.route('/v2/weggler/community/comment/list').get( require('./weggler/v2SelectCommunityComment') )
+app.route('/v2/weggler/community/home').get( require('./weggler/v2SelectCommunityHome') )
+app.route('/v2/weggler/community/best/post/all').get( require('./weggler/v2SelectCommunityBestPostAll') )
+app.route('/v2/weggler/community/buytogether/list/all').get( require('./weggler/v2SelectCommunityBuyTogetherList') )
+app.route('/v2/weggler/community/letmeknow/list/all').get( require('./weggler/v2SelectCommunityLetMeKnowList') )
+app.route('/v2/weggler/iwrote/post').get( require('./weggler/v2SelectThePostIWrotePost') )
+app.route('/v2/weggler/iwrote/comment').get( require('./weggler/v2SelectThePostIWroteComment') )
+app.route('/v2/weggler/recommend/review/list').get( require('./weggler/v2SelectRecommendReviewList') )
+app.route('/v2/weggler/community/post').delete( require('./weggler/v2DeleteCommunityPost') )
+app.route('/v2/weggler/community/post').put( require('./weggler/v2UpdateCommunityPost') )
+app.route('/v2/weggler/story/visit').post( require('./weggler/v2CreateWegglerStoryVisit') )
+app.route('/v2/weggler/follow/feed/story/list').get( require('./weggler/v2SelectFeedStoryList') )
+app.route('/v2/weggler/story/detail').get( require('./weggler/v2SelectWegglerStoryDetail') )
+app.route('/v2/weggler/story/detail/simple').get( require('./weggler/v2SelectWegglerStoryDetailSimple') )
+app.route('/v2/weggler/ranking').get( require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
+app.route('/v2/weggler/ranking/detail').get( require('./weggler/v2SelectRankingWegglerDetail')) // 위글러 랭킹 위글러
 
 /**
  * private => public으로 옮긴 라우터들 22. 11. 02 
@@ -303,5 +328,12 @@ app.route('/v1/groupbuying/detail/room/list').get( require('./groupBuying/v1Sele
 app.route('/v1/feed/product/list').get( require('./feed/v1SelectFeedProductList') )
 app.route('/video/hashtag/list').get( require('./video/selectVideoHashTagList') )
 app.route('/v2/feed/review/list').get( require('./feed/v2SelectFeedReviewList') )
+
+/**
+ * event
+ */
+app.route('/v2/event/filename').get( require('./event/v2SelectEventImage'))
+app.route('/v2/event/check').get( require('./event/v2SelectEventUser'))//이벤트 당첨자 체크
+app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))//이벤트 상품 구매
 
 module.exports = app;

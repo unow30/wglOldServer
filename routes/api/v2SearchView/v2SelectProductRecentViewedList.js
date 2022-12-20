@@ -1,42 +1,38 @@
 /**
- * Created by yunhokim on 2021. 11. 03.
+ * Created by yunhokim on 2022. 12. 06.
  *
  * @swagger
- * /api/public/searchview/search/list/user:
+ * /api/private/v2/searchview/recent/viewed/list:
  *   get:
- *     summary: 사용자 검색 정보
- *     tags: [SearchView]
+ *     summary: 최근 본 상품목록 더보기
+ *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/searchview/search/list/user
+ *       path :/api/private/v2/searchview/recent/viewed/list
  *
- *       * 사용자 검색 정보
+ *       * ### 최근 본 상품목록 더보기(홈뷰 최근 본 상품)
+ *       * ### 유저탭 - 최근 본 상품과 같은 기능이나 홈뷰 전용으로 분리
+ *       * ### offset으로 패이징한다.
  *
  *     parameters:
  *       - in: query
- *         name: keyword
+ *         name: offset
+ *         default: 0
  *         required: true
  *         schema:
- *           type: string
- *           example:
- *         description: 검색 키워드(사용자(닉네임) 검색)
- *       - in: query
- *         name: last_uid
- *         required: true
- *         schema:
- *           type: int
+ *           type: number
  *           example: 0
  *         description: |
- *            목록 마지막 uid (처음일 경우 0)
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/SearchViewUserSearchListApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
  *           $ref: '#/definitions/Error'
+ *
  */
 
 const paramUtil = require('../../../common/utils/paramUtil');
@@ -55,18 +51,17 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-        //  logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            // req.innerBody['video_list'] = await querySelect(req, db_connection);
-            req.innerBody['user_list'] = await queryUser(req, db_connection)
-            const countResult = await queryUserCount(req, db_connection)
-            req.innerBody['count'] = countResult.count
-            
+            // let count_data = await querySelectTotalCount(req, db_connection);
+            req.innerBody['item'] = await queryLastViewList(req, db_connection);
+            // req.innerBody['total_count'] = count_data['total_count'];
+
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -81,51 +76,35 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    // paramUtil.checkParam_noReturn(req.paramBody, 'video_uid');
-    // paramUtil.checkParam_noReturn(req.paramBody, 'social_id');
+
 }
 
 function deleteBody(req) {
+    // delete req.innerBody['item']['latitude']
     // delete req.innerBody['item']['longitude']
     // delete req.innerBody['item']['push_token']
     // delete req.innerBody['item']['access_token']
 }
 
-// function querySelect(req, db_connection) {
-//     const _funcName = arguments.callee.name;
-//
-//     return mysqlUtil.queryArray(db_connection
-//         , 'call proc_select_searchview_search_list'
-//         , [
-//             req.headers['user_uid'],
-//             req.paramBody['keyword'],
-//             req.paramBody['random_seed'],
-//             req.paramBody['offset'],
-//         ]
-//     );
-// }
-
-function queryUser(req, db_connection) {
+function queryLastViewList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_searchview_user_search_list'
+        , 'call proc_select_recent_viewed_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['keyword'],
-            req.paramBody['last_uid'],
+            req.paramBody['offset'],
         ]
     );
 }
 
-function queryUserCount(req, db_connection) {
+function querySelectTotalCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_searchview_user_search_count_v2'
+        , 'call proc_select_recent_viewed_list_count'
         , [
             req.headers['user_uid'],
-            req.paramBody['keyword'],
         ]
     );
 }

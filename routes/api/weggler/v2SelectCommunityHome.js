@@ -2,15 +2,16 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/follow/feed/list:
+ * /api/private/v2/weggler/community/home:
  *   get:
- *     summary: 팔로우한 사람들의 최신 피드목록 불러오기
+ *     summary: 커뮤니티 홈 피드 리스트
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/follow/feed/list
+ *      ## path : /api/private/v2/weggler/community/home
  *
- *       * 팔로우한 사람들의 최신 피드목록 불러오기
- *       * limit 12 이므로 offset 12씩 증가
+ *       * 커뮤니티 게시글 리스트 및 인기게시글
+ *       * limit 15 이므로 offset 15씩 증가
+ *       * offset 0 일때만 인기게시글 4개 전달
  * 
  *     parameters:
  *       - in: query
@@ -34,7 +35,6 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
 
 
 let file_name = fileUtil.name(__filename);
@@ -48,10 +48,20 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 
-        req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
-        req.innerBody['item'] = feedListParse(req.innerBody['item'])
+        req.innerBody['item'] = await query(req, db_connection);
+
+        if(req.paramBody['offset'] == 0){
+            const letMeKnow = queryLetMeKnow(req, db_connection);
+            const buyTogether = queryBuyTogether(req, db_connection);
+            
+            const [letMeKnowData, buyTogetherData] = await Promise.all([letMeKnow, buyTogether]);
+            
+            req.innerBody['best_post'] = {
+                let_me_know: letMeKnowData,
+                buy_together: buyTogetherData,
+            }
+        }
         
-        //추천 위글러 추가되서 들어가야함
 
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -64,11 +74,11 @@ module.exports = function (req, res) {
     }
 }
 
-async function queryFollowFeedList(req, db_connection) {
+async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_weggler_follow_feed_list_v2'
+        , 'call proc_weggler_community_home_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['offset'],
@@ -76,18 +86,24 @@ async function queryFollowFeedList(req, db_connection) {
     );
 }
 
-function feedListParse(feedList) {
-    return feedList.map(item=>{
-        const result = {
-            ...item
-        }
-        if(item.multiple_product == 1){
-            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
-        }
-        else{
-            result['product_info'] = [JSON.parse(item.product_info)]
-        }
-        
-        return result
-    })
+async function queryLetMeKnow(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_weggler_community_letmeknow_best_v2'
+        , [
+            req.headers['user_uid'],
+        ]
+    );
+}
+
+async function queryBuyTogether(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_weggler_community_buytogether_best_v2'
+        , [
+            req.headers['user_uid'],
+        ]
+    );
 }

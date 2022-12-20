@@ -33,7 +33,7 @@
  *             type:
  *               type: number
  *               description: |
- *                 1: 비디오 리뷰, 2: 포토 리뷰
+ *                 1: 비디오 리뷰, 2: 포토 리뷰 3: 위글러 커뮤니티 게시글
  *
  *           example:
  *             comment_uid: 1
@@ -96,6 +96,11 @@ module.exports = function (req, res) {
                 req.innerBody['item'] = await queryPhotoReviewNestedComment(req, db_connection);
                 sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
             }
+            else if(req.paramBody['type']===3){
+
+                req.innerBody['item'] = await queryCommunityPostNestedComment(req, db_connection);
+                sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            }
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         } );
@@ -133,15 +138,28 @@ function query(req, db_connection) {
 function queryPhotoReviewNestedComment(req, db_connection) {
 const _funcName = arguments.callee.name;
 
-return mysqlUtil.querySingle(db_connection
-    , 'call proc_create_nested_comment_photo_review_v2'
-    , [
-        req.headers['user_uid'],
-        req.paramBody['comment_uid'],
-        req.paramBody['content'],
-    ]
-);
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_nested_comment_photo_review_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['comment_uid'],
+            req.paramBody['content'],
+        ]
+    );
 }
+
+function queryCommunityPostNestedComment(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    
+        return mysqlUtil.querySingle(db_connection
+            , 'call proc_create_nested_comment_community_post_v2'
+            , [
+                req.headers['user_uid'],
+                req.paramBody['comment_uid'],
+                req.paramBody['content'],
+            ]
+        );
+    }
 
 
 function queryInsertFCM(data, db_connection){

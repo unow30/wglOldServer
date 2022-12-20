@@ -1,40 +1,45 @@
 /**
  *
+ * 
+ * Created by jongho
+ * 
  * @swagger
- * /api/private/v2/weggler/community/blah/detail:
- *   get:
- *     summary: 커뮤니티 끄적끄적 게시물 상세페이지
+ * /api/private/v2/weggler/community/buytogether:
+ *   post:
+ *     summary: 커뮤니티 궁금해요 게시물 생성
  *     tags: [Weggler]
  *     description: |
- *       path : /api/private/v2/weggler/community/blah/detail
+ *       path : /api/private/v2/weggler/community/buytogether
  *
- *       * 커뮤니티 끄적끄적 게시물 상세페이지
- *       * type: 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요
- *       * 댓글 리스트를 위한 offset 입니다. 게시물 데이터는 offset 0 일때만 보냅니다. 
- *
+ *       * 커뮤니티 공구해요 게시물 생성
+ *       * type: 1: 알려줘요, 2: 공구해요
+ *       * 작성데이터 => { title: blah, content: 안녕하세요, groupbuying_uid: 1 }
  *     parameters:
- *       - in: query
- *         name: offset
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
+ *       - in: body
+ *         name: body
  *         description: |
- *           offset
- *       - in: query
- *         name: post_uid
- *         required: true
+ *           리뷰영상 작성
  *         schema:
- *           type: number
- *           example: 1
- *         description: |
- *           post_uid
+ *           type: object
+ *           required:
+ *             - title
+ *             - content
+ *           properties:
+ *             title:
+ *               type: string
+ *               example: 안녕하세요
+ *               description: |
+ *                 상품 uid
+ *             content:
+ *               type: string
+ *               example: 안녕하세요 반갑습니다.
+ *               description: 대표 내용
+ *             groupbuying_uid:
+ *               type: number
+ *               example: 1
+ *               description: 링크
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/VideoReviewApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -50,6 +55,7 @@ const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const fcmUtil = require('../../../common/utils/fcmUtil');
 
+ 
 let file_name = fileUtil.name(__filename);
 
 module.exports = function (req, res) {
@@ -61,16 +67,12 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
 
         checkParam(req);
-        req.paramBody['type'] = 1 // 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요
+        req.paramBody['type'] = 2 // 1: 알려줘요, 2: 궁금해요
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
-
-            if(req.paramBody['offset']==0){
-                req.innerBody['item'] = await query(req, db_connection);
-            }
-            req.innerBody['comments'] = await queryComments(req, db_connection);
-
+            req.innerBody['item'] = await query(req, db_connection);
+            
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -85,8 +87,9 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
-    paramUtil.checkParam_noReturn(req.paramBody, 'post_uid');
+    paramUtil.checkParam_noReturn(req.paramBody, 'title');
+    paramUtil.checkParam_noReturn(req.paramBody, 'content');
+    paramUtil.checkParam_noReturn(req.paramBody, 'groupbuying_uid');
 }
 
 function deleteBody(req) {
@@ -97,23 +100,13 @@ function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_community_blah_detail_v2'
+        , 'call proc_create_community_buytogether_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['post_uid'],
-        ]
-    );
-}
-
-function queryComments(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_community_comment_v2'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['post_uid'],
-            req.paramBody['offset'],
+            req.paramBody['title'],
+            req.paramBody['content'],
+            req.paramBody['groupbuying_uid'],
+            req.paramBody['type'],
         ]
     );
 }

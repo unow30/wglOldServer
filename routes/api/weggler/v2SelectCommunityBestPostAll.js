@@ -2,17 +2,27 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/follow/feed/list:
+ * /api/private/v2/weggler/community/best/post/all:
  *   get:
- *     summary: 팔로우한 사람들의 최신 피드목록 불러오기
+ *     summary: 커뮤니티 인기게시글 리스트
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/follow/feed/list
+ *      ## path : /api/private/v2/weggler/community/best/post/all
  *
- *       * 팔로우한 사람들의 최신 피드목록 불러오기
- *       * limit 12 이므로 offset 12씩 증가
+ *       * 커뮤니티 인기게시글 리스트
+ *       * limit 15 이므로 offset 15씩 증가
+ *       * 전체보기 최대 limit 60, (공구해요, 알려줘요) 각 인기 30위까지만 노출이므로 최대 limit30
+ *       * 전체보기 마지막 offset 45, (공구해요, 알려줘요) 마지막 offset 15
  * 
  *     parameters:
+ *       - in: query
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           전체 게시물: 0, 알려줘요: 1, 궁금해요: 2
  *       - in: query
  *         name: offset
  *         required: true
@@ -34,7 +44,6 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
 
 
 let file_name = fileUtil.name(__filename);
@@ -46,14 +55,20 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
-        req.innerBody = {};
-
-        req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
-        req.innerBody['item'] = feedListParse(req.innerBody['item'])
+            req.innerBody = {};
         
-        //추천 위글러 추가되서 들어가야함
+            if((req.paramBody.type == 0 && req.paramBody.offset > 45) || 
+            (req.paramBody.type != 0 && req.paramBody.offset > 15) ){
+                
+                const err = new Error('인기 게시글은 전체보기 최대 60개, (알려줘요, 공구해요)는 최대 30개 까지 불러올 수 있습니다.')
+                sendUtil.sendErrorPacket(req, res, err);
 
-        sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+                return
+            }
+            req.innerBody['item'] = await query(req, db_connection);
+            
+
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -64,30 +79,15 @@ module.exports = function (req, res) {
     }
 }
 
-async function queryFollowFeedList(req, db_connection) {
+async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_weggler_follow_feed_list_v2'
+        , 'call proc_weggler_community_best_post_all_v2'
         , [
             req.headers['user_uid'],
+            req.paramBody['type'],
             req.paramBody['offset'],
         ]
     );
-}
-
-function feedListParse(feedList) {
-    return feedList.map(item=>{
-        const result = {
-            ...item
-        }
-        if(item.multiple_product == 1){
-            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
-        }
-        else{
-            result['product_info'] = [JSON.parse(item.product_info)]
-        }
-        
-        return result
-    })
 }

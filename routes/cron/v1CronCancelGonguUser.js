@@ -176,7 +176,7 @@ function queryGonguDeadline(db_connection) {
 
 function queryGonguDrop(db_connection, gonguRoom, gonguRoomUser) {
     return mysqlUtil.queryArray(db_connection
-        , 'call cron_gongu_roon_user_drop_v1'
+        , 'call cron_gongu_room_user_drop_v1'
         , [
             gonguRoom,
             gonguRoomUser,

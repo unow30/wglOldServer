@@ -2,25 +2,14 @@
  * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/follow/feed/list:
+ * /api/private/v2/weggler/follow/feed/story/list:
  *   get:
- *     summary: 팔로우한 사람들의 최신 피드목록 불러오기
+ *     summary: 팔로우한 사람들의 최신 스토리목록 불러오기
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/follow/feed/list
+ *      ## path : /api/private/v2/weggler/follow/feed/story/list
  *
- *       * 팔로우한 사람들의 최신 피드목록 불러오기
- *       * limit 12 이므로 offset 12씩 증가
- * 
- *     parameters:
- *       - in: query
- *         name: offset
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           offset
+ *       * 팔로우한 사람들의 최신 스토리목록 불러오기
  *
  *     responses:
  *       400:
@@ -33,9 +22,7 @@ const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
-const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
-
+const logUtil = require('../../../common/utils/logUtil'); 
 
 let file_name = fileUtil.name(__filename);
 module.exports = function (req, res) {
@@ -48,11 +35,8 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
         req.innerBody = {};
 
-        req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
-        req.innerBody['item'] = feedListParse(req.innerBody['item'])
+        req.innerBody['item'] = await query(req, db_connection);
         
-        //추천 위글러 추가되서 들어가야함
-
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
@@ -64,30 +48,13 @@ module.exports = function (req, res) {
     }
 }
 
-async function queryFollowFeedList(req, db_connection) {
+async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_weggler_follow_feed_list_v2'
+        , 'call proc_weggler_feed_story_list_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['offset'],
         ]
     );
-}
-
-function feedListParse(feedList) {
-    return feedList.map(item=>{
-        const result = {
-            ...item
-        }
-        if(item.multiple_product == 1){
-            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
-        }
-        else{
-            result['product_info'] = [JSON.parse(item.product_info)]
-        }
-        
-        return result
-    })
 }

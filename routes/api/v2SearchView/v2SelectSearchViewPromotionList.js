@@ -1,20 +1,26 @@
 /**
- * Created by yunho kim
+ * Created by yunhokim on 2022. 12. 06.
  *
  * @swagger
- * /api/private/v2/weggler/follow/recommend/list:
+ * /api/public/v2/searchview/promotion/list:
  *   get:
- *     summary: 팔로우 추천 위글러 불러오기
- *     tags: [Weggler]
+ *     summary: 브랜드관 더보기
+ *     tags: [v2SearchView]
  *     description: |
- *      ## path : /api/private/v2/weggler/follow/recommend/list:
+ *       path : /api/public/v2/searchview/promotion/list
  *
- *       * ## 팔로우 추천 위글러 불러오기
- *       * ## limit 20으로 20개만 불러온다.
- *       * ## 위글러 => 피드화면에 10개, 검색화면에 10개씩 표시한다.
- *       * ## 추천위글러 전체보기 누르면 20개 전체 보여주기
+ *       * ## 브랜드관 더보기
+ *       * ### offset으로 패이징한다.
  *
  *     parameters:
+ *       - in: query
+ *         name: user_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: 유저 uid(브랜드 판매자 uid)
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -23,6 +29,18 @@
  *           example: 133q1234
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
+ *       - in: query
+ *         name: offset
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *
  *     responses:
  *       400:
@@ -30,39 +48,39 @@
  *         schema:
  *           $ref: '#/definitions/Error'
  */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
-
 
 let file_name = fileUtil.name(__filename);
+
 module.exports = function (req, res) {
     const _funcName = arguments.callee.name;
+
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
+        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+
+        checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            // req.paramBody['followList'] = await queryFollowList(req, db_connection); //로그인 한 유저의 팔로우 리스트
-            // req.paramBody['followList'] = req.paramBody['followList'].map(el=> el.user_uid)
-            // req.paramBody['followList'].push(req.headers['user_uid'])
-            //
-            // req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
 
-            req.innerBody['item'] = await queryFollowRecommendList(req, db_connection)
+            req.innerBody['item'] = await queryList(req, db_connection);
 
-
+            deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         });
+
     } catch (e) {
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
@@ -70,19 +88,23 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    // paramUtil.checkParam_noReturn(req.paramBody, 'user_uid');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
 }
 
 function deleteBody(req) {
 }
 
-async function queryFollowRecommendList(req, db_connection) {
+function queryList(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-    , 'call proc_select_recommend_user_follow_list_v2'
-    ,   [
+        , 'call proc_select_promotion_list'
+        , [
             req.headers['user_uid'],
+            req.paramBody['user_uid'],
             req.paramBody['random_seed'],
+            req.paramBody['offset'],
         ]
-    )
+    );
 }

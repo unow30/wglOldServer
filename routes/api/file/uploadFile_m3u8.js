@@ -53,6 +53,10 @@
  *
  *
  */
+const AWS = require("aws-sdk");
+const sharp = require('sharp')
+const getMediaDimensions = require('get-media-dimensions');
+
 const sendUtil = require('../../../common/utils/sendUtil');
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
@@ -60,12 +64,13 @@ const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const errCode = require('../../../common/define/errCode');
 const funcUtil = require('../../../common/utils/funcUtil');
-
-// const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil');
-
 const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil_m3u8');
 
-const getMediaDimensions = require('get-media-dimensions');
+const s3 = new AWS.S3({
+    accessKeyId: funcUtil.getAWSAccessKeyID(),
+    secretAccessKey: funcUtil.getAWSSecretAccessKey(),
+    region : funcUtil.getAWSRegion(),
+});
 
 let file_name = fileUtil.name(__filename);
 
@@ -96,6 +101,20 @@ module.exports = async function (req, res) {
                 final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
                 
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.m3u8', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
+            }
+            else{
+                const params = {
+                    Bucket: funcUtil.getAWSBucket(),
+                    Key: req.file.key
+                }
+
+                const image = await s3.getObject(params).promise()                    
+                const resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', { quality: 50 }).toBuffer()
+
+                params.ACL = 'public-read'
+                params.Body = resizeImage
+
+                await s3.putObject(params).promise()
             }
 
             req.innerBody['filename'] = final_name

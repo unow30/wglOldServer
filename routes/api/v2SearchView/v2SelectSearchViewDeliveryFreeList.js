@@ -1,16 +1,18 @@
 /**
- * Created by yunhokim on 2022. 05. 20.
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/public/product/category/list:
+ * /api/public/v2/searchview/delivery/free:
  *   get:
- *     summary: 상품카테고리목록(220601부터 카테고리탭 생성됨)
- *     tags: [Category]
+ *     summary: 무료배송상품 더보기
+ *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/product/category/list
+ *       path : /api/public/v2/searchview/delivery/free
  *
- *       * 상품카테고리목록(220601부터 카테고리탭 생성됨)
- *       * 221212 스웨거 수정
+ *       * ## 무료배송상품 더보기
+ *       * ### 홈뷰에서 띠배너 클릭해서 들어온 화면
+ *       * ### /product/category/list api 내용 복붙
+ *       * proc_select_category_product_list_v2로 해서 is_like 적용
  *
  *     parameters:
  *       - in: query
@@ -22,13 +24,15 @@
  *         description: |
  *           상품 카테고리
  *           * 1: 식품
- *           * 2: 뷰티/주얼리
- *           * 4: 인테리어
+ *           * 2: 뷰티
+ *           * 4: 홈데코
  *           * 8: 패션잡화
  *           * 16: 반려동물
- *           * 32: 생활용품
+ *           * 32: 유아
+ *           * 64: 스포츠레저
+ *           * 128: 식물
  *           * 65535: 전체
- *         enum: [1,2,4,8,16,32,65535]
+ *         enum: [1,2,4,8,16,32,64,128,65535]
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -38,28 +42,6 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
- *         name: is_deal
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           위글딜 여부 필터링입니다.(안쓰는값 고정으로 0)
- *           * 0: 전체표시
- *           * 1: 위글딜표시
- *         enum: [0,1]
- *       - in: query
- *         name: delivery_free
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           배송비 무료 여부 필터링입니다.(안쓰는값 고정 0)
- *           * 0: 전체
- *           * 1: 배송비무료
- *         enum: [0,1]
- *       - in: query
  *         name: filter_type
  *         required: true
  *         schema:
@@ -67,12 +49,12 @@
  *           example: 0
  *         description: |
  *           각종 필터 선택 리스트입니다
- *           * 0: 인기순(기본값, 사용)
- *           * 1: 리뷰순(안쓴다)
- *           * 2: 신상품순(최신순, 사용)
- *           * 3: 저가순(사용)
- *           * 4: 고가순(사용)
- *           * 5: 할인율순(안쓴다)
+ *           * 0: 인기순(기본값)
+ *           * 1: 리뷰순
+ *           * 2: 신상품순
+ *           * 3: 저가순
+ *           * 4: 고가순
+ *           * 5: 할인율순
  *         enum: [0,1,2,3,4,5]
  *       - in: query
  *         name: offset
@@ -148,13 +130,13 @@ function queryUser(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_category_product_list_v1'
+        , 'call proc_select_category_product_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['category'],
             req.paramBody['random_seed'],
-            req.paramBody['is_deal'],
-            req.paramBody['delivery_free'],
+            0,// req.paramBody['is_deal'], 0: 전체표시,1:위글딜표시
+            1,// req.paramBody['delivery_free'],0: 전체,1:배송비무료
             req.paramBody['filter_type'],
             req.paramBody['offset'],
         ]

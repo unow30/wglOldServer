@@ -32,7 +32,7 @@
  *             type:
  *               type: number
  *               description: |
- *                 내용
+ *                 1: 비디오 리뷰, 2: 포토 리뷰 3: 위글러 커뮤니티 게시글
  *
  *           example:
  *             target_uid: 1
@@ -93,6 +93,11 @@ module.exports = function (req, res) {
 
                 sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
             }
+            else if(req.paramBody['type']=== 3){
+                req.innerBody['item'] = await queryCommunityPostComment(req, db_connection)
+
+                sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            }
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         } );
@@ -132,6 +137,19 @@ function queryPhotoReviewComment(req, db_connection) {
 
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_comment_photo_review_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['target_uid'],
+            req.paramBody['content'],
+        ]
+    );
+}
+
+function queryCommunityPostComment(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_comment_community_post_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['target_uid'],

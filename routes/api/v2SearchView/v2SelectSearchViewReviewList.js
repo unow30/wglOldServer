@@ -1,28 +1,30 @@
 /**
- * Created by yunho kim
+ * Created by yunhokim on 2022. 12. 07.
  *
  * @swagger
- * /api/private/v2/weggler/follow/recommend/list:
+ * /api/public/v2/searchview/new/review/list:
  *   get:
- *     summary: 팔로우 추천 위글러 불러오기
- *     tags: [Weggler]
+ *     summary: New Review(신규 리뷰영상) 목록
+ *     tags: [v2SearchView]
  *     description: |
- *      ## path : /api/private/v2/weggler/follow/recommend/list:
+ *       path : /api/public/v2/searchview/new/review/list
  *
- *       * ## 팔로우 추천 위글러 불러오기
- *       * ## limit 20으로 20개만 불러온다.
- *       * ## 위글러 => 피드화면에 10개, 검색화면에 10개씩 표시한다.
- *       * ## 추천위글러 전체보기 누르면 20개 전체 보여주기
+ *       * ## 검색 화면 - New Review(신규 리뷰영상) 목록
+ *       * ### offset으로 패이징한다.
  *
  *     parameters:
  *       - in: query
- *         name: random_seed
+ *         name: offset
+ *         default: 0
  *         required: true
  *         schema:
- *           type: string
- *           example: 133q1234
+ *           type: number
+ *           example: 0
  *         description: |
- *           검색할 때 필요한 랜덤 시드입니다.
+ *           페이지 시작 값을 넣어주시면 됩니다. 호출당 Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *
  *     responses:
  *       400:
@@ -30,39 +32,41 @@
  *         schema:
  *           $ref: '#/definitions/Error'
  */
+
 const paramUtil = require('../../../common/utils/paramUtil');
 const fileUtil = require('../../../common/utils/fileUtil');
 const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
-
 
 let file_name = fileUtil.name(__filename);
+
 module.exports = function (req, res) {
     const _funcName = arguments.callee.name;
+
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
+        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+
+        checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            // req.paramBody['followList'] = await queryFollowList(req, db_connection); //로그인 한 유저의 팔로우 리스트
-            // req.paramBody['followList'] = req.paramBody['followList'].map(el=> el.user_uid)
-            // req.paramBody['followList'].push(req.headers['user_uid'])
-            //
-            // req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
 
-            req.innerBody['item'] = await queryFollowRecommendList(req, db_connection)
+            // let count_data = await querySelectCount(req, db_connection);
+            req.innerBody['item'] = await queryNewReviewList(req, db_connection);
+            // req.innerBody['total_count'] = count_data['total_count'];
 
-
+            deleteBody(req);
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
         });
+
     } catch (e) {
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
@@ -75,14 +79,25 @@ function checkParam(req) {
 function deleteBody(req) {
 }
 
-async function queryFollowRecommendList(req, db_connection) {
+function querySelectCount(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
-    , 'call proc_select_recommend_user_follow_list_v2'
-    ,   [
-            req.headers['user_uid'],
-            req.paramBody['random_seed'],
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_searchview_new_review_list_count'
+        , [
+            req.headers['user_uid']
         ]
-    )
+    );
 }
+
+//신규 리뷰 영상 목록
+function queryNewReviewList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_searchview_new_review_list_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['offset'],
+        ]
+    );
+};

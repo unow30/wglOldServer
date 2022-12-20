@@ -1,17 +1,20 @@
 /**
  *
+ * 
+ * Created by jongho
+ * 
  * @swagger
- * /api/private/v2/weggler/community/hacks:
+ * /api/private/v2/weggler/community/letmeknow:
  *   post:
- *     summary: 커뮤니티 위글꿀팁 게시물 생성
+ *     summary: 커뮤니티 알려줘요 게시물 생성
  *     tags: [Weggler]
  *     description: |
- *       path : /api/private/v2/weggler/community/hacks
+ *       path : /api/private/v2/weggler/community/letmeknow
  *
  *       * 커뮤니티 위글꿀팁 게시물 생성
- *       * type: 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요 
- *       * 글만 작성의 경우 => { title: blah, representative_content: 안녕하세요, representative_filename: 빈문자열이든 null이든 상관 없음, contents: [] 빈 배열 꼭 넣어줄것}
- *       * 글+이미지 작성의 경우 => { title: blah, representative_content: 안녕하세요, representative_filename: abcd.jpg, contents: [{content: 안녕하세요, filename: abcd.jpg}] }
+ *       * type: 1: 알려줘요, 2: 공구해요
+ *       * 글만 작성의 경우 => { title: blah, content: 안녕하세요, files: [] 빈 배열 꼭 넣어줄것}
+ *       * 글+이미지 작성의 경우 => { title: blah, content: 안녕하세요, files: [{type: 1, filename: abcd.jpg, thumbnail: abcd.jpg}] }
  *     parameters:
  *       - in: body
  *         name: body
@@ -28,31 +31,29 @@
  *               example: 안녕하세요
  *               description: |
  *                 상품 uid
- *             representative_content:
+ *             content:
  *               type: string
  *               example: 안녕하세요 반갑습니다.
  *               description: 대표 내용
- *             representative_filename:
+ *             link:
  *               type: string
- *               example: abcd.jpg
- *               description: 대표 파일명
- *             contents:
+ *               example: www.naver.com
+ *               description: 링크
+ *             files:
  *               type: array
  *               items:
  *                 type: object
  *                 properties:
- *                   content:
- *                     type: string
+ *                   type:
+ *                     type: number
  *                   filename:
- *                     type: abcd.m3u8
- *               example: [{content: 안녕하세요 반갑습니다., filename: abcd.jpg}]
+ *                     type: string
+ *                   thumbnail:
+ *                     type: string
+ *               example: [{type: 1, filename: abcd.jpg, thumbnail: abcd.jpg}]
  *                 
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/VideoReviewApi'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -80,8 +81,8 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
 
         checkParam(req);
-        req.paramBody['type'] = 2 // 1: 끄적끄적, 2: 위글꿀팁, 3: 궁금해요
-
+        req.paramBody['type'] = 1 // 1: 알려줘요, 2: 공구해요
+        console.log(req.paramBody, '========================>>>>>>>>>>>body값<<<<<<<<<<<===================')
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
@@ -94,7 +95,7 @@ module.exports = function (req, res) {
             
             let pointPayment = 0
 
-            const content = req.paramBody.representative_content.replace(/ /gi,'')
+            const content = req.paramBody.content.replace(/ /gi,'')
             if(allPost.length == 0){
                 //첫 포인트 500포인트 지급
                 req.paramBody.point = 500
@@ -104,7 +105,7 @@ module.exports = function (req, res) {
                 await queryAddPoint(req, db_connection)
                 pointPayment = 1
             }
-            else if(req.paramBody['contents'][0] && dayPost.length < 11){
+            else if(req.paramBody['files'][0] && dayPost.length < 10){
                 //하루에 10번까지 이미지 업로드 게시물의 경우 30포인트
                 req.paramBody.point = 30
                 req.paramBody.point_type = 1
@@ -112,8 +113,8 @@ module.exports = function (req, res) {
                 req.paramBody.first = 0
                 await queryAddPoint(req, db_connection)
                 pointPayment = 1
-        }
-            else if(content.length >= 10&& dayPost.length < 11){
+            }
+            else if(content.length >= 10&& dayPost.length < 10){
                 //하루에 10번까지 일반 업로드 게시물의 경우 10포인트
                 req.paramBody.point = 10
                 req.paramBody.point_type = 1
@@ -123,17 +124,12 @@ module.exports = function (req, res) {
                 pointPayment = 1
             }
 
-            if(req.paramBody['contents'][0]){
-                req.innerBody['item'] = await queryAll(req, db_connection);
-                await queryContentsBulkInsert(req, db_connection)
+            req.innerBody['item'] = await query(req, db_connection);
 
+            if(req.paramBody['files'][0]){
+                await queryfilesBulkInsert(req, db_connection)
             }
-            else{
-                req.innerBody['item'] = await query(req, db_connection);
-                
-            }
-            
-            
+
             req.innerBody.item['point_payment'] = {
                 pointPayment: pointPayment,
                 point: req.paramBody.point? req.paramBody.point: 0,
@@ -155,52 +151,45 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'title');
-    paramUtil.checkParam_noReturn(req.paramBody, 'representative_content');
+    paramUtil.checkParam_noReturn(req.paramBody, 'content');
 }
 
-function deleteBody(req) {
-    // delete req.innerBody['item']['latitude']
-}
 
 function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_community_hacks_text_v2'
+        , 'call proc_create_community_letmeknow_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['title'],
-            req.paramBody['representative_content'],
+            req.paramBody['content'],
             req.paramBody['type'],
+            req.paramBody['link'],
         ]
     );
 }
 
-function queryAll(req, db_connection) {
+async function queryfilesBulkInsert(req, db_connection) {
     const _funcName = arguments.callee.name;
+    console.log(req.paramBody['files'])
+    const fileData = req.paramBody['files'].map(result =>{
+        console.log(result, '맵 안')
+        if(result.type == 1){
+           
+            return [req.innerBody.item['uid'], result.filename, result.thumbnail, result.type]
+        }
+        else if(result.type == 2){
 
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_community_hacks_all_v2'
-        , [
-            req.headers['user_uid'],
-            req.paramBody['title'],
-            req.paramBody['representative_content'],
-            req.paramBody['type'],
-            req.paramBody['representative_filename'],
-        ]
-    );
-}
-
-async function queryContentsBulkInsert(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    const contentData = req.paramBody['contents'].map(el => [req.innerBody['item']['uid'], el.content, el.filename]);
+            return [req.innerBody.item['uid'], result.filename, result.filename, result.type]
+        }
+    })
     const bulkQuery = `
-        insert into tbl_post_contents(post_uid, content, filename)
+        insert into tbl_post_media(post_uid, filename, thumbnail, type)
         values ?;
     `
-    console.log(contentData, '==============>>content data')
-    await db_connection.query(bulkQuery, contentData);
+    const a = await db_connection.query(bulkQuery, [fileData]);
+    console.log(a,'디버깅용===================인서트 후')
 }
 
 function queryPointAll(req, db_connection) {

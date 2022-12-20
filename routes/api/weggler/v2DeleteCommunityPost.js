@@ -1,28 +1,24 @@
 /**
- * Created by yunho kim
+ * Created by jongho
  *
  * @swagger
- * /api/private/v2/weggler/follow/recommend/list:
- *   get:
- *     summary: 팔로우 추천 위글러 불러오기
+ * /api/private/v2/weggler/community/post:
+ *   delete:
+ *     summary: 위글러 커뮤니티 게시글 삭제
  *     tags: [Weggler]
  *     description: |
- *      ## path : /api/private/v2/weggler/follow/recommend/list:
+ *      ## path : /api/private/v2/weggler/community/post
  *
- *       * ## 팔로우 추천 위글러 불러오기
- *       * ## limit 20으로 20개만 불러온다.
- *       * ## 위글러 => 피드화면에 10개, 검색화면에 10개씩 표시한다.
- *       * ## 추천위글러 전체보기 누르면 20개 전체 보여주기
- *
+ * 
  *     parameters:
  *       - in: query
- *         name: random_seed
+ *         name: post_uid
  *         required: true
  *         schema:
- *           type: string
- *           example: 133q1234
+ *           type: number
+ *           example: 0
  *         description: |
- *           검색할 때 필요한 랜덤 시드입니다.
+ *           post_id
  *
  *     responses:
  *       400:
@@ -36,7 +32,6 @@ const mysqlUtil = require('../../../common/utils/mysqlUtil');
 const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
-const dateUtil = require('../../../common/utils/dateUtil')
 
 
 let file_name = fileUtil.name(__filename);
@@ -46,17 +41,11 @@ module.exports = function (req, res) {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
-
+        checkParam(req)
+        
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            // req.paramBody['followList'] = await queryFollowList(req, db_connection); //로그인 한 유저의 팔로우 리스트
-            // req.paramBody['followList'] = req.paramBody['followList'].map(el=> el.user_uid)
-            // req.paramBody['followList'].push(req.headers['user_uid'])
-            //
-            // req.innerBody['item'] = await queryFollowFeedList(req, db_connection);
-
-            req.innerBody['item'] = await queryFollowRecommendList(req, db_connection)
-
+            req.innerBody['item'] = await query(req, db_connection);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -70,19 +59,17 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    paramUtil.checkParam_noReturn(req.paramBody, 'post_uid');
 }
 
-function deleteBody(req) {
-}
-
-async function queryFollowRecommendList(req, db_connection) {
+async function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.queryArray(db_connection
-    , 'call proc_select_recommend_user_follow_list_v2'
-    ,   [
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_delete_weggler_community_post_v2'
+        , [
             req.headers['user_uid'],
-            req.paramBody['random_seed'],
+            req.paramBody['post_uid'],
         ]
-    )
+    );
 }

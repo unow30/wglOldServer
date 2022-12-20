@@ -4,6 +4,7 @@ function weekNumberByMonth() {
     // 인풋의 년, 월
     let year = inputDate.getFullYear();
     let month = inputDate.getMonth() + 1;
+    let date = inputDate.getDate();
    
     // 목요일 기준 주차 구하기
     const weekNumberByThurFnc = (paramDate) => {
@@ -60,7 +61,7 @@ function weekNumberByMonth() {
       weekNo = 1;
     }
    
-    return {year, month, weekNo};
+    return {year, month, date, weekNo};
   }
 
   module.exports = weekNumberByMonth
