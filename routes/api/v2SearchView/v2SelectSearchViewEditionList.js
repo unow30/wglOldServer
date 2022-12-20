@@ -93,7 +93,7 @@ function editionParse(edition) {
     return edition.map(item=>{
         return {
             edition_uid: item.edition_uid,
-            edition_filename: item.edition_filename,
+            edition_filename: item.edition_filename_strip,
             edition_filename_strip: item.edition_filename_strip,
             start_time: item.start_time,
             end_time: item.end_time,
