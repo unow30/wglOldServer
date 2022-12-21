@@ -29,9 +29,6 @@
  *           type: object
  *           required:
  *             - addressbook_uid
- *             - price_total
- *             - delivery_total
- *             - price_payment
  *             - payment_method
  *           properties:
  *             event_code:
@@ -49,22 +46,6 @@
  *               example: 집 문앞에 놔주세요
  *               description: |
  *                 배송메모
- *             price_total:
- *               type: number
- *               example: 50000
- *               description: |
- *                 총 상품 금액
- *             delivery_total:
- *               type: number
- *               example: 2500
- *               description: |
- *                 주문 배송비 총합
- *                 * 배송비가 없을 경우 0
- *             price_payment:
- *               type: number
- *               example: 52500
- *               description: |
- *                 결제 금액
  *             payment_method:
  *               type: number
  *               example: 6
@@ -113,7 +94,7 @@
  *                   price_original:
  *                     type: number
  *                     example: 12000
- *                     description: 상품 1개당 원가
+ *                     description: 상품 1개당 원가. 실제 결제되는 가격을 계산해야 한다.(product의 discount_price가 실제 결제되는 가격이다.)
  *                   payment:
  *                     type: number
  *                     example: 24000
@@ -177,17 +158,28 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `이벤트 코드가 정확하지 않습니다. 다시 입력해주세요`)
             }
 
-            req.innerBody['item'] = await query(req, db_connection);
+            //계산로직이 돌아간 다음 item안에 값이 들어가야 한다.
+            let calc = {"price_total": 0, "delivery_total": 0, "price_payment":0, "other_seller": 0}
+            req.paramBody['product_list'].forEach(el=>{
+                calc['price_total'] += (el['price_original'] * el['count'])
+                if(calc['other_seller'] !==  el['seller_uid']){
+                    calc['delivery_total'] += el['price_delivery']
+                    calc['other_seller'] = el['seller_uid']
+                }
+            })
+            calc['price_payment'] = calc['price_total'] + calc['delivery_total']
+
+            req.innerBody['item'] = await query(req, db_connection, calc);
 
             if (!req.innerBody['item']) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
 
-            if(req.innerBody['item']['payment_method'] === 3){
-
-                req.paramBody['status'] = 30 //가상계좌 입금대기상태
-            }
+            // if(req.innerBody['item']['payment_method'] === 3){
+            //
+            //     req.paramBody['status'] = 30 //가상계좌 입금대기상태
+            // }
 
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
@@ -238,9 +230,9 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'addressbook_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'delivery_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'price_total');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'delivery_total');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
 }
 
 function deleteBody(req) {
@@ -248,15 +240,14 @@ function deleteBody(req) {
     delete req.innerBody['product']
 }
 
-function query(req, db_connection) {
+function query(req, db_connection, calc) {
     const _funcName = arguments.callee.name;
 
     let seller_uid = 0
-    try {
-        seller_uid = req.paramBody['product_list'][0]['seller_uid']
-    }
-    catch (e){ }
-
+    // try {
+    //     seller_uid = req.paramBody['product_list'][0]['seller_uid']
+    // }
+    // catch (e){ }
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_order'
         , [
@@ -267,9 +258,9 @@ function query(req, db_connection) {
             '',//req.paramBody['seller_msg'],
             0,//req.paramBody['use_point'],
             0,//req.paramBody['use_reward'],
-            req.paramBody['price_total'],
-            req.paramBody['delivery_total'],
-            req.paramBody['price_payment'],
+            calc['price_total'],
+            calc['delivery_total'],
+            calc['price_payment'],
             '',//req.paramBody['pg_receipt_id'],
             '',//req.paramBody['v_bank_account_number'],
             '',//req.paramBody['v_bank_expired_time'],
