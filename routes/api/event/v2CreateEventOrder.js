@@ -192,13 +192,13 @@ module.exports = function (req, res) {
             //계산로직이 돌아간 다음 item안에 값이 들어가야 한다.
             let calc = {"price_total": 0, "delivery_total": 0, "price_payment":0, "other_seller": 0}
             req.paramBody['product_list'].forEach(el=>{
-                calc['price_total'] += (el['price_original'] * el['count'])
+                calc['price_total'] += (Number(el['price_original']) * Number(el['count']))
                 if(calc['other_seller'] !==  el['seller_uid']){
-                    calc['delivery_total'] += el['price_delivery']
+                    calc['delivery_total'] += Number(el['price_delivery'])
                     calc['other_seller'] = el['seller_uid']
                 }
             })
-            calc['price_payment'] = calc['price_total'] + calc['delivery_total']
+            calc['price_payment'] = Number(calc['price_total']) + Number(calc['delivery_total'])
             //종료
 
             //order테이블 먼저 업로드
