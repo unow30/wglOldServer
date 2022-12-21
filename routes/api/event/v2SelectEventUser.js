@@ -68,7 +68,8 @@ module.exports = function (req, res) {
             const {year, month, date} = dateUtil()
             const today = new Date(`${year}-${month}-${date}`)
             event_data.forEach(el=>{
-                if(el['seller_uid'] !== req.paramBody['seller_uid']){
+                if(Number(el['seller_uid']) !== Number(req.paramBody['seller_uid'])){
+                    console.log(el['seller_uid'], req.paramBody['seller_uid'])
                     errUtil.createCall(errCode.err, '다른 이벤트에 사용하는 코드입니다. 이벤트를 확인해주세요.')
                 }
 
