@@ -1,5 +1,5 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 19.
+ * Created by yunhokim on 2022. 12. 21.
  *
  * @swagger
  * /api/private/v2/event/check:
@@ -62,6 +62,10 @@ module.exports = function (req, res) {
             const {year, month, date} = dateUtil()
             const today = new Date(`${year}-${month}-${date}`)
             event_data.forEach(el=>{
+                if(el['seller_uid'] !== req.paramBody['seller_uid']){
+                    errUtil.createCall(errCode.err, '다른 이벤트에 사용하는 코드입니다. 이벤트를 확인해주세요.')
+                }
+
                 if(el['is_checked'] === 1){
                     errUtil.createCall(errCode.err,'이미 사용된 이벤트 코드입니다.')
                 }
