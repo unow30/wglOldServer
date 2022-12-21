@@ -21,7 +21,13 @@
  *           type: string
  *           example: abcdef
  *         description: 이벤트 코드
- *
+ *       - in: query
+ *         name: seller_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: 이벤트 진행 판매자uid
  *     responses:
  *       400:
  *         description: 에러 코드 400
