@@ -121,6 +121,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
+const dateUtil = require('../../../common/utils/dateUtil')
 
 const errCode = require('../../../common/define/errCode');
 const fcmUtil = require('../../../common/utils/fcmUtil');
@@ -150,13 +151,43 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let event_check = await queryEventUpdate(req, db_connection)
+            //이벤트코드 불일치, 사용한 이벤트 코드일 경우 이 로직과 뷰화면이 나타날 수 없다.
+            //그래도 안전을 위해 필터링을 다시 진행한다.
+            let event_data = await queryEventUser(req, db_connection);
+            if(!event_data || event_data.length === 0){
+                errUtil.createCall(errCode.err,'잘못된 이벤트 코드입력 입니다.')
+            }
+
+            const {year, month, date} = dateUtil()
+            const today = new Date(`${year}-${month}-${date}`)
+            event_data.forEach(el=>{
+                if(el['is_checked'] === 1){
+                    errUtil.createCall(errCode.err,'이미 사용된 이벤트 코드입니다.')
+                }
+
+                let endTime = new Date(el['end_time'])
+                // console.log(year, month, date)
+                // console.log(today)
+                // console.log(endTime)
+                if(today >= endTime){
+                    errUtil.createCall(errCode.err, '입력기한이 초과된 이벤트 코드입니다.')
+                }
+
+                if(el['is_deleted'] === 1 || el['is_authorize'] === 0){
+                    errUtil.createCall(errCode.err, `${el['name']}상품이 준비중입니다.`)
+                }
+            })
+            //이벤트 필터링 종료
+
+            //이벤트 코드 사용체크 업데이트
+            let event_update = await queryEventUpdate(req, db_connection)
             // console.log(event_check['event_code'])
             // console.log(req.paramBody['event_code'])
 
-            if(event_check['event_code'] !== req.paramBody['event_code']){
+            if(event_update['event_code'] !== req.paramBody['event_code']){
                 errUtil.createCall(errCode.fail, `이벤트 코드가 정확하지 않습니다. 다시 입력해주세요`)
             }
+            //이벤트 코드 사용체크 업데이트 종료
 
             //계산로직이 돌아간 다음 item안에 값이 들어가야 한다.
             let calc = {"price_total": 0, "delivery_total": 0, "price_payment":0, "other_seller": 0}
@@ -168,13 +199,16 @@ module.exports = function (req, res) {
                 }
             })
             calc['price_payment'] = calc['price_total'] + calc['delivery_total']
+            //종료
 
+            //order테이블 먼저 업로드
             req.innerBody['item'] = await query(req, db_connection, calc);
 
             if (!req.innerBody['item']) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
+            //종료
 
             // if(req.innerBody['item']['payment_method'] === 3){
             //
@@ -184,6 +218,7 @@ module.exports = function (req, res) {
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
             req.innerBody['alrim_msg_list'] = []
+            //order_product테이블 업데이트
             for( let idx in req.paramBody['product_list'] ){
                 req.innerBody['product'] = req.paramBody['product_list'][idx]
                 let product = await queryProduct(req, db_connection)
@@ -197,6 +232,7 @@ module.exports = function (req, res) {
                 req.innerBody['alrim_msg_list'][idx].name = product['name']
                 req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
             }
+            //종정
 
             if(req.innerBody['item']['payment_method'] !== 3){
                 await alarm(req, res)
@@ -382,4 +418,17 @@ function setArimMessage(alrim_msg_distinc_list, idx) {
 ${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
 
 □ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
+}
+
+
+function queryEventUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_event_user_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['event_code'],
+        ]
+    );
 }
