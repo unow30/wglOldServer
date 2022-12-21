@@ -222,8 +222,8 @@ app.route('/gift/order').post( require('./gift/createGiftOrder') )
                               .get(require('./gift/selectGiftOrder'));
 app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./gift/updateGiftRefuse') );
 app.route('/gift/refund').put(require('../middleware/bootPay'), require('./gift/updateGiftRefund') );
-app.route('/v2/gift/box/received').put(require('./gift/v2SelectGiftBoxReceived') );
-app.route('/v2/gift/box/gived').put(require('./gift/v2SelectGiftBoxGived') );
+app.route('/v2/gift/box/received').get(require('./gift/v2SelectGiftBoxReceived') );
+app.route('/v2/gift/box/gived').get(require('./gift/v2SelectGiftBoxGived') );
 
 
 /**
