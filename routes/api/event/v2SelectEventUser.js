@@ -70,7 +70,8 @@ module.exports = function (req, res) {
             event_data.forEach(el=>{
                 if(Number(el['seller_uid']) !== Number(req.paramBody['seller_uid'])){
                     // console.log(el['seller_uid'], req.paramBody['seller_uid'])
-                    errUtil.createCall(errCode.err, '다른 이벤트에 사용하는 코드입니다. 이벤트를 확인해주세요.')
+                    // errUtil.createCall(errCode.err, '다른 이벤트에 사용하는 코드입니다. 이벤트를 확인해주세요.')
+                    errUtil.createCall(errCode.err, '잘못된 이벤트 코드입력 입니다.')
                 }
 
                 if(el['is_checked'] === 1){
