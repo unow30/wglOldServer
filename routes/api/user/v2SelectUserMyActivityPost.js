@@ -6,7 +6,7 @@
  * /api/private/v2/user/my/activity/post:
  *   get:
  *     summary: 내 활동 게시글 관련 정보
- *     tags: [Weggler]
+ *     tags: [User]
  *     description: |
  *       path : /api/private/v2/user/my/activity/post
  *
