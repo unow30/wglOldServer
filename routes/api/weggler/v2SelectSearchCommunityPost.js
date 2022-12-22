@@ -11,6 +11,7 @@
  *       path : /api/private/v2/weggler/search/community/post
  *
  *       * 커뮤니티 게시글 검색 정보
+ *       * offset 0일때만 count값 보냅니다.
  *
  *     parameters:
  *       - in: query
@@ -37,58 +38,74 @@
  *           $ref: '#/definitions/Error'
  */
 
- const paramUtil = require('../../../common/utils/paramUtil');
- const fileUtil = require('../../../common/utils/fileUtil');
- const mysqlUtil = require('../../../common/utils/mysqlUtil');
- const sendUtil = require('../../../common/utils/sendUtil');
- const errUtil = require('../../../common/utils/errUtil');
- const logUtil = require('../../../common/utils/logUtil');
- 
- let file_name = fileUtil.name(__filename);
- 
- module.exports = function (req, res) {
-     const _funcName = arguments.callee.name;
- 
-     try {
-         req.file_name = file_name;
-         logUtil.printUrlLog(req, `== function start ==================================`);
-         req.paramBody = paramUtil.parse(req);
-         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
- 
-         checkParam(req);
- 
-         mysqlUtil.connectPool(async function (db_connection) {
-             req.innerBody = {};
- 
-             req.innerBody['item'] = await querySelect(req, db_connection);
- 
-             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
- 
-         }, function (err) {
-             sendUtil.sendErrorPacket(req, res, err);
-         });
- 
-     } catch (e) {
-         let _err = errUtil.get(e);
-         sendUtil.sendErrorPacket(req, res, _err);
-     }
- }
- 
- function checkParam(req) {
-     paramUtil.checkParam_noReturn(req.paramBody, 'keyword');
-     paramUtil.checkParam_noReturn(req.paramBody, 'offset');
- }
- 
- 
- function querySelect(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     return mysqlUtil.queryArray(db_connection
-         , 'call proc_select_search_community_post_v2'
-         , [
-             req.headers['user_uid'],
-             req.paramBody['keyword'],
-             req.paramBody['offset'],
-         ]
-     );
- }
+const paramUtil = require('../../../common/utils/paramUtil');
+const fileUtil = require('../../../common/utils/fileUtil');
+const mysqlUtil = require('../../../common/utils/mysqlUtil');
+const sendUtil = require('../../../common/utils/sendUtil');
+const errUtil = require('../../../common/utils/errUtil');
+const logUtil = require('../../../common/utils/logUtil');
+
+let file_name = fileUtil.name(__filename);
+
+module.exports = function (req, res) {
+    const _funcName = arguments.callee.name;
+
+    try {
+        req.file_name = file_name;
+        logUtil.printUrlLog(req, `== function start ==================================`);
+        req.paramBody = paramUtil.parse(req);
+        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+
+        checkParam(req);
+
+        mysqlUtil.connectPool(async function (db_connection) {
+            req.innerBody = {};
+            if(req.paramBody['offset'] == 0 ){
+                const result = await querySelectCount(req, db_connection);
+                req.innerBody['count'] = result.count
+            }
+
+            req.innerBody['item'] = await querySelect(req, db_connection);
+
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+
+        }, function (err) {
+            sendUtil.sendErrorPacket(req, res, err);
+        });
+
+    } catch (e) {
+        let _err = errUtil.get(e);
+        sendUtil.sendErrorPacket(req, res, _err);
+    }
+}
+
+function checkParam(req) {
+    paramUtil.checkParam_noReturn(req.paramBody, 'keyword');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
+}
+
+
+function querySelect(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_search_community_post_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['keyword'],
+            req.paramBody['offset'],
+        ]
+    );
+}
+
+function querySelectCount(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_search_community_post_count_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['keyword'],
+        ]
+    );
+}
