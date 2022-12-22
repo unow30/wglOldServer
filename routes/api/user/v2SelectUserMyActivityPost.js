@@ -29,7 +29,8 @@
  *         schema:
  *           type: number
  *           example: 1
- *         description: 1: 리뷰, 2: 커뮤니티
+ *         description: |
+ *          1: 리뷰, 2: 커뮤니티
  *
  *     responses:
  *       400:
