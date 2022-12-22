@@ -29,9 +29,6 @@
  *           type: object
  *           required:
  *             - addressbook_uid
- *             - price_total
- *             - delivery_total
- *             - price_payment
  *             - payment_method
  *           properties:
  *             event_code:
@@ -49,22 +46,6 @@
  *               example: 집 문앞에 놔주세요
  *               description: |
  *                 배송메모
- *             price_total:
- *               type: number
- *               example: 50000
- *               description: |
- *                 총 상품 금액
- *             delivery_total:
- *               type: number
- *               example: 2500
- *               description: |
- *                 주문 배송비 총합
- *                 * 배송비가 없을 경우 0
- *             price_payment:
- *               type: number
- *               example: 52500
- *               description: |
- *                 결제 금액
  *             payment_method:
  *               type: number
  *               example: 6
@@ -113,7 +94,7 @@
  *                   price_original:
  *                     type: number
  *                     example: 12000
- *                     description: 상품 1개당 원가
+ *                     description: 상품 1개당 원가. 실제 결제되는 가격을 계산해야 한다.(product의 discount_price가 실제 결제되는 가격이다.)
  *                   payment:
  *                     type: number
  *                     example: 24000
@@ -140,6 +121,7 @@ const sendUtil = require('../../../common/utils/sendUtil');
 const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const jwtUtil = require('../../../common/utils/jwtUtil');
+const dateUtil = require('../../../common/utils/dateUtil')
 
 const errCode = require('../../../common/define/errCode');
 const fcmUtil = require('../../../common/utils/fcmUtil');
@@ -169,29 +151,74 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            let event_check = await queryEventUpdate(req, db_connection)
+            //이벤트코드 불일치, 사용한 이벤트 코드일 경우 이 로직과 뷰화면이 나타날 수 없다.
+            //그래도 안전을 위해 필터링을 다시 진행한다.
+            let event_data = await queryEventUser(req, db_connection);
+            if(!event_data || event_data.length === 0){
+                errUtil.createCall(errCode.err,'잘못된 이벤트 코드입력 입니다.')
+            }
+
+            const {year, month, date} = dateUtil()
+            const today = new Date(`${year}-${month}-${date}`)
+            event_data.forEach(el=>{
+                if(el['is_checked'] === 1){
+                    errUtil.createCall(errCode.err,'이미 사용된 이벤트 코드입니다.')
+                }
+
+                let endTime = new Date(el['end_time'])
+                // console.log(year, month, date)
+                // console.log(today)
+                // console.log(endTime)
+                if(today >= endTime){
+                    errUtil.createCall(errCode.err, '입력기한이 초과된 이벤트 코드입니다.')
+                }
+
+                if(el['is_deleted'] === 1 || el['is_authorize'] === 0){
+                    errUtil.createCall(errCode.err, `${el['name']}상품이 준비중입니다.`)
+                }
+            })
+            //이벤트 필터링 종료
+
+            //이벤트 코드 사용체크 업데이트
+            let event_update = await queryEventUpdate(req, db_connection)
             // console.log(event_check['event_code'])
             // console.log(req.paramBody['event_code'])
 
-            if(event_check['event_code'] !== req.paramBody['event_code']){
+            if(event_update['event_code'] !== req.paramBody['event_code']){
                 errUtil.createCall(errCode.fail, `이벤트 코드가 정확하지 않습니다. 다시 입력해주세요`)
             }
+            //이벤트 코드 사용체크 업데이트 종료
 
-            req.innerBody['item'] = await query(req, db_connection);
+            //계산로직이 돌아간 다음 item안에 값이 들어가야 한다.
+            let calc = {"price_total": 0, "delivery_total": 0, "price_payment":0, "other_seller": 0}
+            req.paramBody['product_list'].forEach(el=>{
+                calc['price_total'] += (Number(el['price_original']) * Number(el['count']))
+                if(calc['other_seller'] !==  el['seller_uid']){
+                    calc['delivery_total'] += Number(el['price_delivery'])
+                    calc['other_seller'] = el['seller_uid']
+                }
+            })
+            calc['price_payment'] = Number(calc['price_total']) + Number(calc['delivery_total'])
+            //종료
+
+            //order테이블 먼저 업로드
+            req.innerBody['item'] = await query(req, db_connection, calc);
 
             if (!req.innerBody['item']) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
+            //종료
 
-            if(req.innerBody['item']['payment_method'] === 3){
-
-                req.paramBody['status'] = 30 //가상계좌 입금대기상태
-            }
+            // if(req.innerBody['item']['payment_method'] === 3){
+            //
+            //     req.paramBody['status'] = 30 //가상계좌 입금대기상태
+            // }
 
             req.innerBody['order_product_list'] = []
             req.innerBody['push_token_list'] = []
             req.innerBody['alrim_msg_list'] = []
+            //order_product테이블 업데이트
             for( let idx in req.paramBody['product_list'] ){
                 req.innerBody['product'] = req.paramBody['product_list'][idx]
                 let product = await queryProduct(req, db_connection)
@@ -205,6 +232,7 @@ module.exports = function (req, res) {
                 req.innerBody['alrim_msg_list'][idx].name = product['name']
                 req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
             }
+            //종정
 
             if(req.innerBody['item']['payment_method'] !== 3){
                 await alarm(req, res)
@@ -238,9 +266,9 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'addressbook_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'delivery_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'price_total');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'delivery_total');
+    // paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
 }
 
 function deleteBody(req) {
@@ -248,15 +276,14 @@ function deleteBody(req) {
     delete req.innerBody['product']
 }
 
-function query(req, db_connection) {
+function query(req, db_connection, calc) {
     const _funcName = arguments.callee.name;
 
     let seller_uid = 0
-    try {
-        seller_uid = req.paramBody['product_list'][0]['seller_uid']
-    }
-    catch (e){ }
-
+    // try {
+    //     seller_uid = req.paramBody['product_list'][0]['seller_uid']
+    // }
+    // catch (e){ }
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_order'
         , [
@@ -267,9 +294,9 @@ function query(req, db_connection) {
             '',//req.paramBody['seller_msg'],
             0,//req.paramBody['use_point'],
             0,//req.paramBody['use_reward'],
-            req.paramBody['price_total'],
-            req.paramBody['delivery_total'],
-            req.paramBody['price_payment'],
+            calc['price_total'],
+            calc['delivery_total'],
+            calc['price_payment'],
             '',//req.paramBody['pg_receipt_id'],
             '',//req.paramBody['v_bank_account_number'],
             '',//req.paramBody['v_bank_expired_time'],
@@ -391,4 +418,17 @@ function setArimMessage(alrim_msg_distinc_list, idx) {
 ${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
 
 □ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
+}
+
+
+function queryEventUser(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_event_user_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['event_code'],
+        ]
+    );
 }
