@@ -81,6 +81,11 @@ module.exports = function (req, res) {
     }
 }
 
+function checkParam(req) {
+    paramUtil.checkParam_noReturn(req.paramBody, 'type');
+    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
+}
+
 function querySelectReviewComment(req, db_connection) {
     const _funcName = arguments.callee.name;
     
