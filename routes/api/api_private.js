@@ -291,6 +291,8 @@ app.route('/v2/weggler/story/detail').get( require('./weggler/v2SelectWegglerSto
 app.route('/v2/weggler/story/detail/simple').get( require('./weggler/v2SelectWegglerStoryDetailSimple') )
 app.route('/v2/weggler/ranking').get( require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
 app.route('/v2/weggler/ranking/detail').get( require('./weggler/v2SelectRankingWegglerDetail')) // 위글러 랭킹 위글러
+app.route('/v2/weggler/search/community/post').get( require('./weggler/v2SelectSearchCommunityPost')) // 위글러 랭킹 위글러
+
 
 /**
  * private => public으로 옮긴 라우터들 22. 11. 02 
