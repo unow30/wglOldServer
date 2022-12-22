@@ -86,7 +86,7 @@ module.exports = function (req, res) {
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'review_uid');
     paramUtil.checkParam_noReturn(req.paramBody, 'type');
-    paramUtil.checkParam_noReturn(req.paramBody, 'created_time');
+    paramUtil.checkParam_noReturn(req.paramBody, 'created_time'); //created_time을 받는 이유는 end_time을 설정하기 위함
 }
 
 function query(req, db_connection) {

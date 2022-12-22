@@ -36,12 +36,16 @@ module.exports ={
                         // await fcmUtil.fcmGiftOvertimeSingle(item[idx]); //선물유효기간 1주일 지남. 구매자에게 취소부탁
                         // let bootpay_response = await axios.put('http://localhost:3456/api/public/order/cancel/gift', {
                         // let bootpay_response = await axios.put('http://52.78.124.248:3456/api/public/order/cancel/gift', {
-                        let bootpay_response = await axios.put('http://3.34.65.237:3456/api/public/order/cancel/gift', {
+                        let bootpay_response = await axios.put('http://3.34.65.237:8080/api/public/order/cancel/gift', {
                                 "order_uid": item[idx]['order_uid'],
                                 "order_product_uid": item[idx]['order_product_uid'],
                                 "gift_uid": item[idx]['uid'], //gift_uid
                                 "status": item[idx]['order_product_status'],
                                 "user_uid": item[idx]['source_uid'] //선물환불시 구매한 유저uid 필요
+                        },{
+                            headers: {
+                                access_token: funcUtil.getPublicAuthToken()
+                            }
                         })
 
                     }

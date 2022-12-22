@@ -15,6 +15,8 @@ app.route('/user').put( require('./user/updateUser') )
 
 app.route('/v2/user/info/me').get( require('./user/v2SelectUserInfoMe') )
 app.route('/v2/user/reward/info').get( require('./user/v2SelectUserRefundInfo') )
+app.route('/v2/user/my/activity/comment').get( require('./user/v2SelectUserMyActivityComment') )
+app.route('/v2/user/my/activity/post').get( require('./user/v2SelectUserMyActivityPost') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
@@ -222,6 +224,9 @@ app.route('/gift/order').post( require('./gift/createGiftOrder') )
                               .get(require('./gift/selectGiftOrder'));
 app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./gift/updateGiftRefuse') );
 app.route('/gift/refund').put(require('../middleware/bootPay'), require('./gift/updateGiftRefund') );
+app.route('/v2/gift/box/received').get(require('./gift/v2SelectGiftBoxReceived') );
+app.route('/v2/gift/box/gived').get(require('./gift/v2SelectGiftBoxGived') );
+
 
 /**
  * Alert
@@ -288,6 +293,8 @@ app.route('/v2/weggler/story/detail').get( require('./weggler/v2SelectWegglerSto
 app.route('/v2/weggler/story/detail/simple').get( require('./weggler/v2SelectWegglerStoryDetailSimple') )
 app.route('/v2/weggler/ranking').get( require('./weggler/v2SelectRankingWeggler')) // 위글러 랭킹 위글러
 app.route('/v2/weggler/ranking/detail').get( require('./weggler/v2SelectRankingWegglerDetail')) // 위글러 랭킹 위글러
+app.route('/v2/weggler/search/community/post').get( require('./weggler/v2SelectSearchCommunityPost')) // 위글러 랭킹 위글러
+
 
 /**
  * private => public으로 옮긴 라우터들 22. 11. 02 
