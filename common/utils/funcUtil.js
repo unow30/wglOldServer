@@ -90,6 +90,9 @@ module.exports = {
             naverPw: process.env.NAVER_PW,
         }
     },
+    getPublicAuthToken: ()=>{
+        return process.env.authToken
+    },
 }
 
 function _isRealServer(){
