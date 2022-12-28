@@ -58,6 +58,8 @@ module.exports = function (req, res) {
         const reviewDetail = await queryReview(req, db_connection);
         if(reviewDetail){
             req.innerBody['item'] = feedListParse(reviewDetail)
+        }else{
+            req.innerBody['item'] = {}
         }
         
         
