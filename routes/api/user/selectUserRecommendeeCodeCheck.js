@@ -59,10 +59,11 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.already, `유효하지 않은 추천인 코드입니다. 다시 확인해주세요.`)
                 return
             }
-            if( recommendee_data['recommendee_count'] >= 5 ){
-                errUtil.createCall(errCode.already, `추천인 코드 입력횟수를 초과합니다.(최대 5명)`)
-                return
-            }
+            //221228 추천인코드 입력제한 해제
+            // if( recommendee_data['recommendee_count'] >= 5 ){
+            //     errUtil.createCall(errCode.already, `추천인 코드 입력횟수를 초과합니다.(최대 5명)`)
+            //     return
+            // }
 
             req.innerBody['is_success'] = 1;
             req.innerBody['success'] = '사용가능한 추천인 코드입니다.'
