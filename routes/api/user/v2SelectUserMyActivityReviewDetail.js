@@ -56,6 +56,7 @@ module.exports = function (req, res) {
         req.innerBody = {};
 
         const reviewDetail = await queryReview(req, db_connection);
+
         if(reviewDetail){
             req.innerBody['item'] = feedListParse(reviewDetail)
         }else{
@@ -81,7 +82,7 @@ async function queryReview(req, db_connection) {
         , 'call proc_select_my_activity_review_detail_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['post_uid'],
+            req.paramBody['review_uid'],
             req.paramBody['type'],
         ]
     );
