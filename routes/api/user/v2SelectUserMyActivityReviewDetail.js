@@ -5,7 +5,7 @@
  * /api/private/v2/user/my/activity/review/detail:
  *   get:
  *     summary: 내활동 리뷰 디테일
- *     tags: [Weggler]
+ *     tags: [User]
  *     description: |
  *      ## path : /api/private/v2/user/my/activity/review/detail
  *
