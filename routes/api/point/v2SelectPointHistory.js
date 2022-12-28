@@ -28,7 +28,8 @@
  *         schema:
  *           type: number
  *           example: 0
- *         description: 0: 전체, 1: 지급, 2: 사용
+ *         description: |
+ *          0: 전체, 1: 지급, 2: 사용
  *
  *     responses:
  *       400:
