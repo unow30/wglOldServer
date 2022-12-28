@@ -5,7 +5,7 @@
  * /api/private/v2/qna/list:
  *   get:
  *     summary: 문의내역
- *     tags: [User]
+ *     tags: [QnA]
  *     description: |
  *      ## path : /api/private/v2/qna/list
  *
