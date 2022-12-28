@@ -1,17 +1,17 @@
 /**
- * 
- * Created by jongho
- * 
+ * Created by Jongho
+ *
  * @swagger
- * /api/private/v2/user/my/activity/comment:
+ * /api/private/v2/point/history:
  *   get:
- *     summary: 내 활동 댓글 관련 정보
- *     tags: [User]
+ *     summary: 포인트 히스토리
+ *     tags: [Point]
  *     description: |
- *       path : /api/private/v2/user/my/activity/comment
+ *       path : /api/private/v2/point/history
  *
- *       * 내 활동 댓글 관련 정보
- *
+ *       * 포인트 히스토리
+ *       * offset 0 일때만 토탈 포인트 보냅니다!
+ * 
  *     parameters:
  *       - in: query
  *         name: offset
@@ -20,17 +20,16 @@
  *         schema:
  *           type: number
  *           example: 0
- *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. Limit 12 offset 0부터
+ *         description: offset 12 씩 증가
  *       - in: query
  *         name: type
- *         default: 1
+ *         default: 0
  *         required: true
  *         schema:
  *           type: number
- *           example: 1
+ *           example: 0
  *         description: |
- *          1: 리뷰, 2: 커뮤니티
+ *          0: 전체, 1: 지급, 2: 사용
  *
  *     responses:
  *       400:
@@ -62,12 +61,12 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            if(req.paramBody['type'] == 1){
-                req.innerBody['item'] = await querySelectReviewComment(req, db_connection)
+            if(req.paramBody['offset'] == 0){
+                const pointResult = await querySelectAll(req, db_connection);
+                req.innerBody['total_point'] = pointResult.total_point;
             }
-            else if(req.paramBody['type'] == 2){
-                req.innerBody['item'] = await querySelectCommunityComment(req, db_connection)
-            }
+
+            req.innerBody['item'] = await querySelectPointHistory(req, db_connection);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -82,30 +81,31 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
-    paramUtil.checkParam_noReturn(req.paramBody, 'type');
-    paramUtil.checkParam_noReturn(req.paramBody, 'offset');
 }
 
-function querySelectReviewComment(req, db_connection) {
+function deleteBody(req) {
+}
+
+function querySelectAll(req, db_connection) {
     const _funcName = arguments.callee.name;
-    
-    return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_my_activity_review_comment_v2'
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_point_all_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['offset'],
         ]
     );
 }
 
-function querySelectCommunityComment(req, db_connection) {
+function querySelectPointHistory(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_my_activity_community_comment_v2'
+        , 'call proc_select_point_history_v2'
         , [
             req.headers['user_uid'],
-            req.paramBody['offset'],
+            req.paramBody['type'],
+            req.paramBody['offset']
         ]
     );
 }
