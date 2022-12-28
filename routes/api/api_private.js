@@ -17,6 +17,7 @@ app.route('/v2/user/info/me').get( require('./user/v2SelectUserInfoMe') )
 app.route('/v2/user/reward/info').get( require('./user/v2SelectUserRefundInfo') )
 app.route('/v2/user/my/activity/comment').get( require('./user/v2SelectUserMyActivityComment') )
 app.route('/v2/user/my/activity/post').get( require('./user/v2SelectUserMyActivityPost') )
+app.route('/v2/user/my/activity/review/detail').get( require('./user/v2SelectUserMyActivityReviewDetail') )
 
 app.route('/user/info/me').get( require('./user/selectUserInfoMe') )
 app.route('/user/info/me/fcm').get( require('./user/selectFcmInfoMe'))
@@ -80,6 +81,8 @@ app.route('/point')
     // .post( require('./point/createPoint') )
     .get( require('./point/selectPoint') )
 app.route('/point/list').get( require('./point/selectPointList') )
+app.route('/v2/point/history').get( require('./point/v2SelectPointHistory') )
+
 
 /**
  * feed api
