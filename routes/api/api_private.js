@@ -80,6 +80,8 @@ app.route('/point')
     // .post( require('./point/createPoint') )
     .get( require('./point/selectPoint') )
 app.route('/point/list').get( require('./point/selectPointList') )
+app.route('/v2/point/history').get( require('./point/v2SelectPointHistory') )
+
 
 /**
  * feed api
