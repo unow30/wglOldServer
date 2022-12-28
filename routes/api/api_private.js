@@ -156,6 +156,7 @@ app.route('/qna')
     .delete( require('./qna/deleteQnA') )
 app.route('/qna/list').get( require('./qna/selectQnAList') )
 app.route('/qna/list/me').get( require('./qna/selectQnAListMe') )
+app.route('/v2/qna/list').get( require('./qna/v2SelectProductQna') )
 
 /**
  * report api
