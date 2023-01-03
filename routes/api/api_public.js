@@ -155,4 +155,9 @@ app.route('/review/video').get(  require('./review/selectVideoReview'))
 app.route('/v1/groupbuying/detail').get(  require('./groupBuying/v1SelectGroupBuyingDetailView') )
 app.route('/v1/groupbuying/detail/room/list').get(  require('./groupBuying/v1SelectGroupBuyingRoomList') )
 
+/**
+ * challenge api
+ */
+app.route('/v2/challenge/recent/round').get(  require('./challenge/v2SelectChallengeRecentRound') )
+
 module.exports = app;
