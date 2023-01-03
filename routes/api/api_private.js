@@ -352,5 +352,6 @@ app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))//이�
  */
 app.route('/v2/challenge/list').get( require('./challenge/v2SelectChallengeList')) // 챌린지 리스트
 app.route('/v2/challenge/detail/list').get( require('./challenge/v2SelectChallengeDetailList')) // 챌린지 디테일 리스트
+app.route('/v2/challenge/product/check').get( require('./challenge/v2SelectChallengeProductCheck')) // 챌린지 리뷰 생성 전 진행중인 챌린지 유무 확인 및 상품 정보 받아옴
 
 module.exports = app;
