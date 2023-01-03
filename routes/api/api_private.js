@@ -347,4 +347,10 @@ app.route('/v2/event/filename').get( require('./event/v2SelectEventImage'))
 app.route('/v2/event/check').get( require('./event/v2SelectEventUser'))//이벤트 당첨자 체크
 app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))//이벤트 상품 구매
 
+/**
+ * challenge
+ */
+ app.route('/v2/challenge/list').get( require('./challenge/v2SelectChallengeList')) // 챌린지 리스트
+
+
 module.exports = app;
