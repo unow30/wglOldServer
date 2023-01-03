@@ -350,7 +350,7 @@ app.route('/v2/event/order').post( require('./event/v2CreateEventOrder'))//이�
 /**
  * challenge
  */
- app.route('/v2/challenge/list').get( require('./challenge/v2SelectChallengeList')) // 챌린지 리스트
-
+app.route('/v2/challenge/list').get( require('./challenge/v2SelectChallengeList')) // 챌린지 리스트
+app.route('/v2/challenge/detail/list').get( require('./challenge/v2SelectChallengeDetailList')) // 챌린지 디테일 리스트
 
 module.exports = app;

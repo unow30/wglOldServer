@@ -3,17 +3,28 @@
  *
  * 
  * @swagger
- * /api/private/v2/challenge/list:
+ * /api/private/v2/challenge/detail/list:
  *   get:
- *     summary: 챌린지 리스트
+ *     summary: 챌린지 디테일 리스트
  *     tags: [Challenge]
  *     description: |
- *       path : /api/private/v2/challenge/list
+ *       path : /api/private/v2/challenge/detail/list
  *
- *       * 챌린지 목록
+ *       * 챌린지 디테일 리스트
  *       * limit 12씩 이므로 offset 12씩 증가
+ *       * offset 0 일때만 랭킹 데이터 보냄
+ *       * 마감이 안된 챌린지는 랭킹 데이터 빈배열 반환
  *
  *     parameters:
+ *       - in: query
+ *         name: challenge_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           챌린지 uid
  *       - in: query
  *         name: offset
  *         default: 0
@@ -54,6 +65,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
+            if(req.paramBody['offset'] == 0){
+                req.innerBody['ranking_review'] = await querySelectRanking(req, db_connection);
+            }
             req.innerBody['item'] = await querySelect(req, db_connection);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -70,15 +84,30 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'offset');
+    paramUtil.checkParam_noReturn(req.paramBody, 'challenge_uid');
 }
 
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_challenge_list_v2'
+        , 'call proc_select_challenge_video_list_v2'
         , [
             req.headers['user_uid'],
+            req.paramBody['challenge_uid'],
+            req.paramBody['offset'],
+        ]
+    );
+}
+
+function querySelectRanking(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_challenge_video_ranking_list_v2'
+        , [
+            req.headers['user_uid'],
+            req.paramBody['challenge_uid'],
             req.paramBody['offset'],
         ]
     );
