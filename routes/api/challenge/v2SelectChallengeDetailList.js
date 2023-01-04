@@ -66,9 +66,11 @@ module.exports = function (req, res) {
             req.innerBody = {};
 
             if(req.paramBody['offset'] == 0){
-                req.innerBody['ranking_review'] = await querySelectRanking(req, db_connection);
+                const rankingList = await querySelectRanking(req, db_connection);
+                req.innerBody['ranking_review'] = productParse(rankingList)
             }
-            req.innerBody['item'] = await querySelect(req, db_connection);
+            const challengeList = await querySelect(req, db_connection);
+            req.innerBody['item'] = productParse(challengeList)
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -111,4 +113,20 @@ function querySelectRanking(req, db_connection) {
             req.paramBody['offset'],
         ]
     );
+}
+
+function productParse(challengeList) {
+    return challengeList.map(item=>{
+        const result = {
+            ...item
+        }
+        if(item.multiple_product == 1){
+            result['product_info'] = item.product_info.split('@!@').map(el => JSON.parse(el))
+        }
+        else{
+            result['product_info'] = [JSON.parse(item.product_info)]
+        }
+        
+        return result
+    })
 }
