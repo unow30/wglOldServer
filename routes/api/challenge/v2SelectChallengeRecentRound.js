@@ -43,7 +43,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['round'] = await querySelect(req, db_connection);
+            req.innerBody['item'] = await querySelect(req, db_connection);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
