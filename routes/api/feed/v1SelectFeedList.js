@@ -135,14 +135,15 @@
  *           * 3 : 추천순(선호태그의 랜덤 => 우선 조회수로)
  *         enum: [0,1,2,3]
  *       - in: query
- *         name: challenge_uid
- *         required: true
+ *         name: target_uid
+ *         required: false
  *         schema:
  *           type: number
  *           example: 0
  *         description: |
- *           첼린지 uid
- *           선택한 uid가 가지고 있는 회차
+ *           target_uid
+ *           select_type에 따라 다른 uid를 받는다.
+ *           select_type: challenge => challenge_uid
  *
  *     responses:
  *       200:
@@ -311,7 +312,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['km'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
-                    req.paramBody['challenge_uid'],
+                    req.paramBody['target_uid'],
                 ]
             );
         }break;
