@@ -43,9 +43,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            const challengeRound = await querySelect(req, db_connection);
-
-            req.innerBody['round'] = challengeRound? challengeRound.round : 0
+            req.innerBody['round'] = await querySelect(req, db_connection);
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
@@ -66,7 +64,7 @@ function checkParam(req) {
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
+    return mysqlUtil.queryArray(db_connection
         , 'call proc_select_challenge_recent_round_v2'
         , [
         ]
