@@ -11,7 +11,7 @@
  *
  *       * 피드 목록
  *       * 피드 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.
- *       * 피드 목록(전체), 브랜드관, 공동구매, 마이굿즈가 있습니다.
+ *       * 피드 목록(전체), 브랜드관, 공동구매, 마이굿즈, 첼린지가 있습니다.
  *       * 만약 위글 광고 클릭후 처음 목록 다음에 피드 목록을 새로 요청할때는 ad_product_uid 는 0으로 보내주세요
  *
  *     parameters:
@@ -25,7 +25,8 @@
  *           all or null: 피드리스트 실행
  *           brand: 브랜드관
  *           groupbuying: 공동구매(이전꺼실행, 필터링 및 기타이슈 수정중)
- *         enum: ['', all, brand, groupbuying]
+ *           challenge: 첼린지 영상
+ *         enum: ['', all, brand, groupbuying, challenge]
  *       - in: query
  *         name: latitude
  *         default: 37.536977
@@ -100,10 +101,10 @@
  *           type: number
  *           example: 0
  *         description: |
- *           페이지 시작 값을 넣어주시면 됩니다. Limit 30
- *           offset 0: 0~30
- *           offset 30: 30~60
- *           offset 60: 60~90
+ *           페이지 시작 값을 넣어주시면 됩니다. Limit 12
+ *           offset 0: 0~11
+ *           offset 12: 12~23
+ *           offset 24: 24~35
  *       - in: query
  *         name: keyword
  *         required: false
@@ -133,6 +134,15 @@
  *           * 2 : 인기순(좋아요개수)
  *           * 3 : 추천순(선호태그의 랜덤 => 우선 조회수로)
  *         enum: [0,1,2,3]
+ *       - in: query
+ *         name: challenge_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           첼린지 uid
+ *           선택한 uid가 가지고 있는 회차
  *
  *     responses:
  *       200:
@@ -291,6 +301,20 @@ function querySelect(req, db_connection) {
                 ]
             );
         }break;
+        case 'challenge':{
+            return mysqlUtil.queryArray(db_connection
+                , 'call proc_select_challenge_feed_list_v2'
+                , [
+                    req.headers['user_uid'],
+                    req.paramBody['latitude'],
+                    req.paramBody['longitude'],
+                    req.paramBody['km'],
+                    req.paramBody['random_seed'],
+                    req.paramBody['offset'],
+                    req.paramBody['challenge_uid'],
+                ]
+            );
+        }break;
         // case 'groupbuying':{
         //     return mysqlUtil.queryArray(db_connection
         //         , 'call proc_select_feed_groupbuying_list_v1'
@@ -337,6 +361,4 @@ function querySelect(req, db_connection) {
         //     );
         // }break;
     }
-
-
 }
