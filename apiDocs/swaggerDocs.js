@@ -208,7 +208,10 @@ let swaggerDefinition = {
             name: 'Weggler',
             description: '위글러 관련 API'
         },
-
+        {
+            name: 'Challenge',
+            description: '챌린지 관련 API'
+        },
     ],
 };
 // options for swagger jsdoc

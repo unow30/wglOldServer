@@ -23,7 +23,7 @@ app.route('/v2/user/info/other').get(  require('./user/v2SelectUserInfoOther') )
 app.route('/v2/user/signup').post( require('./user/v2CreateUser') ) // 22. 10. 25 v2 유저생성 api
 app.route('/v2/user/interests/all').get(  require('./user/v2SelectUserInterests') ) // 22. 10. 25 v2 관심키워드 모두 가져오기 api
 app.route('/v2/user/info/review').get( require('./user/v2SelectUserInfoReview') ) // 22. 10. 28 v2 유저 페이지 리뷰 리스트 api
-
+app.route('/v2/user/info/product').get( require('./user/v2SelectProfoleProduct')) // 23. 01. 09 유저 페이지 판매상품 리스트 api
 /**
  * file api
  */
@@ -154,5 +154,10 @@ app.route('/review/video').get(  require('./review/selectVideoReview'))
  */
 app.route('/v1/groupbuying/detail').get(  require('./groupBuying/v1SelectGroupBuyingDetailView') )
 app.route('/v1/groupbuying/detail/room/list').get(  require('./groupBuying/v1SelectGroupBuyingRoomList') )
+
+/**
+ * challenge api
+ */
+app.route('/v2/challenge/recent/round').get(  require('./challenge/v2SelectChallengeRecentRound') )
 
 module.exports = app;
