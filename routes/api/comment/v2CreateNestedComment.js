@@ -84,7 +84,10 @@ module.exports = function (req, res) {
                 let alertList = await queryAlertComment(req, db_connection);
                 console.log('뭐가문제')
                 console.log(alertList);
-                if(req.headers['user_uid'] !== req.innerBody['item']['comment_user_uid'] &&  alertList['is_alert_nested_comment'] == 0){
+                if(req.headers['user_uid'] !== req.innerBody['item']['comment_user_uid']
+                    && alertList['is_alert_nested_comment'] == 0
+                    && req.innerBody['item']['push_token']){
+
                     let fcmNestedComment = await fcmUtil.fcmNestedCommentSingle(req.innerBody['item']);
                     await queryInsertFCM(fcmNestedComment['data'], db_connection)
                 }
