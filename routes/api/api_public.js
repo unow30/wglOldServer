@@ -122,6 +122,8 @@ app.route('/v2/searchview/interest/list').get( require('./v2SearchView/v2SelectS
 app.route('/v2/searchview/delivery/free').get( require('./v2SearchView/v2SelectSearchViewDeliveryFreeList') )//배송무료 더보기
 app.route('/v2/searchview/integerated/search/list').get( require('./v2SearchView/v2SelectSearchViewIntegratedSearchList') )//통합검색 결과
 
+app.route('/v2/searchview/banner/event').get( require('./v2SearchView/v2SelectBannerEvent') )//이벤트 데이터 api
+
 
 /**
  * comment api
