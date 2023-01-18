@@ -55,6 +55,12 @@ app.route('/cart/list').get( require('./cart/selectCartList') )
  * order api
  */
 app.route('/order').post( require('./order/createOrder') )
+
+
+app.route('/order1').post( require('./order/dev_createOrder1') )
+app.route('/order2').post( require('./order/dev_createOrder2') )
+app.route('/order3').post( require('./order/dev_createOrder3') )
+
 app.route('/order/list').get( require('./order/selectOrderList') )
 app.route('/order/cancel/list').get( require('./order/selectOrderCancelList') )
 app.route('/order/detail').get( require('./order/selectOrderDetail') )
