@@ -177,6 +177,8 @@ const errCode = require('../../../common/define/errCode');
 const fcmUtil = require('../../../common/utils/fcmUtil');
 const aligoUtil = require('../../../common/utils/aligoUtil');
 
+const osCheck = require('common/utils/osUtil.js')
+
 const axios = require('axios');
 const {log} = require("debug");
 
@@ -195,9 +197,7 @@ module.exports = function (req, res) {
         // logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
-        logUtil.printUrlLog(req, `req.baseUrl: ${JSON.stringify(req.baseUrl)}`);
-        logUtil.printUrlLog(req, `req.originalUrl: ${JSON.stringify(req.originalUrl)}`);
-
+        console.log('ip', osCheck.getIpAddress())
         // checkParam(req);
 
         mysqlUtil.connectPool(async function (db_connection) {
