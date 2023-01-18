@@ -177,7 +177,7 @@ const errCode = require('../../../common/define/errCode');
 const fcmUtil = require('../../../common/utils/fcmUtil');
 const aligoUtil = require('../../../common/utils/aligoUtil');
 
-const osCheck = require('common/utils/osUtil.js')
+const osCheck = require('../../../common/utils/osUtil.js')
 
 const axios = require('axios');
 const {log} = require("debug");
