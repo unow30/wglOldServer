@@ -5,7 +5,7 @@
  * /api/public/v2/searchview/category/list:
  *   get:
  *     summary: 상품카테고리목록(230120 생성)
- *     tags: [v2Searchview]
+ *     tags: [v2SearchView]
  *     description: |
  *       path : /api/public/v2/searchview/category/list
  *
