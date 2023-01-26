@@ -135,6 +135,7 @@ function queryCategory(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
+            req.paramBody['category'],
             0,// req.paramBody['is_deal'], 0: 전체표시,1:위글딜표시
             1,// req.paramBody['delivery_free'],0: 전체,1:배송비무료
             req.paramBody['filter_type'],
