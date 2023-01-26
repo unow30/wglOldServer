@@ -1,39 +1,46 @@
 /**
- * Created by yunhokim on 2022. 12. 07.
+ * Created by yunhokim on 2023. 01. 20.
  *
  * @swagger
- * /api/public/v2/searchview/delivery/free:
+ * /api/public/v2/searchview/category/list:
  *   get:
- *     summary: 무료배송상품 더보기
+ *     summary: 상품카테고리목록(230120 생성)
  *     tags: [v2SearchView]
  *     description: |
- *       path : /api/public/v2/searchview/delivery/free
+ *       path : /api/public/v2/searchview/category/list
  *
- *       * ## 무료배송상품 더보기
- *       * ### 홈뷰에서 띠배너 클릭해서 들어온 화면
- *       * ### /product/category/list api 내용 복붙
- *       * proc_select_category_product_list_v2로 해서 is_like 적용
- *       * 추후 /api/public/v2/searchview/category/list로 모든 카테고리를 표현하고 이 api는 제거한다.
+ *       * 상품카테고리목록 230120 생성
+ *       * 카테고리, 상세 카테고리 반영
  *
  *     parameters:
  *       - in: query
- *         name: category
+ *         name: category_uid
  *         required: true
  *         schema:
  *           type: number
- *           example: 65535
+ *           example: 0
  *         description: |
- *           상품 카테고리
- *           * 1: 식품
- *           * 2: 뷰티
- *           * 4: 홈데코
- *           * 8: 패션잡화
- *           * 16: 반려동물
- *           * 32: 유아
- *           * 64: 스포츠레저
- *           * 128: 식물
- *           * 65535: 전체
- *         enum: [1,2,4,8,16,32,64,128,65535]
+ *           상품 카테고리(대분류)
+ *           * 0: 전체
+ *           * 1: 식품/밀키트
+ *           * 2: 뷰티/주얼리
+ *           * 3: 인테리어
+ *           * 4: 패션잡화
+ *           * 5: 반려동물
+ *           * 6: 생활용품
+ *           * 7: 밀키트
+ *           * 8: 빛배송
+ *           * 9: 마이굿즈
+ *         enum: [0,1,2,3,4,5,6,7,8,9]
+ *       - in: query
+ *         name: category_detail_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           상품 카테고리(소분류)
+ *           상품 카테고리(대분류)를 동일한 값으로 같이 전달해야한다.
  *       - in: query
  *         name: random_seed
  *         required: true
@@ -43,6 +50,28 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
+ *         name: is_deal
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           위글딜 여부 필터링입니다.(안쓰는값 고정으로 0)
+ *           * 0: 전체표시
+ *           * 1: 위글딜표시
+ *         enum: [0,1]
+ *       - in: query
+ *         name: delivery_free
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           배송비 무료 여부 필터링입니다.(안쓰는값 고정 0)
+ *           * 0: 전체
+ *           * 1: 배송비무료
+ *         enum: [0,1]
+ *       - in: query
  *         name: filter_type
  *         required: true
  *         schema:
@@ -50,12 +79,12 @@
  *           example: 0
  *         description: |
  *           각종 필터 선택 리스트입니다
- *           * 0: 인기순(기본값)
- *           * 1: 리뷰순
- *           * 2: 신상품순
- *           * 3: 저가순
- *           * 4: 고가순
- *           * 5: 할인율순
+ *           * 0: 인기순(기본값, 사용)
+ *           * 1: 리뷰순(안쓴다)
+ *           * 2: 신상품순(최신순, 사용)
+ *           * 3: 저가순(사용)
+ *           * 4: 고가순(사용)
+ *           * 5: 할인율순(안쓴다)
  *         enum: [0,1,2,3,4,5]
  *       - in: query
  *         name: offset
@@ -99,7 +128,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await queryCategory(req, db_connection);
+            req.innerBody['item'] = await queryCategoryList(req, db_connection);
 
             // req.innerBody['item'] = await queryVideo(req, db_connection);
 
@@ -127,17 +156,30 @@ function deleteBody(req) {
     // delete req.innerBody['item']['access_token']
 }
 
-function queryCategory(req, db_connection) {
+function queryCategory(req, db_connection){
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.queryArray(db_connection
-        , 'call proc_select_category_product_list_v1'
+        , 'call proc_select_category_list_v2'
+        , [
+        ]
+    );
+}
+
+
+function queryCategoryList(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.queryArray(db_connection
+        , 'call proc_select_category_product_list_v2'
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
-            0,// req.paramBody['is_deal'], 0: 전체표시,1:위글딜표시
-            1,// req.paramBody['delivery_free'],0: 전체,1:배송비무료
+            req.paramBody['is_deal'], //0: 전체표시,1:위글딜표시
+            req.paramBody['delivery_free'], //0: 전체,1:배송비무료
             req.paramBody['filter_type'],
+            req.paramBody['category_uid'],
+            req.paramBody['category_detail_uid'],
             req.paramBody['offset'],
         ]
     );

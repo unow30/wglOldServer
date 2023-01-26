@@ -110,6 +110,7 @@ app.route('/v1/searchview/list/gongudeadline').get( require('./searchView/v1Sele
  */
 app.route('/v2/searchview/list/all').get( require('./v2SearchView/v2SelectSerchViewListAll')) //모아보기 전체 탭 정보 불러오기
 
+app.route('/v2/searchview/category/product/list').get(require('./v2SearchView/v2SelectCategoryProductList'))//카테고리 상품 리스트
 app.route('/v2/searchview/last/order/list').get( require('./v2SearchView/v2SelectSearchViewLastOrderList'))//마감임박 공구딜 더보기
 app.route('/v2/searchview/participant/list').get( require('./v2SearchView/v2SelectSearchViewParticipantList'))//참여 가능한 공구방 더보기
 app.route('/v2/searchview/promotion/list').get( require('./v2SearchView/v2SelectSearchViewPromotionList'))//브랜드관 더보기
@@ -161,5 +162,10 @@ app.route('/v1/groupbuying/detail/room/list').get(  require('./groupBuying/v1Sel
  * challenge api
  */
 app.route('/v2/challenge/recent/round').get(  require('./challenge/v2SelectChallengeRecentRound') )
+
+/**
+ * category
+ */
+app.route('/v2/category/icon').get(require('./category/selectCategoryIcon'))
 
 module.exports = app;
