@@ -151,8 +151,8 @@ function queryUser(req, db_connection) {
         , 'call proc_select_category_product_list_v1'
         , [
             req.headers['user_uid'],
-            req.paramBody['category'],
             req.paramBody['random_seed'],
+            req.paramBody['category'],
             req.paramBody['is_deal'],
             req.paramBody['delivery_free'],
             req.paramBody['filter_type'],
