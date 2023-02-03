@@ -60,9 +60,14 @@
  *                 인스타그램 주소
  *             naver_blog_url:
  *               type: string
- *               example: https://www.instagram.com/abcdefg
+ *               example: https://blog.naver.com/aabbccdd
  *               description: |
- *                 인스타그램 주소
+ *                 네이버블로그 주소
+ *             utube_url:
+ *               type: string
+ *               example: https://www.youtube.com/aabbccdd
+ *               description: |
+ *                 유튜브 주소
  *
  *
  *     responses:
