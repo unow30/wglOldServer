@@ -222,7 +222,7 @@ function queryUpdateBackGround(req, db_connection){
             req.headers['user_uid'],
             req.headers['user_uid'],
             6,  // type===6 : 유저 프로필 배경 이미지
-            req.paramBody['filename_gb'],
+            req.paramBody['filename_bg'],
         ]
     );
 }
