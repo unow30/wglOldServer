@@ -26,7 +26,7 @@
  *             - interests
  *             - insta_url
  *             - naver_blog_url
- *             - utube_url
+ *             - youtube_url
  *           properties:
  *             nickname:
  *               type: string
@@ -63,7 +63,7 @@
  *               example: https://blog.naver.com/aabbccdd
  *               description: |
  *                 네이버블로그 주소
- *             utube_url:
+ *             youtube_url:
  *               type: string
  *               example: https://www.youtube.com/aabbccdd
  *               description: |
@@ -181,7 +181,7 @@ function query(req, db_connection) {
             req.paramBody['about'],
             req.paramBody['insta_url']? req.paramBody['insta_url'] : null,
             req.paramBody['naver_blog_url']? req.paramBody['naver_blog_url'] : null,
-            req.paramBody['utube_url']? req.paramBody['utube_url'] : null,
+            req.paramBody['youtube_url']? req.paramBody['youtube_url'] : null,
         ]
     );
 }
