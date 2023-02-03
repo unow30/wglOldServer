@@ -6,11 +6,12 @@
  *     summary: 유저 정보 수정
  *     tags: [User]
  *     description: |
- *       path : /api/private/v2/user
+ *       ## path : /api/private/v2/user
  *
- *       * 유저 정보 수정
- *       * 해당 api 호출 전 필수 사항
- *         : 이미지 업로드 => /api/public/file
+ *       * ## 유저 정보 수정
+ *       * ## 해당 api 호출 전 필수 사항
+ *         ### : 이미지 업로드 => /api/public/file 호출 후 업로드된 이미지 파일명 전달
+ *         ### 변경이 없는 이미지 파일명을 null로 전달해야 db에 변동이 없다.
  *
  *     parameters:
  *       - in: body
@@ -23,6 +24,9 @@
  *             - nickname
  *             - about
  *             - interests
+ *             - insta_url
+ *             - naver_blog_url
+ *             - utube_url
  *           properties:
  *             nickname:
  *               type: string
@@ -43,6 +47,22 @@
  *               description: |
  *                 프로필 파일명
  *                 * /api/public/file api 호출뒤 응답값인 filename 를 사용
+ *             filename_bg:
+ *               type: string
+ *               example: abcdabcdabcd.png
+ *               description: |
+ *                 프로필 파일명
+ *                 * /api/public/file api 호출뒤 응답값인 filename 를 사용
+ *             insta_url:
+ *               type: string
+ *               example: https://www.instagram.com/abcdefg
+ *               description: |
+ *                 인스타그램 주소
+ *             naver_blog_url:
+ *               type: string
+ *               example: https://www.instagram.com/abcdefg
+ *               description: |
+ *                 인스타그램 주소
  *
  *
  *     responses:
@@ -88,10 +108,17 @@ module.exports = function (req, res) {
                 return
             }
 
-
-            if( req.paramBody['filename'] && req.paramBody['filename'].length >= 4 ){
+            //기본 이미지로 돌아가지 않는다.
+            //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
+            if( req.paramBody['filename'] !== null && req.paramBody['filename'].length >= 4 ){
                 await queryUpdateImage(req, db_connection);
             }
+
+            //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
+            if( req.paramBody['filename_bg'] !== null && req.paramBody['filename'].length >= 4){
+                await queryUpdateBackGround(req, db_connection);
+            }
+
             if(req.paramBody.interests){
                 await queryDeleteInterest(req, db_connection);
 
@@ -147,6 +174,9 @@ function query(req, db_connection) {
             req.headers['user_uid'],
             req.paramBody['nickname'],
             req.paramBody['about'],
+            req.paramBody['insta_url']? req.paramBody['insta_url'] : null,
+            req.paramBody['naver_blog_url']? req.paramBody['naver_blog_url'] : null,
+            req.paramBody['utube_url']? req.paramBody['utube_url'] : null,
         ]
     );
 }
@@ -174,6 +204,20 @@ function queryUpdateImage(req, db_connection) {
             req.headers['user_uid'],
             1,  // type===1 : 유저 프로필 이미지
             req.paramBody['filename'],
+        ]
+    );
+}
+
+function queryUpdateBackGround(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_image'
+        , [
+            req.headers['user_uid'],
+            req.headers['user_uid'],
+            6,  // type===6 : 유저 프로필 배경 이미지
+            req.paramBody['filename_gb'],
         ]
     );
 }
