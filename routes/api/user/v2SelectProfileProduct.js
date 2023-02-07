@@ -143,7 +143,7 @@ function querySelect(req, db_connection) {
             req.paramBody['keyword']? req.paramBody['keyword'] : null, //null로 줘야 변수개수를 맞춘다.
             req.paramBody['delivery_free']? req.paramBody['delivery_free'] : 0, //무료배송 x 일반배송 o
             req.paramBody['filter_type']? req.paramBody['filter_type']: 2, //상품승인 최신순
-            req.paramBody['random_seed']? req.paramBody['random_seed']: '가', //filter_type: 0일때 필요
+            req.paramBody['random_seed']? req.paramBody['random_seed']: '123abc456', //filter_type: 0일때 필요
             req.paramBody['offset'],
         ]
     );
