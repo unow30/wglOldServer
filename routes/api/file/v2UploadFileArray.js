@@ -85,7 +85,8 @@ module.exports = async function (req, res) {
 
         if (req.files) {
             console.log(req.files)
-            console.log(`3. v2UploadFileArray 실행:${process.memoryUsage()}`);
+            console.log(`3. v2UploadFileArray 실행:`);
+            console.log(process.memoryUsage());
             const asyncData = req.files.map(async result => {
                 const contentType = result.contentType.split('/')[0]
                 const ext = path.extname(result.key);
@@ -110,16 +111,19 @@ module.exports = async function (req, res) {
                     }
                     const image = await s3.getObject(params).promise()
                     console.log(`4. s3 이미지 가져오기 실행:${process.memoryUsage()}`);
+                    console.log(process.memoryUsage());
                     // s3.getObject(params, (err, data) => {
                     //     /* */
                     // });
                     resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', {quality: 50}).toBuffer()
                     console.log(`5. sharp 리사이징 실행:${process.memoryUsage()}`);
+                    console.log(process.memoryUsage());
 
                     params.ACL = 'public-read'
                     params.Body = resizeImage
                     await s3.putObject(params).promise()
                     console.log(`6. s3 이미지 수정:${process.memoryUsage()}`);
+                    console.log(process.memoryUsage());
 
                     return {
                         filename: result.key,
@@ -148,6 +152,7 @@ module.exports = async function (req, res) {
             req.innerBody = {};
             req.innerBody.files = files
             console.log(`7. files 전체 전달:${process.memoryUsage()}`);
+            console.log(process.memoryUsage());
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         } else {
             let _err = errUtil.initError(errCode.empty, '이미지 파일이 존재하지 않습니다.');
