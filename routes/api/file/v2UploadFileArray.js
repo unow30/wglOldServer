@@ -109,6 +109,9 @@ module.exports = async function (req, res) {
                     }
 
                     const image = await s3.getObject(params).promise()
+                    // s3.getObject(params, (err, data) => {
+                    //     /* */
+                    // });
                     resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', {quality: 50}).toBuffer()
 
                     params.ACL = 'public-read'
@@ -142,6 +145,7 @@ module.exports = async function (req, res) {
             req.innerBody = {};
             req.innerBody.files = files
 
+            global.gc();
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
         } else {
             let _err = errUtil.initError(errCode.empty, '이미지 파일이 존재하지 않습니다.');
