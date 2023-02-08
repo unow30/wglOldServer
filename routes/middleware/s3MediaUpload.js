@@ -15,6 +15,7 @@ AWS.config.update({
 const s3 = new AWS.S3();
 
 const mediaUpload = (req, res, next) =>{
+    console.log(`1. mediaUpload 실행 시작:${process.memoryUsage()}`);
     new Promise((resolve, reject)=>{
         const upload = multer({
             storage: multerS3({
@@ -33,7 +34,7 @@ const mediaUpload = (req, res, next) =>{
                 fileSize: (1024 * 1024) * 300, // {n}mb 이하만,
             },
         }).array('file',6);
-
+        console.log(`2. upload에 multer 실행 완료:${process.memoryUsage()}`);
         upload(req, res, err =>{
             if(!err){
                 return resolve(next);
