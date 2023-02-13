@@ -163,15 +163,19 @@ function checkParam(req) {
     //insta_url, naver_blog_url, youtube_url이 빈 문자열 또는 null로 들어올 것이다.
     //빈 문자열이면 null로 저장해야 한다.
     //url도매인 필터링은 프론트에서 해준다.
-    if(typeof req.paramBody['insta_url'] === 'string' && req.paramBody['insta_url'].trim().length === 0){
+    if(typeof req.paramBody['insta_url'] !== 'string' && req.paramBody['insta_url'].trim().length === 0){
         req.paramBody['insta_url'] = null
     }
-    if(typeof req.paramBody['naver_blog_url'] === 'string' && req.paramBody['naver_blog_url'].trim().length === 0){
+    if(typeof req.paramBody['naver_blog_url'] !== 'string' && req.paramBody['naver_blog_url'].trim().length === 0){
         req.paramBody['naver_blog_url'] = null
     }
-    if(typeof req.paramBody['youtube_url'] === 'string' && req.paramBody['youtube_url'].trim().length === 0){
+    if(typeof req.paramBody['youtube_url'] !== 'string' && req.paramBody['youtube_url'].trim().length === 0){
         req.paramBody['youtube_url'] = null
     }
+    if(typeof req.paramBody['filename_bg'] !== 'string' && req.paramBody['filename_bg'].trim().length === 0){
+        req.paramBody['filename_bg'] = null
+    }
+
     paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
     paramUtil.checkParam_noReturn(req.paramBody, 'about');
 }
