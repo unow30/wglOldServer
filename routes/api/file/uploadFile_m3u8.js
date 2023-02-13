@@ -102,21 +102,7 @@ module.exports = async function (req, res) {
                 
                 req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.m3u8', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
             }
-            else{
-                const params = {
-                    Bucket: funcUtil.getAWSBucket(),
-                    Key: req.file.key
-                }
-
-                const image = await s3.getObject(params).promise()                    
-                const resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', { quality: 50 }).toBuffer()
-
-                params.ACL = 'public-read'
-                params.Body = resizeImage
-
-                await s3.putObject(params).promise()
-            }
-
+            
             req.innerBody['filename'] = final_name
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);

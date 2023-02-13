@@ -82,55 +82,44 @@ module.exports = async function (req, res) {
         req.file_name = file_name;
         req.paramBody = paramUtil.parse(req);
 
-        if(req.files){
+        if (req.files) {
             console.log(req.files)
-            const asyncData = req.files.map(async result =>{
-                const contentType = result.contentType.split('/')[0] 
+            // console.log(`3. v2UploadFileArray 실행:`);
+            // console.log(process.memoryUsage());
+            const asyncData = req.files.map(async result => {
+                const contentType = result.contentType.split('/')[0]
                 const ext = path.extname(result.key);
 
-                if(
-                    contentType == 'image' || 
-                    ext == '.jpg' || 
-                    ext == '.JPG' || 
-                    ext == '.png' || 
-                    ext == '.PNG' || 
+                if (
+                    contentType == 'image' ||
+                    ext == '.jpg' ||
+                    ext == '.JPG' ||
+                    ext == '.png' ||
+                    ext == '.PNG' ||
                     ext == '.webp' ||
                     ext == '.WEBP' ||
                     ext == '.jpeg' ||
                     ext == '.JPEG' ||
                     ext == '.gif' ||
                     ext == '.GIF'
-                    ){
-
-                    const params = {
-                        Bucket: result.bucket,
-                        Key: result.key
-                    }
-
-                    const image = await s3.getObject(params).promise()                    
-                    const resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', { quality: 50 }).toBuffer()
-
-                    params.ACL = 'public-read'
-                    params.Body = resizeImage
-                    await s3.putObject(params).promise()
+                ) {
 
                     return {
                         filename: result.key,
                         thumbnail: result.key,
                         type: 2
                     }
-                }
-                else if(
+                } else if (
                     contentType == 'video' ||
                     ext == '.mp4' ||
                     ext == '.MP4'
-                    ){
+                ) {
 
-                const fileSize = result.size / (1024 * 1024);
-                const fileDimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${result.key}`, 'video');
-                const finalName = mediaConvertUtil(fileSize, result.key, fileDimensions['width'], fileDimensions['height']);
-                const thumbnail = finalName.replace('ConvertSuccess.m3u8', fileDimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
-                return {
+                    const fileSize = result.size / (1024 * 1024);
+                    const fileDimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${result.key}`, 'video');
+                    const finalName = mediaConvertUtil(fileSize, result.key, fileDimensions['width'], fileDimensions['height']);
+                    const thumbnail = finalName.replace('ConvertSuccess.m3u8', fileDimensions['duration'] >= 4 ? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
+                    return {
                         filename: finalName,
                         thumbnail: thumbnail,
                         type: 1
@@ -141,19 +130,22 @@ module.exports = async function (req, res) {
             const files = await Promise.all(asyncData)
             req.innerBody = {};
             req.innerBody.files = files
-
+            // console.log(`7. files 전체 전달:${process.memoryUsage()}`);
+            // console.log(process.memoryUsage());
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
-        }
-        else {
+        } else {
             let _err = errUtil.initError(errCode.empty, '이미지 파일이 존재하지 않습니다.');
             sendUtil.sendErrorPacket(req, res, _err);
         }
 
-    }
-    catch (e) {
+    } catch (e) {
         console.log(`===>>> catch e: ${e}`);
         console.log(`===>>> catch e.stack: ${e.stack}`);
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
     }
+    finally {
+        resizeImage = null
+    }
+
 }

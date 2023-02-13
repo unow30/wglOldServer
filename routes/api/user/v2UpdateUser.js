@@ -6,11 +6,12 @@
  *     summary: 유저 정보 수정
  *     tags: [User]
  *     description: |
- *       path : /api/private/v2/user
+ *       ## path : /api/private/v2/user
  *
- *       * 유저 정보 수정
- *       * 해당 api 호출 전 필수 사항
- *         : 이미지 업로드 => /api/public/file
+ *       * ## 유저 정보 수정
+ *       * ## 해당 api 호출 전 필수 사항
+ *         ### : 이미지 업로드 => /api/public/file 호출 후 업로드된 이미지 파일명 전달
+ *         ### 변경이 없는 이미지 파일명을 null로 전달해야 db에 변동이 없다.
  *
  *     parameters:
  *       - in: body
@@ -23,6 +24,9 @@
  *             - nickname
  *             - about
  *             - interests
+ *             - insta_url
+ *             - naver_blog_url
+ *             - youtube_url
  *           properties:
  *             nickname:
  *               type: string
@@ -43,6 +47,27 @@
  *               description: |
  *                 프로필 파일명
  *                 * /api/public/file api 호출뒤 응답값인 filename 를 사용
+ *             filename_bg:
+ *               type: string
+ *               example: abcdabcdabcd.png
+ *               description: |
+ *                 프로필 파일명
+ *                 * /api/public/file api 호출뒤 응답값인 filename 를 사용
+ *             insta_url:
+ *               type: string
+ *               example: https://www.instagram.com/abcdefg
+ *               description: |
+ *                 인스타그램 주소
+ *             naver_blog_url:
+ *               type: string
+ *               example: https://blog.naver.com/aabbccdd
+ *               description: |
+ *                 네이버블로그 주소
+ *             youtube_url:
+ *               type: string
+ *               example: https://www.youtube.com/aabbccdd
+ *               description: |
+ *                 유튜브 주소
  *
  *
  *     responses:
@@ -76,7 +101,7 @@ module.exports = function (req, res) {
         // logUtil.printUrlLog(req, `== function start ==================================`);
         logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
         checkParam(req);
         mysqlUtil.connectPool( async function (db_connection) {
@@ -88,10 +113,17 @@ module.exports = function (req, res) {
                 return
             }
 
-
-            if( req.paramBody['filename'] && req.paramBody['filename'].length >= 4 ){
+            //기본 이미지로 돌아가지 않는다.
+            //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
+            if( req.paramBody['filename'] !== null && req.paramBody['filename'].length >= 4 ){
                 await queryUpdateImage(req, db_connection);
             }
+
+            //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
+            if( req.paramBody['filename_bg'] !== null && req.paramBody['filename_bg'].length >= 4){
+                await queryUpdateBackGround(req, db_connection);
+            }
+
             if(req.paramBody.interests){
                 await queryDeleteInterest(req, db_connection);
 
@@ -128,6 +160,18 @@ module.exports = function (req, res) {
 }
 
 function checkParam(req) {
+    //insta_url, naver_blog_url, youtube_url이 빈 문자열 또는 null로 들어올 것이다.
+    //빈 문자열이면 null로 저장해야 한다.
+    //url도매인 필터링은 프론트에서 해준다.
+    if(typeof req.paramBody['insta_url'] === 'string' && req.paramBody['insta_url'].trim().length === 0){
+        req.paramBody['insta_url'] = null
+    }
+    if(typeof req.paramBody['naver_blog_url'] === 'string' && req.paramBody['naver_blog_url'].trim().length === 0){
+        req.paramBody['naver_blog_url'] = null
+    }
+    if(typeof req.paramBody['youtube_url'] === 'string' && req.paramBody['youtube_url'].trim().length === 0){
+        req.paramBody['youtube_url'] = null
+    }
     paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
     paramUtil.checkParam_noReturn(req.paramBody, 'about');
 }
@@ -147,6 +191,9 @@ function query(req, db_connection) {
             req.headers['user_uid'],
             req.paramBody['nickname'],
             req.paramBody['about'],
+            req.paramBody['insta_url']? req.paramBody['insta_url'] : null,
+            req.paramBody['naver_blog_url']? req.paramBody['naver_blog_url'] : null,
+            req.paramBody['youtube_url']? req.paramBody['youtube_url'] : null,
         ]
     );
 }
@@ -174,6 +221,20 @@ function queryUpdateImage(req, db_connection) {
             req.headers['user_uid'],
             1,  // type===1 : 유저 프로필 이미지
             req.paramBody['filename'],
+        ]
+    );
+}
+
+function queryUpdateBackGround(req, db_connection){
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_create_image'
+        , [
+            req.headers['user_uid'],
+            req.headers['user_uid'],
+            6,  // type===6 : 유저 프로필 배경 이미지
+            req.paramBody['filename_bg'],
         ]
     );
 }
