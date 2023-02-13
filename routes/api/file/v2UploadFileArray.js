@@ -78,7 +78,6 @@ module.exports = async function (req, res) {
     const _funcName = arguments.callee.name;
     console.log('afiowekfoik: ' + req.file_name);
     logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
-    let resizeImage;
     try {
         req.file_name = file_name;
         req.paramBody = paramUtil.parse(req);
@@ -104,26 +103,6 @@ module.exports = async function (req, res) {
                     ext == '.gif' ||
                     ext == '.GIF'
                 ) {
-
-                    const params = {
-                        Bucket: result.bucket,
-                        Key: result.key
-                    }
-                    const image = await s3.getObject(params).promise()
-                    console.log(`4. s3 이미지 가져오기 실행:${process.memoryUsage()}`);
-                    console.log(process.memoryUsage());
-                    // s3.getObject(params, (err, data) => {
-                    //     /* */
-                    // });
-                    resizeImage = await sharp(image.Body).resize().withMetadata().toFormat('jpg', {quality: 50}).toBuffer()
-                    // console.log(`5. sharp 리사이징 실행:${process.memoryUsage()}`);
-                    // console.log(process.memoryUsage());
-
-                    params.ACL = 'public-read'
-                    params.Body = resizeImage
-                    await s3.putObject(params).promise()
-                    // console.log(`6. s3 이미지 수정:${process.memoryUsage()}`);
-                    // console.log(process.memoryUsage());
 
                     return {
                         filename: result.key,
