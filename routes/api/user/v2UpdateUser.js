@@ -113,14 +113,38 @@ module.exports = function (req, res) {
                 return
             }
 
+            //과거
             //기본 이미지로 돌아가지 않는다.
             //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
-            if( req.paramBody['filename'] !== null && req.paramBody['filename'].length >= 4 ){
-                await queryUpdateImage(req, db_connection);
+            // if( req.paramBody['filename'] !== null && req.paramBody['filename'].length >= 4 ){
+            //     await queryUpdateImage(req, db_connection);
+            // }
+
+            //내 유저정보 불러오기
+            let myInfo = await querySelectUserInfo(req, db_connection);
+
+            //req.paramBody['filename'] === null이면 사진을 지운다.
+            if(req.paramBody['filename'] === null){
+                await queryDeleteImage(req, db_connection, myInfo);
+            }
+            //req.paramBody['filename']이 이전과 똑같으면 변경이 없다. req.paramBody['filename']이 다른데이터면 변경한다.
+            if(req.paramBody['filename'] !== myInfo['filename'] && req.paramBody['filename'].length >= 4 ){
+               await queryUpdateImage(req, db_connection);
             }
 
+
+            //과거
             //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
-            if( req.paramBody['filename_bg'] !== null && req.paramBody['filename_bg'].length >= 4){
+            // if( req.paramBody['filename_bg'] !== null && req.paramBody['filename_bg'].length >= 4){
+            //     await queryUpdateBackGround(req, db_connection);
+            // }
+
+            //req.paramBody['filename_bg'] === null이면 사진을 지운다.
+            if(req.paramBody['filename_bg'] === null){
+                await queryDeleteBackGround(req, db_connection, myInfo);
+            }
+            //req.paramBody['filename_bg']이 이전과 똑같으면 변경이 없다. req.paramBody['filename_bg']이 다른데이터면 변경한다.
+            if(req.paramBody['filename_bg'] !== myInfo['filename_bg'] && req.paramBody['filename_bg'].length >= 4){
                 await queryUpdateBackGround(req, db_connection);
             }
 
@@ -280,4 +304,54 @@ function querySelectAllInterest(req, db_connection) {
         , [
         ]
     );
+}
+
+function querySelectUserInfo(req, db_connection) {
+    const _funcName = arguments.callee.name;
+
+    return mysqlUtil.querySingle(db_connection
+        , 'call proc_select_user_info'
+        , [
+            req.headers['user_uid'],
+            // req.headers['access_token'],
+        ]
+    );
+}
+
+async function queryDeleteImage(req, db_connection, myInfo){
+    console.log('user profile update 시작 ===========>')
+    const deleteProfileImage = `
+            set SQL_SAFE_UPDATES = 0;
+
+            update tbl_image
+            set filename = profile_default_image.png
+            where user_uid = ${req.headers['user_uid']}
+            and target_uid = ${req.headers['user_uid']}
+            and type = 1
+            and filename = ${myInfo['filename']}
+            ;
+
+            set SQL_SAFE_UPDATES = 1;
+    `
+    await db_connection.query(deleteProfileImage);
+
+}
+
+async function queryDeleteBackGround(req, db_connection, myInfo){
+    console.log('user background delete 시작 ===========>')
+    const deleteProfileImage = `
+            set SQL_SAFE_UPDATES = 0;
+
+            update tbl_image
+            set is_deleted = 1
+            where user_uid = ${req.headers['user_uid']}
+            and target_uid = ${req.headers['user_uid']}
+            and is_deleted = 0
+            and type = 6
+            and filename = ${myInfo['filename_bg']}
+            ;
+
+            set SQL_SAFE_UPDATES = 1;
+    `
+    await db_connection.query(deleteProfileImage);
 }
