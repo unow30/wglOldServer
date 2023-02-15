@@ -128,7 +128,7 @@ module.exports = function (req, res) {
                 await queryDeleteImage(req, db_connection, myInfo);
             }
             //req.paramBody['filename']이 이전과 똑같으면 변경이 없다. req.paramBody['filename']이 다른데이터면 변경한다.
-            if(req.paramBody['filename'] !== myInfo['filename'] && req.paramBody['filename'].length >= 4 ){
+            if(req.paramBody['filename'] !== myInfo['filename']){
                await queryUpdateImage(req, db_connection);
             }
 
@@ -144,7 +144,7 @@ module.exports = function (req, res) {
                 await queryDeleteBackGround(req, db_connection, myInfo);
             }
             //req.paramBody['filename_bg']이 이전과 똑같으면 변경이 없다. req.paramBody['filename_bg']이 다른데이터면 변경한다.
-            if(req.paramBody['filename_bg'] !== myInfo['filename_bg'] && req.paramBody['filename_bg'].length >= 4){
+            if(req.paramBody['filename_bg'] !== myInfo['filename_bg']){
                 await queryUpdateBackGround(req, db_connection);
             }
 
