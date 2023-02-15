@@ -206,6 +206,10 @@ function checkParam(req) {
         req.paramBody['filename_bg'] = null
     }
 
+    if(!req.paramBody['filename']){
+        req.paramBody['filename'] = null
+    }
+
     paramUtil.checkParam_noReturn(req.paramBody, 'nickname');
     paramUtil.checkParam_noReturn(req.paramBody, 'about');
 }
