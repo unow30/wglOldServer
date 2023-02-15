@@ -328,7 +328,7 @@ async function queryDeleteImage(req, db_connection, myInfo){
             set SQL_SAFE_UPDATES = 0;
 
             update tbl_image
-            set filename = 'profile_default_image.png'
+            set filename = ${"profile_default_image.png"}
             where user_uid = ${req.headers['user_uid']}
             and target_uid = ${req.headers['user_uid']}
             and type = 1
