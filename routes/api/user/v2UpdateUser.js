@@ -125,13 +125,12 @@ module.exports = function (req, res) {
 
             //req.paramBody['filename'] === null이면 사진을 지운다.
             if(req.paramBody['filename'] === null){
+                console.log('프로필이미지 기본값으로 변경 시작')
                 await queryDeleteImage(req, db_connection, myInfo);
+            }else{
+                console.log('프로필이미지 변경')
+                await queryUpdateImage(req, db_connection);
             }
-            //req.paramBody['filename']이 이전과 똑같으면 변경이 없다. req.paramBody['filename']이 다른데이터면 변경한다.
-            if(req.paramBody['filename'] !== myInfo['filename']){
-               await queryUpdateImage(req, db_connection);
-            }
-
 
             //과거
             //바뀐 이미지가 없으면 null로 날라온다. 그때는 건너뛴다.
@@ -142,9 +141,7 @@ module.exports = function (req, res) {
             //req.paramBody['filename_bg'] === null이면 사진을 지운다.
             if(req.paramBody['filename_bg'] === null){
                 await queryDeleteBackGround(req, db_connection, myInfo);
-            }
-            //req.paramBody['filename_bg']이 이전과 똑같으면 변경이 없다. req.paramBody['filename_bg']이 다른데이터면 변경한다.
-            if(req.paramBody['filename_bg'] !== myInfo['filename_bg']){
+            }else{
                 await queryUpdateBackGround(req, db_connection);
             }
 
