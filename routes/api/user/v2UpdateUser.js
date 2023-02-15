@@ -123,11 +123,7 @@ module.exports = function (req, res) {
             //내 유저정보 불러오기
             let myInfo = await querySelectUserInfo(req, db_connection);
 
-            //req.paramBody['filename'] === null이면 사진을 지운다.
-            if(req.paramBody['filename'] === null){
-                console.log('프로필이미지 기본값으로 변경 시작')
-                await queryDeleteImage(req, db_connection, myInfo);
-            }else{
+            if(req.paramBody['filename'] !== myInfo['filename']){
                 console.log('프로필이미지 변경')
                 await queryUpdateImage(req, db_connection);
             }
@@ -140,9 +136,11 @@ module.exports = function (req, res) {
 
             //req.paramBody['filename_bg'] === null이면 사진을 지운다.
             if(req.paramBody['filename_bg'] === null){
-                await queryDeleteBackGround(req, db_connection, myInfo);
-            }else{
-                await queryUpdateBackGround(req, db_connection);
+                console.log('백그라운드 이미지 삭제')
+                await queryDeleteBackGround(req, db_connection, myInfo)
+            }else if(req.paramBody['filename_bg'] !== myInfo['filename_bg']){
+                console.log('백그라운드 이미지 변경')
+                await queryUpdateBackGround(req, db_connection, myInfo);
             }
 
             if(req.paramBody.interests){
@@ -255,7 +253,7 @@ function queryUpdateImage(req, db_connection) {
             req.headers['user_uid'],
             req.headers['user_uid'],
             1,  // type===1 : 유저 프로필 이미지
-            req.paramBody['filename'],
+            req.paramBody['filename']? req.paramBody['filename'] : 'profile_default_image.png', //filename null이면 기본이미지로 변경
         ]
     );
 }
@@ -325,7 +323,7 @@ async function queryDeleteImage(req, db_connection, myInfo){
             set SQL_SAFE_UPDATES = 0;
 
             update tbl_image
-            set filename = ${"profile_default_image.png"}
+            set filename = "profile_default_image.png"
             where user_uid = ${req.headers['user_uid']}
             and target_uid = ${req.headers['user_uid']}
             and type = 1
@@ -340,19 +338,20 @@ async function queryDeleteImage(req, db_connection, myInfo){
 
 async function queryDeleteBackGround(req, db_connection, myInfo){
     console.log('user background delete 시작 ===========>')
-    const deleteProfileImage = `
-            set SQL_SAFE_UPDATES = 0;
+    const deleteBackGroundImage =
+    `set SQL_SAFE_UPDATES = 0;
 
-            update tbl_image
-            set is_deleted = 1
-            where user_uid = ${req.headers['user_uid']}
-            and target_uid = ${req.headers['user_uid']}
-            and is_deleted = 0
-            and type = 6
-            and filename = ${myInfo['filename_bg']}
-            ;
+        update tbl_image
+        set is_deleted = 1
+        where user_uid = ${req.headers['user_uid']}
+        and target_uid = ${req.headers['user_uid']}
+        and is_deleted = 0
+        and type = 6
+        and filename = '${myInfo['filename_bg']}'
+        ;
 
-            set SQL_SAFE_UPDATES = 1;
+        set SQL_SAFE_UPDATES = 1;
     `
-    await db_connection.query(deleteProfileImage);
+    console.log(myInfo['filename_bg'])
+    await db_connection.query(deleteBackGroundImage);
 }
