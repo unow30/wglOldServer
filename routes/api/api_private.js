@@ -9,6 +9,7 @@ const app = express();
  * user api
  */
 app.route('/v2/user').put( require('./user/v2UpdateUser') )
+app.route('/v3/user').put( require('./user/v3UpdateUser') )
 app.route('/user').put( require('./user/updateUser') )
                   .delete( require('./user/deleteUser') )
 // app.route('/user/profile/review/list').put( require('./user/selectUserProfileReviewList') )
