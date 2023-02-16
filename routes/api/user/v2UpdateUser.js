@@ -11,7 +11,10 @@
  *       * ## 유저 정보 수정
  *       * ## 해당 api 호출 전 필수 사항
  *         ### : 이미지 업로드 => /api/public/file 호출 후 업로드된 이미지 파일명 전달
- *         ### 변경이 없는 이미지 파일명을 null로 전달해야 db에 변동이 없다.
+ *         ### 변경이 없는 이미지 파일명을 null로 전달해야 db에 변동이 없다.(과거)
+ *         ### => filename, filename_bg명이 null이면 전달하면 삭제처리를 진행한다.
+ *         ### filename, filename_bg를 전달하지 않으면 null로 서버에서 초기화한다.
+ *         ### filename, filename_bg이 기존 이름과 다르면 업데이트된다.
  *
  *     parameters:
  *       - in: body
@@ -99,9 +102,9 @@ module.exports = function (req, res) {
     try{
         req.file_name = file_name;
         // logUtil.printUrlLog(req, `== function start ==================================`);
-        logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
+        logUtil.printUrlLog(req, `\n header: ${JSON.stringify(req.headers)}\n`);
         req.paramBody = paramUtil.parse(req);
-        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `\n param: ${JSON.stringify(req.paramBody)}\n`);
 
         checkParam(req);
         mysqlUtil.connectPool( async function (db_connection) {
@@ -123,6 +126,7 @@ module.exports = function (req, res) {
             //내 유저정보 불러오기
             let myInfo = await querySelectUserInfo(req, db_connection);
 
+            //프로필 이미지가 내 이미지와 다른 이름이면 변경.
             if(req.paramBody['filename'] !== myInfo['filename']){
                 console.log('프로필이미지 변경')
                 await queryUpdateImage(req, db_connection);
@@ -135,6 +139,8 @@ module.exports = function (req, res) {
             // }
 
             //req.paramBody['filename_bg'] === null이면 사진을 지운다.
+            //배경 이미지가 null이라면 bg이미지 삭제처리 없으면 어차피 아무일도 안일어나
+            //배경 이미지가 내 배경 이미지와 다른 이름이면 변경
             if(req.paramBody['filename_bg'] === null){
                 console.log('백그라운드 이미지 삭제')
                 await queryDeleteBackGround(req, db_connection, myInfo)
@@ -327,7 +333,7 @@ async function queryDeleteImage(req, db_connection, myInfo){
             where user_uid = ${req.headers['user_uid']}
             and target_uid = ${req.headers['user_uid']}
             and type = 1
-            and filename = ${myInfo['filename']}
+            and filename = '${myInfo['filename']}'
             ;
 
             set SQL_SAFE_UPDATES = 1;
@@ -336,7 +342,7 @@ async function queryDeleteImage(req, db_connection, myInfo){
 
 }
 
-async function queryDeleteBackGround(req, db_connection, myInfo){
+    async function queryDeleteBackGround(req, db_connection, myInfo){
     console.log('user background delete 시작 ===========>')
     const deleteBackGroundImage =
     `set SQL_SAFE_UPDATES = 0;
