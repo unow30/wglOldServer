@@ -29,6 +29,7 @@ app.route('/v2/user/info/product').get( require('./user/v2SelectProfileProduct')
  */
 app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, require('./file/uploadFile') );
 app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').uploadFile, require('./file/uploadFile_m3u8') );
+app.route('/v3/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').uploadFile, require('./file/uploadFile_m3u8_v3') );
 
 /**
  * cron order_cancel_gift
