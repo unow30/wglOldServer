@@ -12,6 +12,6 @@ module.exports = {
             req.file_name = '';
         }
         let log_tag = `file(${req.file_name}),url(${req.originalUrl}),Method(${req.method})`;
-        console.log(`[${moment()},${log_tag}] ${msg}`);
+        console.log(`[${moment()},${log_tag}]\n ${msg}`);
     }
 }
