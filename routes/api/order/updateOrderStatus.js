@@ -119,7 +119,8 @@ module.exports = function (req, res) {
                         if(alertList['is_alert_order_confirm'] == 0){
                             await fcmUtil.fcmOrderProductConfirm(req.innerBody['item'])
                         }
-                        if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
+                        // if( req.innerBody['item']['video_uid'] > 0 && req.innerBody['item']['type'] == 2 ) {
+                        if( req.innerBody['item']['video_uid'] > 0 && (req.innerBody['item']['type'] == 2 || req.innerBody['item']['type'] == 3) ) {//type3첼린지영상도 리뷰영상이다.
                             req.innerBody['reward'] = await queryUpdate(req, db_connection, req.innerBody['item']);
                             let fcmReward = await fcmUtil.fcmRewardVideoSingle(req.innerBody['reward'])
                             await queryInsertFCM(fcmReward['data'], db_connection)
