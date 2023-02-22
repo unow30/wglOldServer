@@ -62,8 +62,8 @@ module.exports =  function (file_size, final_name, video_width, video_height, se
                                     "CodecSettings": {
                                         "Codec": "FRAME_CAPTURE",
                                         "FrameCaptureSettings": {
-                                            "FramerateNumerator": 1,
                                             "FramerateDenominator": second,
+                                            "FramerateNumerator": 1000,
                                             "MaxCaptures": 2,
                                             "Quality": 80
                                         }
@@ -194,8 +194,8 @@ module.exports =  function (file_size, final_name, video_width, video_height, se
                                     "CodecSettings": {
                                         "Codec": "FRAME_CAPTURE",
                                         "FrameCaptureSettings": {
-                                            "FramerateNumerator": 30,
-                                            "FramerateDenominator": 90,
+                                            "FramerateDenominator": second,
+                                            "FramerateNumerator": 1000,
                                             "MaxCaptures": 2,
                                             "Quality": 80
                                         }
