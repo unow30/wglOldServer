@@ -9,11 +9,11 @@ const AWS = require("aws-sdk");
 
 const s3 = new AWS.S3();
 
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
-const funcUtil = require('./funcUtil');
-const sendUtil = require('./sendUtil');
-const errUtil = require('./errUtil');
+const funcUtil = require('../origin/funcUtil');
+const sendUtil = require('../origin/sendUtil');
+const errUtil = require('../origin/errUtil');
 
 AWS.config.update({
     accessKeyId: funcUtil.getAWSAccessKeyID(),
@@ -34,7 +34,10 @@ const fileOptions = {
             cb(null, {fieldName: file.fieldname});
         },
         key: function (req, file, cb) {
-            cb(null, getFilename(req, file));
+            // cb(null, getFilename(req, file));
+            cb(null, getFilename(req, file)); 
+            //////여기 부분 ********* 로컬에서 m3u8파일로 변환시file.originalname 으로 변경 
+            //////기존에는 getFilename(req, file) 으로 되어있어야함
         },
     }),
     limits: {

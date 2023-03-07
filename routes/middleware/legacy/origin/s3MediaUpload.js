@@ -4,8 +4,8 @@ const AWS = require('aws-sdk');
 const crypto = require('crypto');
 const path = require('path');
 
-const errCode = require('../../common/define/errCode');
-const funcUtil = require('../../common/utils/funcUtil');
+const errCode = require('../../../../common/define/errCode');
+const funcUtil = require('../../../../common/utils/legacy/origin/funcUtil');
 
 AWS.config.update({
     accessKeyId: funcUtil.getAWSAccessKeyID(),
@@ -14,26 +14,29 @@ AWS.config.update({
 });
 const s3 = new AWS.S3();
 
-const imageUpload = (req, res, next) =>{
+const mediaUpload = (req, res, next) =>{
+    // console.log(`1. mediaUpload 실행 시작:`);
+    // console.log(process.memoryUsage());
     new Promise((resolve, reject)=>{
         const upload = multer({
             storage: multerS3({
                 s3: s3,
-                bucket: `${funcUtil.getAWSRewardBucket()}`,
+                bucket: `${funcUtil.getAWSBucket()}`,
                 contentType: multerS3.AUTO_CONTENT_TYPE, // 자동을 콘텐츠 타입 세팅
                 acl: 'public-read', // 클라이언트에서 자유롭게 가용하기 위함
                 metadata: (req, file, cb) =>{
                     cb(null, {fieldName: file.fieldname});
                 },
-                key: (req, file, cb) => {
-                    cb(null, getImageFilename(reject, file)); 
+                key: function (req, file, cb) {
+                    cb(null, getFilename(reject, file));
                 },
             }),
             limits: {
-                fileSize: (1024 * 1024) * 30, // {n}mb 이하만,
+                fileSize: (1024 * 1024) * 300, // {n}mb 이하만,
             },
-        }).single('file');
-
+        }).array('file',6);
+        // console.log(`2. upload에 multer 실행 완료:`);
+        // console.log(process.memoryUsage());
         upload(req, res, err =>{
             if(!err){
                 return resolve(next);
@@ -46,25 +49,28 @@ const imageUpload = (req, res, next) =>{
     .then(next => next())
     .catch(err => {
         return res.status(err.status || 500).json({
-            message: err.message || '이미지 업로드에 실패 하였습니다.',
+            message: err.message || '업로드에 실패 하였습니다.',
             code: errCode.system|| 200,
-            method: req.method || 'POST',
-            url: req.originalUrl || "",
+            method: 'POST',
+            url: "",
         })
     });
 }
 
-const  getImageFilename = (reject, file)=>{
+const  getFilename = (reject, file)=>{
     console.log('============>>hash func start <<===========')
     console.log(file)
     const originalName = file.originalname;
     const ext = path.extname(originalName)
-    if(ext != '.jpg' && ext != '.jpeg' && ext != '.png' && ext != '.gif'){
-        const err = new Error('이미지의 확장자가 유효하지 않습니다. jpg, jpeg, png, gif만 가능합니다.')
+    console.log(ext, '====>이건 뭘까')
+    if((ext != '.jpg' && ext != '.jpeg' && ext != '.png' && 
+       ext != '.gif' && ext != '.JPG' && ext != '.JPEG' && 
+       ext != '.PNG' && ext != '.GIF' && ext != '.mp4' && ext != '.MP4')){
+        const err = new Error('확장자가 유효하지 않습니다. jpg, jpeg, png, gif, mp4만 가능합니다.')
         err.status = 400
         err.code = errCode.system
-        err.method = req.method;
-        err.url = req.originalUrl
+        err.method = 'POST';
+        err.url = ''
 
         return reject(err)
     };
@@ -79,4 +85,4 @@ const  getImageFilename = (reject, file)=>{
     return hashName
 }
 
-module.exports = imageUpload;
+module.exports = mediaUpload;

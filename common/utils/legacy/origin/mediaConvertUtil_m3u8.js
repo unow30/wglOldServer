@@ -1,5 +1,5 @@
 /**
- * Created by yunhokim on 2022. 02. 20.
+ * Created by gunucklee on 2021. 07. 20.
  */
 const AWS = require("aws-sdk");
 
@@ -8,10 +8,10 @@ const paramUtil = require('./paramUtil');
 const funcUtil = require('./funcUtil');
 const sendUtil = require('./sendUtil');
 const errUtil = require('./errUtil');
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
-module.exports =  function (file_size, final_name, video_width, video_height, second) {
-    console.log('second',second)
+module.exports =  function (file_size, final_name, video_width, video_height) {
+
     const MEDIACONVERT = 'ConvertSuccess';
     const BITRATE = 1600000;
     const extname = path.extname(final_name);
@@ -62,8 +62,8 @@ module.exports =  function (file_size, final_name, video_width, video_height, se
                                     "CodecSettings": {
                                         "Codec": "FRAME_CAPTURE",
                                         "FrameCaptureSettings": {
-                                            "FramerateDenominator": second,
-                                            "FramerateNumerator": 1000,
+                                            "FramerateNumerator": 30,
+                                            "FramerateDenominator": 90,
                                             "MaxCaptures": 2,
                                             "Quality": 80
                                         }
@@ -194,8 +194,8 @@ module.exports =  function (file_size, final_name, video_width, video_height, se
                                     "CodecSettings": {
                                         "Codec": "FRAME_CAPTURE",
                                         "FrameCaptureSettings": {
-                                            "FramerateDenominator": second,
-                                            "FramerateNumerator": 1000,
+                                            "FramerateNumerator": 30,
+                                            "FramerateDenominator": 90,
                                             "MaxCaptures": 2,
                                             "Quality": 80
                                         }

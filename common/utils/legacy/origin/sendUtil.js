@@ -1,7 +1,7 @@
 /**
  * Created by hyunhunhwang on 2020. 12. 21.
  */
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
 const moment = require('moment');
 

@@ -8,7 +8,7 @@ const paramUtil = require('./paramUtil');
 const funcUtil = require('./funcUtil');
 const sendUtil = require('./sendUtil');
 const errUtil = require('./errUtil');
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
 module.exports =  function (file_size, final_name, video_width, video_height) {
 

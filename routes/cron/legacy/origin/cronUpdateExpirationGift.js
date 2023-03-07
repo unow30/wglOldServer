@@ -1,19 +1,19 @@
 /**
  * Created by gunucklee on 2021. 11. 25.
  */
-const paramUtil = require('../../common/utils/paramUtil');
-const fileUtil = require('../../common/utils/fileUtil');
-const mysqlUtil = require('../../common/utils/mysqlUtil');
-const sendUtil = require('../../common/utils/sendUtil');
-const errUtil = require('../../common/utils/errUtil');
-const logUtil = require('../../common/utils/logUtil');
-const jwtUtil = require('../../common/utils/jwtUtil');
-const funcUtil = require('../../common/utils/funcUtil');
-const app = require('../../app');
+const paramUtil = require('../../../../common/utils/legacy/origin/paramUtil');
+const fileUtil = require('../../../../common/utils/legacy/origin/fileUtil');
+const mysqlUtil = require('../../../../common/utils/legacy/origin/mysqlUtil');
+const sendUtil = require('../../../../common/utils/legacy/origin/sendUtil');
+const errUtil = require('../../../../common/utils/legacy/origin/errUtil');
+const logUtil = require('../../../../common/utils/legacy/origin/logUtil');
+const jwtUtil = require('../../../../common/utils/legacy/origin/jwtUtil');
+const funcUtil = require('../../../../common/utils/legacy/origin/funcUtil');
+const app = require('../../../../app');
 
-const errCode = require('../../common/define/errCode');
+const errCode = require('../../../../common/define/errCode');
 const schedule = require('node-schedule');
-const fcmUtil = require('../../common/utils/fcmUtil');
+const fcmUtil = require('../../../../common/utils/legacy/origin/fcmUtil');
 const axios = require('axios');
 axios.defaults.headers.common['Authorization'] = 'key=AAAAH1HxpKo:APA91bEGjPgOgXK2xZ-uqZHiR_PT69tO4knZt6ZCRpAXRESsnuY23MXWFneIQ-EALixYNkcUZg0iNczMW8eXc9ZLp6_dd1Kmz0t4rw5rJwboLwG-65hS0nyNps5OchEw72zP8dzlLNIa';
 axios.defaults.headers.post['Content-Type'] = 'application/json';

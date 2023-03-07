@@ -1,7 +1,7 @@
-const fileUtil = require('../../common/utils/fileUtil');
-const mysqlUtil = require('../../common/utils/mysqlUtil');
-const fcmUtil = require('../../common/utils/fcmUtil');
-const aligoUtil = require('../../common/utils/aligoUtil');
+const fileUtil = require('../../../../common/utils/legacy/origin/fileUtil');
+const mysqlUtil = require('../../../../common/utils/legacy/origin/mysqlUtil');
+const fcmUtil = require('../../../../common/utils/legacy/origin/fcmUtil');
+const aligoUtil = require('../../../../common/utils/legacy/origin/aligoUtil');
 
 const schedule = require('node-schedule');
 const axios = require('axios');

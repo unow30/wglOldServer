@@ -2,7 +2,7 @@
  * Created by hyunhunhwang on 2020. 12. 21.
  */
 const errUtil = require('./errUtil');
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
 module.exports = {
     parse: function (req) {

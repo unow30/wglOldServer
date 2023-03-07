@@ -27,13 +27,13 @@
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-const paramUtil = require('../../../../../common/utils/paramUtil');
-const fileUtil = require('../../../../../common/utils/fileUtil');
-const mysqlUtil = require('../../../../../common/utils/mysqlUtil');
-const sendUtil = require('../../../../../common/utils/sendUtil');
-const errUtil = require('../../../../../common/utils/errUtil');
-const logUtil = require('../../../../../common/utils/logUtil');
-const dateUtil = require('../../../../../common/utils/dateUtil')
+const paramUtil = require('../../../../../common/utils/legacy/origin/paramUtil');
+const fileUtil = require('../../../../../common/utils/legacy/origin/fileUtil');
+const mysqlUtil = require('../../../../../common/utils/legacy/origin/mysqlUtil');
+const sendUtil = require('../../../../../common/utils/legacy/origin/sendUtil');
+const errUtil = require('../../../../../common/utils/legacy/origin/errUtil');
+const logUtil = require('../../../../../common/utils/legacy/origin/logUtil');
+const dateUtil = require('../../../../../common/utils/legacy/origin/dateUtil')
 
 
 let file_name = fileUtil.name(__filename);

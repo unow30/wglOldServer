@@ -7,8 +7,8 @@ const app = express();
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const osUtil = require('../common/utils/osUtil');
-const funcUtil = require('../common/utils/funcUtil');
+const osUtil = require('../common/utils/legacy/origin/osUtil');
+const funcUtil = require('../common/utils/legacy/origin/funcUtil');
 
 let private_ip = osUtil.getIpAddress();
 

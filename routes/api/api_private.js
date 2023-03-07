@@ -27,8 +27,8 @@ app.route('/user/profile/review/list').get( require('./legacy/origin/user/select
 /**
  * file api
  */
-app.route('/v2/file/reward/info/image').post(require('../middleware/rewardInfoImageUpload'), require('./legacy/v2/file/v2UploadRewardInfoImage'))
-app.route('/v2/upload/files').post( require('../middleware/s3MediaUpload'), require('./legacy/v2/file/v2UploadFileArray') );
+app.route('/v2/file/reward/info/image').post(require('../middleware/legacy/origin/rewardInfoImageUpload'), require('./legacy/v2/file/v2UploadRewardInfoImage'))
+app.route('/v2/upload/files').post( require('../middleware/legacy/origin/s3MediaUpload'), require('./legacy/v2/file/v2UploadFileArray') );
 
 /**
  * product api
@@ -66,7 +66,7 @@ app.route('/order/list').get( require('./legacy/origin/order/selectOrderList') )
 app.route('/order/cancel/list').get( require('./legacy/origin/order/selectOrderCancelList') )
 app.route('/order/detail').get( require('./legacy/origin/order/selectOrderDetail') )
 // app.route('/order/confirm').put( require('./order/updateOrderConfirm') )
-app.route('/order/status').put(require('../middleware/bootPay'), require('./legacy/origin/order/updateOrderStatus') )
+app.route('/order/status').put(require('../middleware/legacy/origin/bootPay'), require('./legacy/origin/order/updateOrderStatus') )
 
 /**
  * reward api
@@ -233,8 +233,8 @@ app.route('/notice/list').get( require('./legacy/origin/notice/selectNoticeViewL
 app.route('/gift/order').post( require('./legacy/origin/gift/createGiftOrder') )
                               .put( require('./legacy/origin/gift/updateGiftOrder'))
                               .get(require('./legacy/origin/gift/selectGiftOrder'));
-app.route('/gift/refuse').put(require('../middleware/bootPay'), require('./legacy/origin/gift/updateGiftRefuse') );
-app.route('/gift/refund').put(require('../middleware/bootPay'), require('./legacy/origin/gift/updateGiftRefund') );
+app.route('/gift/refuse').put(require('../middleware/legacy/origin/bootPay'), require('./legacy/origin/gift/updateGiftRefuse') );
+app.route('/gift/refund').put(require('../middleware/legacy/origin/bootPay'), require('./legacy/origin/gift/updateGiftRefund') );
 app.route('/v2/gift/box/received').get(require('./legacy/v2/gift/v2SelectGiftBoxReceived') );
 app.route('/v2/gift/box/gived').get(require('./legacy/v2/gift/v2SelectGiftBoxGived') );
 

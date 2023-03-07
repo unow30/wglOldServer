@@ -7,7 +7,7 @@ const moment = require('moment');
 const funcUtil = require('./funcUtil');
 const errUtil = require('./errUtil');
 
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
 let mysqlConfig = {
     host: funcUtil.getDBHost(),

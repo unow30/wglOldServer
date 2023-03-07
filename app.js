@@ -4,9 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const funcUtil = require('./common/utils/funcUtil');
-const sendUtil = require('./common/utils/sendUtil');
-const errUtil = require('./common/utils/errUtil');
+const funcUtil = require('./common/utils/legacy/origin/funcUtil');
+const sendUtil = require('./common/utils/legacy/origin/sendUtil');
+const errUtil = require('./common/utils/legacy/origin/errUtil');
 const errCode = require('./common/define/errCode');
 require('dotenv').config();
 const authController = require('./routes/api/legacy/origin/auth/createPublicToken');
@@ -39,8 +39,8 @@ app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay
 // app.all('/api/private/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
 
 app.all('/api/version/check', require('./routes/api/legacy/origin/appCheck/selectAppCheck'))//api 버전 체크 url
-app.all('/api/private/*', require('./routes/middleware/checkAccessToken'));
-app.all('/api/public/*', require('./routes/middleware/publicCheckToken'));
+app.all('/api/private/*', require('./routes/middleware/legacy/origin/checkAccessToken'));
+app.all('/api/public/*', require('./routes/middleware/legacy/origin/publicCheckToken'));
 
 app.use('/api/private', require('./routes/api/api_private'));
 app.use('/api/public', require('./routes/api/api_public'));
@@ -50,11 +50,11 @@ app.use('/others', require('./routes/page/page_router'));
 app.use('/', indexRouter);
 // app.use('/users', usersRouter) ;
 
-require('./routes/cron/cronUpdateOrderStatus').start();
-require('./routes/cron/cronUpdateExpirationGift').start();
-require('./routes/cron/cronSendFcmExpirationGift').start();
-require('./routes/cron/v1CronExtentionGonguEndTime').start()
-require('./routes/cron/v1CronCancelGonguUser').start();
+require('./routes/cron/legacy/origin/cronUpdateOrderStatus').start();
+require('./routes/cron/legacy/origin/cronUpdateExpirationGift').start();
+require('./routes/cron/legacy/origin/cronSendFcmExpirationGift').start();
+require('./routes/cron/legacy/v1/v1CronExtentionGonguEndTime').start()
+require('./routes/cron/legacy/v1/v1CronCancelGonguUser').start();
 
 app.use(function(req, res, next){
   // console.log('====== path error req.originalUrl : '+req.originalUrl);

@@ -27,18 +27,18 @@ app.route('/v2/user/info/product').get( require('./legacy/v2/user/v2SelectProfil
 /**
  * file api
  */
-app.route('/file').post( require('../../common/utils/awsS3Util_v2').uploadFile, require('./legacy/origin/file/uploadFile') );
-app.route('/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').uploadFile, require('./legacy/origin/file/uploadFile_m3u8') );
-app.route('/v3/file/m3u8').post( require('../../common/utils/awsS3Util_v2_m3u8').uploadFile, require('./v3/file/uploadFile_m3u8_v3') );
+app.route('/file').post( require('../../common/utils/legacy/v2/awsS3Util_v2').uploadFile, require('./legacy/origin/file/uploadFile') );
+app.route('/file/m3u8').post( require('../../common/utils/legacy/v2/awsS3Util_v2_m3u8').uploadFile, require('./legacy/origin/file/uploadFile_m3u8') );
+app.route('/v3/file/m3u8').post( require('../../common/utils/legacy/v2/awsS3Util_v2_m3u8').uploadFile, require('./v3/file/uploadFile_m3u8_v3') );
 
 /**
  * cron order_cancel_gift
  */
-app.route('/order/cancel/gift').put(require('../middleware/bootPay'), require('./legacy/origin/gift/updateGiftRefund') );
+app.route('/order/cancel/gift').put(require('../middleware/legacy/origin/bootPay'), require('./legacy/origin/gift/updateGiftRefund') );
 /**
  * bootpay error all cancel
  */
-app.route('/order/cancel').put(require('../middleware/bootPayErrorCancel'))
+app.route('/order/cancel').put(require('../middleware/legacy/origin/bootPayErrorCancel'))
 
 
 /**

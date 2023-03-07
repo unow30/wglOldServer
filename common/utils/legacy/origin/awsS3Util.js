@@ -8,7 +8,7 @@ const crypto = require('crypto');
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
-const errCode = require('../define/errCode');
+const errCode = require('../../../define/errCode');
 
 const funcUtil = require('./funcUtil');
 const sendUtil = require('./sendUtil');

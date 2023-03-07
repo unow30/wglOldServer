@@ -54,14 +54,14 @@ const sharp = require('sharp')
 const getMediaDimensions = require('get-media-dimensions');
 const path = require('path')
 
-const mediaConvertUtil = require('../../../../../common/utils/mediaConvertUtil_m3u8');
-const sendUtil = require('../../../../../common/utils/sendUtil');
-const paramUtil = require('../../../../../common/utils/paramUtil');
-const fileUtil = require('../../../../../common/utils/fileUtil');
-const errUtil = require('../../../../../common/utils/errUtil');
-const logUtil = require('../../../../../common/utils/logUtil');
+const mediaConvertUtil = require('../../../../../common/utils/legacy/origin/mediaConvertUtil_m3u8');
+const sendUtil = require('../../../../../common/utils/legacy/origin/sendUtil');
+const paramUtil = require('../../../../../common/utils/legacy/origin/paramUtil');
+const fileUtil = require('../../../../../common/utils/legacy/origin/fileUtil');
+const errUtil = require('../../../../../common/utils/legacy/origin/errUtil');
+const logUtil = require('../../../../../common/utils/legacy/origin/logUtil');
 const errCode = require('../../../../../common/define/errCode');
-const funcUtil = require('../../../../../common/utils/funcUtil');
+const funcUtil = require('../../../../../common/utils/legacy/origin/funcUtil');
 
 let file_name = fileUtil.name(__filename);
 
