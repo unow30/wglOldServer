@@ -9,7 +9,7 @@ const sendUtil = require('./common/utils/sendUtil');
 const errUtil = require('./common/utils/errUtil');
 const errCode = require('./common/define/errCode');
 require('dotenv').config();
-const authController = require('./routes/api/auth/createPublicToken');
+const authController = require('./routes/api/legacy/origin/auth/createPublicToken');
 
 
 
@@ -38,7 +38,7 @@ app.route('/api/callback/bootpay').post(require('./routes/callback/createBootpay
 // app.all('/api/public/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
 // app.all('/api/private/*', require('./routes/middleware/setHeader')); // 비로그인 때 주석함 22. 10. 20
 
-app.all('/api/version/check', require('./routes/api/appCheck/selectAppCheck'))//api 버전 체크 url
+app.all('/api/version/check', require('./routes/api/legacy/origin/appCheck/selectAppCheck'))//api 버전 체크 url
 app.all('/api/private/*', require('./routes/middleware/checkAccessToken'));
 app.all('/api/public/*', require('./routes/middleware/publicCheckToken'));
 

@@ -31,7 +31,7 @@ const errUtil = require('../../../common/utils/errUtil');
 const logUtil = require('../../../common/utils/logUtil');
 const fcmUtil = require('../../../common/utils/fcmUtil');
 
-const uploadFile = require('../../../routes/api/file/uploadFile');
+const uploadFile = require('../legacy/origin/file/uploadFile');
 
 let http = require('http');
 let fs = require('fs');

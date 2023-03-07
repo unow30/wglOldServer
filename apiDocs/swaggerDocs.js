@@ -117,9 +117,13 @@ let swaggerDefinition = {
         }
     ],
     schemes: [
-        "https", "http"
+        "http", "https"
     ],
     tags: [
+        {
+            name: 'Auth',
+            description: '퍼블릭 엑세스 토큰 생성'
+        },
         {
             name: 'Dev',
             description: '개발 테스트용 API'
