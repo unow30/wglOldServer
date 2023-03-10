@@ -36,10 +36,11 @@ self = module.exports = {
     connectPool: function (asyncFunc, errorHandler) {
         pool.getConnection(async function (err, connection) {
             try {
-                console.log(`[${moment()}] Error connectPool start ==================================`);
                 if (err) {
+                    console.log(`[${moment()}] AWSError connectPool start ==================================`);
                     await errorHandler(errUtil.initError(errCode.system, err.message, err.stack));
                 } else {
+                    console.log(`[${moment()}] MySql connectPool start ==================================`);
                     await connection.beginTransaction(); // 트랜잭션 적용 시작
                     await asyncFunc(connection);
                     await connection.commit(); // 커밋

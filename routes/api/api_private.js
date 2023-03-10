@@ -56,6 +56,7 @@ app.route('/cart/list').get( require('./legacy/origin/cart/selectCartList') )
  * order api
  */
 app.route('/order').post( require('./legacy/origin/order/createOrder') )
+app.route('/v3/order').post(require('./v3/order/v3CreateOrder'))
 
 
 app.route('/order1').post( require('./legacy/origin/order/dev_createOrder1') )
