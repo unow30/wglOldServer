@@ -105,10 +105,10 @@
  *                     description: |
  *                       구매 갯수
  *                       * 최소 1개 이상
- *                   price_discount:
+ *                   price_original:
  *                     type: number
  *                     example: 25000
- *                     description: 상품 1개당 판매가
+ *                     description: 상품 1개당 판매가(tbl_order_product의 price_original)
  *                   payment:
  *                     type: number
  *                     example: 50000
@@ -172,12 +172,14 @@ module.exports = function (req, res) {
             //결제승인이 되면 콜백함수 실행: db데이터 입력
             await bootpayCrossVerificationUtil.PaymentCompletedCrossVerification(req, res, db_connection, function (calculatedObject) {
                 //create order table
-                console.log('tbl_order에 들어갈 데이터: ', calculatedObject)
+                console.log('tbl_order에 들어갈 데이터: ', calculatedObject);
                 //create orderProduct table
+                console.log('product_list 검증완료. 테이블 입력');
                 //create reward table
+                console.log('reward값 검증완료. 테이블 입력');
                 //create point table
-
-            })
+                console.log('point값 검증완료. 테이블 입력');
+            });
 
 
             // console.log(data)
