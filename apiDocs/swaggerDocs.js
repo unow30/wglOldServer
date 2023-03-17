@@ -7,8 +7,8 @@ const app = express();
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const osUtil = require('../common/utils/osUtil');
-const funcUtil = require('../common/utils/funcUtil');
+const osUtil = require('../common/utils/legacy/origin/osUtil');
+const funcUtil = require('../common/utils/legacy/origin/funcUtil');
 
 let private_ip = osUtil.getIpAddress();
 
@@ -117,9 +117,13 @@ let swaggerDefinition = {
         }
     ],
     schemes: [
-        "https", "http"
+        "http", "https"
     ],
     tags: [
+        {
+            name: 'Auth',
+            description: '퍼블릭 엑세스 토큰 생성'
+        },
         {
             name: 'Dev',
             description: '개발 테스트용 API'
