@@ -12,11 +12,31 @@ module.exports = {
             application_id: process.env.BOOTPAY_APPLICATION_ID,
             private_key: process.env.BOOTPAY_PRIVATE_KEY,
         });
-        let param = req.paramBody;
+        //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
+        let pgReceipt = await getBootPaySinglePayment(req.paramBody.pg_receipt_id);
 
-        let pgReceipt = await getBootPaySinglePayment(param);
+        let param = req.paramBody
+        // 0: 신용카드
+        // 1: 카카오페이
+        // 2: 무통장입금
+        // 3: 가상계좌(사용안하는중)
+        // 4: 네이버페이
+        // 5: 포인트/리워드결제
+        // 6: 이벤트 상품증정
+        // 30: 가상계좌 결제완료(사용안하는중)
+        // switch (pgReceipt.method_symbol) {
+        //     case 'card' : {
+        //         req.paramBody['payment_method'] = 0
+        //     }break;
+        //     case 'kakaopay': {
+        //         req.paramBody['payment_method'] = 1
+        //     }break;
+        //     case 'naverpay':{
+        //         req.paramBody['payment_method'] = 0
+        //     }break
+        // }
 
-        if(pgReceipt.status === 1){
+        if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
            return await calculateOrderProductsPrice(param, pgReceipt.price, db_connection);
         }else{
             throw `부트페이 단건결제 상태 이상. status: ${pgReceipt.status}`;
