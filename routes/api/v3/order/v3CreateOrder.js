@@ -170,67 +170,34 @@ module.exports = function (req, res) {
 
             //부트페이 결제완료 교차검증하고 결제승인하기.
             //결제승인이 되면 콜백함수 실행: db데이터 입력
-            await bootpayCrossVerificationUtil.PaymentCompletedCrossVerification(req, res, db_connection, function (calculatedObject) {
-                //create order table
-                console.log('tbl_order에 들어갈 데이터: ', calculatedObject);
-                //create orderProduct table
-                console.log('product_list 검증완료. 테이블 입력');
-                //create reward table
-                console.log('reward값 검증완료. 테이블 입력');
-                //create point table
-                console.log('point값 검증완료. 테이블 입력');
-            });
+            const calculateObj = await bootpayCrossVerificationUtil.PaymentCompletedCrossVerification(req, res, db_connection)
+            console.log('검증된 결제금액')
+            console.log(calculateObj)
+
+            const createOrderInfo = await createOrderDB(req, calculateObj, db_connection)
+            if(!createOrderInfo){
+                errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
+                return
+            }
+            req.innerBody['order_uid'] = createOrderInfo
+
+            const createOrderProductList = createOrderProductDB(req, calculateObj, db_connection)
+            console.log('order_product 입력', createOrderProductList)
+            if(!createOrderProductList)
+
+            if(req.paramBody['use_reward'] > 0 ) {
+                req.innerBody['reward'] = await queryReward(req, db_connection);
+            }
+            if(req.paramBody['use_point'] > 0) {
+                req.innerBody['point'] = await queryPoint(req, db_connection);
+            }
+
+            console.log('req.innerBody 데이터 확인 후 sendUtil.sendSuccessPacket(req, res, req.innerBody, true); 실행')
 
 
-            // console.log(data)
 
-            // req.innerBody['item'] = await query(req, db_connection);
-
-            // if (!req.innerBody['item']) {
-            //     errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
-            //     return
-            // }
-            // if(req.innerBody['item']['payment_method'] === 3){
-            //
-            //     req.paramBody['status'] = 30 //가상계좌 입금대기상태
-            // }
-            //
-            // req.innerBody['order_product_list'] = []
-            // req.innerBody['push_token_list'] = []
-            // req.innerBody['alrim_msg_list'] = []
-            // for( let idx in req.paramBody['product_list'] ){
-            //     req.innerBody['product'] = req.paramBody['product_list'][idx]
-            //     let product = await queryProduct(req, db_connection)
-            //
-            //     req.innerBody['push_token_list'].push(product['push_token']);
-            //     req.innerBody['order_product_list'].push( product );
-            //
-            //
-            //     req.innerBody['alrim_msg_list'][idx] = {};
-            //     req.innerBody['alrim_msg_list'][idx].phone = product['phone']
-            //     req.innerBody['alrim_msg_list'][idx].name = product['name']
-            //     req.innerBody['alrim_msg_list'][idx].nickname = product['nickname']
-            // }
-            //
-            // if(req.innerBody['item']['payment_method'] !== 3){
-            //     await alarm(req, res)
-            // }else{
-            //     delete req.innerBody['push_token_list']
-            //     delete req.innerBody['alrim_msg_list']
-            // }
-            // // pushTokenFCM(push_token_list);
-            //
-            // if(req.paramBody['use_reward'] > 0 ) {
-            //     req.innerBody['reward'] = await queryReward(req, db_connection);
-            // }
-            // if(req.paramBody['use_point'] > 0) {
-            //     req.paramBody['use_point']
-            //     req.innerBody['point'] = await queryPoint(req, db_connection);
-            // }
-            //
-            // deleteBody(req)
-            // sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
-            res.send('ok')
+            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+            // res.send('ok')
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -251,38 +218,94 @@ function checkParam(req) {
 
 function deleteBody(req) {
     // delete req.innerBody['item']['latitude']
-    delete req.innerBody['product']
+    // delete req.innerBody['product']
 }
 
-function query(req, db_connection) {
-    const _funcName = arguments.callee.name;
+async function createOrderDB(req, calculated, db_connection){
+    let date = new Date();
+    let unixTime = Math.floor(date.getTime() / 1000);
 
-    let seller_uid = 0
-    try {
-        seller_uid = req.paramBody['product_list'][0]['seller_uid']
-    }
-    catch (e){ }
+    const createOrderData = `
+    insert into tbl_order
+    set user_uid = ${req.headers['user_uid']}
+      , seller_uid = default
+      , addressbook_uid = ${req.paramBody['addressbook_uid']}
+      , order_no    = (${unixTime}*1000)+1
+      , delivery_msg    = '${req.paramBody['delivery_msg']}'
+      , seller_msg    = '${req.paramBody['seller_msg']}'
+      , use_point    = ${calculated['totalPoint']}
+      , use_reward    = ${calculated['totalReward']}
+      , price_total    = ${calculated['priceTotal']}
+      , delivery_total    = ${calculated['totalDelivery']}
+      , price_payment    = ${calculated['totalPayment']}
+      , pg_receipt_id   = '${calculated['pg_receipt_id']}'
+      , cancelable_price = ${calculated['totalPayment']}
+      , cancelable_point = ${calculated['totalPoint']}
+      , cancelable_reward = ${calculated['totalReward']}
+      , v_bank_account_number = ${null}
+      , v_bank_expired_time = ${null}
+      , v_bank_bank_name = ${null}
+      , payment_method = ${req.paramBody['payment_method']}
+    ;
+    `
+    return new Promise((resolve, reject) => {
+         db_connection.query(createOrderData, (err, res, fields) => {
+             console.log('order res',res)
+             if (err) {
+                 reject(err);
+             } else {
+                 resolve(res['insertId']);
+             }
+         })
+    })
+}
 
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_order'
-        , [
-            req.headers['user_uid'],
-            seller_uid,
-            req.paramBody['addressbook_uid'],
-            req.paramBody['delivery_msg'],
-            req.paramBody['seller_msg'],
-            req.paramBody['use_point'],
-            req.paramBody['use_reward'],
-            req.paramBody['price_total'],
-            req.paramBody['delivery_total'],
-            req.paramBody['price_payment'],
-            req.paramBody['pg_receipt_id'],
-            req.paramBody['v_bank_account_number'],
-            req.paramBody['v_bank_expired_time'],
-            req.paramBody['v_bank_bank_name'],
-            req.paramBody['payment_method'],
-        ]
-    );
+function createOrderProductDB(req, calculateObj, db_connection){
+
+    return Promise.all(req.paramBody['product_list'].map(async (product_list) =>{
+        const {
+            product_uid, seller_uid, video_uid, option_ids, count, price_original,
+            payment, price_delivery
+        } = product_list
+
+        return await new Promise( async(resolve, reject) => {
+            const createOrderProductData = `
+            insert into tbl_order_product
+            set order_uid = ${req.innerBody['order_uid']}
+          , user_uid = ${req.headers['user_uid']}
+          , product_uid    = ${product_uid}
+          , seller_uid    = ${seller_uid}
+          , video_uid    = ${video_uid}
+          , option_ids    = '${option_ids}'
+          , count    = ${count}
+          , price_original    = ${price_original}
+          , payment    = ${payment}
+          , price_delivery = ${price_delivery}
+          , product_name = (select name from tbl_product where uid = ${product_uid})
+          , product_image = (select func_select_image_target(${product_uid}, 2))
+          , option_names = (select func_select_product_option_names(${product_uid}, '${option_ids}'))
+          , status = default
+        ;
+        `
+        db_connection.query(createOrderProductData, (err, res, fields) => {
+            console.log('createOrderProductData',createOrderProductData)
+            console.log('order_product res',res)
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(res['insertId']);
+                }
+            });
+        })
+    }));
+}
+
+function createRewardDB(){
+
+}
+
+function createPointDB(){
+
 }
 
 function queryReward(req, db_connection) {

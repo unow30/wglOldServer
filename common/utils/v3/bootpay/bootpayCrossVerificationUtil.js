@@ -7,34 +7,46 @@ const sendUtil = require('../../legacy/origin/sendUtil');
 
 module.exports = {
     //부트페이 결제완료시 교차검증하고 결제승인하기
-    PaymentCompletedCrossVerification: async (req, res, db_connection, createDBCallback) => {
-        let param = req.paramBody
-
+    PaymentCompletedCrossVerification: async (req, res, db_connection) => {
         BootpayV2.setConfiguration({
             application_id: process.env.BOOTPAY_APPLICATION_ID,
             private_key: process.env.BOOTPAY_PRIVATE_KEY,
-        })
+        });
+        let param = req.paramBody;
 
-        //부트페이 단건결제건 가져오기
-        await BootpayV2.getAccessToken();
-        const receipt = await BootpayV2.receiptPayment(param['pg_receipt_id']);
-        if(receipt.status ===1){
-            await calculateOrderProductsPrice(receipt.price, param, db_connection, createDBCallback)
+        let pgReceipt = await getBootPaySinglePayment(param);
+
+        if(pgReceipt.status === 1){
+           return await calculateOrderProductsPrice(param, pgReceipt.price, db_connection);
         }else{
-            //1이 아니면 문제가 있다고 생각하여 결제취소함수 실행?
-            throw `부트페이 단건결제 상태 이상. status: ${receipt.status}`
+            throw `부트페이 단건결제 상태 이상. status: ${pgReceipt.status}`;
         }
-    },
 
+    },
     //부트페이 교차검증시 문제가 발생하면 결제 취소하기
     PaymentCancellationCrossVerification: () => {
 
     }
 }
 
+//pg사 단건결제
+async function getBootPaySinglePayment(param){
+    //부트페이 단건결제건 가져오기
+    await BootpayV2.getAccessToken();
+    const receipt = await BootpayV2.receiptPayment(param['pg_receipt_id']);
+    if(receipt.status !== 1){
+        //1이 아니면 문제가 있다고 생각하여 결제취소함수 실행?
+        throw `부트페이 단건결제 상태 이상. status: ${receipt.status}`
+    }else{
+        // return receipt.price
+        return receipt
+        // calculateCallback(receipt.price)
+    }
+}
 
 //pg단건조회 status 1이면 주문한 상품들 가격계산
-async function calculateOrderProductsPrice(receiptPrice, param, db_connection, createDBCallback){
+//일반상품인지 공구상품인지 구분한 다음 결제한다.
+async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
     //product_list의 상품금액, 판매금액, 배송금액 계산
     let objectCalculate = {
         priceTotal: 0,
@@ -46,28 +58,11 @@ async function calculateOrderProductsPrice(receiptPrice, param, db_connection, c
         pg_receipt_id: param['pg_receipt_id']
     }
 
-    // for(const idx in param['product_list']) {
-    //     let frontProductInfo = param['product_list'][idx];
-    //     let backProductInfo = await querySelectProductInfo(frontProductInfo, objectCalculate['pg_receipt_id'], db_connection);
-    //     await filterProductInfo(frontProductInfo, backProductInfo, objectCalculate['pg_receipt_id'], function () {
-    //         //배송비 정보 수집
-    //         objectCalculate['priceTotal'] += frontProductInfo['price_original'] * frontProductInfo['count']
-    //         objectCalculate['sellerArr'].push({
-    //             seller_uid: frontProductInfo['seller_uid'],
-    //             price_delivery: frontProductInfo['price_delivery'],
-    //         })
-    //     })
-    // }
+    //주문상품이 공구인지 일반상품인기 구분해야 한다. 아니면 api를 따로 빼서 사용한다? 검증유틸도 따로 만들기
 
     let frontProductInfo = param['product_list'];
     let backProductInfo = await querySelectProductInfo(frontProductInfo, objectCalculate['pg_receipt_id'], db_connection);
     await compareProductInfo(frontProductInfo, backProductInfo, objectCalculate['pg_receipt_id'], function (compared) {
-        //배송비 정보 수집
-        // objectCalculate['priceTotal'] += frontProductInfo['price_original'] * frontProductInfo['count']
-        // objectCalculate['sellerArr'].push({
-        //     seller_uid: frontProductInfo['seller_uid'],
-        //     price_delivery: frontProductInfo['price_delivery'],
-        // })
         objectCalculate['priceTotal'] += compared['priceTotal']
         objectCalculate['sellerArr'].push({
             seller_uid: compared['seller_uid'],
@@ -76,20 +71,22 @@ async function calculateOrderProductsPrice(receiptPrice, param, db_connection, c
     })
 
     //배송비 중복제외
-    //배송비 계산. 무료배송인줄 어떻게 검증하지? 프론트 최종지불가격이 서버와 다르면 계산이 잘못 된 것으로 알 수 있다.
     objectCalculate['sellerArr'] = [...new Set(objectCalculate['sellerArr'].map(seller => JSON.stringify(seller)))].map(str => JSON.parse(str));
     objectCalculate['sellerArr'].forEach(el =>{
         objectCalculate['totalDelivery'] += el['price_delivery']
     })
 
     //판매자 지불금액총합 계산
-    objectCalculate['totalPayment'] = objectCalculate['priceTotal'] + objectCalculate['totalDelivery'] - (objectCalculate['totalReward'] + objectCalculate['totalPoint'])
+    objectCalculate['totalPayment'] =
+        objectCalculate['priceTotal'] + objectCalculate['totalDelivery']
+      - (objectCalculate['totalReward'] + objectCalculate['totalPoint'])
     console.log('검증결과')
-    console.table({'pg결제금액': receiptPrice, '검증결제금액':objectCalculate['totalPayment']})
+    console.table([{'pg결제금액': receiptPrice, '검증결제금액':objectCalculate['totalPayment']}], ['pg결제금액','검증결제금액'])
+
     if(receiptPrice === objectCalculate['totalPayment']) {
-    // if(1 === objectCalculate['totalPayment']) {
-       //결제내역 승인 진행
-       return createDBCallback(objectCalculate)
+       return await funcD(objectCalculate, (res) =>{
+           return res
+       })
     }else{
        //결제금액이 맞지 않으니 pg결제를 취소해야 한다. 전체취소 진행한다.
        throw await funcC(param['pg_receipt_id'], `결제금액과 검증금액이 맞지 않습니다. 결제를 취소합니다.`)
@@ -97,47 +94,8 @@ async function calculateOrderProductsPrice(receiptPrice, param, db_connection, c
 }
 
 //상품정보, 상품옵션정보를 조인해서 하나씩 가져온다. 여러개를 한번에 가져오기 어렵다.
+//공구결제라면 상품정보를 가져와도 소용없잖어 공구가격을 검증해야 하는데
 async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connection) {
-    //기존 상품 정보 한번에 불러오기
-    //product_uid로 상품정보 n개를 가져온다.
-    // let productUids = [];
-    // for(const idx in frontProductList){
-    //     productUids.push(frontProductList[idx]['product_uid'])
-    // }
-    // for (const product_list of frontProductList) {
-    //     productUids.push(product_list['product_uid'])
-    // }
-    // const checkProductData = `
-    //     select p.uid as product_uid
-    //         , p.user_uid as seller_uid
-    //         , p.name as product_name
-    //         , p.price_original
-    //         , p.price_discount
-    //         , p.is_authorize
-    //         , p.is_deleted
-    //         , p.sale_type
-    //     from tbl_product as p
-    //     where p.uid in(${productUids})
-    // ;`
-    // // where p.uid in (${productUids})
-    //
-    //
-    // return new Promise(async (resolve, reject) => {
-    //     await db_connection.query(checkProductData, async (err, rows, fields) => {
-    //         if (err) {
-    //             reject(await funcC(pg_receipt_id, 'db상품정보 검색 연결 실패'))
-    //         } else if (rows.length === 0) {
-    //             //빈 배열 리턴: product_uid가 db에 없는 값일 경우 db단에서 에러가 난 것으로 보고싶다.
-    //             // reject(await funcC(pg_receipt_id, `상품정보를 찾을 수 없습니다. product_uid = ${param['product_uid']}`))
-    //             reject(await funcC(pg_receipt_id, `상품정보를 찾을 수 없습니다.`))
-    //         } else {
-    //             // resolve(rows[0])
-    //             console.log(rows)
-    //             resolve(rows)
-    //         }
-    //     })
-    // })
-
     //상품정보 옵션정보까지 조인해서 하나씩 불러오기
     return await Promise.all(frontProductList.map(async (product_list) => {
         return new Promise(async (resolve, reject) => {
@@ -151,8 +109,8 @@ async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connec
                     , p.is_authorize
                     , p.is_deleted
                     , p.sale_type
-                    , po.option_price
-                    , po.name as option_name
+                    , sum(po.option_price) as option_price
+                    , group_concat(po.name separator ' / ') as option_name
                 from tbl_product as p
                 inner join tbl_product_option as po
                     on po.product_uid = ${product_list['product_uid']}
@@ -173,7 +131,7 @@ async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connec
         return value
     })
     //     .catch(err =>{
-    //     console.log('pro치ist.all catch부분')
+    //     console.log('promise.all catch부분')
     //     throw err
     // })
 }
@@ -245,6 +203,20 @@ async function funcC(pg_receipt_id, errMsg){
     console.log(`${pg_receipt_id} 결제 취소`)
     return new Error(errMsg)
 }
+
+async function funcD(objectCalculate, callback){
+    try {
+        // const response = await BootpayV2.confirmPayment('12345')
+        // console.log(response)
+        console.log('결제승인 진행')
+        return callback(objectCalculate)
+    } catch (e) {
+        //{ error_code: 'RC_NOT_FOUND', message: '영수증 정보를 찾지 못했습니다.' }
+        throw await funcC(objectCalculate['pg_receipt_id'], e['message'])
+        // throw e
+    }
+}
+
 
 async function foo() {
     return 123

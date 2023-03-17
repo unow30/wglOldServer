@@ -242,7 +242,6 @@ module.exports = function (req, res) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
             }
             if(req.paramBody['use_point'] > 0) {
-                req.paramBody['use_point']
                 req.innerBody['point'] = await queryPoint(req, db_connection);
             }
 
