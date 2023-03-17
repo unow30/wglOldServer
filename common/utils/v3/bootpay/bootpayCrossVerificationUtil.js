@@ -54,7 +54,7 @@ async function getBootPaySinglePayment(param){
     //부트페이 단건결제건 가져오기
     await BootpayV2.getAccessToken();
     const receipt = await BootpayV2.receiptPayment(param['pg_receipt_id']);
-    if(receipt.status !== 1){
+    if(receipt.status !== 2){
         //1이 아니면 문제가 있다고 생각하여 결제취소함수 실행?
         throw `부트페이 단건결제 상태 이상. status: ${receipt.status}`
     }else{
