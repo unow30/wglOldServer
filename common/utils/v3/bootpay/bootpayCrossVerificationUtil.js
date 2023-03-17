@@ -227,7 +227,7 @@ async function funcC(pg_receipt_id, errMsg){
 
 async function funcD(objectCalculate, callback){
     try {
-        const response = await BootpayV2.confirmPayment('12345')
+        const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
         console.log(response)
         console.log('결제승인 진행')
         return callback(objectCalculate)
