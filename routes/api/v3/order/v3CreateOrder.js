@@ -170,6 +170,7 @@ module.exports = function (req, res) {
 
             //부트페이 결제완료 교차검증하고 결제승인하기.
             //결제승인이 되면 콜백함수 실행: db데이터 입력
+            //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
             const calculateObj = await bootpayCrossVerificationUtil.PaymentCompletedCrossVerification(req, res, db_connection)
             console.log('검증된 결제금액')
             console.log(calculateObj)
@@ -183,7 +184,11 @@ module.exports = function (req, res) {
 
             const createOrderProductList = createOrderProductDB(req, calculateObj, db_connection)
             console.log('order_product 입력', createOrderProductList)
-            if(!createOrderProductList)
+            if(!createOrderProductList){
+                errUtil.createCall(errCode.fail, `주문상품 db입력 실패?`)
+                return
+            }
+            //각 상품의 판매자한테 주문알람 보내야 한다.
 
             if(req.paramBody['use_reward'] > 0 ) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
