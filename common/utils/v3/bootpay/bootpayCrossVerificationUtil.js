@@ -54,7 +54,7 @@ async function getBootPaySinglePayment(param){
     //부트페이 단건결제건 가져오기
     await BootpayV2.getAccessToken();
     const receipt = await BootpayV2.receiptPayment(param['pg_receipt_id']);
-    if(receipt.status !== 1){
+    if(receipt.status !== 2){
         //1이 아니면 문제가 있다고 생각하여 결제취소함수 실행?
         throw `부트페이 단건결제 상태 이상. status: ${receipt.status}`
     }else{
@@ -226,13 +226,13 @@ async function funcC(pg_receipt_id, errMsg){
 
 async function funcD(objectCalculate, callback){
     try {
-        // const response = await BootpayV2.confirmPayment('12345')
-        // console.log(response)
+        const response = await BootpayV2.confirmPayment('12345')
+        console.log(response)
         console.log('결제승인 진행')
         return callback(objectCalculate)
     } catch (e) {
         //{ error_code: 'RC_NOT_FOUND', message: '영수증 정보를 찾지 못했습니다.' }
-        throw await funcC(objectCalculate['pg_receipt_id'], e['message'])
+        throw await funcC(objectCalculate['pg_receipt_id'], '결제승인 에러 실행')
         // throw e
     }
 }
