@@ -29,7 +29,6 @@
  *             - price_total
  *             - delivery_total
  *             - price_payment
- *             - payment_method
  *             - recipient_name
  *             - msg_card
  *           properties:
@@ -66,31 +65,6 @@
  *               example: 5fffad430c20b1903e88a2d17
  *               description: |
  *                 PG사 결제 완료 값 id
- *             v_bank_account_number:
- *               type: string
- *               example: 027038824568800
- *               description: |
- *                 가상계좌 계좌번호
- *             v_bank_bank_name:
- *               type: string
- *               example: 신한은행
- *               description: |
- *                 가상계좌 은행명
- *             v_bank_expired_time:
- *               type: timestamp
- *               example: 2021-10-10
- *               description: |
- *                 가상계좌 입금요청기한
- *             payment_method:
- *               type: number
- *               example: 0
- *               description: |
- *                 결제 방법
- *                 * 0: 신용카드
- *                 * 1: 카카오페이
- *                 * 2: 무통장입금
- *                 * 3: 가상계좌
- *                 * 4: 네이버페이
  *             recipient_name:
  *               type: string
  *               example: 선물 받는 사람의 이름
