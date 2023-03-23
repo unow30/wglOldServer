@@ -1,133 +1,3 @@
-/**
- * Created by hyunhunhwang on 2021. 02. 10.
- *
- * @swagger
- * /api/private/v3/order:
- *   post:
- *     summary: 상품 구매 v3
- *     tags: [Order]
- *     description: |
- *       path : /api/private/v3/order
- *
- *       * 상품 구매 v3
- *       * 서버에서 결제내역 검증 후 승인
- *
- *     parameters:
- *       - in: body
- *         name: body
- *         description: |
- *           상품 구매
- *
- *           payment_method
- *           * 0: 신용카드
- *           * 1: 카카오페이
- *           * 2: 무통장입금
- *           * 3: 가상계좌
- *           * 4: 네이버페이
- *         schema:
- *           type: object
- *           required:
- *             - addressbook_uid
- *             - payment_method
- *           properties:
- *             addressbook_uid:
- *               type: number
- *               example: 1
- *               description: |
- *                 배송지 주소 uid
- *             delivery_msg:
- *               type: string
- *               example: 집 문앞에 놔주세요
- *               description: |
- *                 배송메모
- *             seller_msg:
- *               type: string
- *               example: 잘 보내주세요
- *               description: |
- *                 판매자에게 메세지
- *             use_point:
- *               type: number
- *               example: 0
- *               description: |
- *                 포인트 사용 금액
- *                 * 사용 안할 경우 0
- *             use_reward:
- *               type: number
- *               example: 0
- *               description: |
- *                 리워드 사용 금액
- *                 * 사용 안할 경우 0
- *             pg_receipt_id:
- *               type: string
- *               example: 611b3e5e7b5ba40025b0cc99
- *               description: |
- *                 PG사 결제 완료 값 id
- *             payment_method:
- *               type: number
- *               example: 0
- *               description: |
- *                 결제 방법
- *                 * 0: 신용카드
- *                 * 1: 카카오페이
- *                 * 2: 무통장입금
- *                 * 3: 가상계좌
- *                 * 4: 네이버페이
- *             product_list:
- *               type: array
- *               description: 구매 상품 목록
- *               items:
- *                 type: object
- *                 properties:
- *                   product_uid:
- *                     type: number
- *                     example: 100053
- *                     description: 구매 상품 uid
- *                   seller_uid:
- *                     type: number
- *                     example: 224
- *                     description: |
- *                       판매자 uid
- *                   video_uid:
- *                     type: number
- *                     example: 1
- *                     description: |
- *                       리뷰어 영상 uid
- *                       * 리뷰어가 없을 경우 0으로 보내면 됩니다.
- *                   option_ids:
- *                     type: string
- *                     example: '101'
- *                     description: |
- *                       옵션 option_id 목록
- *                       * ','로 구분
- *                   count:
- *                     type: number
- *                     example: 2
- *                     description: |
- *                       구매 갯수
- *                       * 최소 1개 이상
- *                   price_original:
- *                     type: number
- *                     example: 25000
- *                     description: 상품 1개당 판매가(tbl_order_product의 price_original)
- *                   payment:
- *                     type: number
- *                     example: 50000
- *                     description: |
- *                       해당 상품 구매 금액
- *                       * price_discount * count
- *                   price_delivery:
- *                     type: number
- *                     example: 2000
- *                     description: |
- *                       판매자 배송비
- *
- *     responses:
- *       400:
- *         description: 에러 코드 400
- *         schema:
- *           $ref: '#/definitions/Error'
- */
-
 const paramUtil = require('../../../../common/utils/legacy/origin/paramUtil');
 const fileUtil = require('../../../../common/utils/legacy/origin/fileUtil');
 const mysqlUtil = require('../../../../common/utils/legacy/origin/mysqlUtil');
@@ -160,11 +30,8 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `== function start ==================================`);
         // logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
-
         // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
-
         // checkParam(req);
-
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
 
@@ -175,31 +42,30 @@ module.exports = function (req, res) {
             console.log('검증된 결제금액')
             console.log(calculateObj)
 
-            const createOrderInfo = await createOrderDB(req, calculateObj, db_connection)
+            const createOrderInfo = await createOrderDB(req, calculateObj, db_connection);
             if(!createOrderInfo){
-                errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
+                errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`);
                 return
             }
-            req.innerBody['order_uid'] = createOrderInfo
+            req.innerBody['item'] = createOrderInfo
 
-            const createOrderProductList = createOrderProductDB(req, calculateObj, db_connection)
-            console.log('order_product 입력', createOrderProductList)
+            const createOrderProductList = await createOrderProductDB(req, calculateObj, db_connection);
+            // console.log('order_product여러개 받는다.', createOrderProductList)
             if(!createOrderProductList){
                 errUtil.createCall(errCode.fail, `주문상품 db입력 실패?`)
                 return
             }
+            req.innerBody['item']['order_product'] = createOrderProductList
             //각 상품의 판매자한테 주문알람 보내야 한다.
+            await orderAlarm(req, res, createOrderProductList)
 
             if(req.paramBody['use_reward'] > 0 ) {
-                req.innerBody['reward'] = await queryReward(req, db_connection);
+                // req.innerBody['reward'] = await queryReward(req, db_connection);
+                req.innerBody['item']['reward'] = await createRewardDB(req, db_connection);
             }
             if(req.paramBody['use_point'] > 0) {
-                req.innerBody['point'] = await queryPoint(req, db_connection);
+                req.innerBody['item']['point'] = await createPointDB(req, db_connection);
             }
-
-            console.log('req.innerBody 데이터 확인 후 sendUtil.sendSuccessPacket(req, res, req.innerBody, true); 실행')
-
-
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
             // res.send('ok')
@@ -230,7 +96,7 @@ async function createOrderDB(req, calculated, db_connection){
     let date = new Date();
     let unixTime = Math.floor(date.getTime() / 1000);
 
-    const createOrderData = `
+    const createOrderSql = `
     insert into tbl_order
     set user_uid = ${req.headers['user_uid']}
       , seller_uid = default
@@ -254,65 +120,179 @@ async function createOrderDB(req, calculated, db_connection){
     ;
     `
     return new Promise((resolve, reject) => {
-         db_connection.query(createOrderData, (err, res, fields) => {
+         db_connection.query(createOrderSql, (err, res, fields) => {
              console.log('order res',res)
              if (err) {
                  reject(err);
              } else {
-                 resolve(res['insertId']);
+                 const selectOrderData = `
+                 select uid as order_uid
+                     , _order.user_uid
+                     , _order.order_no
+                 from tbl_order as _order
+                 where _order.uid = ${res['insertId']}
+                 `;
+
+                 db_connection.query(selectOrderData, (err, res, fields) => {
+                     if(err){
+                         reject(err);
+                     }else{
+                         resolve(res[0]);
+                     }
+                 })
              }
          })
     })
 }
 
-function createOrderProductDB(req, calculateObj, db_connection){
-
-    return Promise.all(req.paramBody['product_list'].map(async (product_list) =>{
+async function createOrderProductDB(req, calculateObj, db_connection) {
+    return Promise.all(req.paramBody['product_list'].map(async (product_list) => {
         const {
             product_uid, seller_uid, video_uid, option_ids, count, price_original,
             payment, price_delivery
-        } = product_list
+        } = product_list;
 
-        return await new Promise( async(resolve, reject) => {
-            const createOrderProductData = `
-            insert into tbl_order_product
-            set order_uid = ${req.innerBody['order_uid']}
-          , user_uid = ${req.headers['user_uid']}
-          , product_uid    = ${product_uid}
-          , seller_uid    = ${seller_uid}
-          , video_uid    = ${video_uid}
-          , option_ids    = '${option_ids}'
-          , count    = ${count}
-          , price_original    = ${price_original}
-          , payment    = ${payment}
-          , price_delivery = ${price_delivery}
-          , product_name = (select name from tbl_product where uid = ${product_uid})
-          , product_image = (select func_select_image_target(${product_uid}, 2))
-          , option_names = (select func_select_product_option_names(${product_uid}, '${option_ids}'))
-          , status = default
-        ;
-        `
-        db_connection.query(createOrderProductData, (err, res, fields) => {
-            console.log('createOrderProductData',createOrderProductData)
-            console.log('order_product res',res)
+        const {order_uid} = req.innerBody['item']
+
+        const createOrderProductData = `
+                insert into tbl_order_product
+                set order_uid       = ${order_uid}
+                , user_uid          = ${req.headers['user_uid']}
+                , product_uid       = ${product_uid}
+                , seller_uid        = ${seller_uid}
+                , video_uid         = ${video_uid}
+                , option_ids        = '${option_ids}'
+                , count             = ${count}
+                , price_original    = ${price_original}
+                , payment           = ${payment}
+                , price_delivery    = ${price_delivery}
+                , product_name      = (select name from tbl_product where uid = ${product_uid})
+                , product_image     = (select func_select_image_target(${product_uid}, 2))
+                , option_names      = (select func_select_product_option_names(${product_uid}, '${option_ids}'))
+                , status = default
+            ;
+            `;
+
+        return await new Promise(async (resolve, reject) => {
+            db_connection.query(createOrderProductData, (err, res, fields) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(res['insertId']);
+                    // retrieve the data of the inserted row
+                    // const selectOrderProductData = `
+                    //     SELECT uid, user_uid, order_uid, product_uid, seller_uid, video_uid
+                    //     , option_ids, count, price_original, payment, price_delivery, option_names, product_name, product_image
+                    //     FROM tbl_order_product
+                    //     WHERE uid = ${res['insertId']}
+                    // `;
+                    const selectOrderProductData = `
+                        select _seller.uid as seller_uid  
+                            , _seller.nickname
+                            , _seller.phone
+                            , _seller.push_token
+                            , _product.name as product_name
+                        from tbl_order_product as _order_product
+                            left outer join tbl_user as _seller
+                                on _seller.uid = _order_product.seller_uid
+                                and _seller.is_deleted = 0
+                            left outer join tbl_product as _product
+                                on _product.uid = _order_product.product_uid
+                                and _product.is_deleted = 0
+                        where _order_product.uid = ${res['insertId']};
+                    `
+                    db_connection.query(selectOrderProductData, (err, res, fields) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(res[0]); // return the data of the inserted row
+                        }
+                    });
                 }
             });
-        })
+        });
     }));
 }
 
-function createRewardDB(){
+async function createRewardDB(req, db_connection){
+    const {user_uid, order_uid, order_no} = req.innerBody['item'];
 
+    const createRewardSql = `
+        insert into tbl_reward
+        set user_uid       = ${req.headers['user_uid']}
+      , seller_uid         = 0
+      , order_uid          = ${order_uid}
+      , order_no           = ${order_no}
+      , state              = 2
+      , amount             = ${req.paramBody['use_reward']}
+      , content            = '상품 구매에 리워드 사용'
+    `;
+
+    return new Promise((resolve, reject) => {
+        db_connection.query(createRewardSql, (err, res, fields) => {
+            if (err) {
+                reject(err);
+            } else {
+                const selectRewardSql = `
+                    select r.uid as reward_uid
+                    , r.order_uid
+                    , r.order_no
+                    , r.amount
+                    , r.state
+                    , r.content
+                    from tbl_reward as r
+                    where tbl_reward.uid = ${res['insertId']}
+                `;
+
+                db_connection.query(selectRewardSql, (err, res, fields) =>{
+                    if(err){
+                        reject(err)
+                    }else{
+                        resolve(res[0]); // return the data of the inserted row
+                    }
+                });
+            }
+        });
+    });
 }
 
-function createPointDB(){
+function createPointDB(req, db_connection){
+    const {user_uid, order_uid, order_no} = req.innerBody['item'];
 
+    const createPointSql = `
+        insert into tbl_point
+        set user_uid       = ${req.headers['user_uid']}
+        , order_no         = ${order_no}
+        , type             = 2
+        , amount           = ${req.paramBody['use_point'] * -1}
+        , content          = '상품 구매에 포인트 사용'
+    ;
+    `;
+
+    return new Promise((resolve, reject) => {
+        db_connection.query(createPointSql, (err, res, fields) => {
+            if (err) {
+                reject(err);
+            } else {
+                const selectPointSql = `
+                    select 
+                        *
+                    from tbl_point as p
+                    where p.uid = ${res['insertId']}
+                `;
+
+                db_connection.query(selectPointSql, (err, res, fields) =>{
+                    if(err){
+                        reject(err)
+                    }else{
+                        resolve(res[0]); // return the data of the inserted row
+                    }
+                });
+            }
+        });
+    });
 }
 
+//판매자 uid는 0이다. order.uid와 order_no, 2, use_reward를 사용한다.
 function queryReward(req, db_connection) {
     const _funcName = arguments.callee.name;
 
@@ -320,7 +300,7 @@ function queryReward(req, db_connection) {
         , 'call proc_create_use_reward'
         , [
             req.headers['user_uid'],
-            req.innerBody['item']['seller_uid'],
+            req.innerBody['seller_uid'],
             req.innerBody['item']['uid'],
             req.innerBody['item']['order_no'],
             2,
@@ -367,18 +347,24 @@ function queryProduct(req, db_connection) {
     );
 }
 
-async function alarm(req, res) {
+async function orderAlarm(req, res, createOrderProductList) {
+    let alrim_msg_distinc_list = createOrderProductList.reduce((prev, now) => {
+        if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
+        return prev;
+    }, []);
+    //중복제거는 해도 한 판매자에게 구매한 상품종류가 n개라면 외 n개라고 해주는게 좋겠다.
+    console.log('alrim_msg_distinc_list중복제거', alrim_msg_distinc_list)
 
-    const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
-    await fcmUtil.fcmCreateOrderList(push_token_list);
-
+    // const push_token_list = [...new Set(createOrderProductList.map(list => list.push_token))];
+    const push_token_list = alrim_msg_distinc_list.map(list => list.push_token);
+    console.log('push_token_list중복제거', push_token_list)
+    await fcmUtil.fcmCreateOrderList(push_token_list);//fcm알림도 중복제거가 되는가?
 
     req.body= {
         type: 's',
         time: '9999'
     }
     await aligoUtil.createToken(req, res);
-
 
     req.body= {
         senderkey: `${process.env.ALIGO_SENDERKEY}`,
@@ -387,15 +373,8 @@ async function alarm(req, res) {
         subject_1: `상품 주문 알림(판매자)`,
     }
 
-    let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
-        if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
-        return prev;
-    }, []);
-
-
     let cnt = 1;
     for (let idx in alrim_msg_distinc_list) {
-
         idx = parseInt(idx);
         if(alrim_msg_distinc_list[idx]['phone'] && alrim_msg_distinc_list[idx]['phone'].length > 4) {
             req.body[`receiver_${cnt}`] = alrim_msg_distinc_list[idx]['phone']
@@ -413,5 +392,5 @@ function setArimMessage(alrim_msg_distinc_list, idx) {
 
 ${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.
 
-□ 주문상품 : ${alrim_msg_distinc_list[idx]['name']}`
+□ 주문상품 : ${alrim_msg_distinc_list[idx]['product_name']}`
 }

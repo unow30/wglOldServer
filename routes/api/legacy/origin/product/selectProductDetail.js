@@ -80,7 +80,7 @@ module.exports = function (req, res) {
             }
             req.innerBody['image_list'] = await queryImageList(req, db_connection);
             req.innerBody['image_detail_list'] = await queryImageDetailList(req, db_connection);
-            req.innerBody['video_list'] = await queryReviewList(req, db_connection);
+            // req.innerBody['video_list'] = await queryReviewList(req, db_connection);
             req.innerBody['faq_list'] = await queryFaqList(req, db_connection);
             req.innerBody['qna_list'] = await queryQnAList(req, db_connection);
 
