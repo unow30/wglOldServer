@@ -222,9 +222,9 @@ async function funcC(errMsg){
 // async function funcD(objectCalculate, callback){
 async function funcD(objectCalculate){
     try {
-        // const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
-        // console.log(response)
-        console.log('결제승인 진행(주석)')
+        const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
+        console.log(response)
+        console.log('결제승인 진행')
         return objectCalculate
     } catch (e) {
         //{ error_code: 'RC_NOT_FOUND', message: '영수증 정보를 찾지 못했습니다.' }
