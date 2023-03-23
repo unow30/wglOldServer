@@ -231,7 +231,7 @@ app.route('/notice/list').get( require('./legacy/origin/notice/selectNoticeViewL
 /**
  * gift api
  */
-app.route('/gift/order').post( require('./legacy/origin/gift/createGiftOrder') )
+app.route('/gift/order').post( require('./legacy/origin/gift/createGiftOrder'))
                               .put( require('./legacy/origin/gift/updateGiftOrder'))
                               .get(require('./legacy/origin/gift/selectGiftOrder'));
 app.route('/gift/refuse').put(require('../middleware/legacy/origin/bootPay'), require('./legacy/origin/gift/updateGiftRefuse') );
@@ -239,6 +239,7 @@ app.route('/gift/refund').put(require('../middleware/legacy/origin/bootPay'), re
 app.route('/v2/gift/box/received').get(require('./legacy/v2/gift/v2SelectGiftBoxReceived') );
 app.route('/v2/gift/box/gived').get(require('./legacy/v2/gift/v2SelectGiftBoxGived') );
 
+app.route('/v3/gift/order').post(require('./v3/gift/v3CreateGiftOrder'));
 
 /**
  * Alert

@@ -4,45 +4,54 @@
 
 const BootpayV2 = require('@bootpay/backend-js').Bootpay;
 const sendUtil = require('../../legacy/origin/sendUtil');
+const errUtil = require('../../legacy/origin/errUtil');
 
 module.exports = {
     //부트페이 결제완료시 교차검증하고 결제승인하기
     PaymentCompletedCrossVerification: async (req, res, db_connection) => {
-        BootpayV2.setConfiguration({
-            application_id: process.env.BOOTPAY_APPLICATION_ID,
-            private_key: process.env.BOOTPAY_PRIVATE_KEY,
-        });
         //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
-        console.log(req.paramBody)
+        // console.log(req.paramBody)
         let pgReceipt = await getBootPaySinglePayment(req.paramBody.pg_receipt_id);
+/**
+ * 0: 신용카드
+ * 1: 카카오페이
+ * 2: 무통장입금(사용안하는중)
+ * 3: 가상계좌(사용안하는중)
+ * 4: 네이버페이
+ * 5: 포인트/리워드결제 =>이때 부트페이 거치지 않는다.
+ * 6: 이벤트 상품증정 =>이때 부트페이 거치지 않는다.
+ * 30: 가상계좌 결제완료(사용안하는중)
+ * method: '카드결제',
+ * method_symbol: 'card',
+ * method_origin: '네이버페이',
+ * method_origin_symbol: 'naverpay',
+ * method: '카카오페이',
+ * method_symbol: 'kakaopay',
+ * method_origin: '카카오페이',
+ * method_origin_symbol: 'kakaopay',
+ * method: '카드',
+ * method_symbol: 'card',
+ * method_origin: '카드',
+ * method_origin_symbol: 'card',
+ **/
 
-        let param = req.paramBody
-        // 0: 신용카드
-        // 1: 카카오페이
-        // 2: 무통장입금
-        // 3: 가상계좌(사용안하는중)
-        // 4: 네이버페이
-        // 5: 포인트/리워드결제
-        // 6: 이벤트 상품증정
-        // 30: 가상계좌 결제완료(사용안하는중)
-        // switch (pgReceipt.method_symbol) {
-        //     case 'card' : {
-        //         req.paramBody['payment_method'] = 0
-        //     }break;
-        //     case 'kakaopay': {
-        //         req.paramBody['payment_method'] = 1
-        //     }break;
-        //     case 'naverpay':{
-        //         req.paramBody['payment_method'] = 0
-        //     }break
-        // }
-
-        if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
-           return await calculateOrderProductsPrice(param, pgReceipt.price, db_connection);
-        }else{
-            throw `부트페이 단건결제 상태 이상. status: ${pgReceipt.status}`;
+        switch (pgReceipt.method_origin_symbol) {
+            case 'card' : {
+                req.paramBody['payment_method'] = 0
+            }break;
+            case 'kakaopay': {
+                req.paramBody['payment_method'] = 1
+            }break;
+            case 'naverpay':{
+                req.paramBody['payment_method'] = 4
+            }break
         }
-
+        // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
+        if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
+           return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, db_connection);
+        }else{
+            throw `부트페이 단건결제 상태 이상. pgReceipt.status: ${pgReceipt.status}`;
+        }
     },
     //부트페이 교차검증시 문제가 발생하면 결제 취소하기
     PaymentCancellationCrossVerification: () => {
@@ -52,21 +61,21 @@ module.exports = {
 
 //pg사 단건결제
 async function getBootPaySinglePayment(pg_receipt_id){
+    BootpayV2.setConfiguration({
+        application_id: process.env.BOOTPAY_APPLICATION_ID,
+        private_key: process.env.BOOTPAY_PRIVATE_KEY,
+    });
     //부트페이 단건결제건 가져오기
-    await BootpayV2.getAccessToken();
-    const receipt = await BootpayV2.receiptPayment(pg_receipt_id);
-    if(receipt.status !== 2){
-        //1이 아니면 문제가 있다고 생각하여 결제취소함수 실행?
-        throw `부트페이 단건결제 상태 이상. status: ${receipt.status}`
-    }else{
-        // return receipt.price
+    try {
+        await BootpayV2.getAccessToken();
+        const receipt = await BootpayV2.receiptPayment(pg_receipt_id);
         return receipt
-        // calculateCallback(receipt.price)
+    }catch (e) {
+        //{"error_code":"RC_NOT_FOUND","message":"영수증 정보를 찾지 못했습니다."}
+        throw e.message
     }
 }
 
-//pg단건조회 status 1이면 주문한 상품들 가격계산
-//일반상품인지 공구상품인지 구분한 다음 결제한다.
 async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
     //product_list의 상품금액, 판매금액, 배송금액 계산
     let objectCalculate = {
@@ -105,12 +114,10 @@ async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
     console.table([{'pg결제금액': receiptPrice, '검증결제금액':objectCalculate['totalPayment']}], ['pg결제금액','검증결제금액'])
 
     if(receiptPrice === objectCalculate['totalPayment']) {
-       return await funcD(objectCalculate, (res) =>{
-           return res
-       })
+       return await funcD(objectCalculate);
     }else{
        //결제금액이 맞지 않으니 pg결제를 취소해야 한다. 전체취소 진행한다.
-       throw await funcC(param['pg_receipt_id'], `결제금액과 검증금액이 맞지 않습니다. 결제를 취소합니다.`)
+       throw await funcC(`결제금액과 검증금액이 맞지 않습니다. 결제를 취소합니다.`)
     }
 }
 
@@ -140,9 +147,9 @@ async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connec
             ;`;
             await db_connection.query(checkProductData, async (err, rows, fields) => {
                 if (err) {
-                    reject(await funcC(pg_receipt_id, 'db상품정보 검색 연결 실패'));
+                    reject(await funcC('db상품정보 검색 연결 실패'));
                 } else if (rows.length === 0) {
-                    reject(await funcC(pg_receipt_id, `상품정보를 찾을 수 없습니다.`));
+                    reject(await funcC(`상품정보를 찾을 수 없습니다.`));
                 } else {
                     resolve(rows[0]);
                 }
@@ -160,7 +167,7 @@ async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connec
 //서버와 클라이언트간 데이터 검증 필터
 async function compareProductInfo(frontProductInfo, backProductInfo, pg_receipt_id, calculateCallback){
     if (frontProductInfo.length !== backProductInfo.length) {
-        throw await funcC(pg_receipt_id, `결제할 상품 종류가 일치하지 않습니다. 클라이언트:${frontProductInfo.length}개, 서버:${backProductInfo.length}개`)
+        throw await funcC(`결제할 상품 종류가 일치하지 않습니다. 클라이언트:${frontProductInfo.length}개, 서버:${backProductInfo.length}개`)
     }
 
     frontProductInfo.sort(function(x, y) {
@@ -184,16 +191,16 @@ async function compareProductInfo(frontProductInfo, backProductInfo, pg_receipt_
 
         if(aElem['product_uid'] !== bElem['product_uid']){
         // if(aElem['product_uid'] !== 1){
-            throw (await funcC(pg_receipt_id, `상품번호가 일치하지 않습니다. product_uid: ${aElem['product_uid']}`))
+            throw (await funcC(`상품번호가 일치하지 않습니다. product_uid: ${aElem['product_uid']}`))
         }
         if(aElem['seller_uid'] !== bElem['seller_uid']){
         // if(aElem['seller_uid'] !== 0){
-            throw (await funcC(pg_receipt_id, `판매자번호가 일치하지 않습니다. seller_uid: ${aElem['seller_uid']}`))
+            throw (await funcC(`판매자번호가 일치하지 않습니다. seller_uid: ${aElem['seller_uid']}`))
         }
 
         if(aElem['price_original'] * aElem['count'] !== (bElem['price_discount'] + bElem['option_price']) * aElem['count']){
         // if(aElem['price_discount'] * aElem['count'] !== bElem['price_discount'] * 1){
-            throw (await funcC(pg_receipt_id, `결제금액이 서버와 일치하지 않습니다.`))
+            throw (await funcC(`결제금액이 서버와 일치하지 않습니다.`))
         }
 
         let compared = {
@@ -208,37 +215,20 @@ async function compareProductInfo(frontProductInfo, backProductInfo, pg_receipt_
 }
 
 //결제금액이 일치하지 않으면 pg사 결제내역 전체 취소한다.
-async function funcC(pg_receipt_id, errMsg){
-    //부트페이 취소 로직 실행
-    // const response = await BootpayV2.cancelPayment({
-    //     receipt_id: aaaaapgid222,
-    //     // cancel_price: '[ 취소 금액 ]' 없으면 전체취소한다.,
-    //     cancel_tax_free: '[ 취소 면세금액 ]',
-    //     cancel_id: '[ 가맹점 취소 고유 ID ]',
-    //     cancel_username: '유저닉네임?',//'[ 취소자명 ]',
-    //     cancel_message: `결제금액 검증실패.` //'[ 취소 메세지 ]'
-    // })
-    // console.log(response)
-    let a = await foo()
-    console.log(a)
-    console.log(`${pg_receipt_id} 결제 취소`)
+async function funcC(errMsg){
     return new Error(errMsg)
 }
 
-async function funcD(objectCalculate, callback){
+// async function funcD(objectCalculate, callback){
+async function funcD(objectCalculate){
     try {
-        const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
-        console.log(response)
-        console.log('결제승인 진행')
-        return callback(objectCalculate)
+        // const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
+        // console.log(response)
+        console.log('결제승인 진행(주석)')
+        return objectCalculate
     } catch (e) {
         //{ error_code: 'RC_NOT_FOUND', message: '영수증 정보를 찾지 못했습니다.' }
-        throw await funcC(objectCalculate['pg_receipt_id'], '결제승인 에러 실행')
+        throw await funcC(e.message)
         // throw e
     }
-}
-
-
-async function foo() {
-    return 123
 }
