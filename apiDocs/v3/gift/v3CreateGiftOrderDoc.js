@@ -7,28 +7,29 @@
  *     summary: 선물 상품 구매
  *     tags: [Gift]
  *     description: |
- *       path : /api/private/v3/gift/order
+ *       ## path : /api/private/v3/gift/order
+ *       ## file ; v3CreateGiftOrderDoc.js
  *
- *       * v3 선물 상품 구매
+ *       * ## v3 선물 상품 구매
+ *       * ## pg_receipt_id가 공백값이면 포인트,리워드결제이다.
  *
  *     parameters:
  *       - in: body
  *         name: body
  *         description: |
  *           선물 상품 구매
- *
  *           payment_method
  *           * 0: 신용카드
  *           * 1: 카카오페이
  *           * 2: 무통장입금
  *           * 3: 가상계좌
  *           * 4: 네이버페이
+ *           * 5: 포인트,리워드결제
+ *           * 6: 이벤트 결제
  *         schema:
  *           type: object
  *           required:
- *             - price_total
- *             - delivery_total
- *             - price_payment
+ *             - pg_receipt_id
  *             - recipient_name
  *             - msg_card
  *           properties:
@@ -44,22 +45,6 @@
  *               description: |
  *                 리워드 사용 금액
  *                 * 사용 안할 경우 0
- *             price_total:
- *               type: number
- *               example: 50000
- *               description: |
- *                 총 상품 금액
- *             delivery_total:
- *               type: number
- *               example: 2500
- *               description: |
- *                 주문 배송비 총합
- *                 * 배송비가 없을 경우 0
- *             price_payment:
- *               type: number
- *               example: 52500
- *               description: |
- *                 결제 금액
  *             pg_receipt_id:
  *               type: string
  *               example: 5fffad430c20b1903e88a2d17

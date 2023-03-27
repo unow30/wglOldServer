@@ -8,49 +8,55 @@ const errUtil = require('../../legacy/origin/errUtil');
 
 module.exports = {
     //부트페이 결제완료시 교차검증하고 결제승인하기
+    /**
+     * 0: 신용카드
+     * 1: 카카오페이
+     * 2: 무통장입금(사용안하는중)
+     * 3: 가상계좌(사용안하는중)
+     * 4: 네이버페이
+     * 5: 포인트/리워드결제 =>이때 부트페이 거치지 않는다.
+     * 6: 이벤트 상품증정 =>이때 부트페이 거치지 않는다.
+     * 30: 가상계좌 결제완료(사용안하는중)
+     * method: '카드결제',
+     * method_symbol: 'card',
+     * method_origin: '네이버페이',
+     * method_origin_symbol: 'naverpay',
+     * method: '카카오페이',
+     * method_symbol: 'kakaopay',
+     * method_origin: '카카오페이',
+     * method_origin_symbol: 'kakaopay',
+     * method: '카드',
+     * method_symbol: 'card',
+     * method_origin: '카드',
+     * method_origin_symbol: 'card',
+     **/
     PaymentCompletedCrossVerification: async (req, res, db_connection) => {
         //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
         // console.log(req.paramBody)
-        let pgReceipt = await getBootPaySinglePayment(req.paramBody.pg_receipt_id);
-/**
- * 0: 신용카드
- * 1: 카카오페이
- * 2: 무통장입금(사용안하는중)
- * 3: 가상계좌(사용안하는중)
- * 4: 네이버페이
- * 5: 포인트/리워드결제 =>이때 부트페이 거치지 않는다.
- * 6: 이벤트 상품증정 =>이때 부트페이 거치지 않는다.
- * 30: 가상계좌 결제완료(사용안하는중)
- * method: '카드결제',
- * method_symbol: 'card',
- * method_origin: '네이버페이',
- * method_origin_symbol: 'naverpay',
- * method: '카카오페이',
- * method_symbol: 'kakaopay',
- * method_origin: '카카오페이',
- * method_origin_symbol: 'kakaopay',
- * method: '카드',
- * method_symbol: 'card',
- * method_origin: '카드',
- * method_origin_symbol: 'card',
- **/
+        if(req.paramBody.pg_receipt_id === ""){
+            //포인트,리워드로 전체결제한 경우
+            req.paramBody['payment_method'] = 5
+            return await calculateOrderProductsPrice(req.paramBody, 0, db_connection);
 
-        switch (pgReceipt.method_origin_symbol) {
-            case 'card' : {
-                req.paramBody['payment_method'] = 0
-            }break;
-            case 'kakaopay': {
-                req.paramBody['payment_method'] = 1
-            }break;
-            case 'naverpay':{
-                req.paramBody['payment_method'] = 4
-            }break
-        }
-        // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
-        if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
-           return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, db_connection);
         }else{
-            throw `부트페이 단건결제 상태 이상. pgReceipt.status: ${pgReceipt.status}`;
+            let pgReceipt = await getBootPaySinglePayment(req.paramBody.pg_receipt_id);
+            switch (pgReceipt.method_origin_symbol) {
+                case 'card' : {
+                    req.paramBody['payment_method'] = 0
+                }break;
+                case 'kakaopay': {
+                    req.paramBody['payment_method'] = 1
+                }break;
+                case 'naverpay':{
+                    req.paramBody['payment_method'] = 4
+                }break
+            }
+            // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
+            if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
+                return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, db_connection);
+            }else{
+                throw `부트페이 단건결제 상태 이상. pgReceipt.status: ${pgReceipt.status}`;
+            }
         }
     },
     //부트페이 교차검증시 문제가 발생하면 결제 취소하기
@@ -222,9 +228,11 @@ async function funcC(errMsg){
 // async function funcD(objectCalculate, callback){
 async function funcD(objectCalculate){
     try {
-        const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
-        console.log(response)
-        console.log('결제승인 진행')
+        if(objectCalculate['pg_receipt_id'] !== ""){
+            const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
+            console.log(response)
+            console.log('결제승인 진행')
+        }
         return objectCalculate
     } catch (e) {
         //{ error_code: 'RC_NOT_FOUND', message: '영수증 정보를 찾지 못했습니다.' }
