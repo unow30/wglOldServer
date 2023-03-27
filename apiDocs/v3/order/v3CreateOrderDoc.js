@@ -7,10 +7,13 @@
  *     summary: 상품 구매 v3
  *     tags: [Order]
  *     description: |
- *       path : /api/private/v3/order
+ *       ## path : /api/private/v3/order
+ *       ## file : v3CreateOrderDoc.js
  *
- *       * 상품 구매 v3
- *       * 서버에서 결제내역 검증 후 승인
+ *       * ## 상품 구매 v3
+ *       * ## 서버에서 결제내역 검증 후 승인
+ *       * ## pg_receipt_id가 공백값이면 포인트,리워드결제이다.
+ *       * ## 이벤트 결제에 대한 분기처리 필요
  *
  *     parameters:
  *       - in: body
@@ -24,11 +27,13 @@
  *           * 2: 무통장입금
  *           * 3: 가상계좌
  *           * 4: 네이버페이
+ *           * 5: 포인트,리워드결제
+ *           * 6: 이벤트 결제
  *         schema:
  *           type: object
  *           required:
  *             - addressbook_uid
- *             - payment_method
+ *             - pg_receipt_id
  *           properties:
  *             addressbook_uid:
  *               type: number
@@ -62,16 +67,6 @@
  *               example: 611b3e5e7b53hn2a40025b0cc99
  *               description: |
  *                 PG사 결제 완료 값 id
- *             payment_method:
- *               type: number
- *               example: 0
- *               description: |
- *                 결제 방법
- *                 * 0: 신용카드
- *                 * 1: 카카오페이
- *                 * 2: 무통장입금
- *                 * 3: 가상계좌
- *                 * 4: 네이버페이
  *             product_list:
  *               type: array
  *               description: 구매 상품 목록

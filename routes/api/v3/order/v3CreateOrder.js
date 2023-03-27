@@ -28,9 +28,9 @@ module.exports = function (req, res) {
     try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
-        // logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
+        logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
-        // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
+        logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
         // checkParam(req);
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
@@ -42,33 +42,30 @@ module.exports = function (req, res) {
             console.log('검증된 결제금액')
             console.log(calculateObj)
 
-            const createOrderInfo = await createOrderDB(req, calculateObj, db_connection);
-            if(!createOrderInfo){
+            const orderInfo = await createOrderDB(req, calculateObj, db_connection);
+            if(!orderInfo){
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`);
                 return
             }
-            req.innerBody['item'] = createOrderInfo
+            // req.innerBody['order_uid'] = orderInfo['order_uid']
+            req.innerBody['item'] = {order_uid: orderInfo['order_uid']}
 
             const createOrderProductList = await createOrderProductDB(req, calculateObj, db_connection);
-            // console.log('order_product여러개 받는다.', createOrderProductList)
             if(!createOrderProductList){
                 errUtil.createCall(errCode.fail, `주문상품 db입력 실패?`)
                 return
             }
-            req.innerBody['item']['order_product'] = createOrderProductList
             //각 상품의 판매자한테 주문알람 보내야 한다.
             await orderAlarm(req, res, createOrderProductList)
 
             if(req.paramBody['use_reward'] > 0 ) {
-                // req.innerBody['reward'] = await queryReward(req, db_connection);
-                req.innerBody['item']['reward'] = await createRewardDB(req, db_connection);
+                await createRewardDB(req, orderInfo, db_connection);
             }
             if(req.paramBody['use_point'] > 0) {
-                req.innerBody['item']['point'] = await createPointDB(req, db_connection);
+                await createPointDB(req, orderInfo, db_connection);
             }
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
-            // res.send('ok')
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -82,9 +79,6 @@ module.exports = function (req, res) {
 
 function checkParam(req) {
     paramUtil.checkParam_noReturn(req.paramBody, 'addressbook_uid');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'delivery_total');
-    paramUtil.checkParam_noReturn(req.paramBody, 'price_payment');
 }
 
 function deleteBody(req) {
@@ -121,7 +115,6 @@ async function createOrderDB(req, calculated, db_connection){
     `
     return new Promise((resolve, reject) => {
          db_connection.query(createOrderSql, (err, res, fields) => {
-             console.log('order res',res)
              if (err) {
                  reject(err);
              } else {
@@ -152,7 +145,7 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
             payment, price_delivery
         } = product_list;
 
-        const {order_uid} = req.innerBody['item']
+        const order_uid = req.innerBody['item']['order_uid']
 
         const createOrderProductData = `
                 insert into tbl_order_product
@@ -213,8 +206,8 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
     }));
 }
 
-async function createRewardDB(req, db_connection){
-    const {user_uid, order_uid, order_no} = req.innerBody['item'];
+async function createRewardDB(req, orderInfo, db_connection){
+    const {user_uid, order_uid, order_no} = orderInfo;
 
     const createRewardSql = `
         insert into tbl_reward
@@ -227,36 +220,45 @@ async function createRewardDB(req, db_connection){
       , content            = '상품 구매에 리워드 사용'
     `;
 
+    // return new Promise((resolve, reject) => {
+    //     db_connection.query(createRewardSql, (err, res, fields) => {
+    //         if (err) {
+    //             reject(err);
+    //         } else {
+    //             const selectRewardSql = `
+    //                 select r.uid as reward_uid
+    //                 , r.order_uid
+    //                 , r.order_no
+    //                 , r.amount
+    //                 , r.state
+    //                 , r.content
+    //                 from tbl_reward as r
+    //                 where tbl_reward.uid = ${res['insertId']}
+    //             `;
+    //
+    //             db_connection.query(selectRewardSql, (err, res, fields) =>{
+    //                 if(err){
+    //                     reject(err)
+    //                 }else{
+    //                     resolve(res[0]); // return the data of the inserted row
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
     return new Promise((resolve, reject) => {
         db_connection.query(createRewardSql, (err, res, fields) => {
-            if (err) {
+            if(err){
                 reject(err);
-            } else {
-                const selectRewardSql = `
-                    select r.uid as reward_uid
-                    , r.order_uid
-                    , r.order_no
-                    , r.amount
-                    , r.state
-                    , r.content
-                    from tbl_reward as r
-                    where tbl_reward.uid = ${res['insertId']}
-                `;
-
-                db_connection.query(selectRewardSql, (err, res, fields) =>{
-                    if(err){
-                        reject(err)
-                    }else{
-                        resolve(res[0]); // return the data of the inserted row
-                    }
-                });
+            }else{
+                resolve(true)
             }
         });
     });
 }
 
-function createPointDB(req, db_connection){
-    const {user_uid, order_uid, order_no} = req.innerBody['item'];
+function createPointDB(req, orderInfo, db_connection){
+    const {user_uid, order_uid, order_no} = orderInfo;
 
     const createPointSql = `
         insert into tbl_point
@@ -268,83 +270,37 @@ function createPointDB(req, db_connection){
     ;
     `;
 
+    // return new Promise((resolve, reject) => {
+    //     db_connection.query(createPointSql, (err, res, fields) => {
+    //         if (err) {
+    //             reject(err);
+    //         } else {
+    //             const selectPointSql = `
+    //                 select
+    //                     *
+    //                 from tbl_point as p
+    //                 where p.uid = ${res['insertId']}
+    //             `;
+    //
+    //             db_connection.query(selectPointSql, (err, res, fields) =>{
+    //                 if(err){
+    //                     reject(err)
+    //                 }else{
+    //                     resolve(res[0]); // return the data of the inserted row
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
     return new Promise((resolve, reject) => {
         db_connection.query(createPointSql, (err, res, fields) => {
-            if (err) {
+            if(err){
                 reject(err);
-            } else {
-                const selectPointSql = `
-                    select 
-                        *
-                    from tbl_point as p
-                    where p.uid = ${res['insertId']}
-                `;
-
-                db_connection.query(selectPointSql, (err, res, fields) =>{
-                    if(err){
-                        reject(err)
-                    }else{
-                        resolve(res[0]); // return the data of the inserted row
-                    }
-                });
+            }else{
+                resolve(true)
             }
         });
     });
-}
-
-//판매자 uid는 0이다. order.uid와 order_no, 2, use_reward를 사용한다.
-function queryReward(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_use_reward'
-        , [
-            req.headers['user_uid'],
-            req.innerBody['seller_uid'],
-            req.innerBody['item']['uid'],
-            req.innerBody['item']['order_no'],
-            2,
-            req.paramBody['use_reward'],
-            '상품 구매에 리워드 사용',
-        ]
-    );
-}
-
-
-
-function queryPoint(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_use_point'
-        , [
-            req.headers['user_uid'],
-            req.innerBody['item']['order_no'],
-            2,
-            req.paramBody['use_point'] * -1,
-            '상품 구매에 포인트 사용'
-        ]
-    );
-}
-function queryProduct(req, db_connection) {
-    const _funcName = arguments.callee.name;
-
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_create_order_product'
-        , [
-            req.headers['user_uid'],
-            req.innerBody['item']['uid'],
-            req.innerBody['product']['product_uid'],
-            req.innerBody['product']['seller_uid'],
-            req.innerBody['product']['video_uid'],
-            req.innerBody['product']['option_ids'],
-            req.innerBody['product']['count'],
-            req.innerBody['product']['price_original'],
-            req.innerBody['product']['payment'],
-            req.innerBody['product']['price_delivery'],
-            req.paramBody['status'],
-        ]
-    );
 }
 
 async function orderAlarm(req, res, createOrderProductList) {
