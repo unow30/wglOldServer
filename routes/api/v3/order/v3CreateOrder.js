@@ -47,8 +47,8 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`);
                 return
             }
-            // req.innerBody['order_uid'] = orderInfo['order_uid']
-            req.innerBody['item'] = {order_uid: orderInfo['order_uid']}
+            req.innerBody['order_uid'] = orderInfo['order_uid']
+            // req.innerBody['item'] = {order_uid: orderInfo['order_uid']}
 
             const createOrderProductList = await createOrderProductDB(req, calculateObj, db_connection);
             if(!createOrderProductList){
@@ -145,7 +145,8 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
             payment, price_delivery
         } = product_list;
 
-        const order_uid = req.innerBody['item']['order_uid']
+        // const order_uid = req.innerBody['item']['order_uid']
+        const order_uid = req.innerBody['order_uid']
 
         const createOrderProductData = `
                 insert into tbl_order_product

@@ -32,12 +32,15 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                 return
             }
-            req.innerBody['item'] = {order_uid: orderInfo['order_uid'], gift_uid: orderInfo['gift_uid']};
+            // req.innerBody['item'] = {order_uid: orderInfo['order_uid'], gift_uid: orderInfo['gift_uid']};
+            req.innerBody['order_uid'] = orderInfo['order_uid'];
+            req.innerBody['gift_uid'] = orderInfo['gift_uid'];
+
 
             // 선물 결제하기 상태 0
             for( let idx in req.paramBody['product_list'] ){
                 let product = req.paramBody['product_list'][idx]
-                product['order_uid'] = req.innerBody['item']['order_uid'];
+                product['order_uid'] = req.innerBody['order_uid'];
                 await queryProduct(req, product, db_connection);
             }
 
