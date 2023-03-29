@@ -52,7 +52,7 @@ module.exports = {
                 }break
             }
             // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
-            if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
+            if(pgReceipt.status === 1){ //1:결제완료, 2:승인대기
                 return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, db_connection);
             }else{
                 throw `부트페이 단건결제 상태 이상. pgReceipt.status: ${pgReceipt.status}`;
@@ -90,27 +90,37 @@ async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
         totalDelivery: 0,
         totalReward: param['use_reward']? param['use_reward'] : 0,
         totalPoint: param['use_point']? param['use_point'] : 0,
+        isLand: 0,
         sellerArr: [],
         pg_receipt_id: param['pg_receipt_id']
     }
 
-    //주문상품이 공구인지 일반상품인기 구분해야 한다. 아니면 api를 따로 빼서 사용한다? 검증유틸도 따로 만들기
-
+    //서버에서 일반상품정보를 가져온다.
     let frontProductInfo = param['product_list'];
-    let backProductInfo = await querySelectProductInfo(frontProductInfo, objectCalculate['pg_receipt_id'], db_connection);
-    await compareProductInfo(frontProductInfo, backProductInfo, objectCalculate['pg_receipt_id'], function (compared) {
+    let backProductInfo = await querySelectProductInfo(frontProductInfo, db_connection);
+
+    //클라이언트에서 도서산간여부를 true, false 등으로 받아온다?
+    //주소uid로 zipcode를 가져와 도서산간지역인지 체크한다.
+    let isLand = await queryCheckIsland(param['addressbook_uid'], db_connection);
+    if(isLand === 1){
+        objectCalculate['isLand'] = 1
+    }
+    //클라이언트와 서버의 상품정보를 비교 검증한 결과를 objectCalculate에 저장한다.
+    compareProductInfo(frontProductInfo, backProductInfo, function (compared) {
         objectCalculate['priceTotal'] += compared['priceTotal']
         objectCalculate['sellerArr'].push({
             seller_uid: compared['seller_uid'],
             price_delivery: compared['price_delivery'],
+            delivery_free: compared['delivery_free'],
+            delivery_price_plus: compared['delivery_price_plus'],
+            price_total: compared['priceTotal']
         })
     })
 
-    //배송비 중복제외
-    objectCalculate['sellerArr'] = [...new Set(objectCalculate['sellerArr'].map(seller => JSON.stringify(seller)))].map(str => JSON.parse(str));
-    objectCalculate['sellerArr'].forEach(el =>{
-        objectCalculate['totalDelivery'] += el['price_delivery']
-    })
+    console.log('중복 제거 전', objectCalculate)
+    //objectCalculate의 배송비 중복을 제거하고 배송비를 계산한다.
+    removeAndCalculateDuplicateSellerArr(objectCalculate);
+    console.log('중복 제거 및 가격 계산 결과',objectCalculate)
 
     //판매자 지불금액총합 계산
     objectCalculate['totalPayment'] =
@@ -120,21 +130,20 @@ async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
     console.table([{'pg결제금액': receiptPrice, '검증결제금액':objectCalculate['totalPayment']}], ['pg결제금액','검증결제금액'])
 
     if(receiptPrice === objectCalculate['totalPayment']) {
-       return await funcD(objectCalculate);
+       return await paymentApproval(objectCalculate);
     }else{
        //결제금액이 맞지 않으니 pg결제를 취소해야 한다. 전체취소 진행한다.
-       throw await funcC(`결제금액과 검증금액이 맞지 않습니다. 결제를 취소합니다.`)
+       throw await sendError(`결제금액과 검증금액이 맞지 않습니다. 결제를 취소합니다.`)
     }
 }
 
 //상품정보, 상품옵션정보를 조인해서 하나씩 가져온다. 여러개를 한번에 가져오기 어렵다.
-//공구결제라면 상품정보를 가져와도 소용없잖어 공구가격을 검증해야 하는데
-async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connection) {
+async function querySelectProductInfo(frontProductList, db_connection) {
     //상품정보 옵션정보까지 조인해서 하나씩 불러오기
     return await Promise.all(frontProductList.map(async (product_list) => {
         return new Promise(async (resolve, reject) => {
             const checkProductData = `
-                select
+                 select
                     p.uid as product_uid
                     , p.user_uid as seller_uid
                     , p.name as product_name
@@ -145,17 +154,23 @@ async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connec
                     , p.sale_type
                     , sum(po.option_price) as option_price
                     , group_concat(po.name separator ' / ') as option_name
+                    , s.delivery_price
+                    , s.delivery_free
+                    , s.delivery_price_plus
                 from tbl_product as p
                 inner join tbl_product_option as po
                     on po.product_uid = ${product_list['product_uid']}
                     and find_in_set(po.option_id, '${product_list['option_ids']}')
+                inner join tbl_user as s
+                    on s.uid = p.user_uid
+                   and s.is_seller = 1 
                 where p.uid = (${product_list['product_uid']})
             ;`;
             await db_connection.query(checkProductData, async (err, rows, fields) => {
                 if (err) {
-                    reject(await funcC('db상품정보 검색 연결 실패'));
+                    reject(sendError('db상품정보 검색 연결 실패'));
                 } else if (rows.length === 0) {
-                    reject(await funcC(`상품정보를 찾을 수 없습니다.`));
+                    reject(sendError(`상품정보를 찾을 수 없습니다.`));
                 } else {
                     resolve(rows[0]);
                 }
@@ -170,10 +185,34 @@ async function querySelectProductInfo(frontProductList, pg_receipt_id, db_connec
     // })
 }
 
-//서버와 클라이언트간 데이터 검증 필터
-async function compareProductInfo(frontProductInfo, backProductInfo, pg_receipt_id, calculateCallback){
+//도서산간지역 확인
+async function queryCheckIsland(addressbookUid, db_connection){
+    return new Promise((resolve, reject) =>{
+        const queryAddress = `select zipcode from tbl_addressbook where uid = ${addressbookUid}`
+
+        db_connection.query(queryAddress, (err, rows, field) =>{
+            if (err) {
+                reject(sendError('배송주소를 찾을 수 없습니다.'));
+            } else {
+                const queryIsland = `select if(count(uid) > 0, ${true}, ${false}) as island
+                                     from tbl_island_area_v2 where zipcode = ${rows[0]['zipcode']}`
+
+                db_connection.query(queryIsland, (err, rows, field) => {
+                    if(err) {
+                        reject(sendError('도서산간지역 확인 에러'));
+                    }else{
+                        resolve(rows[0]['island']);
+                    }
+                });
+            }
+        });
+    });
+}
+
+//서버와 클라이언트간 상품정보 검증 필터
+function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback){
     if (frontProductInfo.length !== backProductInfo.length) {
-        throw await funcC(`결제할 상품 종류가 일치하지 않습니다. 클라이언트:${frontProductInfo.length}개, 서버:${backProductInfo.length}개`)
+        throw sendError(`결제할 상품 종류가 일치하지 않습니다. 클라이언트:${frontProductInfo.length}개, 서버:${backProductInfo.length}개`)
     }
 
     frontProductInfo.sort(function(x, y) {
@@ -186,33 +225,47 @@ async function compareProductInfo(frontProductInfo, backProductInfo, pg_receipt_
 
     console.log('클라이언트, 서버 정보비교')
     for (let i = 0; i < backProductInfo.length; i++) {
-        const aElem = frontProductInfo[i];
+        const fElem = frontProductInfo[i];
         const bElem = backProductInfo[i];
 
-        console.table({roof:i,
-            product_uid: aElem['product_uid'] === bElem['product_uid'],
-            seller_uid: aElem['seller_uid'] === bElem['seller_uid'],
-            priceTotal: aElem['price_original'] * aElem['count'] === (bElem['price_discount'] + bElem['option_price']) * aElem['count']
-        })
+        // console.table({roof:i,
+        //     product_uid: fElem['product_uid'] === bElem['product_uid'],
+        //     seller_uid: fElem['seller_uid'] === bElem['seller_uid'],
+        //     priceTotal: fElem['price_original'] * fElem['count'] === (bElem['price_discount'] + bElem['option_price']) * fElem['count']
+        // })
 
-        if(aElem['product_uid'] !== bElem['product_uid']){
-        // if(aElem['product_uid'] !== 1){
-            throw (await funcC(`상품번호가 일치하지 않습니다. product_uid: ${aElem['product_uid']}`))
+        const log = {}
+        log.product_uid = new ConsoleValidate(fElem['product_uid'], bElem['product_uid'])
+        log.seller_uid = new ConsoleValidate(fElem['seller_uid'], bElem['seller_uid'])
+        log.priceTotal = new ConsoleValidate(fElem['price_original'] * fElem['count'], (bElem['price_discount'] + bElem['option_price']) * fElem['count'])
+        log.delivery = new ConsoleValidate(fElem['price_delivery'], bElem['delivery_price'])
+        console.log(`roof: ${i}`);
+        console.table(log);
+
+        if(fElem['product_uid'] !== bElem['product_uid']){
+        // if(fElem['product_uid'] !== 1){
+            throw (sendError(`상품번호가 일치하지 않습니다. product_uid: ${fElem['product_uid']}`))
         }
-        if(aElem['seller_uid'] !== bElem['seller_uid']){
-        // if(aElem['seller_uid'] !== 0){
-            throw (await funcC(`판매자번호가 일치하지 않습니다. seller_uid: ${aElem['seller_uid']}`))
+        if(fElem['seller_uid'] !== bElem['seller_uid']){
+        // if(fElem['seller_uid'] !== 0){
+            throw (sendError(`판매자번호가 일치하지 않습니다. seller_uid: ${fElem['seller_uid']}`))
         }
 
-        if(aElem['price_original'] * aElem['count'] !== (bElem['price_discount'] + bElem['option_price']) * aElem['count']){
-        // if(aElem['price_discount'] * aElem['count'] !== bElem['price_discount'] * 1){
-            throw (await funcC(`결제금액이 서버와 일치하지 않습니다.`))
+        if(fElem['price_original'] * fElem['count'] !== (bElem['price_discount'] + bElem['option_price']) * fElem['count']){
+        // if(fElem['price_discount'] * fElem['count'] !== bElem['price_discount'] * 1){
+            throw (sendError(`결제금액이 서버와 일치하지 않습니다.`))
+        }
+
+        if(Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
+            throw (sendError('배송비가 서버와 일치하지 않습니다.'))
         }
 
         let compared = {
-            priceTotal: aElem['price_original'] * aElem['count'],
-            seller_uid: aElem['seller_uid'],
-            price_delivery: aElem['price_delivery']
+            priceTotal: fElem['price_original'] * fElem['count'],
+            seller_uid: fElem['seller_uid'],
+            price_delivery: fElem['price_delivery'],
+            delivery_free: bElem['delivery_free'],
+            delivery_price_plus: bElem['delivery_price_plus']
         }
         //검증 완료되면 objectCalculate에 데이터 입력하기: seller_uid, price_discount, count
         calculateCallback(compared)
@@ -220,23 +273,56 @@ async function compareProductInfo(frontProductInfo, backProductInfo, pg_receipt_
 
 }
 
+//배송비 중복제외, price_total값은 더한다.
+function removeAndCalculateDuplicateSellerArr(objectCalculate){
+    //배송비 중복제외. 단 price_total값은 판매자별로 더해야 한다.
+    objectCalculate['sellerArr'] = objectCalculate['sellerArr'].reduce((acc, seller) => {
+        const existingSeller = acc.find(item => item.seller_uid === seller.seller_uid);
+        if (existingSeller) {
+            existingSeller.price_total += seller.price_total;
+        } else {
+            acc.push(seller);
+        }
+        return acc;
+    }, []);
+
+    objectCalculate['sellerArr'].forEach(el => {
+       //판매하 하나의 판매가격 총합이 무료배송 조건보다 작으면 배송비 부과
+       if(el['price_total'] < el['delivery_free']){
+           objectCalculate['totalDelivery'] += el['price_delivery'];
+       }
+       //도서산간지역 배송이면 도서산간 추가배송비 부과
+       if(objectCalculate['isLand'] === 1){
+           objectCalculate['totalDelivery'] += el['delivery_price_plus'];
+       }
+   })
+
+}
+
 //결제금액이 일치하지 않으면 pg사 결제내역 전체 취소한다.
-async function funcC(errMsg){
+function sendError(errMsg){
     return new Error(errMsg)
 }
 
-// async function funcD(objectCalculate, callback){
-async function funcD(objectCalculate){
+//결제금액이 검증되면 결제승인을 진행(이 때 비용계산된다)
+async function paymentApproval(objectCalculate){
     try {
         if(objectCalculate['pg_receipt_id'] !== ""){
-            const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
-            console.log(response)
+            // const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
+            // console.log(response)
             console.log('결제승인 진행')
         }
         return objectCalculate
     } catch (e) {
         //{ error_code: 'RC_NOT_FOUND', message: '영수증 정보를 찾지 못했습니다.' }
-        throw await funcC(e.message)
+        throw await sendError(e.message)
         // throw e
     }
+}
+
+
+function ConsoleValidate(fElem, bElem) {
+    this.front = fElem;
+    this.back = bElem;
+    this.trueFalse = fElem === bElem
 }
