@@ -52,7 +52,7 @@ module.exports = {
                 }break
             }
             // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
-            if(pgReceipt.status === 1){ //1:결제완료, 2:승인대기
+            if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
                 return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, db_connection);
             }else{
                 throw `부트페이 단건결제 상태 이상. pgReceipt.status: ${pgReceipt.status}`;
