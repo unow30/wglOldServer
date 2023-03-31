@@ -125,10 +125,9 @@ module.exports = function (req, res) {
             if(req.paramBody['use_reward'] > 0 ) {
                 req.innerBody['reward'] = await queryReward(req, db_connection);
             }
-            // if(req.paramBody['use_point'] > 0) {
-            //     req.paramBody['use_point']
-            //     req.innerBody['point'] = await queryPoint(req, db_connection);
-            // }
+            if(req.paramBody['use_point'] > 0) {
+                req.innerBody['point'] = await queryPoint(req, db_connection);
+            }
 
             console.log(req.innerBody['product']['product_uid'])
             req.innerBody['kakao_link'] = await queryKakaoLink(req,db_connection);
