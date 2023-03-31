@@ -21,7 +21,7 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
             // 선물하기 검증하기: 검증 완료시 주문기록
-            const calculateObj = await bootpayCrossVerificationUtil.PaymentCompletedCrossVerification(req, res, db_connection)
+            const calculateObj = await bootpayCrossVerificationUtil.paymentCompletedCrossVerification(req, res, 'gift', db_connection)
             console.log('검증된 결제금액')
             console.log(calculateObj)
 

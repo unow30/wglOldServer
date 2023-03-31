@@ -2,12 +2,12 @@
  * Created by gunucklee on 2021. 11. 16.
  *
  * @swagger
- * /api/private/v3/gift/order:
+ * /api/private/v3/order/gift:
  *   post:
- *     summary: 선물 상품 구매
- *     tags: [Gift]
+ *     summary: v3 선물 상품 구매
+ *     tags: [Order]
  *     description: |
- *       ## path : /api/private/v3/gift/order
+ *       ## path : /api/private/v3/order/gift
  *       ## file ; v3CreateGiftOrderDoc.js
  *
  *       * ## v3 선물 상품 구매

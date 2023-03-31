@@ -4,7 +4,7 @@
  * @swagger
  * /api/private/v3/order:
  *   post:
- *     summary: 상품 구매 v3
+ *     summary: v3 상품 구매
  *     tags: [Order]
  *     description: |
  *       ## path : /api/private/v3/order

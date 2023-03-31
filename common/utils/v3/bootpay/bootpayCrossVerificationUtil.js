@@ -30,13 +30,14 @@ module.exports = {
      * method_origin: '카드',
      * method_origin_symbol: 'card',
      **/
-    PaymentCompletedCrossVerification: async (req, res, db_connection) => {
+    //부트페이 결제 검증하기
+    paymentCompletedCrossVerification: async (req, res, type, db_connection) => {
         //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
-        // console.log(req.paramBody)
+
         if(req.paramBody.pg_receipt_id === ""){
             //포인트,리워드로 전체결제한 경우
             req.paramBody['payment_method'] = 5
-            return await calculateOrderProductsPrice(req.paramBody, 0, db_connection);
+            return await calculateOrderProductsPrice(req.paramBody, 0, type, db_connection);
 
         }else{
             let pgReceipt = await getBootPaySinglePayment(req.paramBody.pg_receipt_id);
@@ -51,17 +52,13 @@ module.exports = {
                     req.paramBody['payment_method'] = 4
                 }break
             }
-            // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
             if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
-                return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, db_connection);
+            // if(pgReceipt.status === 2){ //1:결제완료, 2:승인대기
+                return await calculateOrderProductsPrice(req.paramBody, pgReceipt.price, type, db_connection);
             }else{
                 throw `부트페이 단건결제 상태 이상. pgReceipt.status: ${pgReceipt.status}`;
             }
         }
-    },
-    //부트페이 교차검증시 문제가 발생하면 결제 취소하기
-    PaymentCancellationCrossVerification: () => {
-
     }
 }
 
@@ -82,7 +79,7 @@ async function getBootPaySinglePayment(pg_receipt_id){
     }
 }
 
-async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
+async function calculateOrderProductsPrice(param, receiptPrice, type, db_connection){
     //product_list의 상품금액, 판매금액, 배송금액 계산
     let objectCalculate = {
         priceTotal: 0,
@@ -95,16 +92,40 @@ async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
         pg_receipt_id: param['pg_receipt_id']
     }
 
-    //서버에서 일반상품정보를 가져온다.
-    let frontProductInfo = param['product_list'];
-    let backProductInfo = await querySelectProductInfo(frontProductInfo, db_connection);
-
     //클라이언트에서 도서산간여부를 true, false 등으로 받아온다?
     //주소uid로 zipcode를 가져와 도서산간지역인지 체크한다.
-    let isLand = await queryCheckIsland(param['addressbook_uid'], db_connection);
-    if(isLand === 1){
-        objectCalculate['isLand'] = 1
+    //선물하기는 주소입력을 안한다.
+    if(type !== 'gift'){
+        await queryCheckIsland(param['addressbook_uid'], db_connection).then(res => {
+            if(res === 1){
+                objectCalculate['isLand'] = 1
+            }
+        });
     }
+
+    //서버에서 일반상품정보를 가져온다.
+    let frontProductInfo = param['product_list'];
+    let backProductInfo;
+    //결제방식에 따라 검증함수가 달라야 한다.
+    switch(type){
+        case 'common': {
+            //일반결제검증함수
+            backProductInfo = await querySelectProductInfo(frontProductInfo, db_connection);
+        } break;
+
+        case 'gift': {
+            //선물하기 함수
+            backProductInfo = await querySelectProductInfo(frontProductInfo, db_connection);
+        } break;
+
+        case 'groupbuying': {
+            //공동구매결제함수
+            //groupbuyingInfo, productInfo 둘 다 필요
+            // backProductInfo = await queryGroupbuyingProductInfo(param, db_connection);
+            return await paymentApproval(objectCalculate);
+        } break;
+    }
+
     //클라이언트와 서버의 상품정보를 비교 검증한 결과를 objectCalculate에 저장한다.
     compareProductInfo(frontProductInfo, backProductInfo, function (compared) {
         objectCalculate['priceTotal'] += compared['priceTotal']
@@ -137,7 +158,7 @@ async function calculateOrderProductsPrice(param, receiptPrice, db_connection){
     }
 }
 
-//상품정보, 상품옵션정보를 조인해서 하나씩 가져온다. 여러개를 한번에 가져오기 어렵다.
+//일반결제 상품정보 가져오기
 async function querySelectProductInfo(frontProductList, db_connection) {
     //상품정보 옵션정보까지 조인해서 하나씩 불러오기
     return await Promise.all(frontProductList.map(async (product_list) => {
@@ -185,13 +206,84 @@ async function querySelectProductInfo(frontProductList, db_connection) {
     // })
 }
 
+//공동구매 상품정보 가져오기
+async function queryGroupbuyingProductInfo(param, db_connection){
+    // groupbuying_room_uid
+    //
+    // 공구방 '생성'시에는 0으로 한다.
+    //     공구방 '참가'시에는 참가할 공구방 uid 입력
+    // recruitment
+    //
+    // 공구방 '생성'시 참여가능한 인원수를 입력한다(2,5,10)
+    // 공구방 '참가'시 참여가능 인원수를 받지 않아도 된다(0으로 줘도 됨)
+
+
+    const {
+        groupbuying_uid,
+        groupbuying_room_uid,
+        recruitment,
+        groupbuying_option_uid,
+    } = param;
+    const frontProductList = param['product_list'];
+
+    return await Promise.all(frontProductList.map(async (product_list) => {
+        return new Promise(async (resolve, reject) => {
+            const query = `
+                select
+                    p.uid as product_uid
+                    , p.user_uid as seller_uid
+                    , p.name as product_name
+                    , p.price_original as price_original
+                    , gt.gongu_price as price_discount
+                    , go.option_price as option_price
+                    , go.name as option_name
+                    , 0 as delivery_price
+                    , 0 as delivery_free
+                    , s.delivery_price_plus
+                from tbl_product as p
+                    inner join tbl_group_buying as gb
+                        on gb.product_uid = p.uid
+                        and gb.is_authorized = 1
+                        and gb.soldout = 0
+                        and gb.end_time >= now()
+                    inner join tbl_user as s
+                        on s.uid = p.user_uid
+                        and s.is_seller = 1
+                    inner join tbl_group_buying_options as go
+                        on go.group_buying_uid = gb.uid
+                        and go.uid = ${groupbuying_option_uid}
+                        and go.soldout = 0
+                        and go.sales_quantity > '주문수량'
+                    inner join tbl_group_buying_types as gt
+                        on gt.group_buying_uid = gb.uid
+                       and gt.type =  
+                where p.uid = product_list['uid']
+            ;`;
+            await db_connection.query(checkProductData, async (err, rows, fields) => {
+                if (err) {
+                    reject(sendError('db상품정보 검색 연결 실패'));
+                } else if (rows.length === 0) {
+                    reject(sendError(`상품정보를 찾을 수 없습니다.`));
+                } else {
+                    resolve(rows[0]);
+                }
+            });
+        });
+    })).then(value => {
+        return value
+    })
+}
+
 //도서산간지역 확인
 async function queryCheckIsland(addressbookUid, db_connection){
     return new Promise((resolve, reject) =>{
         const queryAddress = `select zipcode from tbl_addressbook where uid = ${addressbookUid}`
 
         db_connection.query(queryAddress, (err, rows, field) =>{
+            console.log('zipcode: ',rows[0]['zipcode'])
             if (err) {
+                reject(sendError('배송주소를 찾을 수 없습니다.'));
+            } else if(rows[0].length <= 0){
                 reject(sendError('배송주소를 찾을 수 없습니다.'));
             } else {
                 const queryIsland = `select if(count(uid) > 0, ${true}, ${false}) as island
@@ -201,6 +293,7 @@ async function queryCheckIsland(addressbookUid, db_connection){
                     if(err) {
                         reject(sendError('도서산간지역 확인 에러'));
                     }else{
+                        console.log('도서산간지역')
                         resolve(rows[0]['island']);
                     }
                 });
@@ -308,8 +401,8 @@ function sendError(errMsg){
 async function paymentApproval(objectCalculate){
     try {
         if(objectCalculate['pg_receipt_id'] !== ""){
-            // const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
-            // console.log(response)
+            const response = await BootpayV2.confirmPayment(objectCalculate['pg_receipt_id'])
+            console.log(response)
             console.log('결제승인 진행')
         }
         return objectCalculate

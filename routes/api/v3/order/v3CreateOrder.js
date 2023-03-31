@@ -38,7 +38,7 @@ module.exports = function (req, res) {
             //부트페이 결제완료 교차검증하고 결제승인하기.
             //결제승인이 되면 콜백함수 실행: db데이터 입력
             //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
-            const calculateObj = await bootpayCrossVerificationUtil.PaymentCompletedCrossVerification(req, res, db_connection)
+            const calculateObj = await bootpayCrossVerificationUtil.paymentCompletedCrossVerification(req, res, 'common', db_connection)
             console.log('검증된 결제금액')
             console.log(calculateObj)
 
