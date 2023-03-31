@@ -276,7 +276,7 @@ app.route('/block/user').put( require('./legacy/origin/block/updateBlockUser')) 
 app.route('/dev/searchview/new/product/list').get( require('./_dev/_dev_selectSearchViewNewProductList'))
 
 /**
- * dev groupbuying api
+ * groupbuying api
  */
 app.route('/v1/groupbuying/filter').get( require('./legacy/v1/groupbuying/v1SelectGroupBuyingFilter') )
 app.route('/v1/groupbuying/order').post( require('./legacy/v1/groupbuying/v1CreateGroupBuyingOrder') )

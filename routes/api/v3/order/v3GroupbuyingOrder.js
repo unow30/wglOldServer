@@ -36,6 +36,7 @@ module.exports = function (req, res) {
 
         mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
+            let response = {order_uid: 0, room_uid: 0, groupbuying_uid: 0}
             const calculateObj = await bootpayCrossVerificationUtil.paymentCompletedCrossVerification(req, res, 'groupbuying', db_connection);
             console.log('검증된 결제금액')
             console.log(calculateObj)
@@ -59,6 +60,10 @@ module.exports = function (req, res) {
                     errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                     return
                 }
+                response['order_uid'] = req.innerBody['item']['uid'];
+                response['room_uid'] = groupbuyingRoom['uid'];
+                response['groupbuying_uid'] = req.paramBody['groupbuying_uid'];
+
                 //공구 주문상품 테이블 생성
                 //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
                 console.log('order_product 생성 시작')
@@ -129,6 +134,8 @@ module.exports = function (req, res) {
             req.innerBody['kakao_link'] = await queryKakaoLink(req,db_connection);
 
             deleteBody(req)
+
+            req.innerBody = response
 
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
