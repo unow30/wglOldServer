@@ -87,6 +87,8 @@ app.route('/v2/feed/review/list').get( require('./legacy/v2/feed/v2SelectFeedRev
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
 app.route('/v3/feed/list').get( require('./v3/feed/v3SelectFeedList'))
 
+app.route('/v3/feed/list').get( require('./v3/feed/v3SelectFeedList') );
+
 /**
  * video api
  */

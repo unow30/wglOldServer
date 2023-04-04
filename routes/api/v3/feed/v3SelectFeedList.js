@@ -1,11 +1,12 @@
 
 
-const paramUtil = require('../../../../../common/utils/legacy/origin/paramUtil');
-const fileUtil = require('../../../../../common/utils/legacy/origin/fileUtil');
-const mysqlUtil = require('../../../../../common/utils/legacy/origin/mysqlUtil');
-const sendUtil = require('../../../../../common/utils/legacy/origin/sendUtil');
-const errUtil = require('../../../../../common/utils/legacy/origin/errUtil');
-const logUtil = require('../../../../../common/utils/legacy/origin/logUtil');
+const paramUtil = require('../../../../common/utils/legacy/origin/paramUtil');
+const fileUtil = require('../../../../common/utils/legacy/origin/fileUtil');
+const mysqlUtil = require('../../../../common/utils/legacy/origin/mysqlUtil');
+const sendUtil = require('../../../../common/utils/legacy/origin/sendUtil');
+const errUtil = require('../../../../common/utils/legacy/origin/errUtil');
+const logUtil = require('../../../../common/utils/legacy/origin/logUtil');
+
 
 let file_name = fileUtil.name(__filename);
 
@@ -175,6 +176,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['tag'],
                     req.innerBody['type'],
                     // req.paramBody['filter'],
+
                 ]
             );
         }

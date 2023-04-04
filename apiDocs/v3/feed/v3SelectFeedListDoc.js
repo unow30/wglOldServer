@@ -4,14 +4,14 @@
  * @swagger
  * /api/public/v3/feed/list:
  *   get:
- *     summary: 피드 목록 업데이트
+ *     summary: v3 피드 목록 불러오기
  *     tags: [Feed]
  *     description: |
  *       path : /api/public/v3/feed/list
  *
- *       * 피드 목록
+ *       * v3 피드 목록
  *       * 피드 목록은 랜덤으로 주기 때문에 page 개념이 없습니다.
- *       * 피드 목록(전체), 인기(is_recommend = 1), 브랜드관, 공동구매, 마이굿즈, 첼린지가 있습니다.
+ *       * 피드 목록(전체), 인기(is_recommend = 1), 브랜드관, 공동구매, 첼린지가 있습니다.
  *       * 만약 위글 광고 클릭후 처음 목록 다음에 피드 목록을 새로 요청할때는 ad_product_uid 는 0으로 보내주세요
  *
  *     parameters:
@@ -23,9 +23,10 @@
  *           example: all
  *         description: |
  *           all or null: 피드리스트 실행
+ *           favorite: 위글 추천 영상(카테고리, 필터링 선택 없음)
  *           brand: 브랜드관
  *           groupbuying: 공동구매(이전꺼실행, 필터링 및 기타이슈 수정중)
- *           challenge: 첼린지 영상
+ *           challenge: 첼린지 영상(카테고리, 필터링 선택 없음)
  *         enum: ['', all, favorite, brand, groupbuying, challenge]
  *       - in: query
  *         name: latitude
