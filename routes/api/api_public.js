@@ -85,6 +85,9 @@ app.route('/v2/feed/review/list').get( require('./legacy/v2/feed/v2SelectFeedRev
 // app.route('/test/feed/list').get( ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
+app.route('/v3/feed/list').get( require('./v3/feed/v3SelectFeedList'))
+
+app.route('/v3/feed/list').get( require('./v3/feed/v3SelectFeedList') );
 
 /**
  * video api
