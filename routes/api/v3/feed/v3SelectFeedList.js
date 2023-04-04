@@ -160,7 +160,7 @@ function querySelect(req, db_connection) {
         }break;
         case 'favorite':{
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_list_v1'
+                , 'call proc_select_feed_recommend_list_v3'
                 , [
                     req.headers['user_uid'],
                     req.paramBody['latitude'],
@@ -173,7 +173,6 @@ function querySelect(req, db_connection) {
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    4, //is_recommend 우선으로 랜덤정렬
                 ]
             );
         }
