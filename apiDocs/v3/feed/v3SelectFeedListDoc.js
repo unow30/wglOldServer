@@ -23,10 +23,10 @@
  *           example: all
  *         description: |
  *           all or null: 피드리스트 실행
- *           favorite: 위글 추천 영상
+ *           favorite: 위글 추천 영상(카테고리, 필터링 선택 없음)
  *           brand: 브랜드관
  *           groupbuying: 공동구매(이전꺼실행, 필터링 및 기타이슈 수정중)
- *           challenge: 첼린지 영상
+ *           challenge: 첼린지 영상(카테고리, 필터링 선택 없음)
  *         enum: ['', all, favorite, brand, groupbuying, challenge]
  *       - in: query
  *         name: latitude
