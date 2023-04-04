@@ -1,10 +1,12 @@
 
+
 const paramUtil = require('../../../../common/utils/legacy/origin/paramUtil');
 const fileUtil = require('../../../../common/utils/legacy/origin/fileUtil');
 const mysqlUtil = require('../../../../common/utils/legacy/origin/mysqlUtil');
 const sendUtil = require('../../../../common/utils/legacy/origin/sendUtil');
 const errUtil = require('../../../../common/utils/legacy/origin/errUtil');
 const logUtil = require('../../../../common/utils/legacy/origin/logUtil');
+
 
 let file_name = fileUtil.name(__filename);
 
@@ -166,13 +168,15 @@ function querySelect(req, db_connection) {
                     req.paramBody['latitude'],
                     req.paramBody['longitude'],
                     req.paramBody['km'],
-                    req.paramBody['category'],
+                    // req.paramBody['category'],
                     req.paramBody['video_uid'],
                     // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
+                    // req.paramBody['filter'],
+
                 ]
             );
         }
