@@ -380,10 +380,12 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate){
     }, []);
 
     objectCalculate['sellerArr'].forEach(el => {
-       //판매자 하나의 판매가격 총합이 무료배송 조건보다 작으면 배송비 부과
-       if(el['price_total'] < el['delivery_free']){
-           objectCalculate['totalDelivery'] += el['price_delivery'];
-       }
+        if (el['delivery_free'] === 0) {
+            objectCalculate['totalDelivery'] += el['price_delivery'];
+        } else if (el['delivery_free'] > 0 && el['delivery_free'] > el['price_total']) {
+            objectCalculate['totalDelivery'] += el['price_delivery'];
+        }
+
        //도서산간지역 배송이면 도서산간 추가배송비 부과
        if(objectCalculate['isLand'] === 1){
            objectCalculate['totalDelivery'] += el['delivery_price_plus'];
