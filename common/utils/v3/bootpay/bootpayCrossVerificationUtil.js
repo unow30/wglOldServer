@@ -380,7 +380,7 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate){
     }, []);
 
     objectCalculate['sellerArr'].forEach(el => {
-       //판매하 하나의 판매가격 총합이 무료배송 조건보다 작으면 배송비 부과
+       //판매자 하나의 판매가격 총합이 무료배송 조건보다 작으면 배송비 부과
        if(el['price_total'] < el['delivery_free']){
            objectCalculate['totalDelivery'] += el['price_delivery'];
        }
