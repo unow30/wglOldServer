@@ -59,7 +59,7 @@ module.exports = function (req, res) {
             // let count_data = await querySelectTotalCount(req, db_connection);
             req.innerBody['item'] = await querySelect(req, db_connection);
             req.innerBody['item'] = createJSONArray(req.innerBody['item'])
-            // req.innerBody['total_count'] = count_data['total_count'];
+            req.innerBody['total_count'] = 0;
 
             deleteBody(req)
             sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
