@@ -114,7 +114,7 @@ app.route('/v1/searchview/list/gongudeadline').get( require('./legacy/v1/searchV
  */
 app.route('/v2/searchview/list/all').get( require('./legacy/v2/v2SearchView/v2SelectSerchViewListAll')) //모아보기 전체 탭 정보 불러오기
 
-app.route('/v2/searchview/category/list').get(require('./legacy/v2/v2SearchView/v2SelectCategoryProductList'))//카테고리 상품 리스트
+
 app.route('/v2/searchview/last/order/list').get( require('./legacy/v2/v2SearchView/v2SelectSearchViewLastOrderList'))//마감임박 공구딜 더보기
 app.route('/v2/searchview/participant/list').get( require('./legacy/v2/v2SearchView/v2SelectSearchViewParticipantList'))//참여 가능한 공구방 더보기
 app.route('/v2/searchview/promotion/list').get( require('./legacy/v2/v2SearchView/v2SelectSearchViewPromotionList'))//브랜드관 더보기
@@ -170,7 +170,9 @@ app.route('/v2/challenge/recent/round').get(  require('./legacy/v2/challenge/v2S
  * category
  */
 app.route('/v2/category/icon').get(require('./legacy/origin/category/selectCategoryIcon')) //추후 v3로 api 변경
+// app.route('/v3/category/icon').get(require('./legacy/origin/category/selectCategoryIcon')) //변경될 icon api
 app.route('/product/category/list').get( require('./legacy/origin/product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨. 추후 v3로 api 변경
-app.route('/v3/category/list').get(require('./v3/category/v3SelectCategoryProductList'))
+app.route('/v2/searchview/category/list').get(require('./legacy/v2/v2SearchView/v2SelectCategoryProductList'))//카테고리 상품 리스트 세부카테고리 적용됨. 추후 v3로 변경
+// app.route('/v3/category/list').get(require('./v3/category/v3SelectCategoryProductList')) //변경될 category/list api
 
 module.exports = app;
