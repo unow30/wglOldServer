@@ -129,8 +129,6 @@ app.route('/v2/searchview/integerated/search/list').get( require('./legacy/v2/v2
 
 app.route('/v2/searchview/banner/event').get( require('./legacy/v2/v2SearchView/v2SelectBannerEvent') )//이벤트 데이터 api
 
-app.route('/v3/category/list').get(require('./v3/category/v3SelectCategoryProductList'))//카테고리 상품 리스트
-
 /**
  * comment api
  */
