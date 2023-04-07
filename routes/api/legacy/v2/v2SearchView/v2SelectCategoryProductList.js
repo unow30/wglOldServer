@@ -50,17 +50,6 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
- *         name: is_deal
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           위글딜 여부 필터링입니다.(안쓰는값 고정으로 0)
- *           * 0: 전체표시
- *           * 1: 위글딜표시
- *         enum: [0,1]
- *       - in: query
  *         name: delivery_free
  *         required: true
  *         schema:
@@ -175,7 +164,6 @@ function queryCategoryList(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
-            req.paramBody['is_deal'], //0: 전체표시,1:위글딜표시
             req.paramBody['delivery_free'], //0: 전체,1:배송비무료
             req.paramBody['sort_type'],
             req.paramBody['category_uid'],
