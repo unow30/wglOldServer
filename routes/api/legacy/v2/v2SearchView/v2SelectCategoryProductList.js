@@ -72,13 +72,13 @@
  *           * 1: 배송비무료
  *         enum: [0,1]
  *       - in: query
- *         name: filter_type
+ *         name: sort_type
  *         required: true
  *         schema:
  *           type: number
  *           example: 0
  *         description: |
- *           각종 필터 선택 리스트입니다
+ *           각종 정렬 선택 리스트입니다
  *           * 0: 인기순(기본값, 사용)
  *           * 1: 리뷰순(안쓴다)
  *           * 2: 신상품순(최신순, 사용)
@@ -177,7 +177,7 @@ function queryCategoryList(req, db_connection) {
             req.paramBody['random_seed'],
             req.paramBody['is_deal'], //0: 전체표시,1:위글딜표시
             req.paramBody['delivery_free'], //0: 전체,1:배송비무료
-            req.paramBody['filter_type'],
+            req.paramBody['sort_type'],
             req.paramBody['category_uid'],
             req.paramBody['category_detail_uid'],
             req.paramBody['offset'],
