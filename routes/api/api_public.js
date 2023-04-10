@@ -85,8 +85,6 @@ app.route('/v2/feed/review/list').get( require('./legacy/v2/feed/v2SelectFeedRev
 // app.route('/test/feed/list').get( ,require('./feed/v1SelectFeedList')) // 추후에 미들웨어 app에서 넣어주는걸로
 // app.route('/v1/gongu/feed/list').get( require('./feed/public_v1SelectGonguFeedList') )
 // app.route('/feed/list/m3u8').get( require('./feed/public_selectFeedList_m3u8') )
-app.route('/v3/feed/list').get( require('./v3/feed/v3SelectFeedList'))
-
 app.route('/v3/feed/list').get( require('./v3/feed/v3SelectFeedList') );
 
 /**
@@ -173,6 +171,6 @@ app.route('/v2/category/icon').get(require('./legacy/origin/category/selectCateg
 // app.route('/v3/category/icon').get(require('./legacy/origin/category/selectCategoryIcon')) //변경될 icon api
 app.route('/product/category/list').get( require('./legacy/origin/product/selectProductCategoryList')) //220601부터 카테고리탭 생성됨. 추후 v3로 api 변경
 app.route('/v2/searchview/category/list').get(require('./legacy/v2/v2SearchView/v2SelectCategoryProductList'))//카테고리 상품 리스트 세부카테고리 적용됨. 추후 v3로 변경
-// app.route('/v3/category/list').get(require('./v3/category/v3SelectCategoryProductList')) //변경될 category/list api
+app.route('/v3/category/list').get(require('./v3/category/v3SelectCategoryProductList')) //변경될 category/list api
 
 module.exports = app;

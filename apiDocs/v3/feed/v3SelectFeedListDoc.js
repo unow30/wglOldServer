@@ -64,7 +64,7 @@
  *           type: number
  *           example: 65535
  *         description: |
- *           카테고리 (비트 연산)
+ *           카테고리 (비트 연산) 구버전 카테고리. 변경 확인되면 제외한다.
  *           ==> 65535 : 모든 상품
  *           ==> 멀티선택의 경우 코드 값을 합치면됨
  *           ==> ex) 1+8+32 = 41
@@ -76,6 +76,35 @@
  *           * 32 : 유아
  *           * 64 : 스포츠레저
  *           * 128 : 식물
+ *       - in: query
+ *         name: category_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           ## 상품 카테고리(대분류)
+ *           ### * 1: 전체
+ *           ### * 2: ~~빛배송~~
+ *           ### * 3: 식품/밀키트
+ *           ### * 4: 반려동물
+ *           ### * 5: 인테리어
+ *           ### * 6: 뷰티/주얼리
+ *           ### * 7: 패션/잡화
+ *           ### * 8: 생활용품
+ *           ### * 9: ~~마이굿즈~~
+ *           ### * 10: ~~밀키트~~
+ *         enum: [1,3,4,5,6,7,8]
+ *       - in: query
+ *         name: category_detail_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           상품 카테고리(소분류)
+ *           0이면 전체 표시
+ *           상품 카테고리(대분류)를 동일한 값으로 같이 전달해야한다.
  *       - in: query
  *         name: video_uid
  *         required: true
