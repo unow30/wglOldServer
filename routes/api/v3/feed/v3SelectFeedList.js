@@ -102,14 +102,14 @@ function querySelect(req, db_connection) {
                     req.paramBody['latitude'],
                     req.paramBody['longitude'],
                     req.paramBody['km'],
-                    req.paramBody['category_uid']? req.paramBody['category_uid'] : 1,
-                    req.paramBody['category_detail_uid']? req.paramBody['category_detail_uid'] : 0,
+                    req.paramBody['category'],
+                    req.paramBody['category_detail_uid'],
                     req.paramBody['video_uid'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    req.paramBody['filter'],
+                    req.paramBody['sort_type'],
                 ]
             );
         }break
@@ -121,15 +121,15 @@ function querySelect(req, db_connection) {
                     req.paramBody['latitude'],
                     req.paramBody['longitude'],
                     req.paramBody['km'],
-                    req.paramBody['category_uid']? req.paramBody['category_uid'] : 1,
-                    req.paramBody['category_detail_uid']? req.paramBody['category_detail_uid'] : 0,
+                    req.paramBody['category'],
+                    req.paramBody['category_detail_uid'],
                     req.paramBody['video_uid'],
                     // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    req.paramBody['filter'],
+                    req.paramBody['sort_type'],
                 ]
             );
         }break;
@@ -142,9 +142,9 @@ function querySelect(req, db_connection) {
                     req.headers['user_uid'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
-                    req.paramBody['filter'],
-                    req.paramBody['category_uid']? req.paramBody['category_uid'] : 1,
-                    req.paramBody['category_detail_uid']? req.paramBody['category_detail_uid'] : 0,
+                    req.paramBody['sort_type'],
+                    req.paramBody['category'],
+                    req.paramBody['category_detail_uid'],
                 ]
             );
         }break;

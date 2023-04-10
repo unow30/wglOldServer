@@ -60,7 +60,7 @@ function queryCategoryList(req, db_connection) {
             req.paramBody['random_seed'],
             req.paramBody['delivery_free'], //0: 전체,1:배송비무료
             req.paramBody['sort_type'],
-            req.paramBody['category_uid'],
+            req.paramBody['category'],
             req.paramBody['category_detail_uid'],
             req.paramBody['offset'],
         ]
