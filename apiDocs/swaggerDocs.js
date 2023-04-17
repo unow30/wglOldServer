@@ -133,6 +133,10 @@ let swaggerDefinition = {
             description: '유저 관련 API'
         },
         {
+            name: 'Category',
+            description: '카테고리 아이콘, 카테고리 리스트 API'
+        },
+        {
             name: 'Feed',
             description: '피드 관련 API'
         },

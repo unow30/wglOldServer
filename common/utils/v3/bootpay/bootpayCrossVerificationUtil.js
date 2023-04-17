@@ -173,6 +173,8 @@ async function querySelectProductInfo(frontProductList, db_connection) {
                     , p.is_authorize
                     , p.is_deleted
                     , p.sale_type
+                    , p.count_total
+                    , p.count_sale
                     , sum(po.option_price) as option_price
                     , group_concat(po.name separator ' / ') as option_name
                     , s.delivery_price
@@ -280,7 +282,6 @@ async function queryCheckIsland(addressbookUid, db_connection){
         const queryAddress = `select zipcode from tbl_addressbook where uid = ${addressbookUid}`
 
         db_connection.query(queryAddress, (err, rows, field) =>{
-            console.log('zipcode: ',rows[0]['zipcode'])
             if (err) {
                 reject(sendError('배송주소를 찾을 수 없습니다.'));
             } else if(rows[0].length <= 0){
@@ -334,6 +335,15 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
         log.delivery = new ConsoleValidate(fElem['price_delivery'], bElem['delivery_price'])
         console.log(`roof: ${i}`);
         console.table(log);
+
+        if(bElem['sale_type'] === 'soldout' || bElem['count_total'] === bElem['count_sale']){
+            throw (sendError(`품절된 상품입니다.`))
+        }
+
+        if(fElem['count'] + bElem['count_sale'] > bElem['count_total']){
+            const left = (bElem['count_total'] - bElem['count_sale'])
+            throw (sendError(`구매수량이 부족합니다. 최대 ${left}개 구매 가능`))
+        }
 
         if(fElem['product_uid'] !== bElem['product_uid']){
         // if(fElem['product_uid'] !== 1){

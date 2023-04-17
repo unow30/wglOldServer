@@ -56,6 +56,7 @@ module.exports = function (req, res) {
                 return
             }
             //각 상품의 판매자한테 주문알람 보내야 한다.
+            //이제 상품 하나의 수량여부를 카운트한다. 만일 모든 상품을 판매하면 자동 품절처리되고 알람을 보내줘야 한다.
             await orderAlarm(req, res, createOrderProductList)
 
             if(req.paramBody['use_reward'] > 0 ) {
@@ -147,6 +148,25 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
 
         // const order_uid = req.innerBody['item']['order_uid']
         const order_uid = req.innerBody['order_uid']
+
+        const updateProductCountSale = `
+        update tbl_product as p
+        set p.count_sale = p.count_sale + ${Number(count)} 
+        , p.sale_type = case when p.count_sale + ${Number(count)} >= p.count_total then 'soldout'
+                            else 'onsale' end
+        where p.uid = ${product_uid}
+        ;
+        `
+            // , p.sale_type = p.count_sale + ${Number(count)} >== p.count_total, "soldout", "onsale"
+        await new Promise (async (resolve, reject) => {
+            db_connection.query(updateProductCountSale, (err, res, fields) => {
+                if (err) {
+                    reject(err);
+                }else{
+                    resolve()
+                }
+            });
+        });
 
         const createOrderProductData = `
                 insert into tbl_order_product
@@ -316,6 +336,7 @@ async function orderAlarm(req, res, createOrderProductList) {
     const push_token_list = alrim_msg_distinc_list.map(list => list.push_token);
     console.log('push_token_list중복제거', push_token_list)
     await fcmUtil.fcmCreateOrderList(push_token_list);//fcm알림도 중복제거가 되는가?
+    // fcmUtil.상품품절일경우품절알람보내기
 
     req.body= {
         type: 's',

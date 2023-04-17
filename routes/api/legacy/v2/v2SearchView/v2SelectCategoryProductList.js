@@ -11,6 +11,7 @@
  *
  *       * 상품카테고리목록 230120 생성
  *       * 카테고리, 상세 카테고리 반영
+ *       * 상세 카테고리 uid값은 테이블 확인 필요
  *
  *     parameters:
  *       - in: query
@@ -21,17 +22,17 @@
  *           example: 0
  *         description: |
  *           상품 카테고리(대분류)
- *           * 0: 전체
- *           * 1: 식품/밀키트
- *           * 2: 뷰티/주얼리
- *           * 3: 인테리어
- *           * 4: 패션잡화
- *           * 5: 반려동물
- *           * 6: 생활용품
- *           * 7: 밀키트
- *           * 8: 빛배송
- *           * 9: 마이굿즈
- *         enum: [0,1,2,3,4,5,6,7,8,9]
+ *           * 1: 전체
+ *           * 2: ~~빛배송~~
+ *           * 3: 식품/밀키트
+ *           * 4: 반려동물
+ *           * 5: 인테리어
+ *           * 6: 뷰티/주얼리
+ *           * 7: 패션/잡화
+ *           * 8: 생활용품
+ *           * 9: ~~마이굿즈~~
+ *           * 10: ~~밀키트~~
+ *         enum: [1,3,4,5,6,7,8]
  *       - in: query
  *         name: category_detail_uid
  *         required: true
@@ -40,6 +41,7 @@
  *           example: 0
  *         description: |
  *           상품 카테고리(소분류)
+ *           0이면 전체 표시
  *           상품 카테고리(대분류)를 동일한 값으로 같이 전달해야한다.
  *       - in: query
  *         name: random_seed
@@ -49,17 +51,6 @@
  *           example: 133q1234
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
- *       - in: query
- *         name: is_deal
- *         required: true
- *         schema:
- *           type: number
- *           example: 0
- *         description: |
- *           위글딜 여부 필터링입니다.(안쓰는값 고정으로 0)
- *           * 0: 전체표시
- *           * 1: 위글딜표시
- *         enum: [0,1]
  *       - in: query
  *         name: delivery_free
  *         required: true
@@ -72,13 +63,13 @@
  *           * 1: 배송비무료
  *         enum: [0,1]
  *       - in: query
- *         name: filter_type
+ *         name: sort_type
  *         required: true
  *         schema:
  *           type: number
  *           example: 0
  *         description: |
- *           각종 필터 선택 리스트입니다
+ *           각종 정렬 선택 리스트입니다
  *           * 0: 인기순(기본값, 사용)
  *           * 1: 리뷰순(안쓴다)
  *           * 2: 신상품순(최신순, 사용)
@@ -175,9 +166,8 @@ function queryCategoryList(req, db_connection) {
         , [
             req.headers['user_uid'],
             req.paramBody['random_seed'],
-            req.paramBody['is_deal'], //0: 전체표시,1:위글딜표시
             req.paramBody['delivery_free'], //0: 전체,1:배송비무료
-            req.paramBody['filter_type'],
+            req.paramBody['sort_type'],
             req.paramBody['category_uid'],
             req.paramBody['category_detail_uid'],
             req.paramBody['offset'],

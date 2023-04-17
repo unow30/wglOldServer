@@ -96,39 +96,40 @@ function querySelect(req, db_connection) {
     switch(req.paramBody['select_type']){
         case 'all':{
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_list_v1'
+                , 'call proc_select_feed_list_v3'
                 , [
                     req.headers['user_uid'],
                     req.paramBody['latitude'],
                     req.paramBody['longitude'],
                     req.paramBody['km'],
                     req.paramBody['category'],
+                    req.paramBody['category_detail_uid'],
                     req.paramBody['video_uid'],
-                    // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    req.paramBody['filter'],
+                    req.paramBody['sort_type'],
                 ]
             );
         }break
         case 'brand':{
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_feed_brand_list_v1'
+                , 'call proc_select_feed_brand_list_v3'
                 , [
                     req.headers['user_uid'],
                     req.paramBody['latitude'],
                     req.paramBody['longitude'],
                     req.paramBody['km'],
                     req.paramBody['category'],
+                    req.paramBody['category_detail_uid'],
                     req.paramBody['video_uid'],
                     // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    req.paramBody['filter'],
+                    req.paramBody['sort_type'],
                 ]
             );
         }break;
@@ -136,13 +137,14 @@ function querySelect(req, db_connection) {
             //공구쪽 영상에 상품 여러개 표시? 이전꺼 실행하고 방안 찾기
             //필터링하기? 이전꺼 실행하고 방안 찾기
             return mysqlUtil.queryArray(db_connection
-                , 'call proc_select_gongu_feed_list_v1'
+                , 'call proc_select_gongu_feed_list_v3'
                 , [
                     req.headers['user_uid'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
-                    req.paramBody['filter'],
+                    req.paramBody['sort_type'],
                     req.paramBody['category'],
+                    req.paramBody['category_detail_uid'],
                 ]
             );
         }break;

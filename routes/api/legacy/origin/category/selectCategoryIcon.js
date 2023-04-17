@@ -83,7 +83,7 @@ function queryCategory(req, db_connection){
 }
 function categoryParse(category) {
     let res = category.map(el =>{
-        el['sub_category_list'] = el['sub_category_list']? el['sub_category_list'].split('@!@').map(ele => JSON.parse(ele)) : []
+        el['detail_list'] = el['detail_list']? el['detail_list'].split('@!@').map(ele => JSON.parse(ele)) : []
         return el
     })
     return res

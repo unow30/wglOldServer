@@ -64,7 +64,8 @@
  *           type: number
  *           example: 65535
  *         description: |
- *           카테고리 (비트 연산)
+ *           카테고리 (비트 연산) 구버전 카테고리. ~~변경 확인되면 제외한다.~~
+ *           category 테이블에 비트값 기록. 프론트 구조 변경이 완료되면 그때 uid로 변경한다.
  *           ==> 65535 : 모든 상품
  *           ==> 멀티선택의 경우 코드 값을 합치면됨
  *           ==> ex) 1+8+32 = 41
@@ -76,6 +77,16 @@
  *           * 32 : 유아
  *           * 64 : 스포츠레저
  *           * 128 : 식물
+ *       - in: query
+ *         name: category_detail_uid
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           상품 카테고리(소분류)
+ *           0이면 전체 표시
+ *           상품 카테고리(대분류)를 동일한 값으로 같이 전달해야한다.
  *       - in: query
  *         name: video_uid
  *         required: true
@@ -123,7 +134,7 @@
  *           해시태그 (영상 기준)
  *           * "핸드폰" 과 같이 #이 붙은 것만 검색됨
  *       - in: query
- *         name: filter
+ *         name: sort_type
  *         required: true
  *         schema:
  *           type: number
