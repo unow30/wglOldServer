@@ -12,7 +12,7 @@
  *         * ## 배너클릭시 이벤트페이지로 이동하기
  *         * ### 230117기준 위글 밀키트 모음전 뷰를 위한 데이터를 보내준다.
  *         * 두줄씩 26개 상품 표시, 인기순(랜덤)으로만 표시, 다른 필터링이나 기능 없다.
- *         * 이 api를 재활용할수 없을까?
+ *         * 기획전 edition_uid를 받아서 실행한다.
  *
  *     parameters:
  *       - in: query
@@ -83,6 +83,7 @@ function queryEventMealkitList(req, db_connection, date){
             req.headers['user_uid'],
             date,
             req.paramBody['random_seed'],
+            req.paramBody['edition_uid'],
             req.paramBody['offset'],
         ]
     );
