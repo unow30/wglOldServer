@@ -149,11 +149,11 @@
                  return
              }
  
-             let email_data = await queryCheckEmail(req, db_connection);
-             if( email_data ){
-                 errUtil.createCall(errCode.already, `이미 가입한 이메일 입니다.`)
-                 return
-             }
+             // let email_data = await queryCheckEmail(req, db_connection);
+             // if( email_data ){
+             //     errUtil.createCall(errCode.already, `이미 가입한 이메일 입니다.`)
+             //     return
+             // }
              let nickname_count_data = await queryCheckNickname(req, db_connection);
              if( nickname_count_data['count'] > 0 ){
                  errUtil.createCall(errCode.already, `이미 사용중인 닉네임 입니다.`)
