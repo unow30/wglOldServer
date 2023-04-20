@@ -12,8 +12,8 @@
  *         * ## 배너클릭시 이벤트페이지로 이동하기
  *         * ## 230117기준 위글 밀키트 모음전 뷰를 위한 데이터를 보내준다.
  *         * ## 두줄씩 26개 상품 표시, 인기순(랜덤)으로만 표시, 다른 필터링이나 기능 없다.
- *         * ## 기획전 edition_uid를 받아서 기획전 상품정보를 전달한다.
- *         * ## 기획전 이벤트가 진행중인 경우에만 데이터를 볼 수 있다.
+ *         * ## tbl_ad, tbl_ad_product를 연결해서 배너와 연관된 상품정보를 불러온다.
+ *         * ## 배너가 내려가면 들어갈 수 없다.
  *
  *
  *     parameters:
@@ -35,14 +35,15 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
- *         name: uid
+ *         name: ad_uid
  *         default: 0
  *         required: true
  *         schema:
  *           type: number
  *           example: 0
  *         description: |
- *           기획전 uid
+ *           광고 uid
+ *           해당 광고에서 보여줄 상품 uid들을 불러옵니다.
  *
  *     responses:
  *       400:
@@ -94,7 +95,7 @@ function queryEventMealkitList(req, db_connection, date){
             req.headers['user_uid'],
             date,
             req.paramBody['random_seed'],
-            req.paramBody['uid'],
+            req.paramBody['ad_uid'],
             req.paramBody['offset'],
         ]
     );
