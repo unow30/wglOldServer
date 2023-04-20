@@ -109,7 +109,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    req.paramBody['sort_type'],
+                    req.paramBody['filter'],
                 ]
             );
         }break
@@ -129,7 +129,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['offset'],
                     req.paramBody['tag'],
                     req.innerBody['type'],
-                    req.paramBody['sort_type'],
+                    req.paramBody['filter'],
                 ]
             );
         }break;
@@ -142,7 +142,7 @@ function querySelect(req, db_connection) {
                     req.headers['user_uid'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
-                    req.paramBody['sort_type'],
+                    req.paramBody['filter'],
                     req.paramBody['category'],
                     req.paramBody['category_detail_uid'],
                 ]
