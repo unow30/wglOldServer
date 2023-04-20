@@ -35,7 +35,7 @@
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
  *       - in: query
- *         name: edition_uid
+ *         name: uid
  *         default: 0
  *         required: true
  *         schema:
@@ -94,7 +94,7 @@ function queryEventMealkitList(req, db_connection, date){
             req.headers['user_uid'],
             date,
             req.paramBody['random_seed'],
-            req.paramBody['edition_uid'],
+            req.paramBody['uid'],
             req.paramBody['offset'],
         ]
     );
