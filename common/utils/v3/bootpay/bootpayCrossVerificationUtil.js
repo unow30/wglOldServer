@@ -163,6 +163,12 @@ async function querySelectProductInfo(frontProductList, db_connection) {
     //상품정보 옵션정보까지 조인해서 하나씩 불러오기
     return await Promise.all(frontProductList.map(async (product_list) => {
         return new Promise(async (resolve, reject) => {
+            // s.delivery_price -> p.delivery_price
+            // s.delivery_free -> p.delivery_free
+            // s.delivery_price_plus -> p.delivery_price_plus
+            // p.빛배송 관련 칼럼도 가져온다? 어떤 결제루트로 넘어왔는지에 따라 결제검증값이 달라질 것?
+            // product_list에서 배송비가 기록되니 그걸로 검증한다.
+            // 상품의 승인여부, 삭제여부는 검사 안하네?
             const checkProductData = `
                  select
                     p.uid as product_uid
@@ -177,16 +183,13 @@ async function querySelectProductInfo(frontProductList, db_connection) {
                     , p.count_sale
                     , sum(po.option_price) as option_price
                     , group_concat(po.name separator ' / ') as option_name
-                    , s.delivery_price
-                    , s.delivery_free
-                    , s.delivery_price_plus
+                    , p.delivery_price
+                    , p.delivery_free
+                    , p.delivery_price_plus
                 from tbl_product as p
                 inner join tbl_product_option as po
                     on po.product_uid = ${product_list['product_uid']}
                     and find_in_set(po.option_id, '${product_list['option_ids']}')
-                inner join tbl_user as s
-                    on s.uid = p.user_uid
-                   and s.is_seller = 1 
                 where p.uid = (${product_list['product_uid']})
             ;`;
             await db_connection.query(checkProductData, async (err, rows, fields) => {
@@ -321,12 +324,6 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
     for (let i = 0; i < backProductInfo.length; i++) {
         const fElem = frontProductInfo[i];
         const bElem = backProductInfo[i];
-
-        // console.table({roof:i,
-        //     product_uid: fElem['product_uid'] === bElem['product_uid'],
-        //     seller_uid: fElem['seller_uid'] === bElem['seller_uid'],
-        //     priceTotal: fElem['price_original'] * fElem['count'] === (bElem['price_discount'] + bElem['option_price']) * fElem['count']
-        // })
 
         const log = {}
         log.product_uid = new ConsoleValidate(fElem['product_uid'], bElem['product_uid'])
