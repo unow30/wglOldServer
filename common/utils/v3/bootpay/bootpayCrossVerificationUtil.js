@@ -111,11 +111,33 @@ async function calculateOrderProductsPrice(param, receiptPrice, type, db_connect
         case 'common': {
             //일반결제검증함수
             backProductInfo = await querySelectProductInfo(frontProductInfo, db_connection);
+            //클라이언트와 서버의 상품정보를 비교 검증한 결과를 objectCalculate에 저장한다.
+            compareProductInfo(frontProductInfo, backProductInfo, function (compared) {
+                objectCalculate['priceTotal'] += compared['priceTotal']
+                objectCalculate['sellerArr'].push({
+                    seller_uid: compared['seller_uid'],
+                    price_delivery: compared['price_delivery'],
+                    delivery_free: compared['delivery_free'],
+                    delivery_price_plus: compared['delivery_price_plus'],
+                    price_total: compared['priceTotal']
+                })
+            })
         } break;
 
         case 'gift': {
             //선물하기 함수
             backProductInfo = await querySelectProductInfo(frontProductInfo, db_connection);
+            //클라이언트와 서버의 상품정보를 비교 검증한 결과를 objectCalculate에 저장한다.
+            compareProductInfo(frontProductInfo, backProductInfo, function (compared) {
+                objectCalculate['priceTotal'] += compared['priceTotal']
+                objectCalculate['sellerArr'].push({
+                    seller_uid: compared['seller_uid'],
+                    price_delivery: compared['price_delivery'],
+                    delivery_free: compared['delivery_free'],
+                    delivery_price_plus: compared['delivery_price_plus'],
+                    price_total: compared['priceTotal']
+                })
+            })
         } break;
 
         case 'groupbuying': {
@@ -124,19 +146,24 @@ async function calculateOrderProductsPrice(param, receiptPrice, type, db_connect
             // backProductInfo = await queryGroupbuyingProductInfo(param, db_connection);
             return await paymentApproval(objectCalculate);
         } break;
-    }
 
-    //클라이언트와 서버의 상품정보를 비교 검증한 결과를 objectCalculate에 저장한다.
-    compareProductInfo(frontProductInfo, backProductInfo, function (compared) {
-        objectCalculate['priceTotal'] += compared['priceTotal']
-        objectCalculate['sellerArr'].push({
-            seller_uid: compared['seller_uid'],
-            price_delivery: compared['price_delivery'],
-            delivery_free: compared['delivery_free'],
-            delivery_price_plus: compared['delivery_price_plus'],
-            price_total: compared['priceTotal']
-        })
-    })
+        case 'influencer': {
+            //인플루언서 정보를 받고
+            backProductInfo = await queryInfluencerProductInfo(frontProductInfo, db_connection)
+            //검증을 여기서 진행한다.
+            compareInfluencerInfo(frontProductInfo, backProductInfo, function (compared) {
+                objectCalculate['priceTotal'] += compared['priceTotal']
+                objectCalculate['influencer_gongu_uid'] = compared['influencer_gongu_uid']
+                objectCalculate['sellerArr'].push({
+                    seller_uid: compared['seller_uid'],
+                    price_delivery: compared['price_delivery'],
+                    delivery_free: 0, //무료배송 없다.
+                    delivery_price_plus: 0, //도서산간 갈일 없다.
+                    price_total: compared['priceTotal']
+                })
+            })
+        }
+    }
 
     console.log('중복 제거 전', objectCalculate)
     //objectCalculate의 배송비 중복을 제거하고 배송비를 계산한다.
@@ -279,6 +306,58 @@ async function queryGroupbuyingProductInfo(param, db_connection){
     })
 }
 
+//인플루언서구매 상품정보 가져오기
+async function queryInfluencerProductInfo(frontProductList, db_connection){
+    return await Promise.all(frontProductList.map(async (product_list) => {
+        return new Promise(async (resolve, reject) => {
+            const checkProductData = `
+            select
+                p.uid as product_uid
+                , p.user_uid as seller_uid
+                , p.name as product_name
+                , ig.uid as influencer_gongu_uid
+                , ig.original_price
+                , ig.total_price as price_discount
+                , p.is_authorize
+                , p.is_deleted
+                , p.sale_type
+                , ig.recruitment
+                , ig.participants
+                , ig.light_delivery_max_cnt as max_count
+                , sum(po.option_price) as option_price
+                , group_concat(po.name separator ' / ') as option_name
+                , p.delivery_price
+                , p.delivery_free
+                , ig.delivery_price  as delivery_price_ig
+                , ig.light_delivery_price
+                , ig.light_delivery_max_cnt
+                , ig.start_time
+                , ig.end_time
+            from tbl_product as p
+                inner join tbl_influencer_gongu as ig
+                    on ig.product_uid = p.uid
+                inner join tbl_product_option as po
+                    on po.product_uid = p.uid
+                    and find_in_set(po.option_id, '${product_list['option_ids']}')
+            where p.uid = ${product_list['product_uid']}
+            order by ig.uid desc limit 1
+            ;
+            `
+            await db_connection.query(checkProductData, async (err, rows, fields) => {
+                if (err) {
+                    reject(sendError('db상품정보 검색 연결 실패'));
+                } else if (rows.length === 0) {
+                    reject(sendError(`상품정보를 찾을 수 없습니다.`));
+                } else {
+                    resolve(rows[0]);
+                }
+            });
+        });
+    })).then(value => {
+        return value
+    })
+}
+
 //도서산간지역 확인
 async function queryCheckIsland(addressbookUid, db_connection){
     return new Promise((resolve, reject) =>{
@@ -297,7 +376,6 @@ async function queryCheckIsland(addressbookUid, db_connection){
                     if(err) {
                         reject(sendError('도서산간지역 확인 에러'));
                     }else{
-                        console.log('도서산간지역')
                         resolve(rows[0]['island']);
                     }
                 });
@@ -356,8 +434,18 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
             throw (sendError(`결제금액이 서버와 일치하지 않습니다.`))
         }
 
+        //isLight자체가 없다면 작동 안한다. 그러면 이 필터가 필요하다.
+        //일반상품에도 빛배송이 들어간다면 그때 제거한다.
         if(Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
             throw (sendError('배송비가 서버와 일치하지 않습니다.'))
+        }
+
+        if(fElem['isLight'] === 0 && Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
+            throw (sendError('배송비가 서버와 일치하지 않습니다.'))
+        }
+
+        if(fElem['isLight'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
+            throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
         }
 
         let compared = {
@@ -372,6 +460,85 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
     }
 
 }
+
+//인플루언서 결제시 상품정보 검증 필터
+function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallback){
+    console.log(frontProductInfo)
+    console.log(backProductInfo)
+
+    if (frontProductInfo.length !== backProductInfo.length) {
+        throw sendError(`결제할 상품 종류가 일치하지 않습니다. 클라이언트:${frontProductInfo.length}개, 서버:${backProductInfo.length}개`)
+    }
+
+    frontProductInfo.sort(function(x, y) {
+        return x['product_uid'] - y['product_uid'];
+    });
+
+    backProductInfo.sort(function(x, y) {
+        return x['product_uid'] - y['product_uid'];
+    });
+
+    console.log('클라이언트, 서버 정보비교')
+    for (let i = 0; i < backProductInfo.length; i++) {
+        const fElem = frontProductInfo[i];
+        const bElem = backProductInfo[i];
+
+        const log = {}
+        log.price_delivery = new ConsoleValidate(fElem['price_delivery'], bElem['delivery_price'])
+        log.light_delivery_price = new ConsoleValidate(fElem['price_delivery'], bElem['light_delivery_price'])
+        log.seller_uid = new ConsoleValidate(fElem['seller_uid'], bElem['seller_uid'])
+        log.max_count = new ConsoleValidate(fElem['count'], bElem['max_count'])
+        log.priceTotal = new ConsoleValidate(fElem['price_original'] * fElem['count'], (bElem['price_discount'] + bElem['option_price']) * fElem['count'])
+        console.log(`roof: ${i}`);
+        console.table(log);
+        console.table({
+            'participants': bElem['participants'],
+            'recruitment': bElem['recruitment'],
+            'is_light': fElem['is_light'],
+        })
+        if(fElem['is_light'] === 0 && Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
+            throw (sendError('배송비가 서버와 일치하지 않습니다.'))
+        }
+
+        if(fElem['is_light'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
+            throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
+        }
+
+        if(fElem['is_light'] === 1 && fElem['count'] > bElem['max_count']){
+            throw (sendError(`빛배송 1박스당 최대 수량을 초과했습니다. 최대 ${bElem['max_count']}개 구매가능`))
+        }
+
+        if(bElem['recruitment'] < bElem['participants'] + 1){
+            throw (sendError(`모집인원이 마감되었습니다.`))
+        }
+
+        if(fElem['product_uid'] !== bElem['product_uid']){
+            // if(fElem['product_uid'] !== 1){
+            throw (sendError(`상품번호가 일치하지 않습니다. product_uid: ${fElem['product_uid']}`))
+        }
+        if(fElem['seller_uid'] !== bElem['seller_uid']){
+            // if(fElem['seller_uid'] !== 0){
+            throw (sendError(`판매자번호가 일치하지 않습니다. seller_uid: ${fElem['seller_uid']}`))
+        }
+
+        if(fElem['price_original'] * fElem['count'] !== (bElem['price_discount'] + bElem['option_price']) * fElem['count']){
+            // if(fElem['price_discount'] * fElem['count'] !== bElem['price_discount'] * 1){
+            throw (sendError(`결제금액이 서버와 일치하지 않습니다.`))
+        }
+
+        let compared = {
+            priceTotal: fElem['price_original'] * fElem['count'],
+            seller_uid: fElem['seller_uid'],
+            price_delivery: fElem['price_delivery'],
+            delivery_free: bElem['delivery_free'],
+            delivery_price_plus: bElem['delivery_price_plus'],
+            influencer_gongu_uid: bElem['influencer_gongu_uid']
+        }
+        //검증 완료되면 objectCalculate에 데이터 입력하기: seller_uid, price_discount, count
+        calculateCallback(compared)
+    }
+}
+
 
 //배송비 중복제외, price_total값은 더한다.
 function removeAndCalculateDuplicateSellerArr(objectCalculate){
@@ -401,7 +568,7 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate){
 
 }
 
-//결제금액이 일치하지 않으면 pg사 결제내역 전체 취소한다.
+//결제금액이 일치하지 않으면 pg사 결제내역 전체 취소한다.(x) 에러발생시 승인이 안되니 결제될일 없다.
 function sendError(errMsg){
     return new Error(errMsg)
 }

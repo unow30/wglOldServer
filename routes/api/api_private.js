@@ -59,6 +59,7 @@ app.route('/order').post( require('./legacy/origin/order/createOrder'));
 app.route('/v3/order').post(require('./v3/order/v3CreateOrder'));
 app.route('/v3/order/gift').post(require('./v3/order/v3CreateGiftOrder'));
 app.route('/v3/order/groupbuying').post(require('./v3/order/v3GroupbuyingOrder'));
+app.route('/v3/order/influencer').post(require('./v3/order/v3CreateInfluencerOrder'));
 // app.route('/v3/order/groupbuying').post(require('./legacy/v1/groupbuying/v1CreateGroupBuyingOrder'));
 
 app.route('/order1').post( require('./legacy/origin/order/dev_createOrder1') )
