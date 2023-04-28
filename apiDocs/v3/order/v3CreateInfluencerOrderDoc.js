@@ -122,6 +122,12 @@
  *                       빛배송 여부
  *                       0: 일반배송
  *                       1: 빛배송
+ *                   influencer_gongu_uid:
+ *                     type: number
+ *                     example: 48
+ *                     description: |
+ *                       인플루언서 uid
+ *
  *
  *     responses:
  *       400:
