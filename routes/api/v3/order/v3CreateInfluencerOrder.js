@@ -125,7 +125,7 @@ async function createOrderDB(req, calculated, db_connection){
             if (err) {
                 reject(err);
             } else {
-                const selectOrderData = `현
+                const selectOrderData = `
                  select uid as order_uid
                      , _order.user_uid
                      , _order.order_no
