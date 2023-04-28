@@ -327,7 +327,6 @@ async function queryInfluencerProductInfo(frontProductList, db_connection){
                 , sum(po.option_price) as option_price
                 , group_concat(po.name separator ' / ') as option_name
                 , p.delivery_price
-                , p.delivery_free
                 , ig.delivery_price  as delivery_price_ig
                 , ig.light_delivery_price
                 , ig.light_delivery_max_cnt
@@ -530,7 +529,7 @@ function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallb
             priceTotal: fElem['price_original'] * fElem['count'],
             seller_uid: fElem['seller_uid'],
             price_delivery: fElem['price_delivery'],
-            delivery_free: bElem['delivery_free'],
+            delivery_free: 0,
             delivery_price_plus: bElem['delivery_price_plus'],
             influencer_gongu_uid: bElem['influencer_gongu_uid']
         }
