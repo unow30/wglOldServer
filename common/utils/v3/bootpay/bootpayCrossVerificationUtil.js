@@ -211,9 +211,13 @@ async function querySelectProductInfo(frontProductList, db_connection) {
                     , sum(po.option_price) as option_price
                     , group_concat(po.name separator ' / ') as option_name
                     , p.delivery_price
-                    , p.delivery_free
-                    , p.delivery_price_plus
+                    , u.delivery_free
+                    , u.delivery_price_plus
+                    , u.is_delivery_free
                 from tbl_product as p
+                inner join tbl_user as u
+                    on u.uid = p.user_uid
+                   and u.is_seller = 1 
                 inner join tbl_product_option as po
                     on po.product_uid = ${product_list['product_uid']}
                     and find_in_set(po.option_id, '${product_list['option_ids']}')
@@ -335,6 +339,7 @@ async function queryInfluencerProductInfo(frontProductList, db_connection){
             from tbl_product as p
                 inner join tbl_influencer_gongu as ig
                     on ig.product_uid = p.uid
+                   and ig.uid = ${product_list['influencer_gongu_uid']} 
                 inner join tbl_product_option as po
                     on po.product_uid = p.uid
                     and find_in_set(po.option_id, '${product_list['option_ids']}')
