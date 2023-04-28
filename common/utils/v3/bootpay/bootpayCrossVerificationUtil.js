@@ -159,7 +159,8 @@ async function calculateOrderProductsPrice(param, receiptPrice, type, db_connect
                     price_delivery: compared['price_delivery'],
                     delivery_free: 0, //무료배송 없다.
                     delivery_price_plus: 0, //도서산간 갈일 없다.
-                    price_total: compared['priceTotal']
+                    price_total: compared['priceTotal'],
+                    influencer_gongu_title: compared['influencer_gongu_title']
                 })
             })
         }
@@ -332,6 +333,7 @@ async function queryInfluencerProductInfo(frontProductList, db_connection){
                 , group_concat(po.name separator ' / ') as option_name
                 , p.delivery_price
                 , ig.delivery_price  as delivery_price_ig
+                , ig.title as influencer_gongu_title
                 , ig.light_delivery_price
                 , ig.light_delivery_max_cnt
                 , ig.start_time
@@ -536,7 +538,8 @@ function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallb
             price_delivery: fElem['price_delivery'],
             delivery_free: 0,
             delivery_price_plus: bElem['delivery_price_plus'],
-            influencer_gongu_uid: bElem['influencer_gongu_uid']
+            influencer_gongu_uid: bElem['influencer_gongu_uid'],
+            influencer_gongu_title: bElem['influencer_gongu_title']
         }
         //검증 완료되면 objectCalculate에 데이터 입력하기: seller_uid, price_discount, count
         calculateCallback(compared)
