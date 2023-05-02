@@ -211,10 +211,9 @@ async function querySelectProductInfo(frontProductList, db_connection) {
                     , p.count_sale
                     , sum(po.option_price) as option_price
                     , group_concat(po.name separator ' / ') as option_name
-                    , p.delivery_price
+                    , u.delivery_price
                     , u.delivery_free
                     , u.delivery_price_plus
-                    , u.is_delivery_free
                 from tbl_product as p
                 inner join tbl_user as u
                     on u.uid = p.user_uid
