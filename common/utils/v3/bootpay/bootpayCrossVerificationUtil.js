@@ -331,14 +331,16 @@ async function queryInfluencerProductInfo(frontProductList, db_connection){
                 , ig.light_delivery_max_cnt as max_count
                 , sum(po.option_price) as option_price
                 , group_concat(po.name separator ' / ') as option_name
-                , p.delivery_price
-                , ig.delivery_price  as delivery_price_ig
+                , u.delivery_price
                 , ig.title as influencer_gongu_title
                 , ig.light_delivery_price
                 , ig.light_delivery_max_cnt
                 , ig.start_time
                 , ig.end_time
             from tbl_product as p
+                inner join tbl_user as u
+                    on u.uid = p.user_uid
+                   and u.is_seller = 1 
                 inner join tbl_influencer_gongu as ig
                     on ig.product_uid = p.uid
                    and ig.uid = ${product_list['influencer_gongu_uid']} 
@@ -413,7 +415,7 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
         log.product_uid = new ConsoleValidate(fElem['product_uid'], bElem['product_uid'])
         log.seller_uid = new ConsoleValidate(fElem['seller_uid'], bElem['seller_uid'])
         log.priceTotal = new ConsoleValidate(fElem['price_original'] * fElem['count'], (bElem['price_discount'] + bElem['option_price']) * fElem['count'])
-        log.delivery = new ConsoleValidate(fElem['price_delivery'], bElem['delivery_price'])
+        // log.delivery = new ConsoleValidate(fElem['price_delivery'], bElem['delivery_price'])
         console.log(`roof: ${i}`);
         console.table(log);
 
@@ -442,17 +444,17 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
 
         //isLight자체가 없다면 작동 안한다. 그러면 이 필터가 필요하다.
         //일반상품에도 빛배송이 들어간다면 그때 제거한다.
-        if(Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
-            throw (sendError('배송비가 서버와 일치하지 않습니다.'))
-        }
+        // if(Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
+        //     throw (sendError('배송비가 서버와 일치하지 않습니다.'))
+        // }
 
-        if(fElem['isLight'] === 0 && Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
-            throw (sendError('배송비가 서버와 일치하지 않습니다.'))
-        }
-
-        if(fElem['isLight'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
-            throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
-        }
+        // if(fElem['isLight'] === 0 && Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
+        //     throw (sendError('배송비가 서버와 일치하지 않습니다.'))
+        // }
+        //
+        // if(fElem['isLight'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
+        //     throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
+        // }
 
         let compared = {
             priceTotal: fElem['price_original'] * fElem['count'],
@@ -502,9 +504,9 @@ function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallb
             'recruitment': bElem['recruitment'],
             'is_light': fElem['is_light'],
         })
-        if(fElem['is_light'] === 0 && Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
-            throw (sendError('배송비가 서버와 일치하지 않습니다.'))
-        }
+        // if(fElem['is_light'] === 0 && Number(fElem['price_delivery']) !== Number(bElem['delivery_price'])){
+        //     throw (sendError('배송비가 서버와 일치하지 않습니다.'))
+        // }
 
         if(fElem['is_light'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
             throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
@@ -561,7 +563,7 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate){
     }, []);
 
     objectCalculate['sellerArr'].forEach(el => {
-        if (el['delivery_free'] === 0) {
+        if (!el['delivery_free'] || el['delivery_free'] === 0) {
             objectCalculate['totalDelivery'] += el['price_delivery'];
         } else if (el['delivery_free'] > 0 && el['delivery_free'] > el['price_total']) {
             objectCalculate['totalDelivery'] += el['price_delivery'];
