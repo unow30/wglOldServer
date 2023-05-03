@@ -331,6 +331,8 @@ async function queryInfluencerProductInfo(frontProductList, db_connection){
                 , sum(po.option_price) as option_price
                 , group_concat(po.name separator ' / ') as option_name
                 , u.delivery_price
+                , u.delivery_free
+                , u.delivery_price_plus
                 , ig.title as influencer_gongu_title
                 , ig.light_delivery_price
                 , ig.light_delivery_max_cnt
@@ -507,13 +509,13 @@ function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallb
         //     throw (sendError('배송비가 서버와 일치하지 않습니다.'))
         // }
 
-        if(fElem['is_light'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
-            throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
-        }
+        // if(fElem['is_light'] === 1 && Number(fElem['price_delivery']) !== Number(bElem['light_delivery_price'])){
+        //     throw (sendError('빛배송비가 서버와 일치하지 않습니다.'))
+        // }
 
-        if(fElem['is_light'] === 1 && fElem['count'] > bElem['max_count']){
-            throw (sendError(`빛배송 1박스당 최대 수량을 초과했습니다. 최대 ${bElem['max_count']}개 구매가능`))
-        }
+        // if(fElem['is_light'] === 1 && fElem['count'] > bElem['max_count']){
+        //     throw (sendError(`빛배송 1박스당 최대 수량을 초과했습니다. 최대 ${bElem['max_count']}개 구매가능`))
+        // }
 
         if(bElem['recruitment'] < bElem['participants'] + 1){
             throw (sendError(`모집인원이 마감되었습니다.`))
@@ -537,7 +539,7 @@ function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallb
             priceTotal: fElem['price_original'] * fElem['count'],
             seller_uid: fElem['seller_uid'],
             price_delivery: fElem['price_delivery'],
-            delivery_free: 0,
+            delivery_free: bElem['delivery_free'],
             delivery_price_plus: bElem['delivery_price_plus'],
             influencer_gongu_uid: bElem['influencer_gongu_uid'],
             influencer_gongu_title: bElem['influencer_gongu_title']
@@ -566,6 +568,8 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate){
             objectCalculate['totalDelivery'] += el['price_delivery'];
         } else if (el['delivery_free'] > 0 && el['delivery_free'] > el['price_total']) {
             objectCalculate['totalDelivery'] += el['price_delivery'];
+        } else if(el['delivery_free'] > 0 && el['delivery_free'] < el['price_total']) {
+            el['price_delivery'] = 0
         }
 
        //도서산간지역 배송이면 도서산간 추가배송비 부과
