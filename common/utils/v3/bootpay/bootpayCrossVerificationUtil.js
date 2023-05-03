@@ -566,6 +566,8 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate){
             objectCalculate['totalDelivery'] += el['price_delivery'];
         } else if (el['delivery_free'] > 0 && el['delivery_free'] > el['price_total']) {
             objectCalculate['totalDelivery'] += el['price_delivery'];
+        } else if(el['delivery_free'] > 0 && el['delivery_free'] < el['price_total']) {
+            el['price_delivery'] = 0
         }
 
        //도서산간지역 배송이면 도서산간 추가배송비 부과
