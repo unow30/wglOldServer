@@ -147,11 +147,12 @@ async function createOrderDB(req, calculated, db_connection){
 }
 
 async function createOrderProductDB(req, calculateObj, db_connection) {
-    return Promise.all(req.paramBody['product_list'].map(async (product_list) => {
+    return Promise.all(req.paramBody['product_list'].map(async (item) => {
+        console.log('item', item)
         const {
             product_uid, seller_uid, video_uid, option_ids, count, price_original,
-            payment, price_delivery, influencer_gongu_title
-        } = product_list;
+            price_delivery, influencer_gongu_uid
+        } = item;
 
         // const order_uid = req.innerBody['item']['order_uid']
         const order_uid = req.innerBody['order_uid']
@@ -168,9 +169,9 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
                 , price_original    = ${price_original}
                 , payment           = ${price_original * count}
                 , price_delivery    = ${price_delivery}
-                , product_name      = (select name from tbl_product where uid = ${product_uid})
+                , product_name      = (select title from tbl_influencer_gongu where uid = ${influencer_gongu_uid})
                 , product_image     = (select func_select_image_target(${product_uid}, 2))
-                , option_names      = ${influencer_gongu_title}
+                , option_names      = (select func_select_product_option_names(${product_uid}, '${option_ids}'))
                 , status = default
             ;
             `;

@@ -327,15 +327,12 @@ async function queryInfluencerProductInfo(frontProductList, db_connection){
                 , p.sale_type
                 , ig.recruitment
                 , ig.participants
-                , ig.light_delivery_max_cnt as max_count
                 , sum(po.option_price) as option_price
                 , group_concat(po.name separator ' / ') as option_name
                 , u.delivery_price
                 , u.delivery_free
                 , u.delivery_price_plus
                 , ig.title as influencer_gongu_title
-                , ig.light_delivery_price
-                , ig.light_delivery_max_cnt
                 , ig.start_time
                 , ig.end_time
             from tbl_product as p
@@ -472,9 +469,8 @@ function compareProductInfo(frontProductInfo, backProductInfo, calculateCallback
 
 //인플루언서 결제시 상품정보 검증 필터
 function compareInfluencerInfo(frontProductInfo, backProductInfo, calculateCallback){
-    console.log(frontProductInfo)
-    console.log(backProductInfo)
-
+    // console.log(frontProductInfo)
+    // console.log(backProductInfo)
     if (frontProductInfo.length !== backProductInfo.length) {
         throw sendError(`결제할 상품 종류가 일치하지 않습니다. 클라이언트:${frontProductInfo.length}개, 서버:${backProductInfo.length}개`)
     }
