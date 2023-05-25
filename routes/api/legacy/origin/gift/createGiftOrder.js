@@ -211,7 +211,9 @@ module.exports = function (req, res) {
             for( let idx in req.paramBody['product_list'] ){
                 req.innerBody['product'] = req.paramBody['product_list'][idx]
                 console.log("req.innerBody['item']['uid'] " + req.innerBody['item']['uid']);
-                req.innerBody['item'] = await queryProduct(req, db_connection)
+                let sellerDeliveryInfo = await queryDeliveryInfo(req.innerBody['product']['seller_uid'], db_connection)
+
+                req.innerBody['item'] = await queryProduct(req, sellerDeliveryInfo, db_connection)
             }
 
             deleteBody(req)
@@ -298,7 +300,7 @@ function queryPoint(req, db_connection) {
         ]
     );
 }
-function queryProduct(req, db_connection) {
+function queryProduct(req, sellerDeliveryInfo, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
@@ -314,7 +316,32 @@ function queryProduct(req, db_connection) {
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
             req.innerBody['product']['price_delivery'],
+            sellerDeliveryInfo['delivery_price'],
+            sellerDeliveryInfo['delivery_free'],
+            sellerDeliveryInfo['delivery_price_plus'],
             req.paramBody['status'],
         ]
     );
+}
+
+async function queryDeliveryInfo(seller_uid, db_connection){
+    return new Promise(async(resolve, reject) => {
+        const query = `
+            select 
+                delivery_price,
+                delivery_free,
+                delivery_price_plus
+            from tbl_user as seller
+            where seller.uid = ?
+        `;
+        await db_connection.query(query, [seller_uid], async (err, rows, fields) =>{
+            if (err) {
+                reject('db상품정보 검색 연결 실패');
+            } else if (rows.length === 0) {
+                reject(`상품정보를 찾을 수 없습니다.`);
+            } else {
+                resolve(rows[0]);
+            }
+        });
+    });
 }
