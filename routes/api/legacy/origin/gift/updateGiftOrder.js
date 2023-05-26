@@ -89,7 +89,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 module.exports = function (req, res) {
     const _funcName = arguments.callee.name;
 
-    try{
+    try {
         req.file_name = file_name;
         logUtil.printUrlLog(req, `== function start ==================================`);
         req.paramBody = paramUtil.parse(req);
@@ -98,25 +98,39 @@ module.exports = function (req, res) {
 
         checkParam(req);
 
-        mysqlUtil.connectPool( async function (db_connection) {
+        mysqlUtil.connectPool(async function (db_connection) {
             req.innerBody = {};
-            console.log("1")
-            req.innerBody['item'] = await query(req, db_connection);
-            // 카카오 보내고 fcm 보내고
-            console.log(JSON.stringify(req.innerBody['item']))
-            console.log("2")
-            await alarm(req, res);
-            console.log("3")
-            deleteBody(req)
-            console.log("4")
-            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+
+            let giftInfo = await querySelect(req, db_connection);
+
+            switch (giftInfo['status']) {
+                case 0:
+                    req.innerBody['item'] = await query(req, db_connection);
+                    // 카카오 보내고 fcm 보내고
+                    console.log(JSON.stringify(req.innerBody['item']))
+                    await alarm(req, res);
+                    deleteBody(req)
+
+                    sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+                    break;
+                case 10:
+                case 11:
+                case 20:
+                    errUtil.createCall(errCode.fail, `결제가 취소된 선물입니다.`)
+                    break;
+                case 1:
+                    errUtil.createCall(errCode.fail, `이미 수락된 선물입니다.`)
+                    break;
+                default:
+                    errUtil.createCall(errCode.fail, `올바르지 않은 status입니다.`)
+                    break;
+            }
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
-        } );
+        });
 
-    }
-    catch (e) {
+    } catch (e) {
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
     }
@@ -134,7 +148,7 @@ function checkParam(req) {
 function deleteBody(req) {
 }
 
-function query(req, db_connection){
+function query(req, db_connection) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
@@ -149,11 +163,29 @@ function query(req, db_connection){
             req.paramBody['address_detail'],
             req.paramBody['delivery_msg'],
         ]
-
     );
 }
 
-
+async function querySelect(req, db_connection) {
+    return new Promise(async (resolve, reject) => {
+        const query = `
+            select 
+                g.status,
+                g.target_uid
+            from tbl_gift as g
+            where g.uid = ?
+        `;
+        await db_connection.query(query, [req.paramBody['gift_uid']], async (err, rows, fields) => {
+            if (err) {
+                reject('db상품정보 검색 연결 실패');
+            } else if (rows.length === 0) {
+                reject(`상품정보를 찾을 수 없습니다.`);
+            } else {
+                resolve(rows[0]);
+            }
+        });
+    });
+}
 
 
 async function alarm(req, res) {
@@ -165,14 +197,14 @@ async function alarm(req, res) {
     await fcmUtil.fcmCreateOrderList(push_token_list);
 
 
-    req.body= {
+    req.body = {
         type: 's',
         time: '9999'
     }
     await aligoUtil.createToken(req, res);
 
 
-    req.body= {
+    req.body = {
         senderkey: `${process.env.ALIGO_SENDERKEY}`,
         tpl_code: `TF_6863`,
         sender: `025580612`,
