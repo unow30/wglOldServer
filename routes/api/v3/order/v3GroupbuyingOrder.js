@@ -83,6 +83,11 @@ module.exports = function (req, res) {
                     errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`)
                     return
                 }
+
+                response['order_uid'] = req.innerBody['item']['uid'];
+                response['room_uid'] = req.paramBody['groupbuying_room_uid'];
+                response['groupbuying_uid'] = req.paramBody['groupbuying_uid'];
+
                 //공구 주문상품 테이블 생성
                 //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
                 console.log('order_product 생성 시작')
