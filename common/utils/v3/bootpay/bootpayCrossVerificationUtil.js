@@ -548,21 +548,31 @@ function removeAndCalculateDuplicateSellerArr(objectCalculate) {
         return acc;
     }, []);
 
+    // 서버에서 가져온 값으로 배송비 계산을 한다?
+    // price_delivery이 값이 계산된 금액이라면 totalDelivery에 직접 붙여도 상관없지 않은가? 값이 붙던가 0원이 붙던가 하겠지
+    // price_delivery_original: bElem['delivery_price'],
+    // delivery_free: bElem['delivery_free'],
+    // delivery_price_plus: bElem['delivery_price_plus']
     objectCalculate['sellerArr'].forEach(el => {
-        if (!el['delivery_free'] || el['delivery_free'] === 0) {
             objectCalculate['totalDelivery'] += el['price_delivery'];
-        } else if (el['delivery_free'] > 0 && el['delivery_free'] > el['priceTotal']) {
-            objectCalculate['totalDelivery'] += el['price_delivery'];
-        } else if (el['delivery_free'] > 0 && el['delivery_free'] <= el['priceTotal']) {
-            el['price_delivery'] = 0
-        }
-
-        //도서산간지역 배송이면 도서산간 추가배송비 부과
-        if (objectCalculate['isLand'] === 1) {
-            objectCalculate['totalDelivery'] += el['delivery_price_plus'];
-        }
     })
 
+    // objectCalculate['sellerArr'].forEach(el => {
+    //     if (!el['delivery_free'] || el['delivery_free'] === 0) {
+    //         objectCalculate['totalDelivery'] += el['price_delivery'];
+    //     } else if (el['delivery_free'] > 0 && el['delivery_free'] > el['priceTotal']) {
+    //         objectCalculate['totalDelivery'] += el['price_delivery'];
+    //     } else if (el['delivery_free'] > 0 && el['delivery_free'] <= el['priceTotal']) { //무료배송인데 도서산간이 붙으면 0이 되어선 안된다.
+    //         el['price_delivery'] = 0
+    //     }
+    //
+    //     //도서산간지역 배송이면 도서산간 추가배송비 부과
+    //     //price_delivery가 계산 결정된 금액으로 들어온다. 여기에 무료배송과 도서산간이 적용되는 경우가 있다.
+    //     //그럼 여기서 추가로 도서산간을 확인하고 totalDelivery을 더해줄 필요가 없다.
+    //     // if (objectCalculate['isLand'] === 1) {
+    //     //     objectCalculate['totalDelivery'] += el['delivery_price_plus'];
+    //     // }
+    // })
 }
 
 //결제금액이 일치하지 않으면 pg사 결제내역 전체 취소한다.(x) 에러발생시 승인이 안되니 결제될일 없다.

@@ -154,6 +154,8 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
             price_delivery, influencer_gongu_uid
         } = item;
 
+        let sellerDeliveryInfo = await queryDeliveryInfo(seller_uid, db_connection);
+
         // const order_uid = req.innerBody['item']['order_uid']
         const order_uid = req.innerBody['order_uid']
         //인플루언서 공동구매니까 status를 다르게 줄 수 있다면 좋겠다.
@@ -169,6 +171,9 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
                 , price_original    = ${price_original}
                 , payment           = ${price_original * count}
                 , price_delivery    = ${price_delivery}
+                , price_delivery_original = ${sellerDeliveryInfo['delivery_price']}
+                , delivery_free_original = ${sellerDeliveryInfo['delivery_free']}
+                , price_delivery_plus_original = ${sellerDeliveryInfo['delivery_price_plus']}
                 , product_name      = (select title from tbl_influencer_gongu where uid = ${influencer_gongu_uid})
                 , product_image     = (select func_select_image_target(${product_uid}, 2))
                 , option_names      = (select func_select_product_option_names(${product_uid}, '${option_ids}'))
@@ -308,6 +313,28 @@ function createPointDB(req, orderInfo, db_connection){
                 reject(err);
             }else{
                 resolve(true)
+            }
+        });
+    });
+}
+
+async function queryDeliveryInfo(seller_uid, db_connection){
+    return new Promise(async(resolve, reject) => {
+        const query = `
+            select 
+                delivery_price,
+                delivery_free,
+                delivery_price_plus
+            from tbl_user as seller
+            where seller.uid = ?
+        `;
+        await db_connection.query(query, [seller_uid], async (err, rows, fields) =>{
+            if (err) {
+                reject('db상품정보 검색 연결 실패');
+            } else if (rows.length === 0) {
+                reject(`상품정보를 찾을 수 없습니다.`);
+            } else {
+                resolve(rows[0]);
             }
         });
     });
