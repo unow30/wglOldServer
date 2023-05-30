@@ -2,9 +2,10 @@
  * Created by yunhokim on 2023. 03. 08.
  */
 
-const BootpayV2 = require('@bootpay/backend-js').Bootpay;
+// const BootpayV2 = require('@bootpay/backend-js').Bootpay;
 const sendUtil = require('../../legacy/origin/sendUtil');
 const errUtil = require('../../legacy/origin/errUtil');
+const BootpayV2 = require('../bootpay/bootpayConfig').setConfigBootpayV2()
 
 module.exports = {
     //부트페이 결제완료시 교차검증하고 결제승인하기
@@ -67,10 +68,11 @@ module.exports = {
 
 //pg사 단건결제
 async function getBootPaySinglePayment(pg_receipt_id) {
-    BootpayV2.setConfiguration({
-        application_id: process.env.BOOTPAY_APPLICATION_ID,
-        private_key: process.env.BOOTPAY_PRIVATE_KEY,
-    });
+
+    // BootpayV2.setConfiguration({
+    //     application_id: process.env.BOOTPAY_APPLICATION_ID,
+    //     private_key: process.env.BOOTPAY_PRIVATE_KEY,
+    // });
     //부트페이 단건결제건 가져오기
     try {
         await BootpayV2.getAccessToken();
