@@ -45,10 +45,10 @@ module.exports = function (req, res) {
             req.innerBody['alrim_msg_list'] = []
             req.innerBody['product'] = req.paramBody['product_list'][0]
 
+            //결제시점의 판매자 지정 배송비 가져오기
+            let sellerDeliveryInfo = await queryDeliveryInfo(req.innerBody['product']['seller_uid'], db_connection);
 
             // 공구방 uid가 없으면 공구방 생성, 공구방유저 생성을 한다.
-            // console.log('공구방 uid는?')
-            // console.log(req.paramBody['groupbuying_room_uid'])
             if(req.paramBody['groupbuying_room_uid'] == 0){
                 console.log('공구방 생성 공구방 유저 생성 시작')
                 let groupbuyingRoom = await queryCreateGroupBuyingRoom(req, db_connection);
@@ -67,7 +67,7 @@ module.exports = function (req, res) {
                 //공구 주문상품 테이블 생성
                 //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
                 console.log('order_product 생성 시작')
-                let product = await queryProduct(req, db_connection);
+                let product = await queryProduct(req, db_connection, sellerDeliveryInfo);
                 req.innerBody['order_product_list'].push( product );
                 // console.log('pushtoken aligo 변수 생성 시작') => 방을 생성해 혼자있는데 알리고 매칭, 판매자 알림을 할수 없다.
                 makePushTokenAndAligoParam(req, product)
@@ -91,7 +91,7 @@ module.exports = function (req, res) {
                 //공구 주문상품 테이블 생성
                 //판매자 푸시토큰 생성,카카오 알람 메시지 생성은 같은 함수에서 실행하자
                 console.log('order_product 생성 시작')
-                let product = await queryProduct(req, db_connection);
+                let product = await queryProduct(req, db_connection, sellerDeliveryInfo);
                 req.innerBody['order_product_list'].push( product );
                 console.log('pushtoken aligo 변수 생성 시작')
                 // makePushTokenAndAligoParam(req, product)
@@ -167,26 +167,8 @@ function deleteBody(req) {
     delete req.innerBody['alrim_msg_list']
 }
 
-async function createAndUpdateOrderProduct(req, db_connection){
-    let product = await queryProduct(req, db_connection, 1)
-    req.innerBody['push_token_list'].push(product['push_token']);
-    req.innerBody['order_product_list'].push( product );
-
-    req.innerBody['alrim_msg_list'][0] = {};
-    req.innerBody['alrim_msg_list'][0].phone = product['phone']
-    req.innerBody['alrim_msg_list'][0].name = product['name']
-    req.innerBody['alrim_msg_list'][0].nickname = product['nickname']
-
-}
-
 function queryOrder(req, db_connection) {
     const _funcName = arguments.callee.name;
-
-    // let seller_uid = 0
-    // try {
-    //     seller_uid = req.paramBody['product_list'][0]['seller_uid']
-    // }
-    // catch (e){ }
 
     return mysqlUtil.querySingle(db_connection
         , 'call proc_create_order_for_groupbuying_v1'
@@ -242,7 +224,7 @@ function queryPoint(req, db_connection) {
     );
 }
 
-function queryProduct(req, db_connection, status) {
+function queryProduct(req, db_connection, sellerDeliveryInfo) {
     const _funcName = arguments.callee.name;
 
     return mysqlUtil.querySingle(db_connection
@@ -257,6 +239,9 @@ function queryProduct(req, db_connection, status) {
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
             req.innerBody['product']['price_delivery'],
+            sellerDeliveryInfo['delivery_price'],
+            sellerDeliveryInfo['delivery_free'],
+            sellerDeliveryInfo['delivery_price_plus'],
             50, //공구주문결제상태 50
             req.paramBody['groupbuying_option_uid'],
         ]
@@ -421,4 +406,26 @@ async function orderMatchAlarm(item) {
     }
 
     await fcmUtil.fcmGonguMatchSuccess(pushData);
+}
+
+async function queryDeliveryInfo(seller_uid, db_connection) {
+    return new Promise(async (resolve, reject) => {
+        const query = `
+            select 
+                delivery_price,
+                delivery_free,
+                delivery_price_plus
+            from tbl_user as seller
+            where seller.uid = ?
+        `;
+        await db_connection.query(query, [seller_uid], async (err, rows, fields) => {
+            if (err) {
+                reject('db상품정보 검색 연결 실패');
+            } else if ( rows.length === 0) {
+                reject(`상품정보를 찾을 수 없습니다.`);
+            } else {
+                resolve(rows[0]);
+            }
+        });
+    });
 }
