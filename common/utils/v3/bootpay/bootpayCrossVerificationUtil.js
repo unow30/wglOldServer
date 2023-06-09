@@ -76,7 +76,9 @@ async function getBootPaySinglePayment(pg_receipt_id) {
     //부트페이 단건결제건 가져오기
     try {
         await BootpayV2.getAccessToken();
+        console.log('토큰제대로 받아옴')
         const receipt = await BootpayV2.receiptPayment(pg_receipt_id);
+        console.log('receipt', receipt)
         return receipt
     } catch (e) {
         //{"error_code":"RC_NOT_FOUND","message":"영수증 정보를 찾지 못했습니다."}
