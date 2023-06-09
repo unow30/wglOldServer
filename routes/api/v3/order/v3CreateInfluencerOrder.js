@@ -38,16 +38,20 @@ module.exports = function (req, res) {
             //부트페이 결제완료 교차검증하고 결제승인하기.
             //결제승인이 되면 콜백함수 실행: db데이터 입력
             //payment_method 단건결제 결과에서 결제방식 확인 후 서버에서 보내야 한다.
-            const calculateObj = await bootpayCrossVerificationUtil.paymentCompletedCrossVerification(req, res, 'common', db_connection)
+            const calculateObj = await bootpayCrossVerificationUtil.paymentCompletedCrossVerification(req, res, 'influencer', db_connection)
             console.log('검증된 결제금액')
             console.log(calculateObj)
 
             const orderInfo = await createOrderDB(req, calculateObj, db_connection);
+            console.log(orderInfo)
             if(!orderInfo){
                 errUtil.createCall(errCode.fail, `상품구매에 실패하였습니다.`);
                 return
             }
+            //주문테이블의 insert시 트리거: update_influencer_gongu_participants
+
             req.innerBody['order_uid'] = orderInfo['order_uid']
+            req.innerBody['influencer_gongu_uid'] = orderInfo['influencer_gongu_uid']
             // req.innerBody['item'] = {order_uid: orderInfo['order_uid']}
 
             const createOrderProductList = await createOrderProductDB(req, calculateObj, db_connection);
@@ -55,6 +59,7 @@ module.exports = function (req, res) {
                 errUtil.createCall(errCode.fail, `주문상품 db입력 실패?`)
                 return
             }
+
             //각 상품의 판매자한테 주문알람 보내야 한다.
             //이제 상품 하나의 수량여부를 카운트한다. 만일 모든 상품을 판매하면 자동 품절처리되고 알람을 보내줘야 한다.
             await orderAlarm(req, res, createOrderProductList)
@@ -112,64 +117,48 @@ async function createOrderDB(req, calculated, db_connection){
       , v_bank_expired_time = ${null}
       , v_bank_bank_name = ${null}
       , payment_method = ${req.paramBody['payment_method']}
+      , influencer_gongu_uid = ${calculated['influencer_gongu_uid']}
     ;
     `
     return new Promise((resolve, reject) => {
-         db_connection.query(createOrderSql, (err, res, fields) => {
-             if (err) {
-                 reject(err);
-             } else {
-                 const selectOrderData = `
+        db_connection.query(createOrderSql, (err, res, fields) => {
+            if (err) {
+                reject(err);
+            } else {
+                const selectOrderData = `
                  select uid as order_uid
                      , _order.user_uid
                      , _order.order_no
+                     , _order.influencer_gongu_uid
                  from tbl_order as _order
                  where _order.uid = ${res['insertId']}
                  `;
 
-                 db_connection.query(selectOrderData, (err, res, fields) => {
-                     if(err){
-                         reject(err);
-                     }else{
-                         resolve(res[0]);
-                     }
-                 })
-             }
-         })
+                db_connection.query(selectOrderData, (err, res, fields) => {
+                    if(err){
+                        reject(err);
+                    }else{
+                        resolve(res[0]);
+                    }
+                })
+            }
+        })
     })
 }
 
 async function createOrderProductDB(req, calculateObj, db_connection) {
-    return Promise.all(req.paramBody['product_list'].map(async (product_list) => {
+    return Promise.all(req.paramBody['product_list'].map(async (item) => {
+        console.log('item', item)
         const {
             product_uid, seller_uid, video_uid, option_ids, count, price_original,
-            payment, price_delivery
-        } = product_list;
+            price_delivery, influencer_gongu_uid
+        } = item;
 
         let sellerDeliveryInfo = await queryDeliveryInfo(seller_uid, db_connection);
 
         // const order_uid = req.innerBody['item']['order_uid']
         const order_uid = req.innerBody['order_uid']
-
-        const updateProductCountSale = `
-        update tbl_product as p
-        set p.count_sale = p.count_sale + ${Number(count)} 
-        , p.sale_type = case when p.count_sale + ${Number(count)} >= p.count_total then 'soldout'
-                            else 'onsale' end
-        where p.uid = ${product_uid}
-        ;
-        `
-            // , p.sale_type = p.count_sale + ${Number(count)} >== p.count_total, "soldout", "onsale"
-        await new Promise (async (resolve, reject) => {
-            db_connection.query(updateProductCountSale, (err, res, fields) => {
-                if (err) {
-                    reject(err);
-                }else{
-                    resolve()
-                }
-            });
-        });
-
+        //인플루언서 공동구매니까 status를 다르게 줄 수 있다면 좋겠다.
         const createOrderProductData = `
                 insert into tbl_order_product
                 set order_uid       = ${order_uid}
@@ -180,12 +169,12 @@ async function createOrderProductDB(req, calculateObj, db_connection) {
                 , option_ids        = '${option_ids}'
                 , count             = ${count}
                 , price_original    = ${price_original}
-                , payment           = ${payment}
+                , payment           = ${price_original * count}
                 , price_delivery    = ${price_delivery}
                 , price_delivery_original = ${sellerDeliveryInfo['delivery_price']}
                 , delivery_free_original = ${sellerDeliveryInfo['delivery_free']}
                 , price_delivery_plus_original = ${sellerDeliveryInfo['delivery_price_plus']}
-                , product_name      = (select name from tbl_product where uid = ${product_uid})
+                , product_name      = (select title from tbl_influencer_gongu where uid = ${influencer_gongu_uid})
                 , product_image     = (select func_select_image_target(${product_uid}, 2))
                 , option_names      = (select func_select_product_option_names(${product_uid}, '${option_ids}'))
                 , status = default

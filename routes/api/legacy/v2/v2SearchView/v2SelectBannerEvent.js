@@ -10,9 +10,11 @@
  *      ## path : /api/public/v2/searchview/banner/event
  *
  *         * ## 배너클릭시 이벤트페이지로 이동하기
- *         * ### 230117기준 위글 밀키트 모음전 뷰를 위한 데이터를 보내준다.
- *         * 두줄씩 26개 상품 표시, 인기순(랜덤)으로만 표시, 다른 필터링이나 기능 없다.
- *         * 이 api를 재활용할수 없을까?
+ *         * ## 230117기준 위글 밀키트 모음전 뷰를 위한 데이터를 보내준다.
+ *         * ## 두줄씩 26개 상품 표시, 인기순(랜덤)으로만 표시, 다른 필터링이나 기능 없다.
+ *         * ## tbl_ad, tbl_ad_product를 연결해서 배너와 연관된 상품정보를 불러온다.
+ *         * ## 배너가 내려가면 들어갈 수 없다.
+ *
  *
  *     parameters:
  *       - in: query
@@ -32,6 +34,16 @@
  *           example: 133q1234
  *         description: |
  *           검색할 때 필요한 랜덤 시드입니다.
+ *       - in: query
+ *         name: ad_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 0
+ *         description: |
+ *           광고 uid
+ *           해당 광고에서 보여줄 상품 uid들을 불러옵니다.
  *
  *     responses:
  *       400:
@@ -83,6 +95,7 @@ function queryEventMealkitList(req, db_connection, date){
             req.headers['user_uid'],
             date,
             req.paramBody['random_seed'],
+            req.paramBody['ad_uid'],
             req.paramBody['offset'],
         ]
     );

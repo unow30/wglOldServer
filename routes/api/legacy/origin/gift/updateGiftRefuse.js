@@ -61,6 +61,8 @@ const mysqlUtil = require('../../../../../common/utils/legacy/origin/mysqlUtil')
 const sendUtil = require('../../../../../common/utils/legacy/origin/sendUtil');
 const errUtil = require('../../../../../common/utils/legacy/origin/errUtil');
 const logUtil = require('../../../../../common/utils/legacy/origin/logUtil');
+const errCode = require('../../../../../common/define/errCode');
+
 let file_name = fileUtil.name(__filename);
 
 module.exports = function (req, res) {
@@ -76,15 +78,32 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
-            req.innerBody['item'] = await query(req, db_connection);
+            let giftInfo = await querySelect(req, db_connection);
 
+            switch (giftInfo['status']) {
+                case 0:
+                    req.innerBody['item'] = await query(req, db_connection);
 
-            if( req.innerBody['item'] && req.innerBody['item']['refund_reward'] > 0) {
-                await queryRollbackReward(req, db_connection)
+                    if( req.innerBody['item'] && req.innerBody['item']['refund_reward'] > 0) {
+                        await queryRollbackReward(req, db_connection)
+                    }
+
+                    deleteBody(req)
+                    sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+                    break;
+                case 10:
+                case 11:
+                case 20:
+                    errUtil.createCall(errCode.fail, `결제가 취소된 선물입니다.`)
+
+                    break;
+                case 1:
+                    errUtil.createCall(errCode.fail, `이미 수락된 선물입니다.`)
+                    break;
+                default:
+                    errUtil.createCall(errCode.fail, `올바르지 않은 status입니다.`)
+                    break;
             }
-
-            deleteBody(req)
-            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
 
         }, function (err) {
             sendUtil.sendErrorPacket(req, res, err);
@@ -133,4 +152,25 @@ function queryRollbackReward(req, db_connection) {
         ]
 
     );
+}
+
+async function querySelect(req, db_connection) {
+    return new Promise(async (resolve, reject) => {
+        const query = `
+            select 
+                g.status,
+                g.target_uid
+            from tbl_gift as g
+            where g.uid = ?
+        `;
+        await db_connection.query(query, [req.paramBody['gift_uid']], async (err, rows, fields) => {
+            if (err) {
+                reject('db상품정보 검색 연결 실패');
+            } else if (rows.length === 0) {
+                reject(`상품정보를 찾을 수 없습니다.`);
+            } else {
+                resolve(rows[0]);
+            }
+        });
+    });
 }
