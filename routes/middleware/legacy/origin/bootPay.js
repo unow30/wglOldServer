@@ -11,8 +11,8 @@ const logUtil = require('../../../../common/utils/legacy/origin/logUtil');
 
 const errCode = require('../../../../common/define/errCode');
 
-// const RestClient = require('@bootpay/server-rest-client').RestClient;
-const RestClient = require('../../../../common/utils/v3/bootpay/bootpayConfig').setConfigBootpayV1()
+const RestClient = require('@bootpay/server-rest-client').RestClient;
+// const RestClient = require('../../../../common/utils/v3/bootpay/bootpayConfig').setConfigBootpayV1()
 /**
  * [‘cancel_info’][‘cancelable_price’]: 전체주문에서 구매자가 환불받을 수 있는 금액
  * [‘cancel_info’][‘cancelable_reward’]: 전체주문에서 구매자가 환불받을 수 있는 리워드
