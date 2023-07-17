@@ -44,10 +44,8 @@ module.exports = function (req, res) {
 async function createQueryPoint(req, db_connection){
     const query = `
         insert into tbl_point as p
-        into p.user_uid = ?,
-        p.type = 1,
-        p.amount = ?,
-        p.content = ?
+        (user_uid, type, amount, content)
+        values(?,1,?,?) 
     ;
     `;
     return new Promise(async(resolve, reject) => {
