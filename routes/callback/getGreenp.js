@@ -59,7 +59,7 @@ async function createQueryPoint(req, db_connection){
         user_uid: etc,
         type: 1,
         amount: rwd_cost,
-        content: ads_name
+        content: '그린피 포인트 제공: ['+ads_name+']',
     };
 
     return new Promise(async(resolve, reject) => {
