@@ -22,11 +22,13 @@ module.exports = function (req, res) {
         logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
         req.paramBody = paramUtil.parse(req);
         logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
-        logUtil.printUrlLog(req, `response: ${JSON.stringify(res)}`);
+
         console.log(JSON.stringify(req.paramBody))
 
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
+
+            await createQueryPoint(req, db_connection)
 
             res.send('OK')
             // sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -39,4 +41,25 @@ module.exports = function (req, res) {
         let _err = errUtil.get(e);
         sendUtil.sendErrorPacket(req, res, _err);
     }
+}
+
+async function createQueryPoint(req, db_connection){
+    return new Promise(async(resolve, reject) => {
+        const query = `
+            insert into tbl_point as p
+            into p.user_uid = ?,
+            p.type = 1,
+            p.amount = ?,
+            p.content = ?
+        `;
+        await db_connection.query(query, [req.headers['user_uid'], req.paramBody['rwd_cost'], req.paramBody['ads_name']], async (err, rows, fields) =>{
+            if (err) {
+                reject('db상품정보 검색 연결 실패');
+            } else if (rows.length === 0) {
+                reject(`상품정보를 찾을 수 없습니다.`);
+            } else {
+                resolve(rows[0]);
+            }
+        });
+    });
 }
