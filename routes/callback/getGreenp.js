@@ -42,6 +42,8 @@ module.exports = function (req, res) {
 }
 
 async function createQueryPoint(req, db_connection){
+    const {etc, rwd_cost, ads_name} = req.paramBody
+
     const query = `
         insert into tbl_point as p
         (user_uid, type, amount, content)
@@ -49,7 +51,7 @@ async function createQueryPoint(req, db_connection){
     ;
     `;
     return new Promise(async(resolve, reject) => {
-        db_connection.query(query, [req.headers['user_uid'], req.paramBody['rwd_cost'], req.paramBody['ads_name']], async (err, rows, fields) =>{
+        db_connection.query(query, [etc, rwd_cost, ads_name], async (err, rows, fields) =>{
             if(err){
                 reject(err);
             }else{
