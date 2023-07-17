@@ -23,8 +23,6 @@ module.exports = function (req, res) {
         req.paramBody = paramUtil.parse(req);
         logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
-        console.log(JSON.stringify(req.paramBody))
-
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
@@ -44,21 +42,20 @@ module.exports = function (req, res) {
 }
 
 async function createQueryPoint(req, db_connection){
+    const query = `
+        insert into tbl_point as p
+        into p.user_uid = ?,
+        p.type = 1,
+        p.amount = ?,
+        p.content = ?
+    ;
+    `;
     return new Promise(async(resolve, reject) => {
-        const query = `
-            insert into tbl_point as p
-            into p.user_uid = ?,
-            p.type = 1,
-            p.amount = ?,
-            p.content = ?
-        `;
-        await db_connection.query(query, [req.headers['user_uid'], req.paramBody['rwd_cost'], req.paramBody['ads_name']], async (err, rows, fields) =>{
-            if (err) {
-                reject('db상품정보 검색 연결 실패');
-            } else if (rows.length === 0) {
-                reject(`상품정보를 찾을 수 없습니다.`);
-            } else {
-                resolve(rows[0]);
+        db_connection.query(query, [req.headers['user_uid'], req.paramBody['rwd_cost'], req.paramBody['ads_name']], async (err, rows, fields) =>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(true)
             }
         });
     });
