@@ -103,7 +103,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['longitude'],
                     req.paramBody['km'],
                     req.paramBody['category'],
-                    req.paramBody['category_detail_uid'],
+                    req.paramBody['category_detail_uid']? req.paramBody['category_detail_uid'] : 0,
                     req.paramBody['video_uid'],
                     req.paramBody['random_seed'],
                     req.paramBody['offset'],
@@ -122,7 +122,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['longitude'],
                     req.paramBody['km'],
                     req.paramBody['category'],
-                    req.paramBody['category_detail_uid'],
+                    req.paramBody['category_detail_uid']? req.paramBody['category_detail_uid'] : 0,
                     req.paramBody['video_uid'],
                     // req.paramBody['keyword'], //v1에서 안쓴다.
                     req.paramBody['random_seed'],
@@ -144,7 +144,7 @@ function querySelect(req, db_connection) {
                     req.paramBody['offset'],
                     req.paramBody['filter'],
                     req.paramBody['category'],
-                    req.paramBody['category_detail_uid'],
+                    req.paramBody['category_detail_uid']? req.paramBody['category_detail_uid'] : 0,
                 ]
             );
         }break;

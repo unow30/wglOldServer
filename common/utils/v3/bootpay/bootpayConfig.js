@@ -19,7 +19,7 @@ module.exports = {
             application_id: isReal? process.env.BOOTPAY_APPLICATION_ID : process.env.DEV_BOOTPAY_APPLICATION_ID,
             private_key: isReal? process.env.BOOTPAY_PRIVATE_KEY : process.env.DEV_BOOTPAY_PRIVATE_KEY,
         });
-
+        console.log('v2부트페이 설정 완트')
         return BootpayV2
     }
 }

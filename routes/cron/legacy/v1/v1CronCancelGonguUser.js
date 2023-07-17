@@ -5,8 +5,8 @@ const aligoUtil = require('../../../../common/utils/legacy/origin/aligoUtil');
 
 const schedule = require('node-schedule');
 const axios = require('axios');
-// const RestClient = require('@bootpay/server-rest-client').RestClient;
-const RestClient = require('../../../../common/utils/v3/bootpay/bootpayConfig').setConfigBootpayV1()
+const RestClient = require('@bootpay/server-rest-client').RestClient;
+// const RestClient = require('../../../../common/utils/v3/bootpay/bootpayConfig').setConfigBootpayV1()
 
 
 let file_name = fileUtil.name(__filename);
