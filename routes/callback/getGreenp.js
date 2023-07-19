@@ -26,7 +26,9 @@ module.exports = function (req, res) {
         mysqlUtil.connectPool( async function (db_connection) {
             req.innerBody = {};
 
-            await createQueryPoint(req, db_connection)
+            await createGreenpLog(req, db_connection);
+
+            await createQueryPoint(req, db_connection);
 
             res.send('OK')
             // sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -42,13 +44,12 @@ module.exports = function (req, res) {
 }
 
 async function createQueryPoint(req, db_connection){
-    const {etc, rwd_cost, ads_name} = req.paramBody
+    let {etc, rwd_cost, ads_name} = req.paramBody
 
-    // const query = `
-    //     insert into tbl_point(user_uid, type, amount, content)
-    //     values(?,1,?,?)
-    // ;
-    // `;
+    if (typeof rwd_cost === 'number' && rwd_cost.toString().indexOf('.') !== -1) {
+        rwd_cost = Math.ceil(rwd_cost)
+    }
+
     const query = `
         insert into tbl_point
         set ?
@@ -60,6 +61,39 @@ async function createQueryPoint(req, db_connection){
         type: 1,
         amount: rwd_cost,
         content: '그린피 포인트 제공: ['+ads_name+']',
+    };
+
+    return new Promise(async(resolve, reject) => {
+        db_connection.query(query, newRecord, async (err, rows, fields) =>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(true)
+            }
+        });
+    });
+}
+
+async function createGreenpLog(req, db_connection){
+    let {ads_idx, ads_name, rwd_cost, etc, app_uid, gp_key} = req.paramBody
+
+    if (typeof rwd_cost === 'number' && rwd_cost.toString().indexOf('.') !== -1) {
+        rwd_cost = Math.ceil(rwd_cost)
+    }
+
+    const query = `
+        insert into log_greenp_trace
+        set ?
+    ;
+    `;
+
+    const newRecord = {
+        ads_idx: ads_idx,
+        ads_name: ads_name,
+        rwd_cost: rwd_cost,
+        etc: etc,
+        app_uid: app_uid,
+        gp_key: gp_key
     };
 
     return new Promise(async(resolve, reject) => {
