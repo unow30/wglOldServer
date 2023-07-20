@@ -210,18 +210,18 @@
  
              // 회원가입한 이메일과 동일한 이메일을 가진 탈퇴유저가 있다면 포인트 3000을 줘선 안된다.
              // 포인트를 쓴 계정을 회원탈퇴하고 재가입하면 포인트 3000을 줘선 안된다. 포인트를 안쓰고 탈회한 유저도 재가입하면 포인트를 줘선 안된다.
-             if(deleted_user_email['v_signup_count'] <= 0){//   let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
+             // if(deleted_user_email['v_signup_count'] <= 0){//   let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
                          //   await queryInsertFCM(fcmPoint3000['data'], db_connection)
-               let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
-
-               let item = {}
-                   item['push_token'] = req.paramBody['push_token']
-                   item['user_uid'] = req.innerBody['item']['uid']
-                   item['point_uid'] = point['point_uid']
-
-                 let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
-                 await queryInsertFCM(fcmPoint3000['data'], db_connection)
-             }
+             //   let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
+             //
+             //   let item = {}
+             //       item['push_token'] = req.paramBody['push_token']
+             //       item['user_uid'] = req.innerBody['item']['uid']
+             //       item['point_uid'] = point['point_uid']
+             //
+             //     let fcmPoint3000 = await fcmUtil.fcmEventPoint3000Single(item);
+             //     await queryInsertFCM(fcmPoint3000['data'], db_connection)
+             // }
              // let point = await queryPointEvent(req, db_connection); //포인트 3000점 이벤트
 
              // let item = {}
@@ -379,18 +379,18 @@
      );
  }
  
- function queryPointEvent(req, db_connection) {
-     const _funcName = arguments.callee.name;
- 
-     //let user_uid = req.headers['user_uid'] ? req.headers['user_uid'] : 0;
- 
-     return mysqlUtil.querySingle(db_connection
-         , 'call _dev_event_create_point_3000_for_signup'
-         , [
-             req.innerBody['item']['uid'],
-         ]
-     );
- }
+ // function queryPointEvent(req, db_connection) {
+ //     const _funcName = arguments.callee.name;
+ //
+ //     //let user_uid = req.headers['user_uid'] ? req.headers['user_uid'] : 0;
+ //
+ //     return mysqlUtil.querySingle(db_connection
+ //         , 'call _dev_event_create_point_3000_for_signup'
+ //         , [
+ //             req.innerBody['item']['uid'],
+ //         ]
+ //     );
+ // }
  
  
  function queryInsertFCM(data, db_connection){
