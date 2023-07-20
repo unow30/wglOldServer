@@ -65,11 +65,9 @@ function checkParam(req) {
 function querySelect(req, db_connection) {
     const _funcName = arguments.callee.name;
 
-    return mysqlUtil.querySingle(db_connection
-        , 'call proc_select_user_access_token_check'
-        , [
-            req.headers['user_uid'],
-            req.headers['access_token'],
-        ]
+    return mysqlUtil.querySingle(
+        db_connection,
+        "call proc_select_user_access_token_check_v2",
+        [req.headers["user_uid"]]
     );
 }
