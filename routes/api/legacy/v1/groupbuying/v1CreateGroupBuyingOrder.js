@@ -425,6 +425,9 @@ function queryProduct(req, db_connection, status) {
             req.innerBody['product']['price_original'],
             req.innerBody['product']['payment'],
             req.innerBody['product']['price_delivery'],
+            req.innerBody['product']['price_delivery'],
+            req.innerBody['product']['price_delivery'],
+            req.innerBody['product']['price_delivery'],
             50, //공구주문결제상태 50
             req.paramBody['groupbuying_option_uid'],
         ]
