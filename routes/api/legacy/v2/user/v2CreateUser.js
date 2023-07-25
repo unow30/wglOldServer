@@ -223,7 +223,7 @@
                  await queryInsertFCM(fcmPoint3000['data'], db_connection)
              }
 
-             req.innerBody['item']['is_first_signup'] = deleted_user_email['v_signup_count'] <= 0? 0 : 1;
+             req.innerBody['item']['is_first_signup'] = deleted_user_email['v_signup_count'] <= 0? 1 : 0;
 
              deleteBody(req);
              sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -403,11 +403,13 @@
  
  function queryCheckDeletedEmail(req, db_connection) {
      const _funcName = arguments.callee.name;
- 
+ console.log( req.innerBody['item']['uid'],
+     req.paramBody['email'],)
      return mysqlUtil.querySingle(db_connection
          , 'call proc_select_user_deleted_email_check_v2'
          , [
-             req.headers['user_uid'],
+             // req.headers['user_uid'],
+             req.innerBody['item']['uid'],
              req.paramBody['email'],
          ]
      );
