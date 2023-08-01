@@ -7,11 +7,9 @@ const axios = require('axios');
 
 
 let AuthData = {
-    // apikey: `${process.env.ALIGO_APPLICATION_ID}`,
-    apikey: `sb3avatbu0n7xclzixl3ogtut4u1rm8v`,
+    apikey: `${process.env.ALIGO_APPLICATION_ID}`,
     // 이곳에 발급받으신 api key를 입력하세요
-    // userid: `${process.env.ALIGO_USER_ID}`,
-    userid: `weggletalk`,
+    userid: `${process.env.ALIGO_USER_ID}`,
     // 이곳에 userid를 입력하세요
     // token: ''
     // 이곳에 token api로 발급받은 토큰을 입력하세요
