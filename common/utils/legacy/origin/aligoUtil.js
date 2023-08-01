@@ -17,8 +17,6 @@ let AuthData = {
 
 module.exports = {
     createToken : async function(req, res){
-        console.log('createToken AuthData check', AuthData)
-        console.log('createToken req.body check', req.body)
         return  await aligoapi.token(req, AuthData)
             .then((r) => {
                 console.log("token result: " + JSON.stringify(r));
@@ -32,8 +30,6 @@ module.exports = {
             })
     },
     alimSend : async function(req, res) {
-        console.log('alimSend AuthData check', AuthData)
-        console.log('alimSend req.body check', req.body)
         return await aligoapi.alimtalkSend(req, AuthData)
             .then((r) => {
                 console.log("scueisjecisj123102j" + JSON.stringify(AuthData));
