@@ -69,28 +69,37 @@ module.exports = {
     },
     newALimSend : async function(req, res) {
         //토큰받기 기능 실행하고 토큰을 잘 받으면 알리고 알림을 보낸다.
-        console.log('req.body:', req.body)
-        await aligoapi.token(req, AuthData)
+        let authData = {
+            apikey: `${process.env.ALIGO_APPLICATION_ID}`,
+            // 이곳에 발급받으신 api key를 입력하세요
+            userid: `${process.env.ALIGO_USER_ID}`,
+            // 이곳에 userid를 입력하세요
+            // token: ''
+            // 이곳에 token api로 발급받은 토큰을 입력하세요
+        }
+
+        await aligoapi.token(req, authData)
             .then(async (r) => {
                 console.log("token result: " + JSON.stringify(r));
-                AuthData['token'] = r['token'];
-                await aligoapi.alimtalkSend(req, AuthData)
+                if(r['code'] !== 0){
+                    throw r
+                }
+                authData['token'] = r['token'];
+                await aligoapi.alimtalkSend(req, authData)
                     .then((r) => {
                         console.log("alimtalkSend result:" + JSON.stringify(r));
                         // res.send(r)
                     })
                     .catch((e) => {
                         console.log("error alimtalkSend:",e)
-                        console.log("AuthData",AuthData)
-                        sendUtil.sendErrorPacket(req, res, e);
+                        console.log("authData",authData)
+                        // sendUtil.sendErrorPacket(req, res, e);
                 })
             })
             .catch((e) => {
                 console.log("error token:",e)
-                console.log("AuthData",AuthData)
-                sendUtil.sendErrorPacket(req, res, e);
-            });
-
-
+                console.log("authData",authData)
+                // sendUtil.sendErrorPacket(req, res, e);
+        });
     }
 };
