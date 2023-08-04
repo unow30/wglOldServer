@@ -327,7 +327,11 @@ async function orderAlarm(req, res) {
     // const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))
     // await fcmUtil.fcmCreateOrderList(push_token_list);
 
-    // const push_token_list = req.innerBody['push_token_list']
+    let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
+        if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
+        return prev;
+    }, []);
+
     const push_token_list = Array.from(new Set(req.innerBody['push_token_list']))// 푸시토큰안에는 판매자가 아니라 구매자 푸시토큰이 있다.
 
     console.log('push_token_list', push_token_list)
@@ -336,23 +340,12 @@ async function orderAlarm(req, res) {
 
     req.body= {
         type: 's',
-        time: '9999'
-    }
-    await aligoUtil.createToken(req, res); //알리고 createToken을 보낸다.
-
-
-    req.body= {
+        time: '9999',
         senderkey: `${process.env.ALIGO_SENDERKEY}`,
         tpl_code: `TF_6863`,
         sender: `025580612`,
         subject_1: `상품 주문 알림(판매자)`,
     }
-
-    let alrim_msg_distinc_list = req.innerBody['alrim_msg_list'].reduce((prev, now) => {
-        if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
-        return prev;
-    }, []);
-    console.log(alrim_msg_distinc_list)
 
     let cnt = 1;
     for (let idx in alrim_msg_distinc_list) {
@@ -364,7 +357,7 @@ async function orderAlarm(req, res) {
             cnt++;
         }
     }
-    await aligoUtil.alimSend(req, res);
+    await aligoUtil.newALimSend(req, res);
 }
 
 
