@@ -356,22 +356,14 @@ async function orderAlarm(req, res, createOrderProductList) {
         if (!prev.some(obj => obj.phone === now.phone)) prev.push(now);
         return prev;
     }, []);
-    //중복제거는 해도 한 판매자에게 구매한 상품종류가 n개라면 외 n개라고 해주는게 좋겠다.
     console.log('alrim_msg_distinc_list중복제거', alrim_msg_distinc_list)
-
-    // const push_token_list = [...new Set(createOrderProductList.map(list => list.push_token))];
     const push_token_list = alrim_msg_distinc_list.map(list => list.push_token);
     console.log('push_token_list중복제거', push_token_list)
-    await fcmUtil.fcmCreateOrderList(push_token_list);//fcm알림도 중복제거가 되는가?
-    // fcmUtil.상품품절일경우품절알람보내기
+    await fcmUtil.fcmCreateOrderList(push_token_list);
 
     req.body= {
         type: 's',
-        time: '9999'
-    }
-    await aligoUtil.createToken(req, res);
-
-    req.body= {
+        time: '9999',
         senderkey: `${process.env.ALIGO_SENDERKEY}`,
         tpl_code: `TF_6863`,
         sender: `025580612`,
@@ -387,12 +379,11 @@ async function orderAlarm(req, res, createOrderProductList) {
             cnt++;
         }
     }
-    await aligoUtil.alimSend(req, res);
+    await aligoUtil.newALimSend(req, res);
 }
 
 
 function setArimMessage(alrim_msg_distinc_list, idx) {
-    console.log("WOQIJCOEIWQJEOQWIEJO")
     return `상품 주문 알림
 
 ${alrim_msg_distinc_list[idx]['nickname']}님, 판매하시는 상품에 신규 주문이 들어왔습니다. 판매자 페이지에서 확인 부탁드립니다.

@@ -26,7 +26,9 @@ module.exports = {
                 // res.send(r)
             })
             .catch((e) => {
-                res.send(e)
+                console.log("AuthData when error:",AuthData)
+                // res.send(e)
+                sendUtil.sendErrorPacket(req, res, e);
             })
     },
     alimSend : async function(req, res) {
@@ -38,8 +40,10 @@ module.exports = {
             })
             .catch((e) => {
                 console.log("wefweferrrororororor")
-                res.send(e);
+                console.log("AuthData when error:",AuthData)
+                // res.send(e);
                 // sendUtil.sendErrorPacket(req, res, e);
+                sendUtil.sendErrorPacket(req, res, e);
             })
     },
     smsSend : async function(req) {
@@ -62,5 +66,31 @@ module.exports = {
                 console.log("wefweferrrororororor")
                 sendUtil.sendErrorPacket(req, res, e);
             })
+    },
+    newALimSend : async function(req, res) {
+        //토큰받기 기능 실행하고 토큰을 잘 받으면 알리고 알림을 보낸다.
+        console.log('req.body:', req.body)
+        await aligoapi.token(req, AuthData)
+            .then((r) => {
+                console.log("token result: " + JSON.stringify(r));
+                AuthData['token'] = r['token'];
+                aligoapi.alimtalkSend(req, AuthData)
+                    .then((r) => {
+                        console.log("alimtalkSend result:" + JSON.stringify(r));
+                        // res.send(r)
+                    })
+                    .catch((e) => {
+                        console.log("error alimtalkSend:",e)
+                        console.log("AuthData",AuthData)
+                        sendUtil.sendErrorPacket(req, res, e);
+                })
+            })
+            .catch((e) => {
+                console.log("error token:",e)
+                console.log("AuthData",AuthData)
+                sendUtil.sendErrorPacket(req, res, e);
+        });
+
+
     }
 };
