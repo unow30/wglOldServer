@@ -71,10 +71,10 @@ module.exports = {
         //토큰받기 기능 실행하고 토큰을 잘 받으면 알리고 알림을 보낸다.
         console.log('req.body:', req.body)
         await aligoapi.token(req, AuthData)
-            .then((r) => {
+            .then(async (r) => {
                 console.log("token result: " + JSON.stringify(r));
                 AuthData['token'] = r['token'];
-                aligoapi.alimtalkSend(req, AuthData)
+                await aligoapi.alimtalkSend(req, AuthData)
                     .then((r) => {
                         console.log("alimtalkSend result:" + JSON.stringify(r));
                         // res.send(r)
@@ -89,7 +89,7 @@ module.exports = {
                 console.log("error token:",e)
                 console.log("AuthData",AuthData)
                 sendUtil.sendErrorPacket(req, res, e);
-        });
+            });
 
 
     }
