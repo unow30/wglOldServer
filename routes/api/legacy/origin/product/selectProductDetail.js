@@ -75,7 +75,8 @@ module.exports = function (req, res) {
 
             req.innerBody['item'] = await queryDetail(req, db_connection);
             if (!req.innerBody['item']) {
-                errUtil.createCall(errCode.empty, `상품이 존재하지 않습니다.`)
+                // errUtil.createCall(errCode.empty, `상품이 존재하지 않습니다.`)
+                errUtil.createCall(errCode.already, `상품이 존재하지 않습니다.`)
                 return
             }
             req.innerBody['image_list'] = await queryImageList(req, db_connection);
