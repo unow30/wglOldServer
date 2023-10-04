@@ -205,7 +205,7 @@ app
   .get(require("./legacy/v2/v2SearchView/v2SelectSerchViewListAll")); //모아보기 전체 탭 정보 불러오기
 app
   .route("/v3/searchview/banner/all")
-  .get(require("./v3/searchView/v3SelectSearchviewBannerListAll")); //모아보기 배너 이미지 전체 불러오기(홈배너, 기획전배너)
+  .get(require("./v3/searchView/v3SelectSearchViewBannerListAll")); //모아보기 배너 이미지 전체 불러오기(홈배너, 기획전배너)
 
 app
   .route("/v2/searchview/last/order/list")
