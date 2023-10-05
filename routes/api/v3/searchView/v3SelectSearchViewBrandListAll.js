@@ -2,16 +2,15 @@
  * Created by yunhokim
  *
  * @swagger
- * /api/public/v3/searchview/banner/all:
+ * /api/public/v3/searchview/brand/list/all:
  *   get:
- *     summary: 모아보기 전체 탭 정보 불러오기
+ *     summary: 모아보기 브랜드관 탭 정보 불러오기
  *     tags: [v3SearchView]
  *     description: |
- *      ## path : /api/public/v3/searchview/banner/all
+ *      ## path : /api/public/v3/searchview/brand/list/all:
  *
- *       * ## 모아보기 홈배너, 브랜드관 배너 불러오기
- *         * ### 홈배너(홈 탭 클릭시 표시)
- *         * ### 브랜드관 배너(브랜드관 탭 클릭시 표시)
+ *       * ## 모아보기 브랜드관 탭 정보 불러오기
+ *       * ## 브랜드관 카드이미지 정보와 브랜드관 user_uid를 불러온다.
  *
  *     responses:
  *       400:
@@ -42,15 +41,8 @@ module.exports = function (req, res) {
       async function (db_connection) {
         req.innerBody = {};
 
-        const ad_banner_list = queryADBannerList(req, db_connection); //홈배너광고리스트
-        const brand_banner_list = queryBrandBannerList(req, db_connection); //브랜드관배너광고리스트
-        const [ad_banner_data, brand_banner_data] = await Promise.all([
-          ad_banner_list,
-          brand_banner_list,
-        ]);
-
-        req.innerBody["ad_banner_list"] = ad_banner_data;
-        req.innerBody["brand_banner_list"] = brand_banner_data;
+        //홈 브랜드관 탭 리스트
+        req.innerBody["brand"] = await queryBrandList(req, db_connection);
 
         deleteBody(req);
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -78,22 +70,11 @@ function deleteBody(req) {
   // delete req.innerBody['item']['access_token']
 }
 
-//배너광고리스트
-function queryADBannerList(req, db_connection) {
+//브랜드관 새로운 이미지 리스트
+function queryBrandList(req, db_connection) {
   return mysqlUtil.queryArray(
     db_connection,
-    "call proc_select_searchview_ad_list_v1",
-    [
-      req.headers["user_uid"],
-      // req.paramBody['product_uid'],
-    ],
-  );
-}
-
-function queryBrandBannerList(req, db_connection) {
-  return mysqlUtil.queryArray(
-    db_connection,
-    "call proc_select_promotion_big_banner_list",
+    "call proc_select_searchview_brand_card_list_v3",
     [
       req.headers["user_uid"],
       // req.paramBody['product_uid'],

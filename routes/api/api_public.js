@@ -204,10 +204,6 @@ app
   .route("/v2/searchview/list/all")
   .get(require("./legacy/v2/v2SearchView/v2SelectSerchViewListAll")); //모아보기 전체 탭 정보 불러오기
 app
-  .route("/v3/searchview/banner/all")
-  .get(require("./v3/searchView/v3SelectSearchViewBannerListAll")); //모아보기 배너 이미지 전체 불러오기(홈배너, 기획전배너)
-
-app
   .route("/v2/searchview/last/order/list")
   .get(require("./legacy/v2/v2SearchView/v2SelectSearchViewLastOrderList")); //마감임박 공구딜 더보기
 app
@@ -246,6 +242,17 @@ app
 app
   .route("/v2/searchview/banner/event")
   .get(require("./legacy/v2/v2SearchView/v2SelectBannerEvent")); //이벤트 데이터 api
+
+/**
+ * v3Searchview api
+ * 22년 12월 24일부터 적용
+ */
+app
+  .route("/v3/searchview/banner/all")
+  .get(require("./v3/searchView/v3SelectSearchViewBannerListAll")); //모아보기 배너 이미지 전체 불러오기(홈배너, 기획전배너)
+app
+  .route("/v3/searchview/brand/list/all")
+  .get(require("./v3/searchView/v3SelectSearchViewBrandListAll")); //모아보기 브랜드관 탭 정보 불러오기
 
 /**
  * comment api
