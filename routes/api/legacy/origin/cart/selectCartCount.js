@@ -10,7 +10,7 @@
  *       ### path : /api/private/cart/count
  *
  *       ### * 장바구니 장바구니 상품 개수
- *       ### * count_total: 장바구니에 담긴 상품+옵션별 상품종류 개수 카운트(상품별 count가 아님)
+ *       ### * total_count: 장바구니에 담긴 상품+옵션별 상품종류 개수 카운트(상품별 count가 아님)
  *
  *     responses:
  *       400:
