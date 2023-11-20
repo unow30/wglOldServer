@@ -12,7 +12,7 @@
  *       ### * 장바구니 목록
  *       ### * influencer_gongu_cart: 인플루언서 공구 장바구니
  *       ### * common_cart: 일반상품 장바구니
- *       ### * count_total: 장바구니에 담긴 상품+옵션별 개수 카운트
+ *       ### * count_total: 장바구니에 담긴 상품+옵션별 상품종류 개수 카운트(상품별 count가 아님)
  *
  *     responses:
  *       400:
