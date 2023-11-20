@@ -83,6 +83,7 @@ app
   .post(require("./legacy/origin/cart/createCart"))
   .delete(require("./legacy/origin/cart/deleteCart"));
 app.route("/cart/list").get(require("./legacy/origin/cart/selectCartList"));
+app.route("/cart/count").get(require("./legacy/origin/cart/selectCartCount"));
 
 /**
  * order api
