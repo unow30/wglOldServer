@@ -53,8 +53,6 @@ module.exports = function (req, res) {
         req.innerBody["item"] = await querySelect(req, db_connection);
         if (req.innerBody["item"]) {
           for (let idx in req.innerBody["item"]) {
-            console.log(req.innerBody["item"][idx]);
-            console.log(idx);
             req.innerBody["item"][idx]["cart_product_list"] = JSON.parse(
               req.innerBody["item"][idx]["cart_product_list"],
             );
