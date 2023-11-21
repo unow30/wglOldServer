@@ -87,9 +87,8 @@ module.exports = function (req, res) {
       req,
       `== function start ==================================`,
     );
-    // logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
+
     req.paramBody = paramUtil.parse(req);
-    // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
     checkParam(req);
 
@@ -97,10 +96,6 @@ module.exports = function (req, res) {
       async function (db_connection) {
         req.innerBody = {};
 
-        // let check = await queryCheck(req, db_connection);
-        // if (check["influencer_gongu_uid"] !== 0) {
-        //   req.paramBody["influencer_gongu_uid"] = check["influencer_gongu_uid"];
-        // }
         req.innerBody["item"] = await query(req, db_connection);
 
         deleteBody(req);
