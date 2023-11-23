@@ -83,7 +83,16 @@ app
   .post(require("./legacy/origin/cart/createCart"))
   .delete(require("./legacy/origin/cart/deleteCart"));
 app.route("/cart/list").get(require("./legacy/origin/cart/selectCartList"));
-app.route("/cart/count").get(require("./legacy/origin/cart/selectCartCount"));
+
+/**
+ * V2 cart api
+ */
+app
+  .route("/v2/cart")
+  .post(require("./legacy/v2/cart/v2CreateCart"))
+  .delete(require("./legacy/v2/cart/v2DeleteCart"));
+app.route("/v2/cart/list").get(require("./legacy/v2/cart/v2SelectCartList"));
+app.route("/v2/cart/count").get(require("./legacy/v2/cart/v2SelectCartCount"));
 
 /**
  * order api
