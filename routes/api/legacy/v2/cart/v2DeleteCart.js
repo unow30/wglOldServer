@@ -1,21 +1,27 @@
 /**
- * Created by hyunhunhwang on 2021. 01. 25.
+ * Created by hyunhunhwang on 2021. 02. 04.
  *
  * @swagger
- * /api/private/cart/list:
- *   get:
- *     summary: 장바구니 목록
+ * /api/private/v2/cart:
+ *   delete:
+ *     summary: 장바구니 삭제
  *     tags: [Cart]
  *     description: |
- *       path : /api/private/cart/list
+ *       path : /api/private/v2/cart
  *
- *       * 장바구니 목록
+ *       * 장바구니 삭제
+ *
+ *     parameters:
+ *       - in: query
+ *         name: cart_uid
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: number
+ *           example: 1
+ *         description: 삭제할 장바구니 uid
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/Follow'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -28,6 +34,9 @@ const mysqlUtil = require("../../../../../common/utils/legacy/origin/mysqlUtil")
 const sendUtil = require("../../../../../common/utils/legacy/origin/sendUtil");
 const errUtil = require("../../../../../common/utils/legacy/origin/errUtil");
 const logUtil = require("../../../../../common/utils/legacy/origin/logUtil");
+const jwtUtil = require("../../../../../common/utils/legacy/origin/jwtUtil");
+
+const errCode = require("../../../../../common/define/errCode");
 
 let file_name = fileUtil.name(__filename);
 
@@ -36,10 +45,8 @@ module.exports = function (req, res) {
 
   try {
     req.file_name = file_name;
-    logUtil.printUrlLog(
-      req,
-      `== function start ==================================`,
-    );
+    // logUtil.printUrlLog(req, `== function start ==================================`);
+    // logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
     req.paramBody = paramUtil.parse(req);
     // logUtil.printUrlLog(req, `param: ${JSON.stringify(req.paramBody)}`);
 
@@ -49,17 +56,16 @@ module.exports = function (req, res) {
       async function (db_connection) {
         req.innerBody = {};
 
-        // let count_data = await querySelectTotalCount(req, db_connection);
-        req.innerBody["item"] = await querySelect(req, db_connection);
+        // req.innerBody['item'] = await queryCheck(req, db_connection);
+        req.innerBody["item"] = await query(req, db_connection);
+
         if (req.innerBody["item"]) {
-          for (let idx in req.innerBody["item"]) {
-            console.log(idx);
-            req.innerBody["item"][idx]["cart_product_list"] = JSON.parse(
-              req.innerBody["item"][idx]["cart_product_list"],
-            );
-          }
+          errUtil.createCall(errCode.fail, `삭제에 실패하였습니다.`);
+          return;
         }
-        // req.innerBody['total_count'] = count_data['total_count'];
+
+        req.innerBody["is_deleted"] = 1;
+        req.innerBody["success"] = "삭제가 완료되었습니다.";
 
         deleteBody(req);
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -75,31 +81,18 @@ module.exports = function (req, res) {
 };
 
 function checkParam(req) {
-  // paramUtil.checkParam_noReturn(req.paramBody, 'last_uid');
+  paramUtil.checkParam_noReturn(req.paramBody, "cart_uid");
 }
 
 function deleteBody(req) {
   // delete req.innerBody['item']['latitude']
-  // delete req.innerBody['item']['longitude']
-  // delete req.innerBody['item']['push_token']
-  // delete req.innerBody['item']['access_token']
 }
 
-function querySelect(req, db_connection) {
+function query(req, db_connection) {
   const _funcName = arguments.callee.name;
 
-  return mysqlUtil.queryArray(db_connection, "call proc_select_cart_list", [
+  return mysqlUtil.querySingle(db_connection, "call proc_delete_cart_v2", [
     req.headers["user_uid"],
-    // req.paramBody['last_uid'],
+    req.paramBody["cart_uid"],
   ]);
-}
-
-function querySelectTotalCount(req, db_connection) {
-  const _funcName = arguments.callee.name;
-
-  return mysqlUtil.querySingle(
-    db_connection,
-    "call proc_select_cart_total_count",
-    [req.headers["user_uid"]],
-  );
 }

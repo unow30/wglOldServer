@@ -2,20 +2,19 @@
  * Created by hyunhunhwang on 2021. 01. 25.
  *
  * @swagger
- * /api/private/cart/list:
+ * /api/private/v2/cart/list:
  *   get:
  *     summary: 장바구니 목록
  *     tags: [Cart]
  *     description: |
- *       path : /api/private/cart/list
+ *       ### path : /api/private/v2/cart/list
  *
- *       * 장바구니 목록
+ *       ### * 장바구니 목록
+ *       ### * influencer_gongu_cart: 인플루언서 공구 장바구니
+ *       ### * common_cart: 일반상품 장바구니
+ *       ### * count_total: 장바구니에 담긴 상품+옵션별 상품종류 개수 카운트(상품별 count가 아님)
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/Follow'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -47,16 +46,40 @@ module.exports = function (req, res) {
 
     mysqlUtil.connectPool(
       async function (db_connection) {
-        req.innerBody = {};
+        req.innerBody = {
+          item: {
+            influencer_gongu_cart: [],
+            common_cart: [],
+            total_count: 0,
+          },
+        };
 
         // let count_data = await querySelectTotalCount(req, db_connection);
-        req.innerBody["item"] = await querySelect(req, db_connection);
-        if (req.innerBody["item"]) {
-          for (let idx in req.innerBody["item"]) {
-            console.log(idx);
-            req.innerBody["item"][idx]["cart_product_list"] = JSON.parse(
-              req.innerBody["item"][idx]["cart_product_list"],
+        // req.innerBody["item"] = await querySelect(req, db_connection);
+        // if (req.innerBody["item"]) {
+        //   for (let idx in req.innerBody["item"]) {
+        //     req.innerBody["item"][idx]["cart_product_list"] = JSON.parse(
+        //       req.innerBody["item"][idx]["cart_product_list"],
+        //     );
+        //   }
+        // }
+        let cartList = await querySelect(req, db_connection);
+
+        if (cartList) {
+          for (let idx in cartList) {
+            cartList[idx]["cart_product_list"] = JSON.parse(
+              cartList[idx]["cart_product_list"],
             );
+            req.innerBody["item"]["total_count"] +=
+              cartList[idx]["cart_product_list"].length;
+
+            if (cartList[idx]["is_influencer"] === 1) {
+              req.innerBody["item"]["influencer_gongu_cart"].push(
+                cartList[idx],
+              );
+            } else {
+              req.innerBody["item"]["common_cart"].push(cartList[idx]);
+            }
           }
         }
         // req.innerBody['total_count'] = count_data['total_count'];
@@ -88,7 +111,7 @@ function deleteBody(req) {
 function querySelect(req, db_connection) {
   const _funcName = arguments.callee.name;
 
-  return mysqlUtil.queryArray(db_connection, "call proc_select_cart_list", [
+  return mysqlUtil.queryArray(db_connection, "call proc_select_cart_list_v2", [
     req.headers["user_uid"],
     // req.paramBody['last_uid'],
   ]);

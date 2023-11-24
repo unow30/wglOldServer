@@ -2,14 +2,17 @@
  * Created by hyunhunhwang on 2021. 01. 25.
  *
  * @swagger
- * /api/private/cart:
+ * /api/private/v2/cart:
  *   post:
  *     summary: 장바구니 담기
  *     tags: [Cart]
  *     description: |
- *       ### path : /api/private/cart
+ *       ### path : /api/private/v2/cart
  *
  *       ### * 장바구니 담기
+ *       ### influencer_gongu_uid
+ *           0이면 일반상품 상세페이지에서 선택한 상품
+ *           0이 아니면 인플루언서 공구 상세에서 선택한 상품
  *
  *     parameters:
  *       - in: body
@@ -48,6 +51,13 @@
  *               description: |
  *                 구매 갯수
  *                 * 최소 1개 이상
+ *             influencer_gongu_uid:
+ *               type: number
+ *               example: 0
+ *               description: |
+ *                 인플루언서 공구 uid
+ *                 0이면 일반상품 상세페이지에서 선택한 상품
+ *                 0이 아니면 인플루언서 공구 상세에서 선택한 상품
  *
  *     responses:
  *       400:
@@ -116,12 +126,13 @@ function deleteBody(req) {
 function query(req, db_connection) {
   const _funcName = arguments.callee.name;
 
-  return mysqlUtil.querySingle(db_connection, "call proc_create_cart", [
+  return mysqlUtil.querySingle(db_connection, "call proc_create_cart_v2", [
     req.headers["user_uid"],
     req.paramBody["product_uid"],
     req.paramBody["video_uid"],
     req.paramBody["option_ids"],
     req.paramBody["count"],
+    req.paramBody["influencer_gongu_uid"] ?? 0,
   ]);
 }
 

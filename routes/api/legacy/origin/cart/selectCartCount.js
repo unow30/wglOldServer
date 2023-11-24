@@ -2,20 +2,17 @@
  * Created by hyunhunhwang on 2021. 01. 25.
  *
  * @swagger
- * /api/private/cart/list:
+ * /api/private/cart/count:
  *   get:
- *     summary: 장바구니 목록
+ *     summary: 장바구니 상품 개수
  *     tags: [Cart]
  *     description: |
- *       path : /api/private/cart/list
+ *       ### path : /api/private/cart/count
  *
- *       * 장바구니 목록
+ *       ### * 장바구니 장바구니 상품 개수
+ *       ### * total_count: 장바구니에 담긴 상품+옵션별 상품종류 개수 카운트(상품별 count가 아님)
  *
  *     responses:
- *       200:
- *         description: 결과 정보
- *         schema:
- *           $ref: '#/definitions/Follow'
  *       400:
  *         description: 에러 코드 400
  *         schema:
@@ -49,17 +46,7 @@ module.exports = function (req, res) {
       async function (db_connection) {
         req.innerBody = {};
 
-        // let count_data = await querySelectTotalCount(req, db_connection);
-        req.innerBody["item"] = await querySelect(req, db_connection);
-        if (req.innerBody["item"]) {
-          for (let idx in req.innerBody["item"]) {
-            console.log(idx);
-            req.innerBody["item"][idx]["cart_product_list"] = JSON.parse(
-              req.innerBody["item"][idx]["cart_product_list"],
-            );
-          }
-        }
-        // req.innerBody['total_count'] = count_data['total_count'];
+        req.innerBody["item"] = await querySelectCount(req, db_connection);
 
         deleteBody(req);
         sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
@@ -85,21 +72,11 @@ function deleteBody(req) {
   // delete req.innerBody['item']['access_token']
 }
 
-function querySelect(req, db_connection) {
+function querySelectCount(req, db_connection) {
   const _funcName = arguments.callee.name;
 
-  return mysqlUtil.queryArray(db_connection, "call proc_select_cart_list", [
+  return mysqlUtil.querySingle(db_connection, "call proc_select_cart_count", [
     req.headers["user_uid"],
     // req.paramBody['last_uid'],
   ]);
-}
-
-function querySelectTotalCount(req, db_connection) {
-  const _funcName = arguments.callee.name;
-
-  return mysqlUtil.querySingle(
-    db_connection,
-    "call proc_select_cart_total_count",
-    [req.headers["user_uid"]],
-  );
 }
