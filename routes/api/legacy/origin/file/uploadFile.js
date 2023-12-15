@@ -19,7 +19,9 @@
  *     parameters:
  *       - in: formData
  *         name: file
- *         type: file
+ *         type: array
+ *         items:
+ *           type: file
  *         description: |
  *           이미지 or 영상 파일
  *     responses:
@@ -53,19 +55,19 @@
  *
  *
  */
-const sendUtil = require('../../../../../common/utils/legacy/origin/sendUtil');
-const paramUtil = require('../../../../../common/utils/legacy/origin/paramUtil');
-const fileUtil = require('../../../../../common/utils/legacy/origin/fileUtil');
-const errUtil = require('../../../../../common/utils/legacy/origin/errUtil');
-const logUtil = require('../../../../../common/utils/legacy/origin/logUtil');
-const errCode = require('../../../../../common/define/errCode');
-const funcUtil = require('../../../../../common/utils/legacy/origin/funcUtil');
-
-const mediaConvertUtil = require('../../../../../common/utils/legacy/origin/mediaConvertUtil');
+const sendUtil = require("../../../../../common/utils/legacy/origin/sendUtil");
+const paramUtil = require("../../../../../common/utils/legacy/origin/paramUtil");
+const fileUtil = require("../../../../../common/utils/legacy/origin/fileUtil");
+const errUtil = require("../../../../../common/utils/legacy/origin/errUtil");
+const logUtil = require("../../../../../common/utils/legacy/origin/logUtil");
+const errCode = require("../../../../../common/define/errCode");
+const funcUtil = require("../../../../../common/utils/legacy/origin/funcUtil");
+const path = require("path");
+const mediaConvertUtil = require("../../../../../common/utils/legacy/origin/mediaConvertUtil");
 
 // const mediaConvertUtil = require('../../../common/utils/mediaConvertUtil_m3u8');
 
-const getMediaDimensions = require('get-media-dimensions');
+const getMediaDimensions = require("get-media-dimensions");
 
 let file_name = fileUtil.name(__filename);
 
@@ -73,45 +75,80 @@ let file_name = fileUtil.name(__filename);
  * 결과 값을 처리하기 위한 - 전역 변수
  */
 module.exports = async function (req, res) {
-    const _funcName = arguments.callee.name;
-    console.log('afiowekfoik: ' + req.file_name);
-    logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
-    try {
-        req.file_name = file_name;
-        req.paramBody = paramUtil.parse(req);
+  const _funcName = arguments.callee.name;
+  console.log("afiowekfoik: " + req.file_name);
+  logUtil.printUrlLog(req, `header: ${JSON.stringify(req.headers)}`);
+  try {
+    req.file_name = file_name;
+    req.paramBody = paramUtil.parse(req);
 
-        console.log('upload file awsS3 function start........................');
-        if( req.file ) {
+    console.log("upload file awsS3 function start........................");
+    // if( req.file ) {
+    //
+    //     let final_name = req.file.key;
+    //
+    //     console.log('finalname: ' + final_name);
+    //     req.innerBody = {};
+    //
+    //     if(req.file.originalname.includes('.mp4')) {
+    //         let file_size = req.file.size / (1024 * 1024);
+    //
+    //         const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
+    //
+    //         final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
+    //
+    //         req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
+    //     }
+    //
+    //     req.innerBody['filename'] = final_name
+    //
+    //     sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+    // }
+    // else {
+    //     let _err = errUtil.initError(errCode.empty, '이미지 파일이 존재하지 않습니다.');
+    //     sendUtil.sendErrorPacket(req, res, _err);
+    // }
+    console.log("req.files", req.files);
+    if (req.files) {
+      const asyncData = req.files.map(async (result) => {
+        const contentType = result.contentType.split("/")[0];
+        const ext = path.extname(result.key);
 
-            let final_name = req.file.key;
-
-            console.log('finalname: ' + final_name);
-            req.innerBody = {};
-
-            if(req.file.originalname.includes('.mp4')) {
-                let file_size = req.file.size / (1024 * 1024);
-
-                const file_dimensions = await getMediaDimensions(`${funcUtil.getFilePath()}${req.file.key}`, 'video');
-                
-                final_name = mediaConvertUtil(file_size, final_name, file_dimensions['width'], file_dimensions['height']);
-                
-                req.innerBody['thumbnail'] = final_name.replace('ConvertSuccess.mp4', file_dimensions['duration'] >= 4? 'Thumbnail.0000001.jpg' : 'Thumbnail.0000000.jpg');
-            }
-
-            req.innerBody['filename'] = final_name
-
-            sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
+        if (contentType == "video" || ext == ".mp4" || ext == ".MP4") {
+          const fileSize = result.size / (1024 * 1024);
+          const fileDimensions = await getMediaDimensions(
+            `${funcUtil.getFilePath()}${result.key}`,
+            "video",
+          );
+          const finalName = mediaConvertUtil(
+            fileSize,
+            result.key,
+            fileDimensions["width"],
+            fileDimensions["height"],
+          );
+          const thumbnail = finalName.replace(
+            "ConvertSuccess.mp4",
+            fileDimensions["duration"] >= 4
+              ? "Thumbnail.0000001.jpg"
+              : "Thumbnail.0000000.jpg",
+          );
+          return {
+            filename: finalName,
+            thumbnail: thumbnail,
+            type: 1,
+          };
         }
-        else {
-            let _err = errUtil.initError(errCode.empty, '이미지 파일이 존재하지 않습니다.');
-            sendUtil.sendErrorPacket(req, res, _err);
-        }
+      });
 
+      const files = await Promise.all(asyncData);
+      req.innerBody = {};
+      req.innerBody.files = files;
+      sendUtil.sendSuccessPacket(req, res, req.innerBody, true);
     }
-    catch (e) {
-        console.log(`===>>> catch e: ${e}`);
-        console.log(`===>>> catch e.stack: ${e.stack}`);
-        let _err = errUtil.get(e);
-        sendUtil.sendErrorPacket(req, res, _err);
-    }
-}
+  } catch (e) {
+    console.log(`===>>> catch e: ${e}`);
+    console.log(`===>>> catch e.stack: ${e.stack}`);
+    let _err = errUtil.get(e);
+    sendUtil.sendErrorPacket(req, res, _err);
+  }
+};

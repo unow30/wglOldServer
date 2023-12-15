@@ -19,9 +19,11 @@
  *     parameters:
  *       - in: formData
  *         name: file
- *         type: file
+ *         type: array
+ *         items:
+ *           type: file
  *         description: |
- *           이미지
+ *           이미지 or 영상 파일
  *     responses:
  *       400:
  *         description: 에러 코드 400
