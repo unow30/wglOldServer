@@ -4,12 +4,12 @@
  * @swagger
  * /api/public/searchview/hotdeal/list/all:
  *   get:
- *     summary: 모아보기 브랜드관 탭 정보 불러오기
+ *     summary: 모아보기 타임 핫딜 탭 정보 불러오기
  *     tags: [v3SearchView]
  *     description: |
  *      ## path : /api/public/searchview/hotdeal/list/all:
  *
- *       * ## 모아보기 핫딜 탭 정보 불러오기
+ *       * ## 모아보기 타임 핫딜 탭 정보 불러오기
  *
  *     parameters:
  *       - in: query
