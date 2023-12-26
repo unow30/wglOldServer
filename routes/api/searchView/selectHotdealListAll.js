@@ -94,6 +94,7 @@ async function queryTimeHotdeal(offset, db_connection) {
  , p.created_time
  , u.uid as userUid
  , p.name as productName
+ , image_p.filename as productImage
  , p.price_original as priceOriginal
  , p.price_discount as priceDiscount
  , p.discount_rate as discountRate
@@ -108,6 +109,16 @@ from tbl_product as p
     inner join tbl_product_option as po
         on po.product_uid = p.uid
        and po.is_deleted = 0
+    inner join tbl_image as image_p
+        on image_p.uid = (
+            select
+                uid
+            from tbl_image
+            where tbl_image.target_uid = p.uid
+            and tbl_image.type = 2
+            and tbl_image.is_deleted = 0
+            limit 1
+            )
 where CURDATE() >= '2023-12-26 00:00:00' and CURDATE() <= '2023-12-31 23:59:59'
 group by p.uid
 limit 12 offset ?;`;
