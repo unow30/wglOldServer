@@ -2,14 +2,14 @@
  * Created by yunhokim
  *
  * @swagger
- * /api/public/searchview/hotdeal/list/all:
+ * /api/public/searchview/hotdeal/list/:
  *   get:
- *     summary: 모아보기 타임 핫딜 탭 정보 불러오기
+ *     summary: 모아보기 타임 핫딜 정보 더보기
  *     tags: [v3SearchView]
  *     description: |
- *      ## path : /api/public/searchview/hotdeal/list/all:
+ *      ## path : /api/public/searchview/hotdeal/list/:
  *
- *       * ## 모아보기 타임 핫딜 탭 정보 불러오기
+ *       * ## 모아보기 타임 핫딜 정보 더보기
  *
  *     parameters:
  *       - in: query
@@ -56,7 +56,8 @@ module.exports = function (req, res) {
 
         //홈 브랜드관 탭 리스트
         let { offset } = req.paramBody;
-        req.innerBody["hotdeal"] = await queryTimeHotdeal(
+        offset = parseInt(offset);
+        req.innerBody["time_hotdeal"] = await queryHotdeal(
           offset,
           db_connection,
         );
@@ -87,46 +88,45 @@ function deleteBody(req) {
   // delete req.innerBody['item']['access_token']
 }
 
-async function queryTimeHotdeal(offset, db_connection) {
-  offset = parseInt(offset);
-  let query = `select
-   p.uid as productUid
- , p.created_time
- , u.uid as userUid
- , p.name as productName
- , image_p.filename as productImage
- , p.price_original as priceOriginal
- , p.price_discount as priceDiscount
- , p.discount_rate as discountRate
- , '2023-12-26 00:00:00' as startTime
- , '2023-12-31 23:59:59' as endTime
- , sum(po.stock) stock
- , sum(po.sales_quantity) as salesQuantity
+function queryHotdeal(offset, db_connection) {
+  return new Promise((resolve, reject) => {
+    const query = `select
+    p.uid as product_uid
+  , p.sale_type   
+  , pt.uid as timedeal_uid
+  , pt.start_time
+  , pt.end_time
+  , pt.type as timedeal_type
+  , p.name as name
+  , (select _image.filename
+                   from tbl_image as _image
+                   where _image.is_deleted = 0
+                     and _image.type = 2
+                     and _image.target_uid = p.uid
+                   order by _image.uid asc
+                   limit 1) as product_image
+  , p.price_original as product_price_original
+  , p.price_discount as product_price_discount
+  , p.discount_rate as product_discount_rate
 from tbl_product as p
-    inner join tbl_user as u
-        on u.uid = p.user_uid
-       and u.is_promotion = 1
-    inner join tbl_product_option as po
-        on po.product_uid = p.uid
-       and po.is_deleted = 0
-    inner join tbl_image as image_p
-        on image_p.uid = (
-            select
-                uid
-            from tbl_image
-            where tbl_image.target_uid = p.uid
-            and tbl_image.type = 2
-            and tbl_image.is_deleted = 0
-            limit 1
-            )
-where CURDATE() >= '2023-12-26 00:00:00' and CURDATE() <= '2023-12-31 23:59:59'
-group by p.uid
+inner join tbl_product_timedeal as pt
+    on pt.product_uid = p.uid
+   and pt.is_deleted = 0
+inner join tbl_user as u
+    on u.uid = p.user_uid
+   and u.is_deleted = 0
+   and u.is_seller = 1
+where date_format(pt.start_time, '%Y-%m-%d') <= curdate()
+  and date_format(pt.end_time, '%Y-%m-%d') >= curdate()
+  and p.sale_type = 'onsale'
+  and p.is_authorize = 1
+  and p.is_deleted = 0  
+  order by pt.type, pt.round desc
 limit 12 offset ?;`;
 
-  return new Promise(async (resolve, reject) => {
-    db_connection.query(query, [offset], (err, rows) => {
+    db_connection.query(query, [offset], async (err, rows, fields) => {
       if (err) {
-        reject(err);
+        reject(new Error(err));
       } else {
         resolve(rows);
       }

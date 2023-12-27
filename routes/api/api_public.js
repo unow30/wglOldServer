@@ -255,8 +255,8 @@ app
   .get(require("./searchView/v3SelectSearchViewBrandListAll")); //모아보기 브랜드관 탭 정보 불러오기
 
 app
-  .route("/searchview/hotdeal/list/all")
-  .get(require("./searchView/selectHotdealListAll")); //모아보기 핫딜 탭 정보 불러오기
+  .route("/searchview/hotdeal/list")
+  .get(require("./searchView/selectHotdealList")); //모아보기 핫딜 탭 정보 불러오기
 
 /**
  * comment api
