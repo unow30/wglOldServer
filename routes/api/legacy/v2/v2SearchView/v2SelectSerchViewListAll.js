@@ -482,6 +482,7 @@ function queryHotdeal(req, db_connection) {
   return new Promise((resolve, reject) => {
     const query = `select
     p.uid as product_uid
+  , p.sale_type   
   , pt.uid as timedeal_uid
   , pt.start_time
   , pt.end_time
@@ -507,6 +508,9 @@ inner join tbl_user as u
    and u.is_seller = 1
 where date_format(pt.start_time, '%Y-%m-%d') <= curdate()
   and date_format(pt.end_time, '%Y-%m-%d') >= curdate()
+  and p.sale_type = 'onsale'
+  and p.is_authorize = 1
+  and p.is_deleted = 0  
   order by pt.type, pt.round desc
 limit 12 offset 0;`;
 
