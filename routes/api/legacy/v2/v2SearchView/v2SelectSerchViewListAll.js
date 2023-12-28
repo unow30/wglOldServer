@@ -156,8 +156,8 @@ module.exports = function (req, res) {
         );
 
         req.innerBody["time_hotdeal"] = createProperties(
-          "타임핫딜",
-          "타임핫딜 행사",
+          "타임핫딜🔥",
+          "지금 이시간에만 세일! 서둘러 득템해요",
           time_hotdeal_data,
         );
 
