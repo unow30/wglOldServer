@@ -252,7 +252,11 @@ app
   .get(require("./v3/searchView/v3SelectSearchViewBannerListAll")); //모아보기 배너 이미지 전체 불러오기(홈배너, 기획전배너)
 app
   .route("/v3/searchview/brand/list/all")
-  .get(require("./v3/searchView/v3SelectSearchViewBrandListAll")); //모아보기 브랜드관 탭 정보 불러오기
+  .get(require("./searchView/v3SelectSearchViewBrandListAll")); //모아보기 브랜드관 탭 정보 불러오기
+
+app
+  .route("/searchview/hotdeal/list")
+  .get(require("./searchView/selectHotdealList")); //모아보기 핫딜 탭 정보 불러오기
 
 /**
  * comment api
