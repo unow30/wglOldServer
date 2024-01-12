@@ -119,8 +119,8 @@ module.exports = function (req, res) {
           let fcmReviewVideo = await fcmUtil.fcmReviewVideoSingle(
             req.innerBody["item"],
           );
-
-          if (fcmReviewVideo["data"]) {
+          console.log('fcmReviewVideo["data"] => ', fcmReviewVideo["data"]);
+          if (fcmReviewVideo["data"] !== null) {
             await queryInsertFCM(fcmReviewVideo["data"], db_connection);
           }
         }
