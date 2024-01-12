@@ -115,9 +115,18 @@ module.exports = function (req, res) {
 
         let alertList = await queryAlertComment(req, db_connection);
 
+        console.log(
+          'alertList["is_alert_review_video"]',
+          alertList["is_alert_review_video"],
+        );
+        console.log(
+          'req.innerBody["item"]',
+          req.innerBody["item"]["push_token"],
+        );
+
         if (
           alertList["is_alert_review_video"] == 0 &&
-          req.innerBody["item"] !== null
+          req.innerBody["item"]["push_token"] !== null
         ) {
           let fcmReviewVideo = await fcmUtil.fcmReviewVideoSingle(
             req.innerBody["item"],
