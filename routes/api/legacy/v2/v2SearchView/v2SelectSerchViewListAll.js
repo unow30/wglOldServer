@@ -494,7 +494,7 @@ function queryHotdeal(req, db_connection) {
                      and _image.type = 2
                      and _image.target_uid = p.uid
                    order by _image.uid asc
-                   limit 1) as product_image
+                   limit 1 offset 1) as product_image
   , p.price_original as product_price_original
   , p.price_discount as product_price_discount
   , p.discount_rate as product_discount_rate
